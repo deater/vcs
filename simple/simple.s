@@ -1,4 +1,4 @@
-.include "vcs.inc"
+.include "../vcs.inc"
 
 start:
 	; Start Vertical Blank
