@@ -71,7 +71,9 @@ no_change:
 	sta	VBLANK
 
 
+
 	; visible area: 192 lines (NTSC) / 228 (PAL)
+	; change background color each line
 
 	ldx	#0
 
