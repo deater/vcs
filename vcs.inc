@@ -45,7 +45,19 @@ GRP1	=	$1C
 ENAM0	=	$1D
 ENAM1	=	$1E
 ENABL	=	$1F
-
+HMP0	=	$20
+HMP1	=	$21
+HMM0	=	$22
+HMM1	=	$23
+HMBL	=	$24
+VDELP0	=	$25
+VDELP1	=	$26
+VDELBL	=	$27
+RESMP0	=	$28
+RESMP1	=	$29
+HMOVE	=	$2A	; apply horizontal motion
+HMCLR	=	$2B	; clear horizontal move
+CXCLR	=	$2C	; clear collision latches
 
 ; read addresses
 CXM0P	=	$00		; Collision Detect
