@@ -1,6 +1,6 @@
 LINKER_SCRIPT = ../linker_script
 
-all:	apple.rom
+all:	apple.rom apple_fancy.rom
 
 ###
 
@@ -12,7 +12,15 @@ apple.o:	apple.s playfield.inc
 
 ###
 
+apple_fancy.rom:	apple_fancy.o
+	ld65 -o apple_fancy.rom apple_fancy.o -C $(LINKER_SCRIPT)/atari2600_f000.inc
+
+apple_fancy.o:	apple_fancy.s playfield.inc
+	ca65 -o apple_fancy.o apple_fancy.s -l apple_fancy.lst
+
+###
+
 clean:	
-	rm -f *~ *.o *.lst apple.rom
+	rm -f *~ *.o *.lst apple.rom apple_fancy.rom
 
 
