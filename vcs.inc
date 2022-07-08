@@ -17,8 +17,29 @@ VSYNC	=	$00	; reset beam to top (2 to start, 0 done after 3 lines)
 VBLANK	=	$01	; turn off beam (write 2 to turn off, 0 to turn on)
 WSYNC	=	$02	; sleep until beginning of next scanline
 RSYNC	=	$03
+
+; control number and size of player and missiles
+;  D5/D4 = Missile Size
+;  D2/D1/D0 = player number/size
 NUSIZ0	=	$04
 NUSIZ1	=	$05
+	NUSIZ_MISSILE_WIDTH_1	= $00
+	NUSIZ_MISSILE_WIDTH_2	= $10
+	NUSIZ_MISSILE_WIDTH_4	= $20
+	NUSIZ_MISSILE_WIDTH_8	= $30
+
+	NUSIZ_ONE_COPY		= $00
+	NUSIZ_TWO_COPIES_CLOSE	= $01
+	NUSIZ_TWO_COPIES_MED	= $02
+	NUSIZ_THREE_COPIES_CLOSE= $03
+	NUSIZ_TWO_COPIES_WIDE	= $04
+	NUSIZ_DOUBLE_SIZE	= $05
+	NUSIZ_THREE_COPIES_MED	= $06
+	NUSIZ_QUAD_SIZE		= $07 
+
+
+
+
 COLUP0	=	$06
 COLUP1	=	$07
 COLUPF	=	$08
