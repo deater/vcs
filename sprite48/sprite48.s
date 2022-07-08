@@ -28,7 +28,7 @@ start:
 
 	lda	#$0F
 	sta	COLUP0	; set sprite color
-	lda	#$0D
+	lda	#$2F
 	sta	COLUP1	; set sprite color
 
 	lda	#$00				; set initial x position
@@ -102,30 +102,32 @@ start_frame:
 
 	sta	WSYNC
 
-	; set up sprite to be at proper X position
-	; we can do this here and the sprite will be drawn as a long
-	; vertical column
-	; later we only enable it for the lines we want
+	; to center exactly would want sprite0 at
+	;	CPU cycle 41.3
+	; and sprite1 at
+	;	GPU cycle 44
+
 
 	ldx	#0		; sprite 0 display nothing	2
 	stx	GRP0		;				3
+	; 5
 
-	ldx	#5 ; SPRITE0_LEFT_X_COARSE	;			3
-	inx			;				2
-	inx			;				2
+
+	ldx	#6		;				2
 pad_x:
 	dex			;				2
 	bne	pad_x		;				2/3
-				;==================================
-				;	12-1+5*(coarse_x+2)
-				; FIXME: what's going on here
+	; 3 + 5*X each time through
 
 	; beam is at proper place
-	sta	RESP0
-	sta	RESP1
+	sta	RESP0						; 3
+	; 41 (GPU=123, want 124) +1
+	sta	RESP1						; 3
+	; 44 (GPU=132, want 132) 0
 
-	ldx	#14			;			2
-	lda	fine_adjust_table,X	;			4+
+	lda	#$F0		; opposite what you'd think
+	sta	HMP0			;			3
+	lda	#$00
 	sta	HMP1			;			3
 
 	sta	WSYNC
@@ -201,70 +203,75 @@ done_animation_frame:
 	; visible area: 192 lines (NTSC) / 228 (PAL)
 	;=============================================
 
-	lda	#1
-	sta	VDELP0
-	sta	VDELP1
 
 	ldx	#$80
 	stx	COLUBK		; set background
 	ldy	#0
 
-	lda	#0			; turn off sprite
+	lda	#0		; turn off sprite
 	sta	GRP0
 	sta	GRP1
+
+	lda	#1
+	sta	VDELP0
+	sta	VDELP1
 
 	ldx	#9
 	stx	TEMP2
 
-.repeat 150
+.repeat 149
 	sta	WSYNC
 .endrepeat
+	jmp	next
+.align	$100
+next:
+	sta	WSYNC
 
 spriteloop:
-	ldx	TEMP2							; 3
-	; 3
+	; 0
 	lda	sprite_bitmap0,X	; load sprite data		; 4+
-	sta	GRP0			; [GRP0]			; 3
-	; 10
+	sta	GRP0			; 0->[GRP0] [GRP1 (?)]->GRP1	; 3
+	; 7
 	lda	sprite_bitmap1,X	; load sprite data		; 4+
-	sta	GRP1			; [GRP1], [GRP0]-->GRP0		; 3
-	; 17
+	sta	GRP1			; 1->[GRP1], [GRP0 (0)]-->GRP0	; 3
+	; 14
 	lda	sprite_bitmap2,X	; load sprite data		; 4+
-	sta	GRP0			; [GRP0], [GRP1]-->GRP1		; 3
-	; 24
+	sta	GRP0			; 2->[GRP0], [GRP1 (1)]-->GRP1	; 3
+	; 21
 
 	lda	sprite_bitmap5,X					; 4+
 	sta	TEMP1							; 3
-	; 31
+	; 28
 	lda	sprite_bitmap4,X					; 4+
 	tay								; 2
-	; 37
+	; 34
 	lda	sprite_bitmap3,X	;				; 4+
 	ldx	TEMP1							; 3
-	; 44
+	; 41
 
-	nop
-	nop
-	nop
+	sta	GRP1			; 3->[GRP1], [GRP0 (2)]-->GRP0	; 3
+	; 44 (need this to be 44 .. 46)
 
+	sty	GRP0			; 4->[GRP0], [GRP1 (3)]-->GRP1	; 3
+	; 47 (need this to be 47 .. 49)
 
-	sta	GRP1			; [GRP1], [GRP0]-->GRP0		; 3
-	sty	GRP0			; [GRP0], [GRP1]-->GRP1		; 3
-	stx	GRP1			; [GRP1], [GRP0]->GRP0		; 3
-	sty	GRP0			; [GRP0], [GRP1]->GRP1 		; 3
-	; 56
+	stx	GRP1			; 5->[GRP1], [GRP0 (4)]-->GRP0	; 3
+	; 50 (need this to be 50 .. 51)
 
+	sty	GRP0			; ?->[GRP0], [GRP1 (5)]-->GRP1 	; 3
+	; 53 (need this to be 52 .. 54)
 
-;	nop								; 2
-;	nop								; 2
-;	nop								; 2
+	nop								; 2
+	nop								; 2
+	nop								; 2
 	nop								; 2
 	nop								; 2
 	nop								; 2
 
-	; 68
+	; 65
 
 	dec	TEMP2							; 5
+	ldx	TEMP2							; 3
 	bpl	spriteloop						; 2/3
 	; 76  (goal is 76)
 
@@ -348,6 +355,81 @@ spr0_moved_horizontally:
 
 .align	$100
 
+
+sprite_bitmap0:			; checker
+	.byte	$00
+	.byte	$18
+	.byte	$24
+	.byte	$24
+	.byte	$5A
+	.byte	$DB
+	.byte	$A5
+	.byte	$42
+	.byte	$C3
+	.byte	$AA
+
+sprite_bitmap1:
+	.byte	$00
+	.byte	$00
+	.byte	$4e
+	.byte	$52
+	.byte	$4e
+	.byte	$02
+	.byte	$42
+	.byte	$80
+	.byte	$80
+	.byte	$AA
+
+sprite_bitmap2:
+	.byte	$00
+	.byte	$00
+	.byte	$74
+	.byte	$a5
+	.byte	$95
+	.byte	$74
+	.byte	$04
+	.byte	$00
+	.byte	$00
+	.byte	$AA
+
+sprite_bitmap3:
+	.byte	$00
+	.byte	$00
+	.byte	$e7
+	.byte	$48
+	.byte	$28
+	.byte	$e6
+	.byte	$00
+	.byte	$00
+	.byte	$00
+	.byte	$AA
+
+sprite_bitmap4:
+	.byte	$00
+	.byte	$00
+	.byte	$34
+	.byte	$44
+	.byte	$44
+	.byte	$f7
+	.byte	$40
+	.byte	$00
+	.byte	$00
+	.byte	$AA
+
+sprite_bitmap5:
+	.byte	$00
+	.byte	$00
+	.byte	$29
+	.byte	$26
+	.byte	$A6
+	.byte	$09
+	.byte	$20
+	.byte	$00
+	.byte	$00
+	.byte	$AA
+
+
+.if 0
 sprite_bitmap0:			; checker
 	.byte	$AA
 	.byte	$55
@@ -420,8 +502,7 @@ sprite_bitmap5:
 	.byte	$81
 	.byte	$FF
 
-
-
+.endif
 
 fine_adjust_table:
 	; left
