@@ -20,7 +20,7 @@ BOTTOM_LAYER_HEIGHT =	20
 SPRITE_ANIMATION_FRAME_COUNT = 1
 SPRITE_TOTAL_FRAME_LINES = SPRITE_ANIMATION_FRAME_COUNT * SPRITE_HEIGHT
 
-VID_LOGO_START	=	182
+VID_LOGO_START	=	181
 
 ; zero page addresses
 
@@ -48,11 +48,11 @@ start:
 	ldx	#$FF		; set stack to $1FF (mirrored at $FF)
 	txs
 
-	lda	#$00				; set initial x position
+	lda	#$16				; set initial x position
 	sta	STRONGBAD_X
 	jsr	spr0_moved_horizontally		;		6+49
 
-	lda	#1				; initial sprite Y
+	lda	#32				; initial sprite Y
 	sta	STRONGBAD_Y
 	jsr	spr0_moved_vertically
 
@@ -85,6 +85,8 @@ start_frame:
 
 	lda	#0			; done beam reset
 	sta	VSYNC
+
+
 
 	;=================================
 	;=================================
@@ -255,65 +257,167 @@ pad_x:
 	;=============================
 	; now VBLANK scanline 36
 	;=============================
+	; do some init
+
+	ldx	#$00
+	stx	COLUBK		; set background color to black
+
+	lda	#0
+	sta	CURRENT_SCANLINE	; reset scanline counter
 
 	sta	WSYNC
 
 	; now scanline 37
 
-	;=============================================
-	;=============================================
-	; visible area: 192 lines (NTSC) / 228 (PAL)
-	;=============================================
-	;=============================================
+	;===============================
+	;===============================
+	;===============================
+	; visible area: 192 lines (NTSC)
+	;===============================
+	;===============================
+	;===============================
 
-	ldx	#$80
-	stx	COLUBK		; set background
-	lda	#0
+	;============================
+	;============================
+	; draw score, 8 scanlines
+	;============================
+	;============================
+
+	sta	WSYNC
+	sta	WSYNC
+	sta	WSYNC
+	sta	WSYNC
+	sta	WSYNC
+	sta	WSYNC
+	sta	WSYNC
+	sta	WSYNC
+
+	;============================
+	;============================
+	; draw MANS, 10 scanlines
+	;============================
+	;============================
+
+	sta	WSYNC
+	sta	WSYNC
+	sta	WSYNC
+	sta	WSYNC
+	sta	WSYNC
+	sta	WSYNC
+	sta	WSYNC
+	sta	WSYNC
+	sta	WSYNC
+	sta	WSYNC
+
+	;============================
+	;============================
+	; draw timer bar, 10 scanlines
+	;============================
+	;============================
+
+	sta	WSYNC
+	sta	WSYNC
+	sta	WSYNC
+	sta	WSYNC
+	sta	WSYNC
+	sta	WSYNC
+	sta	WSYNC
+	sta	WSYNC
+	sta	WSYNC
+
+	; set up playfield
+
+	lda	#28
 	sta	CURRENT_SCANLINE
 
-visible_loop:
+	lda	#$C2			; green
+	sta	COLUPF			; playfield color
+
+	lda	#CTRLPF_REF		; reflect playfield
+	sta	CTRLPF
+
+	sta	WSYNC
+
+
+	; now at scanline 28
+
+	;===========================================
+	;===========================================
+	; draw playfield, 192-28-10 = 154 scanlines
+	;===========================================
+	;===========================================
+draw_playfield:
 
 	;========================================
 	; activate strongbad sprite if necessary
-	;========================================
 
+	; draw playfield
+	lda	CURRENT_SCANLINE
+	sec
+	sbc	#28
+	lsr
+	lsr
+	tax
+	lda	playfield0_left,X	;				; 4+
+        sta	PF0			;				; 3
+        lda	playfield1_left,X	;				; 4+
+        sta	PF1			;				; 3
+        lda	playfield2_left,X	;				; 4+
+        sta	PF2			;				; 3
+
+	lda	CURRENT_SCANLINE
 	; A = current scanline
-	cmp	STRONGBAD_END_Y
-	bcs	turn_off_sprite0
-	cmp	STRONGBAD_Y
-	bcc	turn_off_sprite0
+	cmp	STRONGBAD_END_Y						; 3
+	bcs	turn_off_sprite0					; 2/3
+	cmp	STRONGBAD_Y						; 3
+	bcc	turn_off_sprite0					; 2/3
 turn_on_sprite0:
-	lda	#$F0			; load sprite data
-	sta	GRP0			; and display it
-	iny				; increment
-	jmp	after_sprite
+	lda	#$F0			; load sprite data		; 2
+	sta	GRP0			; and display it		; 3
+	iny				; increment			; 2
+	jmp	after_sprite						; 3
 turn_off_sprite0:
-	lda	#0			; turn off sprite
-	sta	GRP0
+	lda	#0			; turn off sprite		; 2
+	sta	GRP0							; 3
 after_sprite:
 
-	inc	CURRENT_SCANLINE
-	lda	CURRENT_SCANLINE
-	cmp	#VID_LOGO_START		; draw 182 lines
+	inc	CURRENT_SCANLINE					; 5
+	sta	WSYNC							; 3
+
+	inc	CURRENT_SCANLINE					; 5
+	sta	WSYNC							; 3
+
+	inc	CURRENT_SCANLINE					; 5
+	sta	WSYNC							; 3
+
+	inc	CURRENT_SCANLINE					; 5
+	lda	CURRENT_SCANLINE					; 3
+	cmp	#180			; draw 154 lines		; 2
+	sta	WSYNC							; 3
+	bcc	draw_playfield						; 2/3
+
+
+
+	;=========================================
+	;=========================================
+	; draw Videlectrix Logo sprite (12 lines)
+	;=========================================
+	;=========================================
+
 	sta	WSYNC
-	bne	visible_loop
-
-
-
-	;=========================================
-	;=========================================
-	; draw Videlectrix Logo sprite (10 lines)
-	;=========================================
-	;=========================================
 
 	;====================
 	; Now scanline 182
 	;====================
 	; configure 48-pixel sprite code
 
+	; make playfield black
+	lda	#$00			; black
+	sta	COLUPF			; playfield color
+
 	; set color
 
-	lda	#$2F							; 2
+	lda	#$0E	; bright white					; 2
 	sta	COLUP0	; set sprite color				; 3
 	sta	COLUP1	; set sprite color				; 3
 
@@ -522,6 +626,26 @@ spr0_moved_vertically:
 	rts				;				6
 					;=================================
 					;				17
+
+.align	$100
+playfield0_left:
+	.byte	$F0,$10,$10,$10,$10,$10,$10,$10
+	.byte	$10,$10,$10,$10,$10,$10,$10,$10
+	.byte	$10,$10,$10,$10,$10,$10,$10,$10
+	.byte	$10,$10,$10,$10,$10,$10,$10,$10
+	.byte	$10,$10,$10,$10,$10,$F0
+playfield1_left:
+	.byte	$FF,$00,$00,$00,$00,$7f,$7f,$7f
+	.byte	$7f,$18,$18,$18,$18,$18,$18,$18
+	.byte	$18,$18,$18,$18,$18,$18,$18,$18
+	.byte	$18,$18,$18,$18,$18,$7f,$7f,$7f
+	.byte	$7f,$00,$00,$00,$00,$FF
+playfield2_left:
+	.byte	$FF,$00,$00,$00,$00,$1f,$1f,$1f
+	.byte	$1f,$00,$00,$00,$00,$00,$fe,$fe
+	.byte	$1e,$02,$02,$02,$02,$1e,$fe,$fe
+	.byte	$00,$00,$00,$00,$00,$1f,$1f,$1f
+	.byte	$1f,$00,$00,$00,$00,$FF
 
 .align	$100
 

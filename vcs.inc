@@ -42,14 +42,27 @@ NUSIZ1	=	$05
 
 COLUP0	=	$06
 COLUP1	=	$07
-COLUPF	=	$08
-COLUBK	=	$09	; color/luminosity/background
-CTRLPF	=	$0A
+COLUPF	=	$08	; color of playfield
+COLUBK	=	$09	; color of background
+CTRLPF	=	$0A	; control the playfield
+	CTRLPF_REF	=	$01	; reflect (mirror) playfield
+	CTRLPF_SCORE	=	$02	; left/right colors P0/P1 colors
+	CTRLPF_PFP	=	$04	; playfield has priority (sprites go behind)
+	CTRLPF_BALL_SIZE1=	$00	; ball size
+	CTRLPF_BALL_SIZE2=	$20
+	CTRLPF_BALL_SIZE4=	$40
+	CTRLPF_BALL_SIZE8=	$60
 REFP0	=	$0B
 REFP1	=	$0C
+
+; playfield is 20 bits, each 4 pixels wide, then repeated/reflected
+;  PF0   PF1       PF2
+; |4567|76543210|01234567
 PF0	=	$0D
 PF1	=	$0E
 PF2	=	$0F
+
+
 RESP0	=	$10
 RESP1	=	$11
 RESM0	=	$12
