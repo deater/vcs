@@ -1,5 +1,8 @@
-; secret collect
+; secret collect.
 ;
+; based on the Videlectrix game from Homestarrunner.com
+;
+
 ; by Vince `deater` Weaver	<vince@deater.net>
 
 ; 10 pixels for score
@@ -14,8 +17,10 @@
 SPRITE_WIDTH	=	8
 SPRITE_HEIGHT	=	10
 BOTTOM_LAYER_HEIGHT =	20
-SPRITE_ANIMATION_FRAME_COUNT = 2
+SPRITE_ANIMATION_FRAME_COUNT = 1
 SPRITE_TOTAL_FRAME_LINES = SPRITE_ANIMATION_FRAME_COUNT * SPRITE_HEIGHT
+
+VID_LOGO_START	=	182
 
 ; zero page addresses
 
@@ -26,7 +31,8 @@ SPRITE0_RIGHT_X		=	$83
 STRONGBAD_X_COARSE	=	$84
 SPRITE0_PIXEL_OFFSET	=	$85
 CURRENT_SCANLINE	=	$86
-FRAME_COUNTER		=	$87
+FRAME			=	$87
+
 TEMP1			=	$90
 TEMP2			=	$91
 
@@ -37,9 +43,10 @@ start:
 	;============================
 	;============================
 
-	cld		; clear decimal mode
-	ldx	#$FF
-	txs		; set stack to $FF
+	cld			; clear decimal mode
+
+	ldx	#$FF		; set stack to $1FF (mirrored at $FF)
+	txs
 
 	lda	#$00				; set initial x position
 	sta	STRONGBAD_X
@@ -51,7 +58,8 @@ start:
 
 	lda	#0
 	sta	SPRITE0_PIXEL_OFFSET
-	sta	FRAME_COUNTER
+	sta	FRAME
+
 
 start_frame:
 
@@ -73,11 +81,15 @@ start_frame:
 	sta	WSYNC
 	sta	WSYNC
 
+	; now in VSYNC scanline 3
+
 	lda	#0			; done beam reset
 	sta	VSYNC
 
 	;=================================
+	;=================================
 	; 37 lines of vertical blank
+	;=================================
 	;=================================
 
 .repeat 28
@@ -85,177 +97,179 @@ start_frame:
 .endrepeat
 
 	;=============================
-	; now at scanline 29
-
-	lda	#$40	; dark red
-	sta	COLUP0	; set sprite color
-
-	lda	#NUSIZ_ONE_COPY
-	sta	NUSIZ0
-	sta	NUSIZ1
-
-	lda	#0
-	sta	VDELP0
-	sta	VDELP1
-
-	sta	WSYNC
-
+	; now at VBLANK scanline 28
 	;=============================
-	; now at scanline 30
+	; reset back to strongbad sprite
 
+	lda	#$40		; dark red				; 2
+	sta	COLUP0		; set sprite color			; 3
+
+	lda	#NUSIZ_ONE_COPY						; 2
+	sta	NUSIZ0							; 3
+	sta	NUSIZ1							; 3
+
+	lda	#0							; 2
+	sta	VDELP0							; 3
+	sta	VDELP1							; 3
+
+	sta	WSYNC							; 3
+								;============
+								;	24
+	;=============================
+	; now at VBLANK scanline 29
+	;=============================
 	; handle left being pressed
 
-	lda	STRONGBAD_X		;			3
-	beq	after_check_left	;			2/3
+	lda	STRONGBAD_X		;				; 3
+	beq	after_check_left	;				; 2/3
 
-	lda	#$40			; check left		2
-	bit	SWCHA			;			3
-	bne	after_check_left	;			2/3
+	lda	#$40			; check left			; 2
+	bit	SWCHA			;				; 3
+	bne	after_check_left	;				; 2/3
 
 left_pressed:
-	dec	STRONGBAD_X		; move sprite left	5
+	dec	STRONGBAD_X		; move sprite left		; 5
 
 after_check_left:
-	sta	WSYNC			;			3
-					;============================
-					; 9 / 20 / 16 cycles
+	sta	WSYNC			;				; 3
+					;	============================
+					;	 		9 / 20 / 16
 
-	;========================
-	; now at scanline 31
-
+	;=============================
+	; now at VBLANK scanline 30
+	;=============================
 	; handle right being pressed
 
-	lda	SPRITE0_RIGHT_X		;			3
-	cmp	#160+SPRITE_WIDTH-3	;			2
-	bcs	after_check_right	;			2/3
+	lda	SPRITE0_RIGHT_X		;				; 3
+	cmp	#160+SPRITE_WIDTH-3	;				; 2
+	bcs	after_check_right	;				; 2/3
 
-	lda	#$80			; check right		2
-	bit	SWCHA			;			3
-	bne	after_check_right	;			2/3
+	lda	#$80			; check right			; 2
+	bit	SWCHA			;				; 3
+	bne	after_check_right	;				; 2/3
 
-	inc	STRONGBAD_X		; move sprite right	5
+	inc	STRONGBAD_X		; move sprite right		; 5
 after_check_right:
-	sta	WSYNC			;			3
-					;===========================
-					; 11 / 22 / 18
+	sta	WSYNC			;				; 3
+					;	===========================
+					; 			11 / 22 / 18
 
-	;=======================
-	; now at scaline 32
+	;===========================
+	; now at VBLANK scanline 31
+	;===========================
+	; handle up being pressed
 
-	; see if up pressed
+	lda	STRONGBAD_Y		;				; 3
+	cmp	#1			;				; 2
+	beq	after_check_up		;				; 2/3
 
-	lda	STRONGBAD_Y		;			3
-	cmp	#1			;			2
-	beq	after_check_up		;			2/3
+	lda	#$10			; check up			; 2
+	bit	SWCHA			;				; 3
+	bne	after_check_up		;				; 2/3
 
-	lda	#$10			; check up		2
-	bit	SWCHA			;			3
-	bne	after_check_up		;			2/3
+	dec	STRONGBAD_Y		; move sprite up		; 5
 
-	dec	STRONGBAD_Y		; move sprite up	5
-
-	jsr	spr0_moved_vertically	; 			6+17
+	jsr	spr0_moved_vertically	; 				; 6+17
 after_check_up:
-	sta	WSYNC			; 			3
-					;=================================
-					; 11 / 18 / 45
+	sta	WSYNC			; 				; 3
+					;	===============================
+					; 			11 / 18 / 45
 
-	;=====================
-	; now scanline 33
+	;==========================
+	; now VBLANK scanline 32
+	;==========================
+	; handle down being pressed
 
-	lda	STRONGBAD_END_Y	;			3
-	cmp	#192 - BOTTOM_LAYER_HEIGHT - 1	;		2
-	bcs	after_check_down	;			2/3
+	lda	STRONGBAD_END_Y		;				; 3
+	cmp	#VID_LOGO_START		;				; 2
+	bcs	after_check_down	;				; 2/3
 
-	lda	#$20			;			2
-	bit	SWCHA			;			3
-	bne	after_check_down	;			2/3
+	lda	#$20			;				; 2
+	bit	SWCHA			;				; 3
+	bne	after_check_down	;				; 2/3
 
-	inc	STRONGBAD_Y		; move sprite down	5
-	jsr	spr0_moved_vertically	;			6+17
+	inc	STRONGBAD_Y		; move sprite down		; 5
+	jsr	spr0_moved_vertically	;				; 6+17
 after_check_down:
-	sta	WSYNC			;			3
-					;==============================
-					; 11 / 18 / 45
+	sta	WSYNC			;				; 3
+					;	==============================
+					; 			11 / 18 / 45
 
-	;===================
-	; now scanline 34
+	;==========================
+	; now VBLANK scanline 33
+	;==========================
+	; update horizontal position
 
 	; do this separately as too long to fit in with left/right code
 
-	jsr	spr0_moved_horizontally	;			6+49
-	sta	WSYNC			;			3
-					;============================
-					;			58
+	jsr	spr0_moved_horizontally	;				6+49
+	sta	WSYNC			;				3
+					;====================================
+					;				58
 
-	;====================
-	; now scanline 35
-
-
+	;========================
+	; now VBLANK scanline 34
+	;========================
 	; set up sprite to be at proper X position
+
 	; we can do this here and the sprite will be drawn as a long
 	; vertical column
 	; later we only enable it for the lines we want
 
-	ldx	#0		; sprite 0 display nothing	2
-	stx	GRP0		;				3
+	ldx	#0		; sprite 0 display nothing		2
+	stx	GRP0		; (FIXME: this already set?)		3
 
-	ldx	STRONGBAD_X_COARSE	;			3
-	inx			;				2
-	inx			;				2
+	ldx	STRONGBAD_X_COARSE	;				3
+	inx			;					2
+	inx			;					2
 pad_x:
-	dex			;				2
-	bne	pad_x		;				2/3
-				;==================================
+	dex			;					2
+	bne	pad_x		;					2/3
+				;===========================================
 				;	12-1+5*(coarse_x+2)
-				; FIXME: what's going on here
+				; FIXME: describe better what's going on
 
 	; beam is at proper place
-	sta	RESP0
+	sta	RESP0							; 3
 
-	sta	WSYNC
-	sta	HMOVE		; adjust fine tune, must be after WSYNC
+	sta	WSYNC							; 3
+	sta	HMOVE		; adjust fine tune, must be after WSYNC	; 3
+				; also draws black artifact on left of
+				; screen
 
 	;=======================
-	; now scanline 36
+	; now scanline 35
+	;========================
+	; increment frame
+	; handle any frame-related activity
 
-	; handle animated sprite
-	inc	FRAME_COUNTER	;			5
-	lda	#15		;			2
-	bit	FRAME_COUNTER	;			3
+	inc	FRAME							; 5
+;	lda	#15							; 2
+;	bit	FRAME							; 3
 
-	bne	done_frame_count	;		2/3
+;	bne	done_frame_count					; 2/3
 
-	; advance frame
+	sta	WSYNC							; 3
 
-	clc					;	2
-	lda	SPRITE0_PIXEL_OFFSET		;	3
-	adc	SPRITE_HEIGHT			;	3
-	cmp	SPRITE_TOTAL_FRAME_LINES	;	3
-	bne	store_animation_frame		;	2/3
-
-	lda	#0	; return to begin	;	2
-store_animation_frame:
-	sta	SPRITE0_PIXEL_OFFSET		;	3
-done_frame_count:
-	lda	#0				;	2
-	sta	CURRENT_SCANLINE		;	3
-	ldy	SPRITE0_PIXEL_OFFSET		;	3
-
-	sta	WSYNC				;	3
-done_animation_frame:
 
 	;=============================
-	; now scanline 37
+	; now VBLANK scanline 36
+	;=============================
 
 	sta	WSYNC
 
+	; now scanline 37
+
+	;=============================================
 	;=============================================
 	; visible area: 192 lines (NTSC) / 228 (PAL)
+	;=============================================
 	;=============================================
 
 	ldx	#$80
 	stx	COLUBK		; set background
+	lda	#0
+	sta	CURRENT_SCANLINE
 
 visible_loop:
 
@@ -280,50 +294,59 @@ after_sprite:
 
 	inc	CURRENT_SCANLINE
 	lda	CURRENT_SCANLINE
-	cmp	#182			; draw 182 lines?
+	cmp	#VID_LOGO_START		; draw 182 lines
 	sta	WSYNC
 	bne	visible_loop
 
 
 
-	;================================
-	; draw bottom sprite (10 lines)
-	;================================
+	;=========================================
+	;=========================================
+	; draw Videlectrix Logo sprite (10 lines)
+	;=========================================
+	;=========================================
 
-	;===========
-	; configure
+	;====================
+	; Now scanline 182
+	;====================
+	; configure 48-pixel sprite code
 
-	lda	#$2F
-	sta	COLUP0	; set sprite color
-	sta	COLUP1	; set sprite color
+	; set color
 
-;	lda	#$00				; set initial x position
-;	sta	SPRITE0_LEFT_X
+	lda	#$2F							; 2
+	sta	COLUP0	; set sprite color				; 3
+	sta	COLUP1	; set sprite color				; 3
 
-	lda	#0
-	sta	SPRITE0_PIXEL_OFFSET
-	sta	FRAME_COUNTER
+	; ?
 
-	lda	#NUSIZ_THREE_COPIES_CLOSE
-	sta	NUSIZ0
-	lda	#NUSIZ_THREE_COPIES_CLOSE
-	sta	NUSIZ1
+	lda	#0							; 2
+	sta	SPRITE0_PIXEL_OFFSET					; 3
 
-	sta	WSYNC
+	; set to be 48 adjacent pixels
 
-	lda	#1
-	sta	VDELP0
-	sta	VDELP1
+	lda	#NUSIZ_THREE_COPIES_CLOSE				; 2
+	sta	NUSIZ0							; 3
+	sta	NUSIZ1							; 3
 
-	ldx	#9
-	stx	TEMP2
+	; turn on delay
 
+	lda	#1							; 2
+	sta	VDELP0							; 3
+	sta	VDELP1							; 3
+
+	; number of lines to draw
+	ldx	#7							; 2
+	stx	TEMP2							; 3
+
+	sta	WSYNC							; 3
+								;===========
 
 
 	;===================
-	; now scanline 34
-
-	sta	WSYNC
+	; now scanline 183
+	;===================
+	; center the sprite position
+	; needs to be right after a WSYNC
 
 	; to center exactly would want sprite0 at
 	;	CPU cycle 41.3
@@ -331,46 +354,41 @@ after_sprite:
 	;	GPU cycle 44
 
 
-	ldx	#0		; sprite 0 display nothing	2
-	stx	GRP0		;				3
-	; 5
+	ldx	#0		; sprite 0 display nothing		; 2
+	stx	GRP0		;					; 3
 
-
-	ldx	#6		;				2
+	ldx	#6		;					; 2
 vpad_x:
-	dex			;				2
-	bne	vpad_x		;				2/3
+	dex			;					; 2
+	bne	vpad_x		;					; 2/3
 	; 3 + 5*X each time through
 
 	; beam is at proper place
-	sta	RESP0						; 3
+	sta	RESP0							; 3
 	; 41 (GPU=123, want 124) +1
-	sta	RESP1						; 3
+	sta	RESP1							; 3
 	; 44 (GPU=132, want 132) 0
 
-	lda	#$F0		; opposite what you'd think
-	sta	HMP0			;			3
-	lda	#$00
-	sta	HMP1			;			3
+	lda	#$F0		; opposite what you'd think		; 2
+	sta	HMP0							; 3
+	lda	#$00							; 2
+	sta	HMP1							; 3
 
 	sta	WSYNC
 	sta	HMOVE		; adjust fine tune, must be after WSYNC
 
 
-	;=============================================
-	; visible area: 192 lines (NTSC) / 228 (PAL)
-	;=============================================
+	;===================
+	; now scanline 184
+	;===================
 
-
-	ldx	#$80
-	stx	COLUBK		; set background
-	ldy	#0
-
-	lda	#0		; turn off sprite
-	sta	GRP0
-	sta	GRP1
+	ldx	TEMP2		; restore length of sprite
 
 	sta	WSYNC
+
+	;===================
+	; now scanline 185
+	;===================
 
 spriteloop:
 	; 0
@@ -420,6 +438,11 @@ spriteloop:
 	bpl	spriteloop						; 2/3
 	; 76  (goal is 76)
 
+
+	;
+	; done drawing line
+	;
+
 	ldy	#0
 	sty	GRP1
 	sty	GRP0
@@ -435,7 +458,7 @@ vertical_blank:
 
 	;===========================
 	;===========================
-	; overscan
+	; overscan (30 cycles)
 	;===========================
 	;===========================
 
@@ -506,12 +529,12 @@ spr0_moved_vertically:
 ;===================
 ; videlectrix logo
 
-vid_bitmap0:	.byte	$00,$18,$24,$24,$5A,$DB,$A5,$42,$C3,$AA
-vid_bitmap1:	.byte	$00,$00,$4e,$52,$4e,$02,$42,$80,$80,$AA
-vid_bitmap2:	.byte	$00,$00,$74,$a5,$95,$74,$04,$00,$00,$AA
-vid_bitmap3:	.byte	$00,$00,$e7,$48,$28,$e6,$00,$00,$00,$AA
-vid_bitmap4:	.byte	$00,$00,$34,$44,$44,$f7,$40,$00,$00,$AA
-vid_bitmap5:	.byte	$00,$00,$29,$26,$A6,$09,$20,$00,$00,$AA
+vid_bitmap0:	.byte	$18,$24,$24,$5A,$DB,$A5,$42,$C3
+vid_bitmap1:	.byte	$00,$4e,$52,$4e,$02,$42,$80,$80
+vid_bitmap2:	.byte	$00,$74,$a5,$95,$74,$04,$00,$00
+vid_bitmap3:	.byte	$00,$e7,$48,$28,$e6,$00,$00,$00
+vid_bitmap4:	.byte	$00,$34,$44,$44,$f7,$40,$00,$00
+vid_bitmap5:	.byte	$00,$29,$26,$A6,$09,$20,$00,$00
 
 
 fine_adjust_table:
