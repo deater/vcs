@@ -36,6 +36,13 @@ FRAME			=	$87
 TEMP1			=	$90
 TEMP2			=	$91
 
+TIMEBAR0		=	$92
+TIMEBAR1		=	$93
+TIMEBAR2		=	$94
+TIME			=	$95
+
+MANS			=	$96
+
 start:
 	;============================
 	;============================
@@ -48,18 +55,9 @@ start:
 	ldx	#$FF		; set stack to $1FF (mirrored at $FF)
 	txs
 
-	lda	#$16				; set initial x position
-	sta	STRONGBAD_X
-	jsr	spr0_moved_horizontally		;		6+49
+	jsr	init_game
 
-	lda	#32				; initial sprite Y
-	sta	STRONGBAD_Y
-	jsr	spr0_moved_vertically
-
-	lda	#0
-	sta	SPRITE0_PIXEL_OFFSET
-	sta	FRAME
-
+	jsr	init_level
 
 start_frame:
 
@@ -311,22 +309,15 @@ pad_x:
 
 	;============================
 	;============================
-	; draw timer bar, 10 scanlines
+	; draw timer bar, 9 scanlines
 	;============================
 	;============================
 
-	sta	WSYNC
-	sta	WSYNC
-	sta	WSYNC
-	sta	WSYNC
-	sta	WSYNC
-	sta	WSYNC
-	sta	WSYNC
-	sta	WSYNC
-	sta	WSYNC
+	jsr	draw_timer_bar
 
+	;===========================
 	; set up playfield
-
+	; 1 scanline
 	lda	#28
 	sta	CURRENT_SCANLINE
 
@@ -627,62 +618,13 @@ spr0_moved_vertically:
 					;=================================
 					;				17
 
-.align	$100
-playfield0_left:
-	.byte	$F0,$10,$10,$10,$10,$10,$10,$10
-	.byte	$10,$10,$10,$10,$10,$10,$10,$10
-	.byte	$10,$10,$10,$10,$10,$10,$10,$10
-	.byte	$10,$10,$10,$10,$10,$10,$10,$10
-	.byte	$10,$10,$10,$10,$10,$F0
-playfield1_left:
-	.byte	$FF,$00,$00,$00,$00,$7f,$7f,$7f
-	.byte	$7f,$18,$18,$18,$18,$18,$18,$18
-	.byte	$18,$18,$18,$18,$18,$18,$18,$18
-	.byte	$18,$18,$18,$18,$18,$7f,$7f,$7f
-	.byte	$7f,$00,$00,$00,$00,$FF
-playfield2_left:
-	.byte	$FF,$00,$00,$00,$00,$1f,$1f,$1f
-	.byte	$1f,$00,$00,$00,$00,$00,$fe,$fe
-	.byte	$1e,$02,$02,$02,$02,$1e,$fe,$fe
-	.byte	$00,$00,$00,$00,$00,$1f,$1f,$1f
-	.byte	$1f,$00,$00,$00,$00,$FF
 
-.align	$100
+.include	"init_game.s"
+.include	"init_level.s"
+.include	"timer_bar.s"
 
 
-;===================
-; videlectrix logo
-
-vid_bitmap0:	.byte	$18,$24,$24,$5A,$DB,$A5,$42,$C3
-vid_bitmap1:	.byte	$00,$4e,$52,$4e,$02,$42,$80,$80
-vid_bitmap2:	.byte	$00,$74,$a5,$95,$74,$04,$00,$00
-vid_bitmap3:	.byte	$00,$e7,$48,$28,$e6,$00,$00,$00
-vid_bitmap4:	.byte	$00,$34,$44,$44,$f7,$40,$00,$00
-vid_bitmap5:	.byte	$00,$29,$26,$A6,$09,$20,$00,$00
-
-
-fine_adjust_table:
-	; left
-	.byte $70
-	.byte $60
-	.byte $50
-	.byte $40
-	.byte $30
-	.byte $20
-	.byte $10
-	.byte $00
-
-	; right
-	.byte $F0	; -1
-	.byte $E0	; -2
-	.byte $D0	; -3
-	.byte $C0	; -4
-	.byte $B0	; -5
-	.byte $A0	; -6
-	.byte $90	; -7
-	.byte $80	; -8 (?)
-
-
+.include	"game_data.s"
 
 .segment "IRQ_VECTORS"
 	.word start	; NMI
