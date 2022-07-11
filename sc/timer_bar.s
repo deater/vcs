@@ -18,21 +18,39 @@ draw_timer_bar:
 	lda	#CTRLPF_REF	; reflect playfield
 	sta	CTRLPF
 
+	dec	TIME_SUBSECOND	; count down
+	bne	time_the_same
+
+	; hit 0
+
+	lda	#59
+	sta	TIME_SUBSECOND
+
+	dec	TIME
+	bpl	time_the_same
+
+	; if here ran out of time
+	lda	#20
+	sta	TIME
+	inc	LEVEL_OVER
+
+time_the_same:
+
 
 	sta	WSYNC
-	sta	WSYNC
-	sta	WSYNC
 
-	lda	#$1E
+	lda	#$30	; red
 	sta	COLUPF	; playfield
-	lda	#$30
+	lda	#$1E	; yellow
 	sta	COLUBK	; background
 
-	lda	TIMEBAR0
+	ldx	TIME
+
+	lda	bargraph_lookup_p0,X
 	sta	PF0
-	lda	TIMEBAR1
+	lda	bargraph_lookup_p1,X
 	sta	PF1
-	lda	TIMEBAR2
+	lda	bargraph_lookup_p2,X
 	sta	PF2
 
 	sta	WSYNC
@@ -46,14 +64,8 @@ draw_timer_bar:
 
 	sta	WSYNC
 	sta	WSYNC
+	sta	WSYNC
+	sta	WSYNC
 
 	rts
 
-update_timer_bar:
-
-	lda	#$ff							; 2
-	sta	TIMEBAR0						; 3
-	sta	TIMEBAR1						; 3
-	sta	TIMEBAR2						; 3
-
-	rts

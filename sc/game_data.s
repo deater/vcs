@@ -62,6 +62,7 @@ fine_adjust_table:
 	.byte $90	; -7
 	.byte $80	; -8 (?)
 
+.if 0
 bargraph_lookup_p0:
 	.byte $f0,$e0,$c0,$80,$00,$00,$00,$00
 	.byte $00,$00,$00,$00,$00,$00,$00,$00
@@ -76,3 +77,22 @@ bargraph_lookup_p2:
 	.byte $ff,$ff,$ff,$ff,$ff,$ff,$ff,$ff
 	.byte $ff,$ff,$ff,$ff,$fe,$fc,$f8,$f0
 	.byte $e0,$c0,$80,$00
+.endif
+
+
+bargraph_lookup_p0:
+	.byte $f0,$f0,$f0,$f0,$f0,$f0,$f0,$f0
+	.byte $f0,$f0,$f0,$f0,$f0,$f0,$f0,$f0
+	.byte $f0,$70,$30,$10,$00
+
+bargraph_lookup_p1:
+	.byte $ff,$ff,$ff,$ff,$ff,$ff,$ff,$ff
+	.byte $ff,$fe,$fc,$f8,$f0,$e0,$c0,$80
+	.byte $00,$00,$00,$00,$00
+
+bargraph_lookup_p2:
+	.byte $ff,$7f,$3f,$1f,$0f,$07,$03,$01
+	.byte $00,$00,$00,$00,$00,$00,$00,$00
+	.byte $00,$00,$00,$00,$00
+
+

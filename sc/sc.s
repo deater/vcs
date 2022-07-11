@@ -36,10 +36,10 @@ FRAME			=	$87
 TEMP1			=	$90
 TEMP2			=	$91
 
-TIMEBAR0		=	$92
-TIMEBAR1		=	$93
-TIMEBAR2		=	$94
-TIME			=	$95
+TIME			=	$92
+TIME_SUBSECOND		=	$93
+
+LEVEL_OVER		=	$94
 
 MANS			=	$96
 
@@ -623,7 +623,7 @@ spr0_moved_vertically:
 .include	"init_level.s"
 .include	"timer_bar.s"
 
-
+; data, which has alignment constraints
 .include	"game_data.s"
 
 .segment "IRQ_VECTORS"
