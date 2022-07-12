@@ -1,18 +1,33 @@
+TITLE SCREEN:
+	+ SECRET COLLECT. in scrolling green?
+	+ check for RESET or button press
+	+ videlectrix logo
+	+ VMW software logo?
+	
+SCORE:
+	+ update sprite when score changes (only 4 digits?)
 
-update_score which updates score
-	score data in zero page
-	only need to update bottom 4 digits for now?
+MANS:
+	+ update mans when die
 
-update mans when die
+LEVEL:
+	+ see if we can get a playfield L1 or just 1 on the right
 
-see if we can get a playfield L1 or just 1 on the right
+GAMEPLAY:
+	+ collision detection
+	+ maybe make blue be a horizontal gradient pattern?
+	+ sound effects
+	+ end graphics
+		SECRET COLLECT if you get it
+		GAME OVER if you die
 
-scores/mans slightly not centered
+MINOR:
+	+ scores/mans slightly not centered
 
-collision detection
 
-sound effects
 
-end graphics
+
+
+
 
 
