@@ -96,3 +96,24 @@ bargraph_lookup_p2:
 	.byte $00,$00,$00,$00,$00
 
 
+score_bitmap0:
+	.byte $22,$55,$55,$55,$55,$55,$22
+score_bitmap1:
+;	.byte $AA,$55,$AA,$55,$AA,$55,$AA
+	.byte $22,$55,$55,$55,$55,$55,$22
+score_bitmap2:
+	.byte $22,$55,$55,$55,$55,$55,$22
+;	.byte $AA,$AA,$AA,$AA,$55,$55,$55
+score_bitmap3:
+	.byte $22,$55,$55,$55,$55,$55,$22
+;	.byte $F0,$0F,$F0,$0F,$F0,$0F,$F0
+
+mans_bitmap0:
+	.byte $88,$D8,$AA,$AA,$8B,$8A,$8A,$00
+mans_bitmap1:
+	.byte $88,$4C,$2A,$29,$e8,$28,$28,$00
+mans_bitmap2:
+	.byte $9E,$A0,$A0,$9C,$82,$82,$BC,$00
+mans_bitmap3:
+	.byte $02,$86,$82,$02,$82,$82,$07,$00
+

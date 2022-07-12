@@ -99,18 +99,6 @@ start_frame:
 	;=============================
 	; now at VBLANK scanline 28
 	;=============================
-	; reset back to strongbad sprite
-
-	lda	#$40		; dark red				; 2
-	sta	COLUP0		; set sprite color			; 3
-
-	lda	#NUSIZ_ONE_COPY						; 2
-	sta	NUSIZ0							; 3
-	sta	NUSIZ1							; 3
-
-	lda	#0							; 2
-	sta	VDELP0							; 3
-	sta	VDELP1							; 3
 
 	sta	WSYNC							; 3
 								;============
@@ -281,14 +269,7 @@ pad_x:
 	;============================
 	;============================
 
-	sta	WSYNC
-	sta	WSYNC
-	sta	WSYNC
-	sta	WSYNC
-	sta	WSYNC
-	sta	WSYNC
-	sta	WSYNC
-	sta	WSYNC
+	.include "score.s"
 
 	;============================
 	;============================
@@ -296,16 +277,7 @@ pad_x:
 	;============================
 	;============================
 
-	sta	WSYNC
-	sta	WSYNC
-	sta	WSYNC
-	sta	WSYNC
-	sta	WSYNC
-	sta	WSYNC
-	sta	WSYNC
-	sta	WSYNC
-	sta	WSYNC
-	sta	WSYNC
+	.include "mans.s"
 
 	;============================
 	;============================
@@ -317,7 +289,9 @@ pad_x:
 
 	;===========================
 	; set up playfield
+	;===========================
 	; 1 scanline
+
 	lda	#28
 	sta	CURRENT_SCANLINE
 
@@ -326,6 +300,24 @@ pad_x:
 
 	lda	#CTRLPF_REF		; reflect playfield
 	sta	CTRLPF
+
+
+
+	; reset back to strongbad sprite
+
+	lda	#$40		; dark red				; 2
+	sta	COLUP0		; set sprite color			; 3
+
+	lda	#NUSIZ_ONE_COPY						; 2
+	sta	NUSIZ0							; 3
+	sta	NUSIZ1							; 3
+
+	lda	#0							; 2
+	sta	VDELP0							; 3
+	sta	VDELP1							; 3
+
+
+
 
 	sta	WSYNC
 
