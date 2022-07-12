@@ -125,21 +125,24 @@ zap_ok:
 
 draw_playfield:
 
+
+draw_playfield_even:
 	;=============================================
 	; we get 23 cycles in HBLANK, use them wisely
 
+; 0
 	;===================
 	; draw playfield
 
 	lda	playfield0_left,X	;				; 4+
         sta	PF0			;				; 3
 	;   has to happen by 22
-	; 7
+; 7
 
         lda	playfield1_left,X	;				; 4+
         sta	PF1			;				; 3
 	;  has to happen by 31
-	; 14
+; 14
 
 
 	;=======================
@@ -164,48 +167,118 @@ done_blue:
 								;============
 								;  5 / 9 / 17
 
-	; has to happen by 30
-
-	; 31
+	; has to happen by 30-3
+; 31
 
 	;  has to happen by
         lda	playfield2_left,X	;				; 4+
         sta	PF2			;				; 3
 	; has to happen by 42
-	; 38							;============
-
-
-
-
-	; 38
-.if 0
-	; activate strongbad sprite if necessary
-
-	lda	CURRENT_SCANLINE
-	; A = current scanline
-	cmp	STRONGBAD_END_Y						; 3
-	bcs	turn_off_sprite0					; 2/3
-	cmp	STRONGBAD_Y						; 3
-	bcc	turn_off_sprite0					; 2/3
-turn_on_sprite0:
-	lda	#$F0			; load sprite data		; 2
-	sta	GRP0			; and display it		; 3
-	jmp	after_sprite						; 3
-turn_off_sprite0:
-	lda	#0			; turn off sprite		; 2
-	sta	GRP0							; 3
-after_sprite:
-.endif
-
-	; 38
+; 38
 
 	; waste 76-38-23=15
 
-	inc	TEMP1
-	inc	TEMP1
-	inc	TEMP1
+	inc	TEMP1							; 5
+	inc	TEMP1							; 5
+	inc	TEMP1							; 5
+	inc	TEMP1							; 5
+	lda	TEMP1							; 3
+; 61
 
-	; down 23
+
+	iny								; 2
+
+; 63
+
+
+	; this needs to happen before cycle 70
+	lda	#$C2							; 2
+	sta	COLUPF							; 3
+
+; 68
+
+	inc	TEMP1	; nop5						; 5
+	lda	TEMP1	; nop3						; 3
+
+; 76
+
+	;=============================================
+	;=============================================
+	;=============================================
+	; draw playfield odd
+	;=============================================
+	;=============================================
+	;=============================================
+
+
+draw_playfield_odd:
+	;=============================================
+	; we get 23 cycles in HBLANK, use them wisely
+
+	;===================
+	; draw playfield
+
+	inc	TEMP1					; 5
+	inc	TEMP1					; 5
+	nop						; 2
+						;============
+						;	12
+; 23
+
+	;=======================
+	; set bad stuff to blue
+
+	cpx	#9							; 2
+	bcc	onot_blue_waste12					; 2/3
+	cpx	#29							; 2
+	bcs	onot_blue_waste8					; 2/3
+	lda	ZAP_COLOR	; blue					; 3
+	sta	COLUPF							; 3
+	jmp	odone_blue						; 3
+onot_blue_waste12:
+	nop
+	nop
+onot_blue_waste8:
+	nop
+	nop
+	nop
+	nop
+odone_blue:
+								;============
+								;  5 / 9 / 17
+
+	; has to happen by 30-3 but after 24-3
+
+; 29
+
+	; activate strongbad sprite if necessary
+
+	; Y = current scanline
+	cpy	STRONGBAD_END_Y						; 3
+	bcs	turn_off_strongbad_delay7				; 2/3
+	cpy	STRONGBAD_Y						; 3
+	bcc	turn_off_strongbad_delay2				; 2/3
+turn_on_strongbad:
+	lda	#$F0			; load sprite data		; 2
+	sta	GRP0			; and display it		; 3
+	jmp	after_sprite						; 3
+turn_off_strongbad_delay7:
+	inc	TEMP1							; 5
+turn_off_strongbad_delay2:
+	nop								; 2
+	lda	#0			; turn off sprite		; 2
+	sta	GRP0							; 3
+after_sprite:
+								;============
+								; 11 / 16 / 18
+
+; 47
+
+	nop								; 2
+	nop								; 2
+
+
+; 51
 
 	iny								; 2
 	tya								; 2
@@ -221,13 +294,16 @@ done_inc_block:
 								;===========
 								; 13 / 13
 
-
+; 64
 
 	; this needs to happen before cycle 70
 	lda	#$C2							; 2
 	sta	COLUPF							; 3
 	cpy	#180							; 2
-	bcc	draw_playfield						; 3/2
+	bcs	done_playfield						; 2/3
+	jmp	draw_playfield						; 3
+done_playfield:
+								;=============
+								; 12 / 12
 
-
-
+; 76
