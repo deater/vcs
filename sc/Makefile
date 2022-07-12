@@ -8,7 +8,7 @@ sc.rom:	sc.o
 	ld65 -o sc.rom sc.o -C $(LINKER_SCRIPT)/atari2600_f000.inc
 
 sc.o:	sc.s init_game.s init_level.s timer_bar.s game_data.s vid_logo.s \
-	mans.s score.s
+	mans.s score.s level1_playfield.s
 	ca65 -o sc.o sc.s -l sc.lst
 
 ###
