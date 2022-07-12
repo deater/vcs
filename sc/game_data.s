@@ -108,12 +108,13 @@ score_bitmap3:
 	.byte $22,$55,$55,$55,$55,$55,$22
 ;	.byte $F0,$0F,$F0,$0F,$F0,$0F,$F0
 
+; remember, we draw bottom to top
 mans_bitmap0:
-	.byte $88,$D8,$AA,$AA,$8B,$8A,$8A,$00
+	.byte $8A,$8A,$8B,$AA,$AA,$D9,$88
 mans_bitmap1:
-	.byte $88,$4C,$2A,$29,$e8,$28,$28,$00
+	.byte $28,$28,$E8,$29,$2A,$4C,$88
 mans_bitmap2:
-	.byte $9E,$A0,$A0,$9C,$82,$82,$BC,$00
+	.byte $BC,$82,$82,$9C,$A0,$A0,$9E
 mans_bitmap3:
-	.byte $02,$86,$82,$02,$82,$82,$07,$00
+	.byte $07,$82,$82,$02,$82,$86,$02
 

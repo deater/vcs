@@ -271,13 +271,20 @@ pad_x:
 
 	.include "score.s"
 
+	; at VISIBLE scanline 8
+
 	;============================
 	;============================
-	; draw MANS, 10 scanlines
+	; draw MANS, 7 scanlines
 	;============================
 	;============================
 
+	sta	WSYNC
+	sta	WSYNC
 	.include "mans.s"
+	sta	WSYNC
+
+	; at VISIBLE scanline 10
 
 	;============================
 	;============================
