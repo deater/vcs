@@ -1,10 +1,24 @@
-	;===========================
+	; Level 1 Playfield
+
+
+	;===============================
 	; set up playfield (4 scanlines)
-	;===========================
+	;===============================
+
+	jmp	blurgh3
+.align	$100
+
+blurgh3:
+
+	; now in setup scanline 0
+	; WE CAN DO STUFF HERE
 
 	sta	WSYNC
 
+	;=======================================
 	; update strongbad horizontal position
+	;=======================================
+	; now in setup scanline 1
 
 	; do this separately as too long to fit in with left/right code
 
@@ -13,8 +27,10 @@
 					;====================================
 					;				58
 
-
+	;==========================================
 	; set up sprite to be at proper X position
+	;==========================================
+	; now in setup scanline 2
 
 	; we can do this here and the sprite will be drawn as a long
 	; vertical column
@@ -41,25 +57,26 @@ pad_x:
 				; also draws black artifact on left of
 				; screen
 
+	;==========================================
+	; Final setup before going
+	;==========================================
+	; now in setup scanline 3
 
-	; 1 scanline
+	ldy	#28							; 2
+;	sta	CURRENT_SCANLINE					; 3
 
-	lda	#28
-	sta	CURRENT_SCANLINE
+	lda	#$0							; 2
+	sta	PF0			; disable playfield		; 3
+	sta	PF1							; 3
+	sta	PF2							; 3
 
-	lda	#0
-	sta	CURRENT_BLOCK
+	lda	#$C2			; green				; 2
+	sta	COLUPF			; playfield color		; 3
 
-	lda	#$00			; disable playefield
-	sta	PF0
-	sta	PF1
-	sta	PF2
-
-	lda	#$C2			; green
-	sta	COLUPF			; playfield color
-
-	lda	#CTRLPF_REF		; reflect playfield
-	sta	CTRLPF
+	lda	#CTRLPF_REF		; reflect playfield		; 2
+	sta	CTRLPF							; 3
+								;===========
+								;        23
 
 	; reset back to strongbad sprite
 
@@ -73,45 +90,95 @@ pad_x:
 	lda	#0							; 2
 	sta	VDELP0							; 3
 	sta	VDELP1							; 3
+				; FIXME: tax
+	ldx	#0		; current_block				; 2
+								;============
+								;	23
 
+	; update zap color
+	; FIXME: slow this down?
+	inc	ZAP_COLOR						; 5
+	lda	ZAP_COLOR						; 3
+	cmp	#$A0							; 2
+	bcc	zap_ok							; 2/3
+	lda	#$80							; 2
+	sta	ZAP_COLOR						; 3
+zap_ok:
+								;============
+								; 15 worse case
 
-	sta	WSYNC
+	sta	WSYNC							; 3
+								;============
+								;============
+								;	64
 
 
 	; now at scanline 28
 
 	;===========================================
 	;===========================================
-	; draw playfield, 192-28-10 = 154 scanlines
+	;===========================================
+	; draw playfield, 192-28-12 = 152 scanlines (38 4-line blocks)
 	;===========================================
 	;===========================================
+	;===========================================
+
 draw_playfield:
 
 	;=============================================
 	; we get 23 cycles in HBLANK, use them wisely
 
-
+	;===================
 	; draw playfield
-	ldx	CURRENT_BLOCK						; 3
+
 	lda	playfield0_left,X	;				; 4+
         sta	PF0			;				; 3
+	;   has to happen by 22
+	; 7
+
         lda	playfield1_left,X	;				; 4+
         sta	PF1			;				; 3
+	;  has to happen by 31
+	; 14
+
+
+	;=======================
+	; set bad stuff to blue
+
+	cpx	#9							; 2
+	bcc	not_blue_waste12					; 2/3
+	cpx	#29							; 2
+	bcs	not_blue_waste8						; 2/3
+	lda	ZAP_COLOR	; blue					; 3
+	sta	COLUPF							; 3
+	jmp	done_blue						; 3
+not_blue_waste12:
+	nop
+	nop
+not_blue_waste8:
+	nop
+	nop
+	nop
+	nop
+done_blue:
+								;============
+								;  5 / 9 / 17
+
+	; has to happen by 30
+
+	; 31
+
+	;  has to happen by
         lda	playfield2_left,X	;				; 4+
         sta	PF2			;				; 3
-	inc	CURRENT_BLOCK		;				; 5
-								;============
-								;	29
-	lda	#$C2
-	cpx	#9
-	bcc	not_blue
-	cpx	#29
-	bcs	not_blue
-	lda	#$80		; blue
-not_blue:
-	sta	COLUPF
+	; has to happen by 42
+	; 38							;============
 
 
+
+
+	; 38
+.if 0
 	; activate strongbad sprite if necessary
 
 	lda	CURRENT_SCANLINE
@@ -123,26 +190,44 @@ not_blue:
 turn_on_sprite0:
 	lda	#$F0			; load sprite data		; 2
 	sta	GRP0			; and display it		; 3
-	iny				; increment			; 2
 	jmp	after_sprite						; 3
 turn_off_sprite0:
 	lda	#0			; turn off sprite		; 2
 	sta	GRP0							; 3
 after_sprite:
+.endif
 
-	inc	CURRENT_SCANLINE					; 5
-	sta	WSYNC							; 3
+	; 38
 
-	inc	CURRENT_SCANLINE					; 5
-	sta	WSYNC							; 3
+	; waste 76-38-23=15
 
-	inc	CURRENT_SCANLINE					; 5
-	sta	WSYNC							; 3
+	inc	TEMP1
+	inc	TEMP1
+	inc	TEMP1
 
-	inc	CURRENT_SCANLINE					; 5
-	lda	CURRENT_SCANLINE					; 3
-	cmp	#180			; draw 154 lines		; 2
-	sta	WSYNC							; 3
-	bcc	draw_playfield						; 2/3
+	; down 23
+
+	iny								; 2
+	tya								; 2
+	and	#$3							; 2
+	bne	no_inc_block						; 2/3
+yes_inc4:
+	inx								; 2
+	jmp	done_inc_block						; 3
+no_inc_block:
+	nop								; 2
+	nop								; 2
+done_inc_block:
+								;===========
+								; 13 / 13
+
+
+
+	; this needs to happen before cycle 70
+	lda	#$C2							; 2
+	sta	COLUPF							; 3
+	cpy	#180							; 2
+	bcc	draw_playfield						; 3/2
+
 
 

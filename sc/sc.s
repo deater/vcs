@@ -33,6 +33,7 @@ SPRITE0_PIXEL_OFFSET	=	$85
 CURRENT_SCANLINE	=	$86
 FRAME			=	$87
 CURRENT_BLOCK		=	$88
+ZAP_COLOR		=	$89
 
 TEMP1			=	$90
 TEMP2			=	$91
@@ -296,7 +297,7 @@ after_check_down:
 	.include	"timer_bar.s"
 
 	;============================================================
-	; draw playfield (4 scanlines setup + 192 scanlines display)
+	; draw playfield (4 scanlines setup + 152 scanlines display)
 	;============================================================
 
 	.include "level1_playfield.s"
