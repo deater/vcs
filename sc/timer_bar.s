@@ -39,7 +39,7 @@ time_the_same:
 
 	sta	WSYNC
 
-	lda	#$30	; red
+	lda	#$32	; red
 	sta	COLUPF	; playfield
 	lda	#$1E	; yellow
 	sta	COLUBK	; background
@@ -53,9 +53,16 @@ time_the_same:
 	lda	bargraph_lookup_p2,X
 	sta	PF2
 
+	sta	WSYNC	; 4 lines high
 	sta	WSYNC
 	sta	WSYNC
-	sta	WSYNC
+
+	; shadow
+	lda	#$30	; darker red
+	sta	COLUPF	; playfield
+	lda	#$1A	; darker yellow
+	sta	COLUBK	; background
+
 	sta	WSYNC
 
 	lda	#$0
@@ -64,5 +71,5 @@ time_the_same:
 
 	sta	WSYNC
 
-	rts
+
 

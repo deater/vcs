@@ -43,6 +43,30 @@ LEVEL_OVER		=	$94
 
 MANS			=	$96
 
+SCORE_SPRITE_LOW_0	=	$A0
+SCORE_SPRITE_LOW_1	=	$A1
+SCORE_SPRITE_LOW_2	=	$A2
+SCORE_SPRITE_LOW_3	=	$A3
+SCORE_SPRITE_LOW_4	=	$A4
+SCORE_SPRITE_LOW_5	=	$A5
+SCORE_SPRITE_LOW_6	=	$A6
+
+SCORE_SPRITE_HIGH_0	=	$A7
+SCORE_SPRITE_HIGH_1	=	$A8
+SCORE_SPRITE_HIGH_2	=	$A9
+SCORE_SPRITE_HIGH_3	=	$AA
+SCORE_SPRITE_HIGH_4	=	$AB
+SCORE_SPRITE_HIGH_5	=	$AC
+SCORE_SPRITE_HIGH_6	=	$AD
+
+MANS_SPRITE_0		=	$B0
+MANS_SPRITE_1		=	$B1
+MANS_SPRITE_2		=	$B2
+MANS_SPRITE_3		=	$B3
+MANS_SPRITE_4		=	$B4
+MANS_SPRITE_5		=	$B5
+MANS_SPRITE_6		=	$B6
+
 start:
 	;============================
 	;============================
@@ -268,8 +292,7 @@ after_check_down:
 	;============================
 	;============================
 
-	jsr	draw_timer_bar
-
+	.include	"timer_bar.s"
 
 	;===========================
 	; set up playfield (4 scanlines)
@@ -352,22 +375,27 @@ pad_x:
 	;===========================================
 draw_playfield:
 
-	;========================================
-	; activate strongbad sprite if necessary
+	;=============================================
+	; we get 23 cycles in HBLANK, use them wisely
+
 
 	; draw playfield
-	lda	CURRENT_SCANLINE
-	sec
-	sbc	#28
-	lsr
-	lsr
-	tax
+	lda	CURRENT_SCANLINE					; 3
+	sec								; 2
+	sbc	#28							; 2
+	lsr								; 2
+	lsr								; 2
+	tax								; 2
 	lda	playfield0_left,X	;				; 4+
         sta	PF0			;				; 3
         lda	playfield1_left,X	;				; 4+
         sta	PF1			;				; 3
         lda	playfield2_left,X	;				; 4+
         sta	PF2			;				; 3
+								;============
+								;	34
+
+	; activate strongbad sprite if necessary
 
 	lda	CURRENT_SCANLINE
 	; A = current scanline
@@ -489,10 +517,11 @@ spr0_moved_vertically:
 
 .include	"init_game.s"
 .include	"init_level.s"
-.include	"timer_bar.s"
 
 ; data, which has alignment constraints
 .include	"game_data.s"
+
+.byte "by Vince `deater` Weaver <vince@deater.net>"
 
 .segment "IRQ_VECTORS"
 	.word start	; NMI

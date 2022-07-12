@@ -3,10 +3,11 @@ update_score which updates score
 	score data in zero page
 	only need to update bottom 4 digits for now?
 
-update mans
+update mans when die
 
 see if we can get a playfield L1 or just 1 on the right
 
-put a drop shadow on timer bar
+scores/mans slightly not centered
+
 
 
