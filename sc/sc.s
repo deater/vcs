@@ -99,7 +99,7 @@ start_frame:
 	;=============================
 	; now at VBLANK scanline 28
 	;=============================
-
+	; unused
 	sta	WSYNC							; 3
 								;============
 								;	24
@@ -186,44 +186,20 @@ after_check_down:
 	;==========================
 	; now VBLANK scanline 33
 	;==========================
-	; update horizontal position
+	; empty for now
 
-	; do this separately as too long to fit in with left/right code
+	sta	WSYNC
 
-	jsr	spr0_moved_horizontally	;				6+49
-	sta	WSYNC			;				3
-					;====================================
-					;				58
+
 
 	;========================
 	; now VBLANK scanline 34
 	;========================
-	; set up sprite to be at proper X position
+	; empty for now
 
-	; we can do this here and the sprite will be drawn as a long
-	; vertical column
-	; later we only enable it for the lines we want
+	sta	WSYNC
 
-	ldx	#0		; sprite 0 display nothing		2
-	stx	GRP0		; (FIXME: this already set?)		3
 
-	ldx	STRONGBAD_X_COARSE	;				3
-	inx			;					2
-	inx			;					2
-pad_x:
-	dex			;					2
-	bne	pad_x		;					2/3
-				;===========================================
-				;	12-1+5*(coarse_x+2)
-				; FIXME: describe better what's going on
-
-	; beam is at proper place
-	sta	RESP0							; 3
-
-	sta	WSYNC							; 3
-	sta	HMOVE		; adjust fine tune, must be after WSYNC	; 3
-				; also draws black artifact on left of
-				; screen
 
 	;=======================
 	; now scanline 35
@@ -288,15 +264,57 @@ pad_x:
 
 	;============================
 	;============================
-	; draw timer bar, 9 scanlines
+	; draw timer bar, (6 scanlines)
 	;============================
 	;============================
 
 	jsr	draw_timer_bar
 
+
 	;===========================
-	; set up playfield
+	; set up playfield (4 scanlines)
 	;===========================
+
+	sta	WSYNC
+
+	; update strongbad horizontal position
+
+	; do this separately as too long to fit in with left/right code
+
+	jsr	spr0_moved_horizontally	;				6+49
+	sta	WSYNC			;				3
+					;====================================
+					;				58
+
+
+	; set up sprite to be at proper X position
+
+	; we can do this here and the sprite will be drawn as a long
+	; vertical column
+	; later we only enable it for the lines we want
+
+	ldx	#0		; sprite 0 display nothing		2
+	stx	GRP0		; (FIXME: this already set?)		3
+
+	ldx	STRONGBAD_X_COARSE	;				3
+	inx			;					2
+	inx			;					2
+pad_x:
+	dex			;					2
+	bne	pad_x		;					2/3
+				;===========================================
+				;	12-1+5*(coarse_x+2)
+				; FIXME: describe better what's going on
+
+	; beam is at proper place
+	sta	RESP0							; 3
+
+	sta	WSYNC							; 3
+	sta	HMOVE		; adjust fine tune, must be after WSYNC	; 3
+				; also draws black artifact on left of
+				; screen
+
+
 	; 1 scanline
 
 	lda	#28
@@ -307,8 +325,6 @@ pad_x:
 
 	lda	#CTRLPF_REF		; reflect playfield
 	sta	CTRLPF
-
-
 
 	; reset back to strongbad sprite
 
@@ -322,8 +338,6 @@ pad_x:
 	lda	#0							; 2
 	sta	VDELP0							; 3
 	sta	VDELP1							; 3
-
-
 
 
 	sta	WSYNC
@@ -390,12 +404,13 @@ after_sprite:
 
 	;=========================================
 	;=========================================
-	; draw Videlectrix Logo sprite (12 lines)
+	; draw Videlectrix Logo sprite (11 lines)
 	;=========================================
 	;=========================================
 
 	.include "vid_logo.s"
 
+	sta	WSYNC
 
 	;=============================================
 	; vertical blank

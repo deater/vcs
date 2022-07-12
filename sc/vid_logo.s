@@ -1,11 +1,11 @@
 
 	;=========================================
 	;=========================================
-	; draw Videlectrix Logo sprite (12 lines)
+	; draw Videlectrix Logo sprite (11 lines)
 	;=========================================
 	;=========================================
 
-	sta	WSYNC
+	; assume coming in 2 cycles after WSYNC
 
 	;====================
 	; Now scanline 182
@@ -15,17 +15,14 @@
 	; make playfield black
 	lda	#$00			; black
 	sta	COLUPF			; playfield color
+	sta	GRP0			; turn off sprites
+	sta	GRP1
 
 	; set color
 
 	lda	#$0E	; bright white					; 2
 	sta	COLUP0	; set sprite color				; 3
 	sta	COLUP1	; set sprite color				; 3
-
-	; ?
-
-	lda	#0							; 2
-	sta	SPRITE0_PIXEL_OFFSET					; 3
 
 	; set to be 48 adjacent pixels
 

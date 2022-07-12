@@ -1,10 +1,10 @@
 	;=========================
 	;=========================
-	; draw timer bar
+	; draw timer bar (6 scanlines)
 	;=========================
 	;=========================
 	; we want to draw it 4 high
-	; we have 9 scanlines to manage this
+	; we have 6 scanlines to manage this
 
 draw_timer_bar:
 	; already 6 cycles in
@@ -62,9 +62,6 @@ time_the_same:
 	sta	COLUPF	; playfield
 	sta	COLUBK	; background
 
-	sta	WSYNC
-	sta	WSYNC
-	sta	WSYNC
 	sta	WSYNC
 
 	rts
