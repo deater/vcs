@@ -34,6 +34,12 @@ FRAME			=	$87
 CURRENT_BLOCK		=	$88
 ZAP_COLOR		=	$89
 
+INL			=	$8A
+INH			=	$8B
+SCORE_LOW		=	$8C
+SCORE_HIGH		=	$8D
+
+
 TEMP1			=	$90
 TEMP2			=	$91
 
@@ -80,6 +86,11 @@ start:
 	ldx	#$FF		; set stack to $1FF (mirrored at $FF)
 	txs
 
+	lda	#$89		; BCD
+	sta	SCORE_HIGH
+	lda	#$67		; BCD
+	sta	SCORE_LOW
+
 	jsr	init_game
 
 	jsr	init_level
@@ -117,9 +128,16 @@ start_frame:
 	;=================================
 	;=================================
 
-.repeat 28
+.repeat 18
 	sta	WSYNC
 .endrepeat
+
+	;=============================
+	; now at VBLANK scanline 18
+	;=============================
+
+	; 10 scanlines
+	.include "update_score.s"
 
 	;=============================
 	; now at VBLANK scanline 28

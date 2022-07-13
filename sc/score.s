@@ -102,8 +102,10 @@ blurgh:
 	; 22
 
 	; need to write GRP0 at 44-47
-	lda	score_bitmap2,X	; load sprite data			; 4+
-	ldy	score_bitmap3,X	; load sprite data			; 4+
+;	lda	score_bitmap2,X	; load sprite data			; 4+
+	lda	SCORE_SPRITE_HIGH_0,X	; load sprite data		; 4
+;	ldy	score_bitmap3,X	; load sprite data			; 4+
+	ldy	SCORE_SPRITE_LOW_0,X					; 4
 	; 30
 
 	inc	TEMP1							; 5
