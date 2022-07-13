@@ -12,40 +12,49 @@
 	;===================
 
 	ldx	#6							; 2
-	lda	$80		; nop3					; 3
 	jmp	blurgh2							; 3
 
 manloop:
 	sta	WSYNC							; 3
 									;---
 	nop								; 2
-	lda	TEMP1							; 3
 	lda	$80		; nop3					; 3
+
 blurgh2:
-	; 8
+
+; 5
+	lda	#0	; clear level# on playfield			; 2
+	sta	PF0							; 3
+
+; 10
 	lda	mans_bitmap0,X		; load sprite data		; 4+
 	sta	GRP0			;				; 3
-	; 15
+; 17
 	lda	mans_bitmap1,X		; load sprite data		; 4+
 	sta	GRP1			;				; 3
-	; 22
+; 24
+
+	; try to draw level number on right of screen
+
+;	nop								; 2
+	lda     $80	; nop 3						; 3
+
+	lda	#$36	; orange					; 2
+	sta	COLUPF	;						; 3
+	lda	#$20	; 2   '1' sprite?				; 2
+	sta	PF0							; 3
+; 37
+
+	; need to write GRP0 at 44-47
 
 	lda	mans_bitmap2,X		; load sprite data		; 4+
 	ldy	MANS_SPRITE_0,X		; load sprite data		; 4
-	; 30
-
-	inc	TEMP1							; 5
-	nop								; 2
-	nop								; 2
-	nop								; 2
-	nop								; 2
-	nop								; 2
-	; 45
+; 45
 
 	sta	GRP0			;				; 3
-	; 48
+; 48
 	sty	GRP1							; 3
-	; 51
+; 51
 
 	dex								; 5
 	bpl	manloop							; 2/3
@@ -63,6 +72,7 @@ blurgh2:
 	ldy	#0
 	sty	GRP1
 	sty	GRP0
+	sty	PF0
 
 	sta	WSYNC
 

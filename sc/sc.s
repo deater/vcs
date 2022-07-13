@@ -327,7 +327,34 @@ done_rotate_zap:
 	;============================
 	;============================
 
+	; draw part of the playfield level #
+
+	lda	#$0	; 2
+	sta	PF0	; 3
+	; after 28
+	inc	TEMP1
+	inc	TEMP1
+	inc	TEMP1
+	inc	TEMP1
+	inc	TEMP1
+	lda	#$20
+	sta	PF0
+
 	sta	WSYNC
+
+	; draw part of the playfield level #
+
+	lda	#$0	; 2
+	sta	PF0	; 3
+	; after 28
+	inc	TEMP1
+	inc	TEMP1
+	inc	TEMP1
+	inc	TEMP1
+	inc	TEMP1
+	lda	#$20
+	sta	PF0
+
 	sta	WSYNC
 	.include "mans.s"
 	sta	WSYNC

@@ -87,34 +87,37 @@ spad_x:
 scoreloop:
 	sta	WSYNC							; 3
 									;---
-	nop								; 2
-	lda	TEMP1							; 3
-	lda	$80							; 3
-
+	lda	#0	; clear level # on playfield			; 2
+	sta	PF0							; 3
+	lda	$80	; nop3						; 3
 
 blurgh:
-	; 8
+
+; 8
 	lda	score_bitmap0,X		; load sprite data		; 4+
 	sta	GRP0			; 				; 3
-	; 15
+; 15
 	lda	score_bitmap1,X	; load sprite data			; 4+
 	sta	GRP1			; 1->[GRP1], [GRP0 (0)]-->GRP0	; 3
-	; 22
+; 22
+
+	; try to draw level number on right of screen
+
+	nop								; 2
+	lda	$80	; nop 3						; 3
+
+	lda	#$36	; orange					; 2
+	sta	COLUPF  ; 						; 3
+	lda	#$20	; 2   '1' sprite?				; 2
+	sta	PF0 							; 3
+
+; 37
 
 	; need to write GRP0 at 44-47
-;	lda	score_bitmap2,X	; load sprite data			; 4+
 	lda	SCORE_SPRITE_HIGH_0,X	; load sprite data		; 4
-;	ldy	score_bitmap3,X	; load sprite data			; 4+
 	ldy	SCORE_SPRITE_LOW_0,X					; 4
-	; 30
 
-	inc	TEMP1							; 5
-	nop								; 2
-	nop								; 2
-	nop								; 2
-	nop								; 2
-	nop
-	; 45
+; 45
 
 	sta	GRP0			;				; 3
 	; write at 48!!
@@ -126,13 +129,13 @@ blurgh:
 	; aim for 76 if no WSYNC
 
 	; 54 if fell through
-
+; 54
 	;
 	; done drawing score
 	;
 
 	inc	TEMP1							; 5
-
+; 59
 	; turn off sprites
 
 	ldy	#0
