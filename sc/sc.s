@@ -28,10 +28,10 @@ STRONGBAD_Y		=	$81
 STRONGBAD_END_Y		=	$82
 SPRITE0_RIGHT_X		=	$83
 STRONGBAD_X_COARSE	=	$84
-SPRITE0_PIXEL_OFFSET	=	$85
+;SPRITE0_PIXEL_OFFSET	=	$85
 CURRENT_SCANLINE	=	$86
 FRAME			=	$87
-CURRENT_BLOCK		=	$88
+;CURRENT_BLOCK		=	$88
 ZAP_COLOR		=	$89
 
 INL			=	$8A
@@ -85,13 +85,6 @@ start:
 
 	ldx	#$FF		; set stack to $1FF (mirrored at $FF)
 	txs
-
-	lda	#$89		; BCD
-	sta	SCORE_HIGH
-	lda	#$67		; BCD
-	sta	SCORE_LOW
-	lda	#$03
-	sta	MANS
 
 	jsr	init_game
 
@@ -232,8 +225,15 @@ after_check_down:
 	;==========================
 	; now VBLANK scanline 33
 	;==========================
-	; empty for now
+	; check if level over
 
+	lda	LEVEL_OVER						; 3
+	beq	level_good
+
+	dec	MANS							; 5
+	jsr	init_level					;6+alot
+
+level_good:
 	sta	WSYNC
 
 
