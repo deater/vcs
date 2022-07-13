@@ -49,10 +49,10 @@ qpad_x:
 
 	; do this separately as too long to fit in with left/right code
 
-	jsr	spr0_moved_horizontally	;				6+49
+	jsr	strongbad_moved_horizontally	;			6+48
 	sta	WSYNC			;				3
 					;====================================
-					;				58
+					;				57
 
 	;==========================================
 	; set up sprite to be at proper X position
@@ -292,7 +292,7 @@ odone_blue:
 
 	; Y = current scanline
 	lda	#$F0			; load sprite data		; 2
-	cpy	STRONGBAD_END_Y						; 3
+	cpy	STRONGBAD_Y_END						; 3
 	bcs	turn_off_strongbad_delay5				; 2/3
 	cpy	STRONGBAD_Y						; 3
 	bcc	turn_off_strongbad					; 2/3

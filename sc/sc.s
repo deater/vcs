@@ -14,12 +14,10 @@
 
 .include "../vcs.inc"
 
-SPRITE_WIDTH	=	8
-SPRITE_HEIGHT	=	8
-SPRITE_ANIMATION_FRAME_COUNT = 1
-SPRITE_TOTAL_FRAME_LINES = SPRITE_ANIMATION_FRAME_COUNT * SPRITE_HEIGHT
+; some defines
 
-VID_LOGO_START	=	181
+STRONGBAD_HEIGHT	=	8
+VID_LOGO_START		=	181
 
 ; zero page addresses
 
@@ -27,17 +25,19 @@ STRONGBAD_X		=	$80
 STRONGBAD_Y		=	$81
 OLD_STRONGBAD_X		=	$82
 OLD_STRONGBAD_Y		=	$83
-STRONGBAD_END_Y		=	$84
-SPRITE0_RIGHT_X		=	$85
-STRONGBAD_X_COARSE	=	$86
-CURRENT_SCANLINE	=	$87
-FRAME			=	$88
-ZAP_COLOR		=	$89
+STRONGBAD_Y_END		=	$84
+OLD_STRONGBAD_Y_END	=	$85
+STRONGBAD_X_END		=	$86
+OLD_STRONGBAD_X_END	=	$87
+STRONGBAD_X_COARSE	=	$88
+CURRENT_SCANLINE	=	$89
+FRAME			=	$8A
+ZAP_COLOR		=	$8B
 
-INL			=	$8A
-INH			=	$8B
-SCORE_LOW		=	$8C
-SCORE_HIGH		=	$8D
+INL			=	$8C
+INH			=	$8D
+SCORE_LOW		=	$8E
+SCORE_HIGH		=	$8F
 
 
 TEMP1			=	$90
@@ -146,6 +146,11 @@ start_frame:
 	lda	STRONGBAD_Y						; 3
 	sta	OLD_STRONGBAD_Y						; 3
 
+	lda	STRONGBAD_X_END						; 3
+	sta	OLD_STRONGBAD_X_END					; 3
+	lda	STRONGBAD_Y_END						; 3
+	sta	OLD_STRONGBAD_Y_END					; 3
+
 	sta	WSYNC							; 3
 								;============
 								;	15
@@ -174,8 +179,8 @@ after_check_left:
 	;=============================
 	; handle right being pressed
 
-	lda	SPRITE0_RIGHT_X		;				; 3
-	cmp	#160+SPRITE_WIDTH-3	;				; 2
+	lda	STRONGBAD_X_END		;				; 3
+	cmp	#167			;				; 2
 	bcs	after_check_right	;				; 2/3
 
 	lda	#$80			; check right			; 2
@@ -203,18 +208,18 @@ after_check_right:
 
 	dec	STRONGBAD_Y		; move sprite up		; 5
 
-	jsr	spr0_moved_vertically	; 				; 6+17
+	jsr	strongbad_moved_vertically	; 			; 6+16
 after_check_up:
 	sta	WSYNC			; 				; 3
 					;	===============================
-					; 			11 / 18 / 45
+					; 			11 / 18 / 44
 
 	;==========================
 	; now VBLANK scanline 32
 	;==========================
 	; handle down being pressed
 
-	lda	STRONGBAD_END_Y		;				; 3
+	lda	STRONGBAD_Y_END		;				; 3
 	cmp	#VID_LOGO_START		;				; 2
 	bcs	after_check_down	;				; 2/3
 
@@ -223,11 +228,11 @@ after_check_up:
 	bne	after_check_down	;				; 2/3
 
 	inc	STRONGBAD_Y		; move sprite down		; 5
-	jsr	spr0_moved_vertically	;				; 6+17
+	jsr	strongbad_moved_vertically	;			; 6+16
 after_check_down:
 	sta	WSYNC			;				; 3
 					;	==============================
-					; 			11 / 18 / 45
+					; 			11 / 18 / 44
 
 	;==========================
 	; now VBLANK scanline 33
@@ -387,64 +392,17 @@ collision_wall:
 	lda	OLD_STRONGBAD_Y
 	sta	STRONGBAD_Y
 
+	lda	OLD_STRONGBAD_X_END
+	sta	STRONGBAD_X_END
+	lda	OLD_STRONGBAD_Y_END
+	sta	STRONGBAD_Y_END
+
 no_collision_wall:
 	sta	WSYNC
 
 	jmp	start_frame
 
-;================================
-;================================
-; spr0 moved horizontally
-;================================
-;================================
-; call after X changes
-;	compute horiz fine adjust
-
-spr0_moved_horizontally:
-	clc				;			2
-	lda	STRONGBAD_X		;			3
-
-	pha				;			3
-	adc	SPRITE_WIDTH		;			3
-	sta	SPRITE0_RIGHT_X		;			3
-	pla				;			4
-
-	; spritex DIV 16
-
-	lsr				;			2
-	lsr				;			2
-	lsr				;			2
-	lsr				;			2
-	sta	STRONGBAD_X_COARSE	;			3
-
-	; apply fine adjust
-	lda	STRONGBAD_X		;			3
-	and	#$0f			;			2
-	tax				;			2
-	lda	fine_adjust_table,X	;			4+
-	sta	HMP0			;			3
-	rts				;			6
-					;==========================
-					;			49
-
-
-;================================
-;================================
-; spr0 moved vertically
-;================================
-;================================
-; call after Y changes
-
-spr0_moved_vertically:
-	clc				;				2
-	lda	STRONGBAD_Y		;				3
-	adc	SPRITE_HEIGHT		;				3
-	sta	STRONGBAD_END_Y	;				3
-	rts				;				6
-					;=================================
-					;				17
-
-
+.include	"adjust_sprite.s"
 .include	"init_game.s"
 .include	"init_level.s"
 
