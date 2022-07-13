@@ -31,7 +31,7 @@ blurgh2:
 	; 22
 
 	lda	mans_bitmap2,X		; load sprite data		; 4+
-	ldy	mans_bitmap3,X		; load sprite data		; 4+
+	ldy	MANS_SPRITE_0,X		; load sprite data		; 4
 	; 30
 
 	inc	TEMP1							; 5

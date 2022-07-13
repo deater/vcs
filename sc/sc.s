@@ -90,6 +90,8 @@ start:
 	sta	SCORE_HIGH
 	lda	#$67		; BCD
 	sta	SCORE_LOW
+	lda	#$03
+	sta	MANS
 
 	jsr	init_game
 
@@ -128,15 +130,16 @@ start_frame:
 	;=================================
 	;=================================
 
-.repeat 18
+.repeat 16
 	sta	WSYNC
 .endrepeat
 
 	;=============================
 	; now at VBLANK scanline 18
 	;=============================
+	; update score/mans values
 
-	; 10 scanlines
+	; 12 scanlines
 	.include "update_score.s"
 
 	;=============================

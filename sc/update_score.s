@@ -122,5 +122,47 @@ high_left_score_loop:
 								; 	-1
 ;702	~10 scanlines
 
+update_mans:
+
+	;=====================
+	; setup digit pointers
+	;=====================
+
+	lda	#<mans_zeros						; 2
+	sta	INL							; 3
+	lda	#>mans_zeros						; 2
+	sta	INH							; 3
+
+; 712
+
+	;=================
+	;=================
+	; bottom digit
+	;=================
+	;=================
+
+	lda	MANS							; 3
+	and	#$f							; 2
+	asl								; 2
+	asl								; 2
+	asl								; 2
+	tay								; 2
+	ldx	#6							; 2
+								;===========
+								;	15
+; 727
+
+mans_loop:
+	lda	(INL),Y							; 5+
+	sta	MANS_SPRITE_0,X						; 4
+	iny								; 2
+	dex								; 2
+	bpl	mans_loop						; 2/3
+								;===========
+								; 16*7 = 112
+								;	-1
+
+; 839 (just over 11)
+
 	sta	WSYNC							; 3
 
