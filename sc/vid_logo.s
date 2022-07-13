@@ -15,6 +15,10 @@
 	; make playfield black
 	lda	#$00			; black
 	sta	COLUPF			; playfield color
+	sta	PF0			; turn off playfield so don't collide
+	sta	PF1
+	sta	PF2
+
 	sta	GRP0			; turn off sprites
 	sta	GRP1
 

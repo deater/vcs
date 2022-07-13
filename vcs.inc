@@ -94,14 +94,16 @@ HMCLR	=	$2B	; clear horizontal move
 CXCLR	=	$2C	; clear collision latches
 
 ; read addresses
+
+; collision detect
 CXM0P	=	$00		; Collision Detect
-CXM1P	=	$01
-CXP0FB	=	$02
-CXP1FB	=	$03
-CXM0FB	=	$04
-CXM1FB	=	$05
-CXBLPF	=	$06
-CXPPMM	=	$07
+CXM1P	=	$01		;
+CXP0FB	=	$02		; collision bit7=p0/pf, bit6=p0/bl
+CXP1FB	=	$03		;
+CXM0FB	=	$04		;
+CXM1FB	=	$05		;
+CXBLPF	=	$06		;
+CXPPMM	=	$07		; collision bit7=p0/p1, bit6=m0/m1
 INPT0	=	$08		; pot port
 INPT1	=	$09
 INPT2	=	$0A

@@ -79,23 +79,25 @@ pad_x:
 	; beam is at proper place
 	sta	RESP0							; 3
 
+	lda	#$0							; 2
+	sta	PF0			; disable playfield		; 3
+	sta	PF1							; 3
+	sta	PF2							; 3
+
+
 	sta	WSYNC							; 3
 	sta	HMOVE		; adjust fine tune, must be after WSYNC	; 3
 				; also draws black artifact on left of
 				; screen
 
+
 	;==========================================
 	; Final setup before going
 	;==========================================
 	; now in setup scanline 3
-
+; 3 (from HMOVE)
 	ldy	#28							; 2
-;	sta	CURRENT_SCANLINE					; 3
 
-	lda	#$0							; 2
-	sta	PF0			; disable playfield		; 3
-	sta	PF1							; 3
-	sta	PF2							; 3
 
 	lda	#$C2			; green				; 2
 	sta	COLUPF			; playfield color		; 3
@@ -104,7 +106,7 @@ pad_x:
 	sta	CTRLPF							; 3
 								;===========
 								;        23
-
+; 26
 	; reset back to strongbad sprite
 
 	lda	#$40		; dark red				; 2
@@ -120,11 +122,10 @@ pad_x:
 	lda	#0							; 2
 	sta	VDELP0							; 3
 	sta	VDELP1							; 3
-				; FIXME: tax
-	ldx	#0		; current_block				; 2
+	tax			; X=current block			; 2
 								;============
-								;	26
-
+								;	28
+; 54
 	; update zap color
 	; FIXME: slow this down?
 	inc	ZAP_COLOR						; 5
@@ -135,15 +136,15 @@ pad_x:
 	sta	ZAP_COLOR						; 3
 zap_ok:
 								;============
-								; 15 worse case
+								; 17 worse case
+; 71
+	sta	CXCLR	; clear collisions				; 3
+; 74
 
 	sta	WSYNC							; 3
 								;============
 								;============
-								;	69
-
-
-	; now at scanline 28
+								;	77
 
 	;===========================================
 	;===========================================

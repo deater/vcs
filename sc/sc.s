@@ -25,13 +25,13 @@ VID_LOGO_START	=	181
 
 STRONGBAD_X		=	$80
 STRONGBAD_Y		=	$81
-STRONGBAD_END_Y		=	$82
-SPRITE0_RIGHT_X		=	$83
-STRONGBAD_X_COARSE	=	$84
-;SPRITE0_PIXEL_OFFSET	=	$85
-CURRENT_SCANLINE	=	$86
-FRAME			=	$87
-;CURRENT_BLOCK		=	$88
+OLD_STRONGBAD_X		=	$82
+OLD_STRONGBAD_Y		=	$83
+STRONGBAD_END_Y		=	$84
+SPRITE0_RIGHT_X		=	$85
+STRONGBAD_X_COARSE	=	$86
+CURRENT_SCANLINE	=	$87
+FRAME			=	$88
 ZAP_COLOR		=	$89
 
 INL			=	$8A
@@ -138,10 +138,17 @@ start_frame:
 	;=============================
 	; now at VBLANK scanline 28
 	;=============================
-	; unused
+	; stuff for collision detection
+
+	; save old X/Y in case we have a collision
+	lda	STRONGBAD_X						; 3
+	sta	OLD_STRONGBAD_X						; 3
+	lda	STRONGBAD_Y						; 3
+	sta	OLD_STRONGBAD_Y						; 3
+
 	sta	WSYNC							; 3
 								;============
-								;	24
+								;	??
 	;=============================
 	; now at VBLANK scanline 29
 	;=============================
@@ -345,12 +352,29 @@ vertical_blank:
 	;===========================
 	;===========================
 
-	ldx	#0
-overscan_loop:
+	.repeat 29
 	sta	WSYNC
-	inx
-	cpx	#30
-	bne	overscan_loop
+	.endrepeat
+
+	;==================================
+	; overscan 30, collision detection
+
+	lda	CXPPMM			; check if p0/p1 collision
+	bpl	no_collision_secret
+collision_secret:
+	inc	LEVEL_OVER
+no_collision_secret:
+
+	lda	CXP0FB			; check if p0/pf collision
+	bpl	no_collision_wall
+collision_wall:
+	lda	OLD_STRONGBAD_X
+	sta	STRONGBAD_X
+	lda	OLD_STRONGBAD_Y
+	sta	STRONGBAD_Y
+
+no_collision_wall:
+	sta	WSYNC
 
 	jmp	start_frame
 
