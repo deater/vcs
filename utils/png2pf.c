@@ -14,35 +14,83 @@ static unsigned char reverse_byte(unsigned char b) {
 	return (b * 0x0202020202ULL & 0x010884422010ULL) % 1023;
 }
 
+static void print_help(char *name) {
+	fprintf(stderr,"Usage:\t%s [-2] [-4] INFILE OUTFILE\n\n",name);
+	fprintf(stderr,"\t-2 : only draw every 2nd line\n");
+	fprintf(stderr,"\t-4 : only draw every 4th line\n");
+	exit(-1);
+}
+
 /* Convert a 320x192 PNG to a 40x192 playfield with one color per line */
 
 int main(int argc, char **argv) {
 
 	int row=0;
 	int col=0;
+	int skip=1;
 	int color;
 	int playfield_left[192],playfield_right[192];
+	int c,debug=0;
 
+	char input_filename[BUFSIZ],output_filename[BUFSIZ];
 	unsigned char *image;
 	int xsize,ysize;
 	FILE *outfile;
 
-	if (argc<3) {
-		fprintf(stderr,"Usage:\t%s INFILE OUTFILE\n\n",argv[0]);
-		exit(-1);
+
+	/* Check command line arguments */
+	while ((c = getopt (argc, argv,"24dhv"))!=-1) {
+		switch (c) {
+		case 'd':
+			fprintf(stderr,"DEBUG enabled\n");
+			debug=1;
+			break;
+		case 'h':
+			print_help(argv[0]);
+			break;
+		case 'v':
+			print_help(argv[0]);
+			break;
+		case '2':
+			skip=2;
+			break;
+		case '4':
+			skip=4;
+			break;
+		}
 	}
 
-	outfile=fopen(argv[2],"w");
+	if (optind==argc) {
+		fprintf(stderr,"ERROR!  Must specify input file\n\n");
+		return -1;
+	}
+	/* get argument 1, which is image name */
+        strncpy(input_filename,argv[optind],BUFSIZ-1);
+
+	/* Move to next argument */
+	optind++;
+
+	if (optind==argc) {
+		fprintf(stderr,"ERROR!  Must specify output file!\n\n");
+		return -1;
+	}
+
+	/* Grab output filename */
+	strncpy(output_filename,argv[optind],BUFSIZ-1);
+
+
+	outfile=fopen(output_filename,"w");
 	if (outfile==NULL) {
-		fprintf(stderr,"Error!  Could not open %s\n",argv[2]);
+		fprintf(stderr,"Error!  Could not open %s\n",output_filename);
 		exit(-1);
 	}
 
-	if (loadpng(argv[1],&image,&xsize,&ysize,PNG_WHOLETHING)<0) {
+	if (loadpng(input_filename,&image,&xsize,&ysize,PNG_WHOLETHING)<0) {
 		fprintf(stderr,"Error loading png!\n");
 		exit(-1);
 	}
 
+	if (debug) fprintf(stderr,"Skip = %d\n",skip);
 	fprintf(stderr,"Loaded image %d by %d\n",xsize,ysize);
 
 	if (ysize>192) {
@@ -52,7 +100,7 @@ int main(int argc, char **argv) {
 
 	/* generate color table */
 	fprintf(outfile,"colors:\n");
-	for(row=0;row<ysize;row++) {
+	for(row=0;row<ysize;row+=skip) {
 		color=0;
 		for(col=0;col<xsize;col++) {
 			if (image[row*xsize+col]!=0) color=image[row*xsize+col];
@@ -70,19 +118,19 @@ int main(int argc, char **argv) {
 	}
 
 	fprintf(outfile,"\nplayfield0_left:\n");
-	for(row=0;row<ysize;row++) {
+	for(row=0;row<ysize;row+=skip) {
 		fprintf(outfile,"\t.byte $%02X\n",
 			reverse_byte((playfield_left[row]>>16)&0xff));
 	}
 
 	fprintf(outfile,"\nplayfield1_left:\n");
-	for(row=0;row<ysize;row++) {
+	for(row=0;row<ysize;row+=skip) {
 		fprintf(outfile,"\t.byte $%02X\n",
 			(playfield_left[row]>>8)&0xff);
 	}
 
 	fprintf(outfile,"\nplayfield2_left:\n");
-	for(row=0;row<ysize;row++) {
+	for(row=0;row<ysize;row+=skip) {
 		fprintf(outfile,"\t.byte $%02X\n",
 			reverse_byte((playfield_left[row]>>0)&0xff));
 	}
@@ -98,27 +146,22 @@ int main(int argc, char **argv) {
 	}
 
 	fprintf(outfile,"\nplayfield0_right:\n");
-	for(row=0;row<ysize;row++) {
+	for(row=0;row<ysize;row+=skip) {
 		fprintf(outfile,"\t.byte $%02X\n",
 			reverse_byte((playfield_right[row]>>16)&0xff));
 	}
 
 	fprintf(outfile,"\nplayfield1_right:\n");
-	for(row=0;row<ysize;row++) {
+	for(row=0;row<ysize;row+=skip) {
 		fprintf(outfile,"\t.byte $%02X\n",
 			(playfield_right[row]>>8)&0xff);
 	}
 
 	fprintf(outfile,"\nplayfield2_right:\n");
-	for(row=0;row<ysize;row++) {
+	for(row=0;row<ysize;row+=skip) {
 		fprintf(outfile,"\t.byte $%02X\n",
 			reverse_byte((playfield_right[row]>>0)&0xff));
 	}
-
-
-
-
-
 
 	fclose(outfile);
 

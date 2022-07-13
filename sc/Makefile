@@ -1,6 +1,6 @@
 LINKER_SCRIPT = ../linker_script
 
-all:	sc.rom
+all:	sc.rom test.rom
 
 ###
 
@@ -13,7 +13,16 @@ sc.o:	sc.s init_game.s init_level.s timer_bar.s game_data.s vid_logo.s \
 
 ###
 
+test.rom:	test.o
+	ld65 -o test.rom test.o -C $(LINKER_SCRIPT)/atari2600_f000.inc
+
+test.o:	test.s sc_graphic.inc sc_overlay.inc
+	ca65 -o test.o test.s -l test.lst
+
+
+###
+
 clean:	
-	rm -f *~ *.o *.lst sc.rom
+	rm -f *~ *.o *.lst sc.rom test.rom
 
 
