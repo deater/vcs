@@ -58,7 +58,7 @@ qpad_x:
 	; set up sprite to be at proper X position
 	;==========================================
 	; now in setup scanline 2
-
+; 0
 	; we can do this here and the sprite will be drawn as a long
 	; vertical column
 	; later we only enable it for the lines we want
@@ -69,21 +69,17 @@ qpad_x:
 	ldx	STRONGBAD_X_COARSE	;				3
 	inx			;					2
 	inx			;					2
+; 12
+
 pad_x:
 	dex			;					2
 	bne	pad_x		;					2/3
 				;===========================================
 				;	12-1+5*(coarse_x+2)
-				; FIXME: describe better what's going on
+;
 
 	; beam is at proper place
 	sta	RESP0							; 3
-
-	lda	#$0							; 2
-	sta	PF0			; disable playfield		; 3
-	sta	PF1							; 3
-	sta	PF2							; 3
-
 
 	sta	WSYNC							; 3
 	sta	HMOVE		; adjust fine tune, must be after WSYNC	; 3
@@ -98,6 +94,10 @@ pad_x:
 ; 3 (from HMOVE)
 	ldy	#28							; 2
 
+	lda	#$0							; 2
+	sta	PF0			; disable playfield		; 3
+	sta	PF1							; 3
+	sta	PF2							; 3
 
 	lda	#$C2			; green				; 2
 	sta	COLUPF			; playfield color		; 3
@@ -126,25 +126,13 @@ pad_x:
 								;============
 								;	28
 ; 54
-	; update zap color
-	; FIXME: slow this down?
-	inc	ZAP_COLOR						; 5
-	lda	ZAP_COLOR						; 3
-	cmp	#$A0							; 2
-	bcc	zap_ok							; 2/3
-	lda	#$80							; 2
-	sta	ZAP_COLOR						; 3
-zap_ok:
-								;============
-								; 17 worse case
-; 71
 	sta	CXCLR	; clear collisions				; 3
-; 74
+; 57
 
 	sta	WSYNC							; 3
 								;============
 								;============
-								;	77
+								;	60
 
 	;===========================================
 	;===========================================

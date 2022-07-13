@@ -148,7 +148,7 @@ start_frame:
 
 	sta	WSYNC							; 3
 								;============
-								;	??
+								;	15
 	;=============================
 	; now at VBLANK scanline 29
 	;=============================
@@ -259,12 +259,26 @@ level_good:
 	;========================
 	; increment frame
 	; handle any frame-related activity
-
+; 0
 	inc	FRAME							; 5
-;	lda	#15							; 2
-;	bit	FRAME							; 3
+	lda	FRAME							; 3
+; 8
 
-;	bne	done_frame_count					; 2/3
+	; update zap color
+	; every other frame?
+
+	and	#$1
+	beq	done_rotate_zap
+
+	inc	ZAP_COLOR                                               ; 5
+	lda	ZAP_COLOR                                               ; 3
+	cmp	#$A0                                                    ; 2
+	bcc	done_rotate_zap						; 2/3
+	lda	#$80                                                    ; 2
+	sta	ZAP_COLOR                                               ; 3
+done_rotate_zap:
+                                                                ;============
+                                                                ; 17 worse case
 
 	sta	WSYNC							; 3
 
