@@ -4,7 +4,7 @@
 
 ; Draws an asymmetric playfield
 
-.include "../vcs.inc"
+.include "../../vcs.inc"
 
 ; zero page addresses
 
@@ -309,8 +309,8 @@ overscan_loop:
 
 .align $100
 
-.include "sc_graphic.inc"
-.include "sc_overlay.inc"
+.include "test_graphic.inc"
+.include "test_overlay.inc"
 
 .segment "IRQ_VECTORS"
 	.word start	; NMI
