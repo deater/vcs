@@ -5,16 +5,15 @@ TITLE SCREEN:
 	+ VMW software logo?
 	
 SCORE:
-	+ update sprite when score changes (only 4 digits?)
+	+ update six digits? (currently 4)
 
 MANS:
 	+ update mans when die
 
 LEVEL:
-	+ see if we can get a playfield L1 or just 1 on the right
+	+ add generic code to update level on right (for when multilevel)
 
 GAMEPLAY:
-	+ collision detection
 	+ maybe make blue be a horizontal gradient pattern?
 	+ sound effects
 	+ end graphics
@@ -23,11 +22,4 @@ GAMEPLAY:
 
 MINOR:
 	+ scores/mans slightly not centered
-
-
-
-
-
-
-
 

@@ -32,7 +32,6 @@ OLD_STRONGBAD_X_END	=	$87
 STRONGBAD_X_COARSE	=	$88
 CURRENT_SCANLINE	=	$89
 FRAME			=	$8A
-ZAP_COLOR		=	$8B
 
 INL			=	$8C
 INH			=	$8D
@@ -45,10 +44,11 @@ TEMP2			=	$91
 
 TIME			=	$92
 TIME_SUBSECOND		=	$93
-
 LEVEL_OVER		=	$94
-
 MANS			=	$96
+ZAP_BASE		=	$97
+ZAP_COLOR		=	$98
+ZAP_OFFSET		=	$99
 
 SCORE_SPRITE_LOW_0	=	$A0
 SCORE_SPRITE_LOW_1	=	$A1
@@ -272,18 +272,30 @@ level_good:
 	; update zap color
 	; every other frame?
 
+	ldx	ZAP_BASE
+
 	and	#$1
 	beq	done_rotate_zap
 
-	inc	ZAP_COLOR                                               ; 5
-	lda	ZAP_COLOR                                               ; 3
-	cmp	#$A0                                                    ; 2
-	bcc	done_rotate_zap						; 2/3
-	lda	#$80                                                    ; 2
-	sta	ZAP_COLOR                                               ; 3
+	dec	ZAP_BASE						; 5
+	ldx	ZAP_BASE						; 3
+	cpx	#$7f							; 2
+	bcs	done_rotate_zap						; 2/3
+	ldx	#$AF							; 2
+	stx	ZAP_BASE						; 3
 done_rotate_zap:
+	stx	ZAP_COLOR						; 3
+dont_rotate_zap:
+
+;	dec	ZAP_BASE
+;	lda	ZAP_BASE
+;	and	#$3F
+;	sta	ZAP_BASE
+;	sta	ZAP_COLOR
+
                                                                 ;============
-                                                                ; 17 worse case
+                                                                ; 20 worse case
+
 
 	sta	WSYNC							; 3
 

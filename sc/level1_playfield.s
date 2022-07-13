@@ -218,24 +218,22 @@ after_secret:
 								; 12 / 16 / 16
 
 ; 54
-	inc	TEMP1							; 5
-	nop								; 2
-; 61
+	inc	ZAP_COLOR	; increment color			; 5
+	lda	ZAP_COLOR						; 3
+	and	#$9F		; keep in $80-$90 range			; 2
+	sta	ZAP_COLOR						; 3
+; 67
 
+	; turn playfield back to green for edge
+	; this needs to happen before cycle 70
+	lda	#$C2		; green					; 2
+	sta	COLUPF							; 3
+; 72
 
 	iny								; 2
 
-; 63
-
-
-	; this needs to happen before cycle 70
-	lda	#$C2							; 2
-	sta	COLUPF							; 3
-
-; 68
-
-	inc	TEMP1	; nop5						; 5
-	lda	TEMP1	; nop3						; 3
+; 74
+	nop
 
 ; 76
 
