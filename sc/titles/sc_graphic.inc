@@ -38,20 +38,6 @@ colors:
 	.byte $00
 	.byte $00
 
-.if 0
-text_colors:
-	.byte $00
-	.byte $80
-	.byte $80
-	.byte $80
-	.byte $80
-	.byte $80
-	.byte $80
-	.byte $80
-	.byte $00
-	.byte $00
-.endif
-
 secret_playfield1_left:
 	.byte $00
 	.byte $06
@@ -61,6 +47,18 @@ secret_playfield1_left:
 	.byte $02
 	.byte $02
 	.byte $0C
+	.byte $00
+	.byte $00
+
+collect_playfield1_left:
+	.byte $00
+	.byte $32
+	.byte $45
+	.byte $45
+	.byte $45
+	.byte $45
+	.byte $45
+	.byte $32
 	.byte $00
 	.byte $00
 
@@ -116,6 +114,19 @@ secret_playfield2_left:
 	.byte $00
 	.byte $00
 
+collect_playfield2_left:
+	.byte $00
+	.byte $22
+	.byte $22
+	.byte $22
+	.byte $22
+	.byte $22
+	.byte $22
+	.byte $EE
+	.byte $00
+	.byte $00
+
+
 ;.align $100
 
 playfield0_right:
@@ -170,6 +181,19 @@ secret_playfield0_right:
 	.byte $00
 	.byte $00
 
+collect_playfield0_right:
+	.byte $00
+	.byte $E0
+	.byte $20
+	.byte $20
+	.byte $60
+	.byte $20
+	.byte $20
+	.byte $E0
+	.byte $00
+	.byte $00
+
+
 playfield1_right:
 	.byte $00
 	.byte $00
@@ -219,5 +243,17 @@ secret_playfield1_right:
 	.byte $84
 	.byte $84
 	.byte $E4
+	.byte $00
+	.byte $00
+
+collect_playfield1_right:
+	.byte $00
+	.byte $37
+	.byte $42
+	.byte $42
+	.byte $42
+	.byte $42
+	.byte $42
+	.byte $32
 	.byte $00
 	.byte $00

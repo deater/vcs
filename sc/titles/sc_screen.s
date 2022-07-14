@@ -9,6 +9,7 @@
 ; zero page addresses
 
 FRAME	=	$80
+TEMP1	=	$90
 
 start:
 	sei		; disable interrupts
@@ -51,16 +52,21 @@ start_frame:
 	;=============================
 
 
-.repeat 34
+;.repeat 34
+;	sta	WSYNC
+;.endrepeat
+
+	ldx	#35
+vbsc_loop:
 	sta	WSYNC
-.endrepeat
+	dex
+	bne	vbsc_loop
 
-	;============================
-	; scanline 35 -- housekeeping
-
-	inc	FRAME
+; in scanline 35?
 
 	sta	WSYNC
+
+; in scanline 36
 
 	;=======================
 	; scanline 36 -- align sprite
@@ -176,9 +182,21 @@ done_inx:
 
 done_loop:
 
-	ldx	#0
+	;===================
+	; prep for text
 
-	lda	#$80	; blue
+	inc	FRAME
+	lda	FRAME
+	and	#$40
+	bne	collect
+	ldx	#0
+	beq	done_which
+collect:
+	ldx	#10
+done_which:
+	ldy	#0
+
+	lda	#$80	; always blue
 	sta	COLUPF
 
 	sta	WSYNC
@@ -186,7 +204,7 @@ done_loop:
 
 	;==========================================
 	;==========================================
-	;==========================================
+	; Bottom text
 	;==========================================
 	;==========================================
 
@@ -195,230 +213,64 @@ done_loop:
 	; need to race beam to draw other half of playfield
 
 sctext_loop:
-;	lda	text_colors,X		;				4+
-;	sta	COLUPF			; set playfield color		3
-; 7
-;	lda	sc_overlay_colors,X					; 4+
-;	sta	COLUP0							; 3
-	lda	$80	; nop 3 3
-	nop
-	nop
-	lda	$80	; nop 3 3
-	nop
-	nop
-
+	lda	$80	; nop 3 					; 3
+	inc	TEMP1	; nop 5						; 5
+	nop								; 2
+	nop								; 2
+	nop								; 2
 ; 14
 	lda	#0							; 2
-	nop
-;	lda	playfield0_left,X	;				4+
-	sta	PF0			;				3
+	sta	PF0			;				; 3
 	; must write by CPU 22 [GPU 68]
-; 21
-	lda	secret_playfield1_left,X	;			4+
-	sta	PF1			;				3
+; 19
+	lda	secret_playfield1_left,X	;			; 4+
+	sta	PF1			;				; 3
 	; must write by CPU 28 [GPU 84]
-; 28
-	lda	secret_playfield2_left,X	;				4+
-	sta	PF2			;				3
+; 26
+	lda	secret_playfield2_left,X	;			; 4+
+	sta	PF2			;				; 3
 	; must write by CPU 38 [GPU 116]
-; 35
+; 33
 
-	; at this point we're at 28 cycles
-
-	nop				;				2
-	lda	secret_playfield0_right,X	;				4+
-	sta	PF0			;				3
+	nop				;				; 2
+	lda	secret_playfield0_right,X				; 4+
+	sta	PF0			;				; 3
 	; must write by CPU 49 [GPU 148]
-; 44
-	nop				;				2
-	lda	secret_playfield1_right,X	;				4+
-	sta	PF1			;				3
+; 42
+	nop				;				; 2
+	lda	secret_playfield1_right,X				; 4+
+	sta	PF1			;				; 3
 	; must write by CPU 54 [GPU 164]
-; 53
-
-	lda	$80			; nop3				3
-	nop
-	lda	#0			;				4+
-	sta	PF2			;				3
-	; must write by CPU 65 [GPU 196]
-
-; 63
-	; now at 58
-
-	sta	WSYNC
-; 76
-
-	;=========
-	; step 2
-
-	lda	$80
-	nop
-	nop
-;	lda	text_colors,X		;				4+
-;	sta	COLUPF			; set playfield color		3
-;	lda	sc_overlay_colors,X
-;	sta	COLUP0
-
-; 7
-	nop
-	lda	#0
-;	lda	playfield0_left,X	;				4+
-	sta	PF0			;				3
-	; must write by CPU 22 [GPU 68]
-; 14
-	lda	secret_playfield1_left,X	;				4+
-	sta	PF1			;				3
-	; must write by CPU 28 [GPU 84]
-; 21
-	lda	secret_playfield2_left,X	;				4+
-	sta	PF2			;				3
-	; must write by CPU 38 [GPU 116]
-; 28
-
-	; at this point we're at 28 cycles
-
-	nop				;				2
-	lda	secret_playfield0_right,X	;				4+
-	sta	PF0			;				3
-	; must write by CPU 49 [GPU 148]
-; 37
-	nop				;				2
-	nop				;				2
-	lda	secret_playfield1_right,X	;				4+
-	sta	PF1			;				3
-	; must write by CPU 54 [GPU 164]
-; 48
-
-	lda	$80			; nop3				3
-	lda	#$0
-	nop
-	sta	PF2			;				3
-	; must write by CPU 65 [GPU 196]
-
-; 58
-	sta	WSYNC
-
-; 76
-
-	lda	$80
-	nop
-	nop
-;	lda	text_colors,X		;				4+
-;	sta	COLUPF			; set playfield color		3
-;	lda	sc_overlay_colors,X
-;	sta	COLUP0
-
-; 7
-	lda	#0
-	nop
-;	lda	playfield0_left,X	;				4+
-	sta	PF0			;				3
-	; must write by CPU 22 [GPU 68]
-; 14
-	lda	secret_playfield1_left,X	;				4+
-	sta	PF1			;				3
-	; must write by CPU 28 [GPU 84]
-; 21
-	lda	secret_playfield2_left,X	;				4+
-	sta	PF2			;				3
-	; must write by CPU 38 [GPU 116]
-; 28
-
-	; at this point we're at 28 cycles
-
-	nop				;				2
-	lda	secret_playfield0_right,X	;				4+
-	sta	PF0			;				3
-	; must write by CPU 49 [GPU 148]
-; 37
-	nop				;				2
-	nop				;				2
-	lda	secret_playfield1_right,X	;				4+
-	sta	PF1			;				3
-	; must write by CPU 54 [GPU 164]
-; 48
-
-	lda	$80			; nop3				3
-	lda	#0
-	nop
-	sta	PF2			;				3
-	; must write by CPU 65 [GPU 196]
-
-; 58
-	sta	WSYNC
-
-; 76
-
-	lda	#$80
-	nop
-	nop
-
-
-;	lda	text_colors,X		;				4+
-;	sta	COLUPF			; set playfield color		3
-;	lda	sc_overlay_colors,X
-;	sta	COLUP0
-
-; 7
-	lda	#0
-	nop
-;	lda	playfield0_left,X	;				4+
-	sta	PF0			;				3
-	; must write by CPU 22 [GPU 68]
-; 14
-	lda	secret_playfield1_left,X	;				4+
-	sta	PF1			;				3
-	; must write by CPU 28 [GPU 84]
-; 21
-	lda	secret_playfield2_left,X	;				4+
-	sta	PF2			;				3
-	; must write by CPU 38 [GPU 116]
-; 28
-
-	; at this point we're at 28 cycles
-
-	nop				;				2
-	lda	secret_playfield0_right,X	;				4+
-	sta	PF0			;				3
-	; must write by CPU 49 [GPU 148]
-; 37
-	nop				;				2
-	nop				;				2
-	lda	secret_playfield1_right,X	;				4+
-	sta	PF1			;				3
-	; must write by CPU 54 [GPU 164]
-; 48
-
+; 51
 	nop								; 2
-	nop								; 2
-	nop
-	lda	#0
+	lda	#0			;				; 2
 	sta	PF2			;				; 3
 	; must write by CPU 65 [GPU 196]
+	nop								; 2
 
-; 59
-	inx								; 2
-	nop
-	nop
-	lda	#$80
+; 60
 
-; 68
+	iny								; 2
+	tya								; 2
+	and	#$3							; 2
+	beq	yes_inx2						; 2/3
+	.byte	$A5	; begin of LDA ZP				; 3
+yes_inx2:
+	inx		; $E8 should be harmless to load		; 2
+done_inx2:
+								;===========
+								; 11/11
 
-
-
-	cpx	#(40/4)							; 2
-	beq	done_sctext_loop					; 2/3
-	jmp	sctext_loop						; 3
-
+; 71
+	cpy	#36							; 2
+	bne	sctext_loop						; 2/3
 ; 76
 
+
 done_sctext_loop:
+	sta	WSYNC
+	sta	WSYNC
 
-
-
-;.repeat	41
-;	sta	WSYNC
-;.endrepeat
 
 	;==========================
 	; overscan

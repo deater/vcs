@@ -1,3 +1,21 @@
+
+
+
+clever coding:
+	needed to only update X every 4 scanlines.  Also needed to shave
+	off two cycles.  Ended up with this code that branches into
+	the middle of an instruction to get the proper timing:
+
+	iny                                                             ; 2
+	tya                                                             ; 2
+	and     #$3                                                     ; 2
+	beq     yes_inx                                                 ; 2/3
+	.byte   $A5     ; begin of LDA ZP                               ; 3
+yes_inx:
+	inx             ; $E8 should be harmless to load                ; 2
+								;============
+								; 11 cycles
+
 useful webpages:
 	combat disassembly:
 		https://www.atariage.com/2600/archives/combat_asm/index.html
