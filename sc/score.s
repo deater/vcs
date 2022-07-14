@@ -103,12 +103,13 @@ blurgh:
 
 	; try to draw level number on right of screen
 
-	nop								; 2
+;	nop								; 2
 	lda	$80	; nop 3						; 3
 
 	lda	#$36	; orange					; 2
 	sta	COLUPF  ; 						; 3
-	lda	#$20	; 2   '1' sprite?				; 2
+;	lda	#$20	; 2   '1' sprite?				; 2
+	lda	LEVEL_SPRITE0,X						; 4
 	sta	PF0 							; 3
 
 ; 37

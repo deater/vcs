@@ -13,6 +13,9 @@ init_game:
 	lda	#3
 	sta	MANS
 
+	lda	#1
+	sta	LEVEL
+
 	jsr	disable_sound
 
 	rts

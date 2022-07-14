@@ -1,3 +1,6 @@
+	;===============================================
+	; 13 scanlines to update top of screen sprites
+
 
 update_score:
 
@@ -164,5 +167,33 @@ mans_loop:
 
 ; 839 (just over 11)
 
+	; update level
+
+	ldy	LEVEL							; 3
+	dey								; 2
+	tya								; 2
+	asl								; 2
+	asl								; 2
+	asl								; 2
+	asl								; 2
+	tay			; point to proper sprite offset		; 2
+	ldx	#15							; 2
+								;==========
+								;	19
+; 858
+
+level_write_loop:
+	lda	big_level_one,Y						; 4
+	iny								; 2
+	sta	LEVEL_SPRITE0,X						; 4
+	dex								; 2
+	sta	LEVEL_SPRITE0,X						; 4
+	dex								; 2
+	bpl	level_write_loop					; 2/3
+
+	; (8*21)-1 = 167
+
+
+; 1025 = 13+ scanlines
 	sta	WSYNC							; 3
 

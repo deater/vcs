@@ -32,6 +32,7 @@ OLD_STRONGBAD_X_END	=	$87
 STRONGBAD_X_COARSE	=	$88
 CURRENT_SCANLINE	=	$89
 FRAME			=	$8A
+LEVEL			=	$8B
 
 INL			=	$8C
 INH			=	$8D
@@ -78,6 +79,23 @@ MANS_SPRITE_3		=	$B3
 MANS_SPRITE_4		=	$B4
 MANS_SPRITE_5		=	$B5
 MANS_SPRITE_6		=	$B6
+
+LEVEL_SPRITE0		=	$C0
+LEVEL_SPRITE1		=	$C1
+LEVEL_SPRITE2		=	$C2
+LEVEL_SPRITE3		=	$C3
+LEVEL_SPRITE4		=	$C4
+LEVEL_SPRITE5		=	$C5
+LEVEL_SPRITE6		=	$C6
+LEVEL_SPRITE7		=	$C7
+LEVEL_SPRITE8		=	$C8
+LEVEL_SPRITE9		=	$C9
+LEVEL_SPRITE10		=	$CA
+LEVEL_SPRITE11		=	$CB
+LEVEL_SPRITE12		=	$CC
+LEVEL_SPRITE13		=	$CD
+LEVEL_SPRITE14		=	$CE
+LEVEL_SPRITE15		=	$CF
 
 start:
 	;============================
@@ -128,16 +146,16 @@ start_frame:
 	;=================================
 	;=================================
 
-.repeat 16
+.repeat 14
 	sta	WSYNC
 .endrepeat
 
 	;=============================
 	; now at VBLANK scanline 18
 	;=============================
-	; update score/mans values
+	; update score/mans/level values
 
-	; 12 scanlines
+	; 14 scanlines
 	.include "update_score.s"
 
 	;=============================
