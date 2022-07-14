@@ -133,7 +133,7 @@ colorful_loop:
 	lda	sc_overlay,X						; 4
 	sta	GRP0							; 3
 ; 36
-	lda	$80	; nop3						; 3
+;	lda	$80	; nop3						; 3
 ; 39
 
 	lda	playfield0_right,X	;				; 4+
@@ -143,24 +143,28 @@ colorful_loop:
 	lda	playfield1_right,X	;				; 4+
 	sta	PF1			;				; 3
 	; must write by CPU 54 [GPU 164]
+
 ; 53
 	lda	#$0							; 2
 	sta	PF2			;				; 3
 	; must write by CPU 65 [GPU 196]
 
 ; 58
+	; make secret yellow
+	lda	#$1C							; 2
+	sta	COLUPF							; 3
+; 63
+
 	iny								; 2
 	tya								; 2
 	and	#$3							; 2
-	bne	no_incx							; 2/3
-	inx								; 2
-	jmp	done_incx						; 3
-no_incx:
-	nop								; 2
-	nop								; 2
-done_incx:
+	beq	yes_inx							; 2/3
+	.byte	$A5	; begin of LDA ZP				; 3
+yes_inx:
+	inx		; $E8 should be harmless to load		; 2
+done_inx:
 								;===========
-								; 13/9
+								; 11/11
 
 ; 71
 	cpy	#(152)							; 2

@@ -176,15 +176,15 @@ playfield1_right:
 	.byte $00
 	.byte $00
 	.byte $00
+	.byte $0E
+	.byte $0E
+	.byte $0E
+	.byte $0E
+	.byte $0E
+	.byte $0E
 	.byte $00
 	.byte $00
 	.byte $00
-	.byte $38
-	.byte $38
-	.byte $38
-	.byte $38
-	.byte $38
-	.byte $38
 	.byte $C0
 	.byte $C0
 	.byte $C0
