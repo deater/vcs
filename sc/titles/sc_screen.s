@@ -94,6 +94,7 @@ scad_x:
 	lda	#$80		; set color
 	sta	COLUP0
 
+	ldy	#0
 	ldx	#0
 	stx	GRP0
 
@@ -127,39 +128,51 @@ colorful_loop:
 	sta	PF2			;				; 3
 	; must write by CPU 38 [GPU 116]
 ; 29
-
 	; at this point we're at 29 cycles
-	nop								; 2
-	nop								; 2
-	nop								; 2
-	nop				;				; 2
-	nop				;				; 2
+
+	lda	sc_overlay,X						; 4
+	sta	GRP0							; 3
+; 36
+	lda	$80	; nop3						; 3
 ; 39
+
 	lda	playfield0_right,X	;				; 4+
 	sta	PF0			;				; 3
 	; must write by CPU 49 [GPU 148]
-; 44
+; 46
 	lda	playfield1_right,X	;				; 4+
 	sta	PF1			;				; 3
 	; must write by CPU 54 [GPU 164]
 ; 53
-
 	lda	#$0							; 2
 	sta	PF2			;				; 3
 	; must write by CPU 65 [GPU 196]
 
-	; now at 58
-
-	lda	$80			; nop3				; 3
+; 58
+	iny								; 2
+	tya								; 2
+	and	#$3							; 2
+	bne	no_incx							; 2/3
+	inx								; 2
+	jmp	done_incx						; 3
+no_incx:
 	nop								; 2
+	nop								; 2
+done_incx:
+								;===========
+								; 13/9
 
-; 63
-
-
-	sta	WSYNC
+; 71
+	cpy	#(152)							; 2
+	bne	colorful_loop						; 2/3
 ; 76
 
 
+
+;	sta	WSYNC
+; 76
+
+.if 0
 	;=========
 	; step 2
 
@@ -324,6 +337,7 @@ colorful_loop:
 	jmp	colorful_loop						; 3
 
 ; 76
+.endif
 
 
 done_loop:

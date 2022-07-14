@@ -1,3 +1,5 @@
+.align $100
+
 sc_overlay_colors:
 	.byte $00
 	.byte $00
