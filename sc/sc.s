@@ -50,6 +50,11 @@ ZAP_BASE		=	$97
 ZAP_COLOR		=	$98
 ZAP_OFFSET		=	$99
 
+SFX_RIGHT		=	$9A
+SFX_LEFT		=	$9B
+SOUND_TO_PLAY		=	$9C
+
+
 SCORE_SPRITE_LOW_0	=	$A0
 SCORE_SPRITE_LOW_1	=	$A1
 SCORE_SPRITE_LOW_2	=	$A2
@@ -410,9 +415,28 @@ vertical_blank:
 	;===========================
 	;===========================
 
-	.repeat 29
+	.repeat 27
 	sta	WSYNC
 	.endrepeat
+
+	;==================================
+	; overscan 28, trigger sound
+
+	ldy	SOUND_TO_PLAY
+	beq	no_sound_to_play
+
+	jsr	trigger_sound		; 6+40
+
+	ldy	#0
+	sty	SOUND_TO_PLAY
+no_sound_to_play:
+	sta	WSYNC
+
+	;==================================
+	; overscan 29, update sound
+
+	.include "sound_update.s"
+	sta	WSYNC
 
 	;==================================
 	; overscan 30, collision detection
@@ -436,6 +460,9 @@ collision_wall:
 	lda	OLD_STRONGBAD_Y_END
 	sta	STRONGBAD_Y_END
 
+	ldy	#SFX_COLLIDE
+	sty	SOUND_TO_PLAY
+
 no_collision_wall:
 	sta	WSYNC
 
@@ -444,6 +471,7 @@ no_collision_wall:
 .include	"adjust_sprite.s"
 .include	"init_game.s"
 .include	"init_level.s"
+.include	"sound_trigger.s"
 
 ; data, which has alignment constraints
 .include	"game_data.s"

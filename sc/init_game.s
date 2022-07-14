@@ -13,4 +13,6 @@ init_game:
 	lda	#3
 	sta	MANS
 
+	jsr	disable_sound
+
 	rts
