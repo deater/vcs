@@ -23,7 +23,7 @@ sc_screen.o:	sc_screen.s sc_graphic.inc sc_overlay.inc
 title_screen.rom:	title_screen.o
 	ld65 -o title_screen.rom title_screen.o -C $(LINKER_SCRIPT)/atari2600_f000.inc
 
-title_screen.o:	title_screen.s title_graphic.inc
+title_screen.o:	title_screen.s title_graphic.inc title_data.inc
 	ca65 -o title_screen.o title_screen.s -l title_screen.lst
 
 
