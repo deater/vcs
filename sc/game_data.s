@@ -157,15 +157,11 @@ mans_threes:	.byte	$02,$85,$81,$02,$81,$85,$02,$00
 
 ;big_level_one:	.byte	$20,$60,$20,$20,$20,$20,$20,$70
 
-big_level_one:	.byte	$70,$20,$20,$20,$20,$20,$60,$20
-
-;big_level_one:	.byte	$20,$20,$20,$20,$20,$20,$A0,$F0
-
-big_level_two:	.byte	$00,$00,$00,$00,$00,$00,$00,$00
-
-big_level_three:.byte	$00,$00,$00,$00,$00,$00,$00,$00
-
-big_level_four:	.byte	$50,$50,$50,$70,$10,$10,$10,$10
+;                       frontward at end    middle  backwards at start
+big_level_one:	.byte	$20,$20,$70,         $20,  $20,$20,$60,$20
+big_level_two:	.byte	$40,$40,$70,         $20,  $20,$50,$10,$20
+big_level_three:.byte	$10,$60,$00,         $10,  $60,$10,$10,$60
+big_level_four:	.byte	$10,$10,$10,         $70,  $50,$50,$50,$50
 
 
 

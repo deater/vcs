@@ -36,25 +36,26 @@ blurgh2:
 
 	; try to draw level number on right of screen
 
-;	nop								; 2
-	lda     $80	; nop 3						; 3
+;	lda     $80	; nop 3						; 3
 
 	lda	#$36	; orange					; 2
 	sta	COLUPF	;						; 3
-	lda	#$20	; 2   '1' sprite?				; 2
+
+	lda	LEVEL_SPRITE9,X						; 4
+;	lda	#$AA	; 2   '1' sprite?				; 2
 	sta	PF0							; 3
-; 37
+; 36
 
 	; need to write GRP0 at 44-47
 
 	lda	mans_bitmap2,X		; load sprite data		; 4+
 	ldy	MANS_SPRITE_0,X		; load sprite data		; 4
-; 45
+; 44
 
 	sta	GRP0			;				; 3
-; 48
+; 47
 	sty	GRP1							; 3
-; 51
+; 50
 
 	dex								; 5
 	bpl	manloop							; 2/3

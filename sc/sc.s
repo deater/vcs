@@ -372,7 +372,7 @@ dont_rotate_zap:
 	inc	TEMP1
 	inc	TEMP1
 	inc	TEMP1
-	lda	#$20
+	lda	LEVEL_SPRITE8
 	sta	PF0
 
 	sta	WSYNC
@@ -387,7 +387,7 @@ dont_rotate_zap:
 	inc	TEMP1
 	inc	TEMP1
 	inc	TEMP1
-	lda	#$20
+	lda	LEVEL_SPRITE9
 	sta	PF0
 
 	sta	WSYNC

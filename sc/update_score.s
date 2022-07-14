@@ -175,12 +175,11 @@ mans_loop:
 	asl								; 2
 	asl								; 2
 	asl								; 2
-	asl								; 2
 	tay			; point to proper sprite offset		; 2
 	ldx	#15							; 2
 								;==========
-								;	19
-; 858
+								;	17
+; 856
 
 level_write_loop:
 	lda	big_level_one,Y						; 4
@@ -194,6 +193,6 @@ level_write_loop:
 	; (8*21)-1 = 167
 
 
-; 1025 = 13+ scanlines
+; 1023 = 13+ scanlines
 	sta	WSYNC							; 3
 
