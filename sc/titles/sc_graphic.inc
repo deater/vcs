@@ -37,106 +37,22 @@ colors:
 	.byte $0E
 	.byte $00
 	.byte $00
-	.byte $00
-	.byte $80
-	.byte $80
-	.byte $80
-	.byte $80
-	.byte $80
-	.byte $80
-	.byte $80
-	.byte $00
-	.byte $00
 
-playfield0_left:
+.if 0
+text_colors:
+	.byte $00
+	.byte $80
+	.byte $80
+	.byte $80
+	.byte $80
+	.byte $80
+	.byte $80
+	.byte $80
 	.byte $00
 	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
+.endif
 
-playfield1_left:
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
+secret_playfield1_left:
 	.byte $00
 	.byte $06
 	.byte $08
@@ -187,6 +103,8 @@ playfield2_left:
 	.byte $70
 	.byte $00
 	.byte $00
+
+secret_playfield2_left:
 	.byte $00
 	.byte $67
 	.byte $11
@@ -198,7 +116,7 @@ playfield2_left:
 	.byte $00
 	.byte $00
 
-.align $100
+;.align $100
 
 playfield0_right:
 	.byte $10
@@ -239,6 +157,8 @@ playfield0_right:
 	.byte $70
 	.byte $00
 	.byte $00
+
+secret_playfield0_right:
 	.byte $00
 	.byte $30
 	.byte $50
@@ -289,6 +209,8 @@ playfield1_right:
 	.byte $00
 	.byte $00
 	.byte $00
+
+secret_playfield1_right:
 	.byte $00
 	.byte $EE
 	.byte $84
@@ -297,55 +219,5 @@ playfield1_right:
 	.byte $84
 	.byte $84
 	.byte $E4
-	.byte $00
-	.byte $00
-
-playfield2_right:
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
 	.byte $00
 	.byte $00

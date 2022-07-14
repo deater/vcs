@@ -1,4 +1,4 @@
-; Test the images for sc
+; Test the secret collect
 
 ; by Vince `deater` Weaver <vince@deater.net>
 
@@ -8,6 +8,7 @@
 
 ; zero page addresses
 
+FRAME	=	$80
 
 start:
 	sei		; disable interrupts
@@ -18,6 +19,7 @@ start:
 	; clear out the Zero Page (RAM and TIA registers)
 
 	ldx	#0
+	stx	FRAME
 	txa
 clear_loop:
 	sta	$0,X
@@ -49,9 +51,16 @@ start_frame:
 	;=============================
 
 
-.repeat 35
+.repeat 34
 	sta	WSYNC
 .endrepeat
+
+	;============================
+	; scanline 35 -- housekeeping
+
+	inc	FRAME
+
+	sta	WSYNC
 
 	;=======================
 	; scanline 36 -- align sprite
@@ -96,53 +105,60 @@ scad_x:
 	;=============================================
 	;=============================================
 
-	; draw 192 lines
+	; draw 152 lines
 	; need to race beam to draw other half of playfield
 
 colorful_loop:
-	lda	colors,X		;				4+
-	sta	COLUPF			; set playfield color		3
+	lda	colors,X		;				; 4+
+	sta	COLUPF			; set playfield color		; 3
 ; 7
 	lda	sc_overlay_colors,X					; 4+
 	sta	COLUP0							; 3
 
 ; 14
-	lda	playfield0_left,X	;				4+
-	sta	PF0			;				3
+	lda	#0			; always zero			; 2
+	sta	PF0			;				; 3
 	; must write by CPU 22 [GPU 68]
-; 21
-	lda	playfield1_left,X	;				4+
-	sta	PF1			;				3
+; 19
+	sta	PF1			;				; 3
 	; must write by CPU 28 [GPU 84]
-; 28
-	lda	playfield2_left,X	;				4+
-	sta	PF2			;				3
+; 22
+	lda	playfield2_left,X	;				; 4+
+	sta	PF2			;				; 3
 	; must write by CPU 38 [GPU 116]
-; 35
+; 29
 
-	; at this point we're at 28 cycles
-
-	nop				;				2
-	lda	playfield0_right,X	;				4+
-	sta	PF0			;				3
+	; at this point we're at 29 cycles
+	nop								; 2
+	nop								; 2
+	nop								; 2
+	nop				;				; 2
+	nop				;				; 2
+; 39
+	lda	playfield0_right,X	;				; 4+
+	sta	PF0			;				; 3
 	; must write by CPU 49 [GPU 148]
 ; 44
-	nop				;				2
-	lda	playfield1_right,X	;				4+
-	sta	PF1			;				3
+	lda	playfield1_right,X	;				; 4+
+	sta	PF1			;				; 3
 	; must write by CPU 54 [GPU 164]
 ; 53
 
-	lda	$80			; nop3				3
-	lda	playfield2_right,X	;				4+
-	sta	PF2			;				3
+	lda	#$0							; 2
+	sta	PF2			;				; 3
 	; must write by CPU 65 [GPU 196]
 
-; 63
 	; now at 58
+
+	lda	$80			; nop3				; 3
+	nop								; 2
+
+; 63
+
 
 	sta	WSYNC
 ; 76
+
 
 	;=========
 	; step 2
@@ -153,11 +169,15 @@ colorful_loop:
 ;	sta	COLUP0
 
 ; 7
-	lda	playfield0_left,X	;				4+
+	nop
+	lda	#0
+;	lda	playfield0_left,X	;				4+
 	sta	PF0			;				3
 	; must write by CPU 22 [GPU 68]
 ; 14
-	lda	playfield1_left,X	;				4+
+	nop
+	nop
+;	lda	playfield1_left,X	;				4+
 	sta	PF1			;				3
 	; must write by CPU 28 [GPU 84]
 ; 21
@@ -181,7 +201,9 @@ colorful_loop:
 ; 48
 
 	lda	$80			; nop3				3
-	lda	playfield2_right,X	;				4+
+	lda	#0
+	nop
+;	lda	playfield2_right,X	;				4+
 	sta	PF2			;				3
 	; must write by CPU 65 [GPU 196]
 
@@ -190,17 +212,24 @@ colorful_loop:
 
 ; 76
 
+	;============
+	; step 3
+
 	lda	colors,X		;				4+
 	sta	COLUPF			; set playfield color		3
 ;	lda	sc_overlay_colors,X
 ;	sta	COLUP0
 
 ; 7
-	lda	playfield0_left,X	;				4+
+	nop
+	lda	#0
+;	lda	playfield0_left,X	;				4+
 	sta	PF0			;				3
 	; must write by CPU 22 [GPU 68]
 ; 14
-	lda	playfield1_left,X	;				4+
+	nop
+	nop
+;	lda	playfield1_left,X	;				4+
 	sta	PF1			;				3
 	; must write by CPU 28 [GPU 84]
 ; 21
@@ -224,7 +253,8 @@ colorful_loop:
 ; 48
 
 	lda	$80			; nop3				3
-	lda	playfield2_right,X	;				4+
+	nop
+	lda	#0
 	sta	PF2			;				3
 	; must write by CPU 65 [GPU 196]
 
@@ -233,17 +263,24 @@ colorful_loop:
 
 ; 76
 
+	;===================
+	; step4
+
 	lda	colors,X		;				4+
 	sta	COLUPF			; set playfield color		3
 ;	lda	sc_overlay_colors,X
 ;	sta	COLUP0
 
 ; 7
-	lda	playfield0_left,X	;				4+
+	lda	#0
+	nop
+;	lda	playfield0_left,X	;				4+
 	sta	PF0			;				3
 	; must write by CPU 22 [GPU 68]
 ; 14
-	lda	playfield1_left,X	;				4+
+	nop
+	nop
+;	lda	playfield1_left,X	;				4+
 	sta	PF1			;				3
 	; must write by CPU 28 [GPU 84]
 ; 21
@@ -268,7 +305,8 @@ colorful_loop:
 
 	nop								; 2
 	nop								; 2
-	lda	playfield2_right,X	;				; 4+
+	nop
+	lda	#0
 	sta	PF2			;				; 3
 	; must write by CPU 65 [GPU 196]
 
@@ -281,15 +319,258 @@ colorful_loop:
 
 
 
-	cpx	#(192/4)						; 2
+	cpx	#(152/4)						; 2
 	beq	done_loop						; 2/3
 	jmp	colorful_loop						; 3
 
 ; 76
 
+
 done_loop:
 
+	ldx	#0
 
+	lda	#$80	; blue
+	sta	COLUPF
+
+	sta	WSYNC
+
+
+	;==========================================
+	;==========================================
+	;==========================================
+	;==========================================
+	;==========================================
+
+
+	; draw 40 lines
+	; need to race beam to draw other half of playfield
+
+sctext_loop:
+;	lda	text_colors,X		;				4+
+;	sta	COLUPF			; set playfield color		3
+; 7
+;	lda	sc_overlay_colors,X					; 4+
+;	sta	COLUP0							; 3
+	lda	$80	; nop 3 3
+	nop
+	nop
+	lda	$80	; nop 3 3
+	nop
+	nop
+
+; 14
+	lda	#0							; 2
+	nop
+;	lda	playfield0_left,X	;				4+
+	sta	PF0			;				3
+	; must write by CPU 22 [GPU 68]
+; 21
+	lda	secret_playfield1_left,X	;			4+
+	sta	PF1			;				3
+	; must write by CPU 28 [GPU 84]
+; 28
+	lda	secret_playfield2_left,X	;				4+
+	sta	PF2			;				3
+	; must write by CPU 38 [GPU 116]
+; 35
+
+	; at this point we're at 28 cycles
+
+	nop				;				2
+	lda	secret_playfield0_right,X	;				4+
+	sta	PF0			;				3
+	; must write by CPU 49 [GPU 148]
+; 44
+	nop				;				2
+	lda	secret_playfield1_right,X	;				4+
+	sta	PF1			;				3
+	; must write by CPU 54 [GPU 164]
+; 53
+
+	lda	$80			; nop3				3
+	nop
+	lda	#0			;				4+
+	sta	PF2			;				3
+	; must write by CPU 65 [GPU 196]
+
+; 63
+	; now at 58
+
+	sta	WSYNC
+; 76
+
+	;=========
+	; step 2
+
+	lda	$80
+	nop
+	nop
+;	lda	text_colors,X		;				4+
+;	sta	COLUPF			; set playfield color		3
+;	lda	sc_overlay_colors,X
+;	sta	COLUP0
+
+; 7
+	nop
+	lda	#0
+;	lda	playfield0_left,X	;				4+
+	sta	PF0			;				3
+	; must write by CPU 22 [GPU 68]
+; 14
+	lda	secret_playfield1_left,X	;				4+
+	sta	PF1			;				3
+	; must write by CPU 28 [GPU 84]
+; 21
+	lda	secret_playfield2_left,X	;				4+
+	sta	PF2			;				3
+	; must write by CPU 38 [GPU 116]
+; 28
+
+	; at this point we're at 28 cycles
+
+	nop				;				2
+	lda	secret_playfield0_right,X	;				4+
+	sta	PF0			;				3
+	; must write by CPU 49 [GPU 148]
+; 37
+	nop				;				2
+	nop				;				2
+	lda	secret_playfield1_right,X	;				4+
+	sta	PF1			;				3
+	; must write by CPU 54 [GPU 164]
+; 48
+
+	lda	$80			; nop3				3
+	lda	#$0
+	nop
+	sta	PF2			;				3
+	; must write by CPU 65 [GPU 196]
+
+; 58
+	sta	WSYNC
+
+; 76
+
+	lda	$80
+	nop
+	nop
+;	lda	text_colors,X		;				4+
+;	sta	COLUPF			; set playfield color		3
+;	lda	sc_overlay_colors,X
+;	sta	COLUP0
+
+; 7
+	lda	#0
+	nop
+;	lda	playfield0_left,X	;				4+
+	sta	PF0			;				3
+	; must write by CPU 22 [GPU 68]
+; 14
+	lda	secret_playfield1_left,X	;				4+
+	sta	PF1			;				3
+	; must write by CPU 28 [GPU 84]
+; 21
+	lda	secret_playfield2_left,X	;				4+
+	sta	PF2			;				3
+	; must write by CPU 38 [GPU 116]
+; 28
+
+	; at this point we're at 28 cycles
+
+	nop				;				2
+	lda	secret_playfield0_right,X	;				4+
+	sta	PF0			;				3
+	; must write by CPU 49 [GPU 148]
+; 37
+	nop				;				2
+	nop				;				2
+	lda	secret_playfield1_right,X	;				4+
+	sta	PF1			;				3
+	; must write by CPU 54 [GPU 164]
+; 48
+
+	lda	$80			; nop3				3
+	lda	#0
+	nop
+	sta	PF2			;				3
+	; must write by CPU 65 [GPU 196]
+
+; 58
+	sta	WSYNC
+
+; 76
+
+	lda	#$80
+	nop
+	nop
+
+
+;	lda	text_colors,X		;				4+
+;	sta	COLUPF			; set playfield color		3
+;	lda	sc_overlay_colors,X
+;	sta	COLUP0
+
+; 7
+	lda	#0
+	nop
+;	lda	playfield0_left,X	;				4+
+	sta	PF0			;				3
+	; must write by CPU 22 [GPU 68]
+; 14
+	lda	secret_playfield1_left,X	;				4+
+	sta	PF1			;				3
+	; must write by CPU 28 [GPU 84]
+; 21
+	lda	secret_playfield2_left,X	;				4+
+	sta	PF2			;				3
+	; must write by CPU 38 [GPU 116]
+; 28
+
+	; at this point we're at 28 cycles
+
+	nop				;				2
+	lda	secret_playfield0_right,X	;				4+
+	sta	PF0			;				3
+	; must write by CPU 49 [GPU 148]
+; 37
+	nop				;				2
+	nop				;				2
+	lda	secret_playfield1_right,X	;				4+
+	sta	PF1			;				3
+	; must write by CPU 54 [GPU 164]
+; 48
+
+	nop								; 2
+	nop								; 2
+	nop
+	lda	#0
+	sta	PF2			;				; 3
+	; must write by CPU 65 [GPU 196]
+
+; 59
+	inx								; 2
+	nop
+	nop
+	lda	#$80
+
+; 68
+
+
+
+	cpx	#(40/4)							; 2
+	beq	done_sctext_loop					; 2/3
+	jmp	sctext_loop						; 3
+
+; 76
+
+done_sctext_loop:
+
+
+
+;.repeat	41
+;	sta	WSYNC
+;.endrepeat
 
 	;==========================
 	; overscan
