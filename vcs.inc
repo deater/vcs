@@ -68,14 +68,20 @@ RESP1	=	$11
 RESM0	=	$12
 RESM1	=	$13
 RESBL	=	$14	; reset ball
-AUDC0	=	$15
+
+; Audio
+AUDC0	=	$15	; audio control, 4 bits
 AUDC1	=	$16
-AUDF0	=	$17
-AUDF1	=	$18
-AUDV0	=	$19
+
+AUDF0	=	$17	; audio frequency divider 5 bits (0=1, 1=2, .. 31=32) 
+AUDF1	=	$18	;
+
+AUDV0	=	$19	; audio volume (0..15)
 AUDV1	=	$1A
-GRP0	=	$1B
-GRP1	=	$1C
+
+
+GRP0	=	$1B	; graphics for P0
+GRP1	=	$1C	; graphics for P1
 ENAM0	=	$1D
 ENAM1	=	$1E
 ENABL	=	$1F

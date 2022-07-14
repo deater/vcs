@@ -445,6 +445,11 @@ no_sound_to_play:
 	bpl	no_collision_secret
 collision_secret:
 	inc	LEVEL_OVER
+	ldy	#SFX_COLLECT
+;	ldy	#SFX_GAMEOVER
+	sty	SOUND_TO_PLAY
+	jmp	collision_done
+
 no_collision_secret:
 
 	lda	CXP0FB			; check if p0/pf collision
@@ -460,10 +465,14 @@ collision_wall:
 	lda	OLD_STRONGBAD_Y_END
 	sta	STRONGBAD_Y_END
 
+;	ldy	#SFX_ZAP
 	ldy	#SFX_COLLIDE
 	sty	SOUND_TO_PLAY
 
 no_collision_wall:
+
+
+collision_done:
 	sta	WSYNC
 
 	jmp	start_frame
