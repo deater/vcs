@@ -1,6 +1,6 @@
 LINKER_SCRIPT = ../../linker_script
 
-all:	test.rom sc_screen.rom title_screen.rom
+all:	test.rom sc_screen.rom title_screen.rom game_over_screen.rom
 
 ###
 
@@ -26,11 +26,19 @@ title_screen.rom:	title_screen.o
 title_screen.o:	title_screen.s title_graphic.inc title_data.inc
 	ca65 -o title_screen.o title_screen.s -l title_screen.lst
 
+###
+
+game_over_screen.rom:	game_over_screen.o
+	ld65 -o game_over_screen.rom game_over_screen.o -C $(LINKER_SCRIPT)/atari2600_f000.inc
+
+game_over_screen.o:	game_over_screen.s game_over.inc game_overlay.inc
+	ca65 -o game_over_screen.o game_over_screen.s -l game_over_screen.lst
+
 
 
 ###
 
 clean:	
-	rm -f *~ *.o *.lst test.rom sc_screen.rom title_screen.rom
+	rm -f *~ *.o *.lst test.rom sc_screen.rom title_screen.rom game_over_screen.rom
 
 
