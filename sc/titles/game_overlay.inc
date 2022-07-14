@@ -47,3 +47,54 @@ game_overlay:
 	.byte $00
 	.byte $00
 	.byte $00
+
+game_overlay2:
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $80
+	.byte $80
+	.byte $FC
+	.byte $FC
+	.byte $80
+	.byte $80
+	.byte $80
+	.byte $80
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $80
+	.byte $80
+	.byte $C0
+	.byte $C0
+	.byte $E0
+	.byte $E0
+	.byte $F0
+	.byte $F0
+	.byte $F0
+	.byte $F0
+	.byte $F0
+	.byte $F0
+	.byte $F0
+	.byte $F0
+	.byte $E0
+	.byte $E0
+	.byte $C0
+	.byte $C0
+	.byte $80
+	.byte $80
+	.byte $F8
+	.byte $F8
+	.byte $08
+	.byte $08
+	.byte $38
+	.byte $38
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+

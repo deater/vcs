@@ -8,6 +8,11 @@
 
 ; zero page addresses
 
+FRAME	=	$80
+
+INL	=	$84
+INH	=	$85
+
 TEMP1	=	$90
 TEMP2	=	$91
 
@@ -86,10 +91,29 @@ scad_x:
 
 	lda	#$1C		; yellow		; set color
 	sta	COLUP0
+	sta	COLUPF
 
 	ldy	#0
+	sty	GRP0
+
 	ldx	#0
-	stx	GRP0
+
+	inc	FRAME
+	lda	FRAME
+	and	#$20
+	bne	beak_closed
+beak_open:
+	lda	#<game_overlay
+	sta	INL
+	lda	#>game_overlay
+	jmp	beak_done
+beak_closed:
+	lda	#<game_overlay2
+	sta	INL
+	lda	#>game_overlay2
+beak_done:
+	sta	INH
+
 
 	sta	WSYNC
 
@@ -103,57 +127,59 @@ scad_x:
 	; need to race beam to draw other half of playfield
 
 game_over_loop:
-	lda	colors,X		;				; 4+
+	lda	colors,Y		;				; 4+
 	sta	COLUPF			; set playfield color		; 3
 ; 7
-	lda	playfield0_left,X	;				; 4+
+	lda	playfield0_left,Y	;				; 4+
 	sta	PF0			;				; 3
 	; must write by CPU 22 [GPU 68]
 ; 14
-	lda	playfield1_left,X	;				; 4+
+	lda	playfield1_left,Y	;				; 4+
 	sta	PF1			;				; 3
 	; must write by CPU 28 [GPU 84]
 
 ; 21
 
-	lda	playfield2_left,X	;				; 4+
+	lda	playfield2_left,Y	;				; 4+
 	sta	PF2			;				; 3
 	; must write by CPU 38 [GPU 116]
 
 ; 28
-	lda	game_overlay,X						; 4
+	lda	(INL),Y							; 5
+;	lda	game_overlay,X						; 4
 	sta	GRP0							; 3
-; 35
+; 36
 
 	; at this point we're at 28 cycles
-	lda	playfield0_right,X	;				; 4+
+	lda	playfield0_right,Y	;				; 4+
 	sta	PF0			;				; 3
 	; must write by CPU 49 [GPU 148]
-; 42
-	nop								; 2
-	lda	playfield1_right,X	;				; 4+
+; 43
+;	nop								; 2
+	lda	playfield1_right,Y	;				; 4+
 	sta	PF1			;				; 3
 	; must write by CPU 54 [GPU 164]
-; 51
-	nop								; 2
-	lda	playfield2_right,X	;				; 4+
+; 50
+	lda	$80							; 3
+;	nop								; 
+	lda	playfield2_right,Y	;				; 4+
 	sta	PF2			;				; 3
 	; must write by CPU 65 [GPU 196]
 
 ; 60
-	iny                                                             ; 2
-	tya                                                             ; 2
+	inx                                                             ; 2
+	txa                                                             ; 2
 	and	#$3                                                     ; 2
-	beq	yes_inx                                                 ; 2/3
+	beq	yes_iny                                                 ; 2/3
 	.byte	$A5     ; begin of LDA ZP                               ; 3
-yes_inx:
-	inx		; $E8 should be harmless to load                ; 2
-done_inx:
+yes_iny:
+	iny		; $E8 should be harmless to load                ; 2
+done_iny:
                                                                 ;===========
                                                                 ; 11/11
 
 ; 71
-	cpy	#192							; 2
+	cpx	#192							; 2
 	bne	game_over_loop						; 2/3
 
 
