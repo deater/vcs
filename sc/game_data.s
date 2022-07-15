@@ -3,28 +3,51 @@
 ; otherwise it can take an extra cycle to load which will throw
 ; off all of our calculations
 
-.align	$100
+;.align	$100
 
 ; Level 1 Playfield data
 
-playfield0_left:
+l1_playfield0_left:
 	.byte	$F0,$10,$10,$10,$10,$10,$10,$10
 	.byte	$10,$10,$10,$10,$10,$10,$10,$10
 	.byte	$10,$10,$10,$10,$10,$10,$10,$10
 	.byte	$10,$10,$10,$10,$10,$10,$10,$10
 	.byte	$10,$10,$10,$10,$10,$F0
-playfield1_left:
+l1_playfield1_left:
 	.byte	$FF,$00,$00,$00,$00,$7f,$7f,$7f
 	.byte	$7f,$18,$18,$18,$18,$18,$18,$18
 	.byte	$18,$18,$18,$18,$18,$18,$18,$18
 	.byte	$18,$18,$18,$18,$18,$7f,$7f,$7f
 	.byte	$7f,$00,$00,$00,$00,$FF
-playfield2_left:
+l1_playfield2_left:
 	.byte	$FF,$00,$00,$00,$00,$1f,$1f,$1f
 	.byte	$1f,$00,$00,$00,$00,$00,$fe,$fe
 	.byte	$1e,$02,$02,$02,$02,$1e,$fe,$fe
 	.byte	$00,$00,$00,$00,$00,$1f,$1f,$1f
 	.byte	$1f,$00,$00,$00,$00,$FF
+
+.align $100
+
+; Level 2 playfield data
+l2_playfield0_left:
+	.byte	$F0,$10,$10,$10,$10,$10,$10,$10
+	.byte	$10,$10,$10,$10,$10,$10,$10,$10
+	.byte	$10,$10,$10,$10,$10,$10,$10,$10
+	.byte	$10,$10,$10,$10,$10,$10,$10,$10
+	.byte	$10,$10,$10,$10,$10,$F0
+l2_playfield1_left:
+	.byte	$FF,$00,$00,$00,$00,$00,$00,$00
+	.byte	$7f,$18,$18,$18,$18,$18,$18,$18
+	.byte	$3F,$3F,$18,$18,$18,$18,$18,$18
+	.byte	$18,$18,$18,$18,$18,$00,$00,$00
+	.byte	$00,$00,$00,$00,$00,$FF
+l2_playfield2_left:
+	.byte	$FF,$00,$00,$00,$FF,$FF,$FF,$FF
+	.byte	$FF,$00,$AA,$54,$00,$00,$00,$00
+	.byte	$70,$70,$00,$00,$00,$F0,$F0,$F0
+	.byte	$F0,$F0,$F0,$F0,$F0,$F0,$F0,$F0
+	.byte	$F0,$F0,$F0,$F0,$F0,$FF
+
 
 
 	; values for adjusting sprite offsets

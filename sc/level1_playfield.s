@@ -142,28 +142,38 @@ pad_x:
 	;===========================================
 	;===========================================
 
+draw_playfield_even:
+
 draw_playfield:
 
+;	lda	LEVEL		; 3!
+;	lsr			; 2!
+;	bcc	do_level2	; 2/3!
 
-draw_playfield_even:
-	;=============================================
-	; we get 23 cycles in HBLANK, use them wisely
 
-; 0
+do_level1:
+
 	;===================
 	; draw playfield
+	;===================
+; 0
 
-	lda	playfield0_left,X	;				; 4+
+
+	lda	l1_playfield0_left,X	;				; 4+
         sta	PF0			;				; 3
 	;   has to happen by 22
-; 7
-
-        lda	playfield1_left,X	;				; 4+
-        sta	PF1			;				; 3
-	;  has to happen by 31
 ; 14
 
+        lda	l1_playfield1_left,X	;				; 4+
+        sta	PF1			;				; 3
+	;  has to happen by 31
+; 21
 
+
+
+
+level_common:
+; 31
 	;=======================
 	; set bad stuff to blue
 
@@ -187,12 +197,13 @@ done_blue:
 								;  5 / 9 / 17
 
 	; has to happen by 30-3
-; 31
 
 	;  has to happen by
-        lda	playfield2_left,X	;				; 4+
+        lda	l1_playfield2_left,X	;				; 4+
         sta	PF2			;				; 3
+; 28
 	; has to happen by 42
+
 ; 38
 
 	;==============================
@@ -311,20 +322,34 @@ after_sprite:
 	nop								; 2
 	nop								; 2
 
+	nop								; 2
 
-; 51
+; 53
 
-	iny			; increase scanline			; 2
-	tya			; see if multiple of 4			; 2
+	iny								; 2
+	tya								; 2
 	and	#$3							; 2
-	bne	no_inc_block						; 2/3
+	beq	yes_inc4						; 2/3
+	.byte	$A5     ; begin of LDA ZP				; 3
 yes_inc4:
-	inx			; increment block			; 2
-	jmp	done_inc_block						; 3
-no_inc_block:
-	nop								; 2
-	nop								; 2
+	inx             ; $E8 should be harmless to load		; 2
 done_inc_block:
+                                                                ;===========
+                                                                ; 11/11
+
+
+
+;	iny			; increase scanline			; 2
+;	tya			; see if multiple of 4			; 2
+;	and	#$3							; 2
+;	bne	no_inc_block						; 2/3
+;yes_inc4:
+;	inx			; increment block			; 2
+;	jmp	done_inc_block						; 3
+;no_inc_block:
+;	nop								; 2
+;	nop								; 2
+;done_inc_block:
 								;===========
 								; 13 / 13
 

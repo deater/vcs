@@ -99,6 +99,14 @@ LEVEL_SPRITE13		=	$CD
 LEVEL_SPRITE14		=	$CE
 LEVEL_SPRITE15		=	$CF
 
+PF1_ZPL			=	$D0
+PF1_ZPH			=	$D1
+PF2_ZPL			=	$D2
+PF2_ZPH			=	$D3
+PF3_ZPL			=	$D4
+PF3_ZPH			=	$D5
+
+
 start:
 	;============================
 	;============================
