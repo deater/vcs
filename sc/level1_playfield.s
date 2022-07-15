@@ -92,7 +92,7 @@ pad_x:
 	;==========================================
 	; now in setup scanline 3
 ; 3 (from HMOVE)
-	ldy	#28							; 2
+	ldx	#28			; current scanline?		; 2
 
 	lda	#$0							; 2
 	sta	PF0			; disable playfield		; 3
@@ -122,7 +122,7 @@ pad_x:
 	lda	#0							; 2
 	sta	VDELP0							; 3
 	sta	VDELP1							; 3
-	tax			; X=current block			; 2
+	tay			; X=current block			; 2
 								;============
 								;	28
 ; 54
@@ -146,25 +146,18 @@ draw_playfield_even:
 
 draw_playfield:
 
-;	lda	LEVEL		; 3!
-;	lsr			; 2!
-;	bcc	do_level2	; 2/3!
-
-
-do_level1:
-
 	;===================
 	; draw playfield
 	;===================
 ; 0
 
 
-	lda	l1_playfield0_left,X	;				; 4+
+	lda	l1_playfield0_left,Y	;				; 4+
         sta	PF0			;				; 3
 	;   has to happen by 22
 ; 14
 
-        lda	l1_playfield1_left,X	;				; 4+
+        lda	l1_playfield1_left,Y	;				; 4+
         sta	PF1			;				; 3
 	;  has to happen by 31
 ; 21
@@ -177,9 +170,9 @@ level_common:
 	;=======================
 	; set bad stuff to blue
 
-	cpx	#9							; 2
+	cpy	#9							; 2
 	bcc	not_blue_waste12					; 2/3
-	cpx	#29							; 2
+	cpy	#29							; 2
 	bcs	not_blue_waste8						; 2/3
 	lda	ZAP_COLOR	; blue					; 3
 	sta	COLUPF							; 3
@@ -199,7 +192,7 @@ done_blue:
 	; has to happen by 30-3
 
 	;  has to happen by
-        lda	l1_playfield2_left,X	;				; 4+
+        lda	l1_playfield2_left,Y	;				; 4+
         sta	PF2			;				; 3
 ; 28
 	; has to happen by 42
@@ -209,11 +202,11 @@ done_blue:
 	;==============================
 	; activate secret sprite
 
-	; Y = current scanline
+	; X = current scanline
 	lda	#$F0			; load sprite data		; 2
-	cpy	#80							; 2
+	cpx	#80							; 2
 	bcs	turn_off_secret_delay4					; 2/3
-	cpy	#72							; 2
+	cpx	#72							; 2
 	bcc	turn_off_secret						; 2/3
 turn_on_secret:
 	sta	GRP1			; and display it		; 3
@@ -241,7 +234,7 @@ after_secret:
 	sta	COLUPF							; 3
 ; 72
 
-	iny								; 2
+	inx								; 2
 
 ; 74
 	nop
@@ -274,9 +267,9 @@ draw_playfield_odd:
 	;=======================
 	; set bad stuff to blue
 
-	cpx	#9							; 2
+	cpy	#9							; 2
 	bcc	onot_blue_waste12					; 2/3
-	cpx	#29							; 2
+	cpy	#29							; 2
 	bcs	onot_blue_waste8					; 2/3
 	lda	ZAP_COLOR	; blue					; 3
 	sta	COLUPF							; 3
@@ -299,11 +292,11 @@ odone_blue:
 
 	; activate strongbad sprite if necessary
 
-	; Y = current scanline
+	; X = current scanline
 	lda	#$F0			; load sprite data		; 2
-	cpy	STRONGBAD_Y_END						; 3
+	cpx	STRONGBAD_Y_END						; 3
 	bcs	turn_off_strongbad_delay5				; 2/3
-	cpy	STRONGBAD_Y						; 3
+	cpx	STRONGBAD_Y						; 3
 	bcc	turn_off_strongbad					; 2/3
 turn_on_strongbad:
 	sta	GRP0			; and display it		; 3
@@ -326,39 +319,24 @@ after_sprite:
 
 ; 53
 
-	iny								; 2
-	tya								; 2
+	inx								; 2
+	txa								; 2
 	and	#$3							; 2
 	beq	yes_inc4						; 2/3
 	.byte	$A5     ; begin of LDA ZP				; 3
 yes_inc4:
-	inx             ; $E8 should be harmless to load		; 2
+	iny             ; $E8 should be harmless to load		; 2
 done_inc_block:
                                                                 ;===========
                                                                 ; 11/11
 
-
-
-;	iny			; increase scanline			; 2
-;	tya			; see if multiple of 4			; 2
-;	and	#$3							; 2
-;	bne	no_inc_block						; 2/3
-;yes_inc4:
-;	inx			; increment block			; 2
-;	jmp	done_inc_block						; 3
-;no_inc_block:
-;	nop								; 2
-;	nop								; 2
-;done_inc_block:
-								;===========
-								; 13 / 13
 
 ; 64
 
 	; this needs to happen before cycle 70
 	lda	#$C2		; restore green wall			; 2
 	sta	COLUPF							; 3
-	cpy	#180		; see if hit end			; 2
+	cpx	#180		; see if hit end			; 2
 	bcs	done_playfield						; 2/3
 	jmp	draw_playfield						; 3
 done_playfield:
