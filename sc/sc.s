@@ -54,7 +54,7 @@ ZAP_OFFSET		=	$99
 SFX_RIGHT		=	$9A
 SFX_LEFT		=	$9B
 SOUND_TO_PLAY		=	$9C
-
+TITLE_COLOR		=	$9D
 
 SCORE_SPRITE_LOW_0	=	$A0
 SCORE_SPRITE_LOW_1	=	$A1
@@ -112,6 +112,12 @@ start:
 	jsr	init_game
 
 	jsr	init_level
+
+title_screen:
+
+	.include "title_screen.s"
+
+
 
 start_frame:
 
