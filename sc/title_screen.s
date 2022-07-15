@@ -307,10 +307,31 @@ title_spriteloop:
 	sty	GRP0
 	sty	GRP1
 
+	sta	WSYNC
+
+	;===================================
+	; check for button or RESET
+	;===================================
+
+	lda	#0
+	sta	DONE_TITLE		; not done title
+
+	lda	INPT4			; check if joystick button pressed
+	bpl	set_done_title
+
+	lda	SWCHB			; check if reset
+	lsr				; put reset into carry
+	bcc	set_done_title
+
+	jmp	done_check_input
+
+set_done_title:
+	inc	DONE_TITLE
+
+done_check_input:
 
 
-
-	.repeat 18
+	.repeat 17
 	sta	WSYNC
 	.endrepeat
 
@@ -329,5 +350,10 @@ overscan_loop:
 	cpx	#30
 	bne	overscan_loop
 
+	lda	DONE_TITLE
+	bne	done_title
+
 	jmp	start_title
 
+
+done_title:

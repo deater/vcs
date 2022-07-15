@@ -1,21 +1,18 @@
 TITLE SCREEN:
-	+ SECRET COLLECT. in scrolling green?
 	+ check for RESET or button press
-	+ videlectrix logo
-	+ VMW software logo?
+	+ screensaver mode
 	
 SCORE:
 	+ update six digits? (currently 4)
+	+ init to 0000 at start
 
 MANS:
 	+ update mans when die
 
 LEVEL:
-	+ add generic code to update level on right (for when multilevel)
+	+ add multi-level support
 
 GAMEPLAY:
-	+ maybe make blue be a horizontal gradient pattern?
-	+ sound effects
 	+ end graphics
 		SECRET COLLECT if you get it
 		GAME OVER if you die
