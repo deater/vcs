@@ -160,18 +160,18 @@ draw_playfield_even:
 ;	lda	(PF0_ZPL),Y		;				; 5+
 ;       sta	PF0			;				; 3
 	;   has to happen by 22
-; 3   8
+; 3
 
         lda	(PF1_ZPL),Y		;				; 5+
         sta	PF1			;				; 3
 	;  has to happen by 31
-; 11   16
+; 11
 
 	; has to happen by 30-3
 
 
 
-; 19
+
 	;=======================
 	; set bad stuff to blue
 
@@ -196,7 +196,6 @@ draw_playfield_even:
 
 
 
-
 	lda	ZAP_COLOR	; blue					; 3
 	cpy	#9							; 2
 	bcc	huge_hack						; 2/3
@@ -207,27 +206,17 @@ not_blue:
 yes_blue:
 	sta	COLUPF							; 3
 
+
+							;==================
+							; 12 / 15 /15
+; 26
+
 	;  has to happen by
         lda	(PF2_ZPL),Y		;				; 5
         sta	PF2			;				; 3
 
-;done_blue:
-;	inc	TEMP1
-;	inc	TEMP1
-;	inc	TEMP1
 
-	nop
-	nop
-;	lda	$80
-
-							;==================
-							; 12 / 15 /15
-
-
-
-
-; 38 / 39
-	; has to happen by 42
+; 34
 
 	;==============================
 	; activate secret sprite
@@ -251,13 +240,16 @@ after_secret:
 								;============
 								; 12 / 16 / 16
 
-; 54
+; 50
 	inc	ZAP_COLOR	; increment color			; 5
 	lda	ZAP_COLOR						; 3
 	and	#$9F		; keep in $80-$90 range			; 2
 	sta	ZAP_COLOR						; 3
-; 67
+; 63
 
+	nop
+	nop
+; 67
 
 	; turn playfield back to green for edge
 	; this needs to happen before cycle 70
@@ -268,9 +260,9 @@ after_secret:
 	inx								; 2
 
 ; 74
-	nop								; 2
-
-; 76
+	lda	$80							; 3
+;	nop
+; 77
 
 	;=============================================
 	;=============================================
@@ -285,41 +277,53 @@ draw_playfield_odd:
 
 	;===================
 	; draw playfield
-; 0
+; 1
 	inc	TEMP1					; 5
-	nop						; 2
-	lda	$80					; 3
-;	nop						; 2
-;	nop						; 2
+	inc	TEMP1					; 5
 						;============
-						;	12
-; 12
+						;	10
+; 11
 
 	;=======================
 	; set bad stuff to blue
+	; really want this to start at least cycle 10
 
-	cpy	#9							; 2
-	bcc	onot_blue_waste12					; 2/3
-	cpy	#29							; 2
-	bcs	onot_blue_waste8					; 2/3
 	lda	ZAP_COLOR	; blue					; 3
+	cpy	#9							; 2
+	bcc	huge_hack2						; 2/3
+	cpy	#29							; 2
+	bcc	oyes_blue						; 2/3
+onot_blue:
+	.byte	$2C	; bit trick, 4 cycles
+oyes_blue:
 	sta	COLUPF							; 3
-	jmp	odone_blue						; 3
-onot_blue_waste12:
-	nop								; 2
-	nop								; 2
-onot_blue_waste8:
-	nop								; 2
-	nop								; 2
-	nop								; 2
-	nop								; 2
-odone_blue:
+
+
+								;==========
+								; 15 / 15 /15
+
+;	cpy	#9							; 2
+;	bcc	onot_blue_waste12					; 2/3
+;	cpy	#29							; 2
+;	bcs	onot_blue_waste8					; 2/3
+;	lda	ZAP_COLOR	; blue					; 3
+;	sta	COLUPF							; 3
+;	jmp	odone_blue						; 3
+;onot_blue_waste12:
+;	nop								; 2
+;	nop								; 2
+;onot_blue_waste8:
+;	nop								; 2
+;	nop								; 2
+;	nop								; 2
+;	nop								; 2
+;odone_blue:
 								;============
 								;  5 / 9 / 17
 
 	; has to happen by 30-3 but after 24-3
 
-; 29
+; 26
 
 	; activate strongbad sprite if necessary
 
@@ -341,13 +345,7 @@ after_sprite:
 								;============
 								; 13 / 18 / 18
 
-; 47
-
-;	nop								; 2
-;	nop								; 2
-;	nop								; 2
-
-; 
+; 44
 
 	inx								; 2
 	txa								; 2
@@ -360,18 +358,18 @@ done_inc_block:
                                                                 ;===========
                                                                 ; 11/11
 
-; 58
+; 55
+	lda	(PF0_ZPL),Y		;				; 5+
+	sta	TEMP1							; 3
 
-	nop								; 2
-	lda	$80							; 3
-
-; 66
+; 63
 
 	; this needs to happen before cycle 70
 	lda	#$C2		; restore green wall			; 2
 	sta	COLUPF							; 3
+; 68
 
-	lda	(PF0_ZPL),Y		;				; 5+
+	lda	TEMP1							; 3
 	cpx	#180		; see if hit end			; 2
 	bne	draw_playfield						; 2/3
 done_playfield:
@@ -379,4 +377,9 @@ done_playfield:
 								; 10 / 10
 
 ; 76
+	jmp	skip
 
+huge_hack2:
+	jmp	onot_blue
+
+skip:
