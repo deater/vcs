@@ -125,6 +125,9 @@ secret_collect_animation:
 
 	.include "sc_screen.s"
 
+game_over_animation:
+
+	.include "game_over_screen.s"
 
 
 .include	"adjust_sprite.s"

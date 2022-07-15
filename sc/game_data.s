@@ -60,23 +60,6 @@ fine_adjust_table:
 	.byte $90	; -7
 	.byte $80	; -8 (?)
 
-.if 0
-bargraph_lookup_p0:
-	.byte $f0,$e0,$c0,$80,$00,$00,$00,$00
-	.byte $00,$00,$00,$00,$00,$00,$00,$00
-	.byte $00,$00,$00,$00
-
-bargraph_lookup_p1:
-	.byte $ff,$ff,$ff,$ff,$7f,$3f,$1f,$0f
-	.byte $07,$03,$01,$00,$00,$00,$00,$00
-	.byte $00,$00,$00,$00
-
-bargraph_lookup_p2:
-	.byte $ff,$ff,$ff,$ff,$ff,$ff,$ff,$ff
-	.byte $ff,$ff,$ff,$ff,$fe,$fc,$f8,$f0
-	.byte $e0,$c0,$80,$00
-.endif
-
 
 bargraph_lookup_p0:
 	.byte $f0,$f0,$f0,$f0,$f0,$f0,$f0,$f0
@@ -97,14 +80,11 @@ bargraph_lookup_p2:
 score_bitmap0:
 	.byte $22,$55,$55,$55,$55,$55,$22
 score_bitmap1:
-;	.byte $AA,$55,$AA,$55,$AA,$55,$AA
 	.byte $22,$55,$55,$55,$55,$55,$22
 score_bitmap2:
 	.byte $22,$55,$55,$55,$55,$55,$22
-;	.byte $AA,$AA,$AA,$AA,$55,$55,$55
 score_bitmap3:
 	.byte $22,$55,$55,$55,$55,$55,$22
-;	.byte $F0,$0F,$F0,$0F,$F0,$0F,$F0
 
 ; remember, we draw bottom to top
 mans_bitmap0:
@@ -162,20 +142,7 @@ big_level_three:.byte	$10,$60,$00,         $10,  $60,$10,$10,$60
 big_level_four:	.byte	$10,$10,$10,         $70,  $50,$50,$50,$50
 
 
-
-
-zap_colors:
-;	.byte	$50,$50,$52,$52,$54,$54,$56,$56
-;	.byte	$58,$58,$5A,$5A,$5C,$5C,$5E,$5E
-;	.byte	$60,$60,$62,$62,$64,$64,$66,$66
-;	.byte	$68,$68,$6A,$6A,$6C,$6C,$6E,$6E
-;	.byte	$70,$70,$72,$72,$74,$74,$76,$76
-;	.byte	$78,$78,$7A,$7A,$7C,$7C,$7E,$7E
-;	.byte	$80,$80,$82,$82,$84,$84,$86,$86
-;	.byte	$88,$88,$8A,$8A,$8C,$8C,$8E,$8E
-;	.byte	$90,$90,$92,$92,$94,$94,$96,$96
-;	.byte	$98,$98,$9A,$9A,$9C,$9C,$9E,$9E
-
+; FIXME: move into gaps as this is small?
 sfx_f:
 sfx_start:
 	.byte	0, 26	; collide
@@ -506,6 +473,8 @@ collect_playfield1_left:
 	.byte $00
 	.byte $00
 
+.align $100
+
 sc_playfield2_left:
 	.byte $C0
 	.byte $C0
@@ -569,9 +538,6 @@ collect_playfield2_left:
 	.byte $EE
 	.byte $00
 	.byte $00
-
-
-;.align $100
 
 sc_playfield0_right:
 	.byte $10
@@ -701,7 +667,6 @@ collect_playfield1_right:
 	.byte $32
 	.byte $00
 	.byte $00
-.align $100
 
 sc_overlay_colors:
 	.byte $00
@@ -753,6 +718,8 @@ sc_overlay_colors:
 	.byte $00
 	.byte $00
 
+.align $100
+
 sc_overlay:
 	.byte $00
 	.byte $00
@@ -798,6 +765,461 @@ sc_overlay:
 	.byte $00
 	.byte $00
 	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+
+;====================================
+; game over data
+;====================================
+
+go_colors:
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $1C
+	.byte $1C
+	.byte $1C
+	.byte $1C
+	.byte $1C
+	.byte $1C
+	.byte $1C
+	.byte $1C
+	.byte $1C
+	.byte $1C
+	.byte $1C
+	.byte $1C
+	.byte $1C
+	.byte $1C
+	.byte $1C
+	.byte $1C
+	.byte $1C
+	.byte $1C
+	.byte $1C
+	.byte $1C
+	.byte $1C
+	.byte $1C
+	.byte $1C
+	.byte $1C
+	.byte $1C
+	.byte $1C
+	.byte $1C
+	.byte $1C
+	.byte $1C
+	.byte $1C
+	.byte $1C
+	.byte $1C
+	.byte $1C
+	.byte $1C
+	.byte $00
+	.byte $C8
+	.byte $C8
+	.byte $C8
+	.byte $C8
+	.byte $C8
+	.byte $C8
+	.byte $C8
+	.byte $00
+	.byte $00
+
+go_playfield0_left:
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $60
+	.byte $90
+	.byte $10
+	.byte $D0
+	.byte $90
+	.byte $90
+	.byte $60
+	.byte $00
+	.byte $00
+
+go_playfield1_left:
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $24
+	.byte $56
+	.byte $55
+	.byte $74
+	.byte $54
+	.byte $54
+	.byte $54
+	.byte $00
+	.byte $00
+
+go_playfield2_left:
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $30
+	.byte $30
+	.byte $78
+	.byte $78
+	.byte $58
+	.byte $58
+	.byte $70
+	.byte $70
+	.byte $70
+	.byte $70
+	.byte $20
+	.byte $20
+	.byte $20
+	.byte $20
+	.byte $70
+	.byte $70
+	.byte $F0
+	.byte $F0
+	.byte $F8
+	.byte $F8
+	.byte $F8
+	.byte $F8
+	.byte $F8
+	.byte $F8
+	.byte $F8
+	.byte $F8
+	.byte $F8
+	.byte $F8
+	.byte $F0
+	.byte $F0
+	.byte $E0
+	.byte $E0
+	.byte $40
+	.byte $40
+	.byte $00
+	.byte $3A
+	.byte $0B
+	.byte $0A
+	.byte $3A
+	.byte $0A
+	.byte $0A
+	.byte $3A
+	.byte $00
+	.byte $00
+
+.align $100
+
+go_playfield0_right:
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $10
+	.byte $10
+	.byte $30
+	.byte $30
+	.byte $30
+	.byte $30
+	.byte $30
+	.byte $30
+	.byte $30
+	.byte $30
+	.byte $10
+	.byte $10
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+
+go_playfield1_right:
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $4A
+	.byte $AA
+	.byte $AA
+	.byte $AA
+	.byte $AA
+	.byte $A4
+	.byte $44
+	.byte $00
+	.byte $00
+
+go_playfield2_right:
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $77
+	.byte $51
+	.byte $51
+	.byte $73
+	.byte $31
+	.byte $51
+	.byte $57
+	.byte $00
+	.byte $00
+game_overlay:
+	.byte $08
+	.byte $08
+	.byte $10
+	.byte $10
+	.byte $20
+	.byte $20
+	.byte $C0
+	.byte $C0
+	.byte $80
+	.byte $80
+	.byte $80
+	.byte $80
+	.byte $C0
+	.byte $C0
+	.byte $20
+	.byte $20
+	.byte $10
+	.byte $10
+	.byte $88
+	.byte $88
+	.byte $C0
+	.byte $C0
+	.byte $E0
+	.byte $E0
+	.byte $F0
+	.byte $F0
+	.byte $F0
+	.byte $F0
+	.byte $F0
+	.byte $F0
+	.byte $F0
+	.byte $F0
+	.byte $E0
+	.byte $E0
+	.byte $C0
+	.byte $C0
+	.byte $80
+	.byte $80
+	.byte $F8
+	.byte $F8
+	.byte $08
+	.byte $08
+	.byte $38
+	.byte $38
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+
+game_overlay2:
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $80
+	.byte $80
+	.byte $FC
+	.byte $FC
+	.byte $80
+	.byte $80
+	.byte $80
+	.byte $80
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $80
+	.byte $80
+	.byte $C0
+	.byte $C0
+	.byte $E0
+	.byte $E0
+	.byte $F0
+	.byte $F0
+	.byte $F0
+	.byte $F0
+	.byte $F0
+	.byte $F0
+	.byte $F0
+	.byte $F0
+	.byte $E0
+	.byte $E0
+	.byte $C0
+	.byte $C0
+	.byte $80
+	.byte $80
+	.byte $F8
+	.byte $F8
+	.byte $08
+	.byte $08
+	.byte $38
+	.byte $38
 	.byte $00
 	.byte $00
 	.byte $00
