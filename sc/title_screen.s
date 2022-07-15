@@ -357,12 +357,18 @@ no_rotate_color:
 
 
 
+	ldx     #17
+endtitle_loop:
+        sta     WSYNC
+        dex
+        bne     endtitle_loop
 
 
 
-	.repeat 17
-	sta	WSYNC
-	.endrepeat
+
+;	.repeat 17
+;	sta	WSYNC
+;	.endrepeat
 
 
 	;==========================

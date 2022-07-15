@@ -831,6 +831,7 @@ go_colors:
 	.byte $00
 	.byte $00
 
+
 go_playfield0_left:
 	.byte $00
 	.byte $00

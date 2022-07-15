@@ -8,6 +8,8 @@
 	jmp	blurgh3
 .align	$100
 
+huge_hack:
+	jmp	not_blue
 blurgh3:
 
 	; now in setup scanline 0
@@ -129,6 +131,9 @@ pad_x:
 	sta	CXCLR	; clear collisions				; 3
 ; 57
 
+	lda	(PF0_ZPL),Y		;				; 5+
+ ;       sta	PF0			;				; 3
+
 	sta	WSYNC							; 3
 								;============
 								;============
@@ -142,62 +147,87 @@ pad_x:
 	;===========================================
 	;===========================================
 
-draw_playfield_even:
-
 draw_playfield:
+
+draw_playfield_even:
 
 	;===================
 	; draw playfield
 	;===================
 ; 0
-
-
-	lda	l1_playfield0_left,Y	;				; 4+
-        sta	PF0			;				; 3
+	sta	PF0							; 3
+;	lda	l1_playfield0_left,Y	;				;
+;	lda	(PF0_ZPL),Y		;				; 5+
+;       sta	PF0			;				; 3
 	;   has to happen by 22
-; 14
+; 3   8
 
-        lda	l1_playfield1_left,Y	;				; 4+
+        lda	(PF1_ZPL),Y		;				; 5+
         sta	PF1			;				; 3
 	;  has to happen by 31
-; 21
-
-
-
-
-level_common:
-; 31
-	;=======================
-	; set bad stuff to blue
-
-	cpy	#9							; 2
-	bcc	not_blue_waste12					; 2/3
-	cpy	#29							; 2
-	bcs	not_blue_waste8						; 2/3
-	lda	ZAP_COLOR	; blue					; 3
-	sta	COLUPF							; 3
-	jmp	done_blue						; 3
-not_blue_waste12:
-	nop
-	nop
-not_blue_waste8:
-	nop
-	nop
-	nop
-	nop
-done_blue:
-								;============
-								;  5 / 9 / 17
+; 11   16
 
 	; has to happen by 30-3
 
-	;  has to happen by
-        lda	l1_playfield2_left,Y	;				; 4+
-        sta	PF2			;				; 3
-; 28
-	; has to happen by 42
 
-; 38
+
+; 19
+	;=======================
+	; set bad stuff to blue
+
+;	cpy	#9							; 2
+;	bcc	not_blue_waste12					; 2/3
+;	cpy	#29							; 2
+;	bcs	not_blue_waste8						; 2/3
+;	lda	ZAP_COLOR	; blue					; 3
+;	sta	COLUPF							; 3
+;	jmp	done_blue						; 3
+;not_blue_waste12:
+;	nop
+;	nop
+;not_blue_waste8:
+;	nop
+;	nop
+;	nop
+;	nop
+;done_blue:
+								;============
+								;  5 / 9 / 17
+
+
+
+
+	lda	ZAP_COLOR	; blue					; 3
+	cpy	#9							; 2
+	bcc	huge_hack						; 2/3
+	cpy	#29							; 2
+	bcc	yes_blue						; 2/3
+not_blue:
+	.byte	$2C	; bit trick, 4 cycles
+yes_blue:
+	sta	COLUPF							; 3
+
+	;  has to happen by
+        lda	(PF2_ZPL),Y		;				; 5
+        sta	PF2			;				; 3
+
+;done_blue:
+;	inc	TEMP1
+;	inc	TEMP1
+;	inc	TEMP1
+
+	nop
+	nop
+;	lda	$80
+
+							;==================
+							; 12 / 15 /15
+
+
+
+
+; 38 / 39
+	; has to happen by 42
 
 	;==============================
 	; activate secret sprite
@@ -228,6 +258,7 @@ after_secret:
 	sta	ZAP_COLOR						; 3
 ; 67
 
+
 	; turn playfield back to green for edge
 	; this needs to happen before cycle 70
 	lda	#$C2		; green					; 2
@@ -237,7 +268,7 @@ after_secret:
 	inx								; 2
 
 ; 74
-	nop
+	nop								; 2
 
 ; 76
 
@@ -251,18 +282,18 @@ after_secret:
 
 
 draw_playfield_odd:
-	;=============================================
-	; we get 23 cycles in HBLANK, use them wisely
 
 	;===================
 	; draw playfield
-
-	inc	TEMP1					; 5
+; 0
 	inc	TEMP1					; 5
 	nop						; 2
+	lda	$80					; 3
+;	nop						; 2
+;	nop						; 2
 						;============
 						;	12
-; 23
+; 12
 
 	;=======================
 	; set bad stuff to blue
@@ -312,12 +343,11 @@ after_sprite:
 
 ; 47
 
-	nop								; 2
-	nop								; 2
+;	nop								; 2
+;	nop								; 2
+;	nop								; 2
 
-	nop								; 2
-
-; 53
+; 
 
 	inx								; 2
 	txa								; 2
@@ -330,17 +360,23 @@ done_inc_block:
                                                                 ;===========
                                                                 ; 11/11
 
+; 58
 
-; 64
+	nop								; 2
+	lda	$80							; 3
+
+; 66
 
 	; this needs to happen before cycle 70
 	lda	#$C2		; restore green wall			; 2
 	sta	COLUPF							; 3
+
+	lda	(PF0_ZPL),Y		;				; 5+
 	cpx	#180		; see if hit end			; 2
-	bcs	done_playfield						; 2/3
-	jmp	draw_playfield						; 3
+	bne	draw_playfield						; 2/3
 done_playfield:
 								;=============
-								; 12 / 12
+								; 10 / 10
 
 ; 76
+
