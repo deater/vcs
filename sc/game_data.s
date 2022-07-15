@@ -698,6 +698,10 @@ sc_overlay_colors:
 	.byte $00
 	.byte $00
 
+time_bcd:
+	.byte $00,$05,$10,$15,$20,$25,$30,$35,$40,$45
+	.byte $50,$55,$60,$65,$70,$75,$80,$85,$90,$95
+
 .align $100
 
 sc_overlay:
@@ -1204,4 +1208,5 @@ game_overlay2:
 	.byte $00
 	.byte $00
 	.byte $00
+
 

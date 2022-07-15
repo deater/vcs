@@ -3,6 +3,7 @@
 	lda	#0		; turn off reflect on playfield
 	sta	CTRLPF
 	sta	VDELP0
+	sta	FRAME
 
 	sta	WSYNC
 
@@ -259,4 +260,25 @@ sc_overscan_loop:
 	cpx	#30
 	bne	sc_overscan_loop
 
+	lda	FRAME
+	beq	done_sc
+
 	jmp	secret_collect_frame
+
+done_sc:
+	; move to next level
+	inc	LEVEL
+
+	; update score
+	ldx	TIME
+	lda	time_bcd,X
+	sed
+	clc
+	adc	SCORE_LOW
+	sta	SCORE_LOW
+	lda	#0
+	adc	SCORE_HIGH
+	sta	SCORE_HIGH
+	cld
+
+	jmp	level1
