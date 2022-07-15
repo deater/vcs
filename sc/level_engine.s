@@ -314,27 +314,34 @@ vertical_blank:
 	;===========================
 	;===========================
 
-	.repeat 27
+	ldx	#26
+le_overscan_loop:
 	sta	WSYNC
-	.endrepeat
+	dex
+	bne	le_overscan_loop
+
+;	.repeat 26
+;	sta	WSYNC
+;	.endrepeat
 
 	;==================================
-	; overscan 28, trigger sound
+	; overscan 27, trigger sound
 
-	ldy	SOUND_TO_PLAY
-	beq	no_sound_to_play
+;	ldy	SOUND_TO_PLAY
+;	beq	no_sound_to_play
 
-	jsr	trigger_sound		; 6+40
+;	jsr	trigger_sound		; 6+40
 
-	ldy	#0
-	sty	SOUND_TO_PLAY
-no_sound_to_play:
+;	ldy	#0
+;	sty	SOUND_TO_PLAY
+;no_sound_to_play:
 	sta	WSYNC
 
 	;==================================
-	; overscan 29, update sound
+	; overscan 28+29, update sound
 
-	.include "sound_update.s"
+	jsr	update_sound
+
 	sta	WSYNC
 
 	;==================================
@@ -347,7 +354,8 @@ collision_secret:
 	lda	#LEVEL_OVER_SC						; 2
 	sta	LEVEL_OVER						; 3
 	ldy	#SFX_COLLECT						; 2
-	sty	SOUND_TO_PLAY						; 3
+	jsr	trigger_sound
+;	sty	SOUND_TO_PLAY						; 3
 	jmp	collision_done						; 3
 ; 18
 
@@ -391,7 +399,8 @@ regular_collision:
 	sta	STRONGBAD_Y_END
 
 	ldy	#SFX_COLLIDE
-	sty	SOUND_TO_PLAY
+	;sty	SOUND_TO_PLAY
+	jsr	trigger_sound
 
 no_collision_wall:
 
@@ -403,6 +412,8 @@ collision_done:
 	bmi	goto_sc
 	cmp	#LEVEL_OVER_ZAP
 	beq	goto_zap
+	cmp	#LEVEL_OVER_TIME
+	beq	goto_oot
 
 nothing_special:
 	sta	WSYNC
@@ -417,9 +428,20 @@ goto_go:
 
 goto_zap:
 	ldy	#SFX_ZAP
-	sty	SOUND_TO_PLAY
+;	sty	SOUND_TO_PLAY
+	jsr	trigger_sound
 	jsr	init_strongbad	; reset position
 	lda	#0
 	sta	LEVEL_OVER
 
+	jmp	level_frame
+
+goto_oot:
+	ldy	#SFX_GAMEOVER
+	jsr	trigger_sound
+
+	dec	MANS
+	bmi	goto_go
+
+	jsr	init_level
 	jmp	level_frame

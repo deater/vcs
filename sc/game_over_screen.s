@@ -1,5 +1,10 @@
 ; game over screen, with the duck
 
+        lda     #0              ; turn off reflect on playfield
+        sta     CTRLPF
+        sta     VDELP0
+        sta     FRAME
+
 go_frame:
 
 	; Start Vertical Blank
@@ -171,8 +176,13 @@ go_done_loop:
 go_overscan_loop:
 	sta	WSYNC
 	inx
-	cpx	#30
+	cpx	#28
 	bne	go_overscan_loop
+
+	;==============
+	; handle sound
+
+	jsr	update_sound
 
 	jmp	go_frame
 

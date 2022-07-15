@@ -79,7 +79,7 @@ sfx_f:
 sfx_start:
 	.byte	0, 26	; collide
 sfx_collide:
-	.byte	0, 12	; zap
+	.byte	0, 12, 12, 12, 12, 12, 12, 12, 12	; zap
 sfx_zap:
 	.byte	0,22,22,23,23,24,24,25,25,26,26,27,28,29,30,31 ; collect
 sfx_collect:
@@ -92,7 +92,7 @@ sfx_game_over:
 
 sfx_cv:
 	.byte	0,$8F	; collide
-	.byte	0,$3F	; zap
+	.byte	0,$3F,$3F,$3F,$3F,$3F,$3f,$3f,$3f	; zap
 	.byte	0,$7f,$7f,$7f,$7f,$7f,$7f,$7f
 	.byte	  $7f,$7f,$7f,$7f,$7f,$7f,$7f,$7f ; collect
 	.byte	0,$6f,$6f,$6f,$6f,$6f,$6f,$6f,$6f ; speed

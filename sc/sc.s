@@ -42,6 +42,7 @@ LEVEL_OVER		=	$94
 	LEVEL_OVER_SC = $80
 	LEVEL_OVER_GO = $40
 	LEVEL_OVER_ZAP= $20
+	LEVEL_OVER_TIME=$10
 BACKGROUND_COLOR	=	$95
 MANS			=	$96
 ZAP_BASE		=	$97
@@ -136,6 +137,7 @@ game_over_animation:
 .include	"init_game.s"
 .include	"init_level.s"
 .include	"sound_trigger.s"
+.include	"sound_update.s"
 
 ; data, which has alignment constraints
 .include	"game_data.s"

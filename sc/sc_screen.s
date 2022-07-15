@@ -257,8 +257,14 @@ done_sctext_loop:
 sc_overscan_loop:
 	sta	WSYNC
 	inx
-	cpx	#30
+	cpx	#28
 	bne	sc_overscan_loop
+
+	;======================
+	; takes two scanlines
+	jsr	update_sound
+
+	sta	WSYNC
 
 	lda	FRAME
 	beq	done_sc

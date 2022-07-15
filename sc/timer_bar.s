@@ -26,13 +26,24 @@ draw_timer_bar:
 	lda	#59
 	sta	TIME_SUBSECOND
 
+	lda	TIME
+	cmp	#4
+	bcs	time_not_low
+
+	ldy	#SFX_PING
+;	sta	SOUND_TO_PLAY
+	jsr	trigger_sound
+
+time_not_low:
+
 	dec	TIME
 	bpl	time_the_same
 
 	; if here ran out of time
 	lda	#20
 	sta	TIME
-	inc	LEVEL_OVER
+	lda	#LEVEL_OVER_TIME
+	sta	LEVEL_OVER
 
 time_the_same:
 

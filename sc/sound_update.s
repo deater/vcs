@@ -30,4 +30,10 @@ skipleftdec:							;==========
 skiprightdec:							;===========
 								; 31 / 35
 
-; worst case = 70?
+; best case = 62 (74 if jsr)
+; worst case = 70 (82 if jsr)
+
+	; kick it up to two scanlines just to be consistent
+	inc	TEMP1		; 5
+
+	rts			; 6

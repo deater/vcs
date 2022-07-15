@@ -1,10 +1,7 @@
 TITLE SCREEN:
-	+ check for RESET or button press
-	+ screensaver mode
 	
 SCORE:
 	+ update six digits? (currently 4)
-	+ init to 0000 at start
 
 MANS:
 	+ update mans when die
@@ -16,7 +13,6 @@ LEVEL:
 GAMEPLAY:
 	+ end graphics
 		SECRET COLLECT if you get it
-			add up score
 			keep playing sound effect
 		GAME OVER if you die
 
