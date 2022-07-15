@@ -352,10 +352,34 @@ collision_secret:
 ; 18
 
 no_collision_secret:
-
-	lda	CXP0FB			; check if p0/pf collision
-	bpl	no_collision_wall
+; 6
+	lda	CXP0FB			; check if p0/pf collision	; 3
+	bpl	no_collision_wall					; 2/3
 collision_wall:
+; 11
+	; if between Y>9*4 && Y<29*4 X and X>1 and Y<150 we got zapped!
+
+	lda	STRONGBAD_X						; 3
+	cmp	#12							; 2
+	bcc	regular_collision					; 2/3
+; 18
+	cmp	#150	; $9E						; 2
+	bcs	regular_collision					; 2/3
+; 22
+	lda	STRONGBAD_Y						; 3
+	cmp	#64	; $40						; 2
+	bcc	regular_collision					; 2/3
+; 29
+	cmp	#134	; $86						; 2
+	bcs	regular_collision					; 2/3
+;33
+got_zapped:
+	lda	#LEVEL_OVER_ZAP
+	sta	LEVEL_OVER
+	jmp	collision_done
+
+regular_collision:
+	; reset strongbad position
 	lda	OLD_STRONGBAD_X
 	sta	STRONGBAD_X
 	lda	OLD_STRONGBAD_Y
@@ -374,10 +398,11 @@ no_collision_wall:
 
 collision_done:
 
-	lda	#$ff
-	bit	LEVEL_OVER
+	lda	LEVEL_OVER
 	beq	nothing_special
 	bmi	goto_sc
+	cmp	#LEVEL_OVER_ZAP
+	beq	goto_zap
 
 nothing_special:
 	sta	WSYNC
@@ -389,3 +414,12 @@ goto_sc:
 
 goto_go:
 	jmp	game_over_animation
+
+goto_zap:
+	ldy	#SFX_ZAP
+	sty	SOUND_TO_PLAY
+	jsr	init_strongbad	; reset position
+	lda	#0
+	sta	LEVEL_OVER
+
+	jmp	level_frame
