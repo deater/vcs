@@ -42,7 +42,7 @@ start_title:
 ;	sta	WSYNC
 ;.endrepeat
 
-        ldx     #35
+        ldx     #34
 vbsc_loop:
         sta     WSYNC
         dex

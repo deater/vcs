@@ -11,6 +11,7 @@ MANS:
 
 LEVEL:
 	+ add multi-level support
+	+ ping noise as clock runs out
 
 GAMEPLAY:
 	+ end graphics
