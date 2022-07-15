@@ -38,10 +38,6 @@ start_title:
 	; 37 lines of vertical blank
 	;=============================
 
-;.repeat 35
-;	sta	WSYNC
-;.endrepeat
-
         ldx     #34
 vbsc_loop:
         sta     WSYNC

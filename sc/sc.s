@@ -138,7 +138,8 @@ game_over_animation:
 ; data, which has alignment constraints
 .include	"game_data.s"
 
-.byte "by Vince `deater` Weaver <vince@deater.net>"
+; FIXME: move to gaps
+;.byte "by Vince `deater` Weaver <vince@deater.net>"
 
 .segment "IRQ_VECTORS"
 	.word start	; NMI

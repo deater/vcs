@@ -1,4 +1,3 @@
-
 ; Various game data
 ; we need to align this carefully so it doesn't cross a page boundary
 ; otherwise it can take an extra cycle to load which will throw
@@ -28,39 +27,14 @@ playfield2_left:
 	.byte	$1f,$00,$00,$00,$00,$FF
 
 
-;===================
-; videlectrix logo
-.if 0
-vid_bitmap0:	.byte	$18,$24,$24,$5A,$DB,$A5,$42,$C3
-vid_bitmap1:	.byte	$00,$4e,$52,$4e,$02,$42,$80,$80
-vid_bitmap2:	.byte	$00,$74,$a5,$95,$74,$04,$00,$00
-vid_bitmap3:	.byte	$00,$e7,$48,$28,$e6,$00,$00,$00
-vid_bitmap4:	.byte	$00,$34,$44,$44,$f7,$40,$00,$00
-vid_bitmap5:	.byte	$00,$29,$26,$A6,$09,$20,$00,$00
-.endif
-
+	; values for adjusting sprite offsets
 fine_adjust_table:
 	; left
-	.byte $70
-	.byte $60
-	.byte $50
-	.byte $40
-	.byte $30
-	.byte $20
-	.byte $10
-	.byte $00
+	.byte $70,$60,$50,$40,$30,$20,$10,$00
+	; right -1 ... -8
+	.byte $F0,$E0,$D0,$C0,$B0,$A0,$90,$80
 
-	; right
-	.byte $F0	; -1
-	.byte $E0	; -2
-	.byte $D0	; -3
-	.byte $C0	; -4
-	.byte $B0	; -5
-	.byte $A0	; -6
-	.byte $90	; -7
-	.byte $80	; -8 (?)
-
-
+	; time bar lookup tables
 bargraph_lookup_p0:
 	.byte $f0,$f0,$f0,$f0,$f0,$f0,$f0,$f0
 	.byte $f0,$f0,$f0,$f0,$f0,$f0,$f0,$f0
@@ -76,15 +50,15 @@ bargraph_lookup_p2:
 	.byte $00,$00,$00,$00,$00,$00,$00,$00
 	.byte $00,$00,$00,$00,$00
 
-
+	; initial bitmaps, all zero
 score_bitmap0:
 	.byte $22,$55,$55,$55,$55,$55,$22
 score_bitmap1:
 	.byte $22,$55,$55,$55,$55,$55,$22
-score_bitmap2:
-	.byte $22,$55,$55,$55,$55,$55,$22
-score_bitmap3:
-	.byte $22,$55,$55,$55,$55,$55,$22
+;score_bitmap2:
+;	.byte $22,$55,$55,$55,$55,$55,$22
+;score_bitmap3:
+;	.byte $22,$55,$55,$55,$55,$55,$22
 
 ; remember, we draw bottom to top
 mans_bitmap0:
@@ -93,10 +67,55 @@ mans_bitmap1:
 	.byte $28,$28,$E8,$29,$2A,$4C,$88
 mans_bitmap2:
 	.byte $BC,$82,$82,$9C,$A0,$A0,$9E
-mans_bitmap3:
-	.byte $07,$82,$82,$02,$82,$86,$02
+;mans_bitmap3:
+;	.byte $07,$82,$82,$02,$82,$86,$02
 
-.align $100
+
+;=========================================
+; sound effects
+; doesn't need to be aligned?
+
+sfx_f:
+sfx_start:
+	.byte	0, 26	; collide
+sfx_collide:
+	.byte	0, 12	; zap
+sfx_zap:
+	.byte	0,22,22,23,23,24,24,25,25,26,26,27,28,29,30,31 ; collect
+sfx_collect:
+	.byte	0, 0, 0, 1, 1, 2, 2, 3, 3 ; speed
+sfx_speed:
+	.byte	0, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8 ; ping
+sfx_ping:
+	.byte	0,23,23,24,24,23,23,24,24,23,23,24,24,23,23 ; game over
+sfx_game_over:
+
+sfx_cv:
+	.byte	0,$8F	; collide
+	.byte	0,$3F	; zap
+	.byte	0,$7f,$7f,$7f,$7f,$7f,$7f,$7f
+	.byte	  $7f,$7f,$7f,$7f,$7f,$7f,$7f,$7f ; collect
+	.byte	0,$6f,$6f,$6f,$6f,$6f,$6f,$6f,$6f ; speed
+	.byte	0,$41,$42,$43,$44,$45,$46,$47,$48
+	.byte	  $49,$4a,$4b,$4c,$4d,$4e,$4f ; ping
+	.byte	0,$8f,$8f,$8f,$8f,$8f,$8f,$8f
+	.byte	  $8f,$8f,$8f,$8f,$8f,$8f,$8f ; game over
+
+; F, C/V
+; collide V=F, C=8, F=31    (8,26)
+; zap =   V=F, C=3, F=12
+; collect V=F, C=6, F=2		; not really
+; die	  V=F, C=8, F=24
+
+SFX_COLLIDE	=	sfx_collide-sfx_start-1
+SFX_ZAP		=	sfx_zap-sfx_start-1
+SFX_COLLECT	=	sfx_collect-sfx_start-1
+SFX_SPEED	=	sfx_collect-sfx_speed-1
+SFX_PING	=	sfx_ping-sfx_start-1
+SFX_GAMEOVER	=	sfx_game_over-sfx_start-1
+
+
+
 
 ; ----**-- ----**-- ----**-- ----**-- --**--**
 ; --**--** --****-- --**--** --**--** --**--**
@@ -142,51 +161,12 @@ big_level_three:.byte	$10,$60,$00,         $10,  $60,$10,$10,$60
 big_level_four:	.byte	$10,$10,$10,         $70,  $50,$50,$50,$50
 
 
-; FIXME: move into gaps as this is small?
-sfx_f:
-sfx_start:
-	.byte	0, 26	; collide
-sfx_collide:
-	.byte	0, 12	; zap
-sfx_zap:
-	.byte	0,22,22,23,23,24,24,25,25,26,26,27,28,29,30,31 ; collect
-sfx_collect:
-	.byte	0, 0, 0, 1, 1, 2, 2, 3, 3 ; speed
-sfx_speed:
-	.byte	0, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8 ; ping
-sfx_ping:
-	.byte	0,23,23,24,24,23,23,24,24,23,23,24,24,23,23 ; game over
-sfx_game_over:
-
-sfx_cv:
-	.byte	0,$8F	; collide
-	.byte	0,$3F	; zap
-	.byte	0,$7f,$7f,$7f,$7f,$7f,$7f,$7f
-	.byte	  $7f,$7f,$7f,$7f,$7f,$7f,$7f,$7f ; collect
-	.byte	0,$6f,$6f,$6f,$6f,$6f,$6f,$6f,$6f ; speed
-	.byte	0,$41,$42,$43,$44,$45,$46,$47,$48
-	.byte	  $49,$4a,$4b,$4c,$4d,$4e,$4f ; ping
-	.byte	0,$8f,$8f,$8f,$8f,$8f,$8f,$8f
-	.byte	  $8f,$8f,$8f,$8f,$8f,$8f,$8f ; game over
-
-; F, C/V
-; collide V=F, C=8, F=31    (8,26)
-; zap =   V=F, C=3, F=12
-; collect V=F, C=6, F=2		; not really
-; die	  V=F, C=8, F=24
-
-SFX_COLLIDE	=	sfx_collide-sfx_start-1
-SFX_ZAP		=	sfx_zap-sfx_start-1
-SFX_COLLECT	=	sfx_collect-sfx_start-1
-SFX_SPEED	=	sfx_collect-sfx_speed-1
-SFX_PING	=	sfx_ping-sfx_start-1
-SFX_GAMEOVER	=	sfx_game_over-sfx_start-1
 ;===================
 ; videlectrix logo
 
 ; note, this goes backwards from bottom to top
 
-;.align $100
+.align $100
 
 title_bitmap0:
 prod_bitmap0:	.byte	$84,$84,$E4,$97,$E0,$00,$00,$00,$00
