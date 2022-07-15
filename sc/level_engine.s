@@ -152,16 +152,7 @@ after_check_down:
 	;==========================
 	; check if level over
 
-	lda	LEVEL_OVER						; 3
-	beq	level_good
-
-	dec	MANS							; 5
-	jsr	init_level					;6+alot
-
-level_good:
 	sta	WSYNC
-
-
 
 	;========================
 	; now VBLANK scanline 34

@@ -281,4 +281,6 @@ done_sc:
 	sta	SCORE_HIGH
 	cld
 
+	jsr	init_level
+
 	jmp	level1
