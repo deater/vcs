@@ -437,3 +437,369 @@ title_playfield2_right:
 	.byte $02
 	.byte $00
 
+;===============================
+; secret collect animation data
+;===============================
+
+
+sc_colors:
+	.byte $42
+	.byte $42
+	.byte $42
+	.byte $42
+	.byte $42
+	.byte $42
+	.byte $42
+	.byte $42
+	.byte $42
+	.byte $42
+	.byte $42
+	.byte $42
+	.byte $42
+	.byte $40
+	.byte $42
+	.byte $42
+	.byte $42
+	.byte $40
+	.byte $3E
+	.byte $3E
+	.byte $3E
+	.byte $3E
+	.byte $3E
+	.byte $3E
+	.byte $3E
+	.byte $3E
+	.byte $42
+	.byte $42
+	.byte $42
+	.byte $40
+	.byte $02
+	.byte $02
+	.byte $42
+	.byte $42
+	.byte $42
+	.byte $0E
+	.byte $00
+	.byte $00
+
+secret_playfield1_left:
+	.byte $00
+	.byte $06
+	.byte $08
+	.byte $08
+	.byte $04
+	.byte $02
+	.byte $02
+	.byte $0C
+	.byte $00
+	.byte $00
+
+collect_playfield1_left:
+	.byte $00
+	.byte $32
+	.byte $45
+	.byte $45
+	.byte $45
+	.byte $45
+	.byte $45
+	.byte $32
+	.byte $00
+	.byte $00
+
+sc_playfield2_left:
+	.byte $C0
+	.byte $C0
+	.byte $E0
+	.byte $E0
+	.byte $D0
+	.byte $D0
+	.byte $90
+	.byte $90
+	.byte $50
+	.byte $50
+	.byte $90
+	.byte $90
+	.byte $D0
+	.byte $D0
+	.byte $E0
+	.byte $E0
+	.byte $C0
+	.byte $C0
+	.byte $80
+	.byte $80
+	.byte $C0
+	.byte $C0
+	.byte $F0
+	.byte $F0
+	.byte $E8
+	.byte $E8
+	.byte $E6
+	.byte $E6
+	.byte $C6
+	.byte $C6
+	.byte $40
+	.byte $40
+	.byte $60
+	.byte $60
+	.byte $70
+	.byte $70
+	.byte $00
+	.byte $00
+
+secret_playfield2_left:
+	.byte $00
+	.byte $67
+	.byte $11
+	.byte $11
+	.byte $13
+	.byte $11
+	.byte $11
+	.byte $67
+	.byte $00
+	.byte $00
+
+collect_playfield2_left:
+	.byte $00
+	.byte $22
+	.byte $22
+	.byte $22
+	.byte $22
+	.byte $22
+	.byte $22
+	.byte $EE
+	.byte $00
+	.byte $00
+
+
+;.align $100
+
+sc_playfield0_right:
+	.byte $10
+	.byte $10
+	.byte $30
+	.byte $30
+	.byte $50
+	.byte $50
+	.byte $40
+	.byte $40
+	.byte $50
+	.byte $50
+	.byte $40
+	.byte $40
+	.byte $50
+	.byte $50
+	.byte $30
+	.byte $30
+	.byte $10
+	.byte $10
+	.byte $80
+	.byte $80
+	.byte $50
+	.byte $50
+	.byte $30
+	.byte $30
+	.byte $30
+	.byte $30
+	.byte $30
+	.byte $30
+	.byte $10
+	.byte $10
+	.byte $10
+	.byte $10
+	.byte $30
+	.byte $30
+	.byte $70
+	.byte $70
+	.byte $00
+	.byte $00
+
+secret_playfield0_right:
+	.byte $00
+	.byte $30
+	.byte $50
+	.byte $50
+	.byte $30
+	.byte $50
+	.byte $50
+	.byte $50
+	.byte $00
+	.byte $00
+
+collect_playfield0_right:
+	.byte $00
+	.byte $E0
+	.byte $20
+	.byte $20
+	.byte $60
+	.byte $20
+	.byte $20
+	.byte $E0
+	.byte $00
+	.byte $00
+
+
+sc_playfield1_right:
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $0E
+	.byte $0E
+	.byte $0E
+	.byte $0E
+	.byte $0E
+	.byte $0E
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $C0
+	.byte $C0
+	.byte $C0
+	.byte $C0
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+
+secret_playfield1_right:
+	.byte $00
+	.byte $EE
+	.byte $84
+	.byte $84
+	.byte $C4
+	.byte $84
+	.byte $84
+	.byte $E4
+	.byte $00
+	.byte $00
+
+collect_playfield1_right:
+	.byte $00
+	.byte $37
+	.byte $42
+	.byte $42
+	.byte $42
+	.byte $42
+	.byte $42
+	.byte $32
+	.byte $00
+	.byte $00
+.align $100
+
+sc_overlay_colors:
+	.byte $00
+	.byte $00
+	.byte $A8
+	.byte $A8
+	.byte $A8
+	.byte $A8
+	.byte $A8
+	.byte $A8
+	.byte $C6
+	.byte $C2
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $42
+	.byte $3E
+	.byte $3E
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $02
+	.byte $02
+	.byte $02
+	.byte $02
+	.byte $02
+	.byte $02
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $80
+	.byte $80
+	.byte $80
+	.byte $80
+	.byte $80
+	.byte $80
+	.byte $80
+	.byte $00
+	.byte $00
+
+sc_overlay:
+	.byte $00
+	.byte $00
+	.byte $50
+	.byte $50
+	.byte $70
+	.byte $70
+	.byte $20
+	.byte $20
+	.byte $50
+	.byte $50
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $70
+	.byte $70
+	.byte $70
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $F8
+	.byte $F8
+	.byte $F8
+	.byte $F8
+	.byte $70
+	.byte $70
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+

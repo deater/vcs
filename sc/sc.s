@@ -121,6 +121,10 @@ level1:
 	.include "level_engine.s"
 
 
+secret_collect_animation:
+
+	.include "sc_screen.s"
+
 
 
 .include	"adjust_sprite.s"

@@ -1,10 +1,10 @@
 
 init_game:
 
-	lda	#$89		; BCD
+	lda	#$00		; BCD
 	sta	SCORE_HIGH
 
-	lda	#$67		; BCD
+	lda	#$00		; BCD
 	sta	SCORE_LOW
 
 	lda	#$90
