@@ -11,7 +11,6 @@ disable_sound:
 	stx	AUDV1
 	stx	AUDC0
 	stx	AUDC1
-	stx	SOUND_TO_PLAY
 	rts
 
 	;=======================

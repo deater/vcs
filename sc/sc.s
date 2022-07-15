@@ -51,7 +51,7 @@ ZAP_OFFSET		=	$99
 
 SFX_RIGHT		=	$9A
 SFX_LEFT		=	$9B
-SOUND_TO_PLAY		=	$9C
+TITLE_COUNTDOWN		=	$9C
 TITLE_COLOR		=	$9D
 DONE_TITLE		=	$9E
 BASE_TITLE_COLOR	=	$9F
@@ -111,6 +111,7 @@ start:
 	ldx	#$FF		; set stack to $1FF (mirrored at $FF)
 	txs
 
+restart_game:
 	jsr	init_game
 
 	jsr	init_level

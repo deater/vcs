@@ -14,6 +14,7 @@
 
 	lda	#$0E
 	sta	TEXT_COLOR
+	sta	TITLE_COUNTDOWN
 
 start_title:
 
@@ -309,6 +310,12 @@ title_spriteloop:
 	lda	#0
 	sta	DONE_TITLE		; not done title
 
+	lda	TITLE_COUNTDOWN
+	beq	waited_enough
+	dec	TITLE_COUNTDOWN
+	jmp	done_check_input
+
+waited_enough:
 	lda	INPT4			; check if joystick button pressed
 	bpl	set_done_title
 

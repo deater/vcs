@@ -1,11 +1,11 @@
 LINKER_SCRIPT = ../linker_script
 
-all:	sc.rom
+all:	secret_collect.rom
 
 ###
 
-sc.rom:	sc.o
-	ld65 -o sc.rom sc.o -C $(LINKER_SCRIPT)/atari2600_f000.inc
+secret_collect.rom:	sc.o
+	ld65 -o secret_collect.rom sc.o -C $(LINKER_SCRIPT)/atari2600_f000.inc
 
 sc.o:	sc.s init_game.s init_level.s timer_bar.s game_data.s vid_logo.s \
 	mans.s score.s level1_playfield.s update_score.s adjust_sprite.s \
@@ -16,6 +16,4 @@ sc.o:	sc.s init_game.s init_level.s timer_bar.s game_data.s vid_logo.s \
 ###
 
 clean:	
-	rm -f *~ *.o *.lst sc.rom
-
-
+	rm -f *~ *.o *.lst secret_collect.rom

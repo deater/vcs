@@ -4,17 +4,10 @@ SCORE:
 	+ update six digits? (currently 4)
 
 MANS:
-	+ update mans when die
 
 LEVEL:
 	+ add multi-level support
-	+ ping noise as clock runs out
-
-GAMEPLAY:
-	+ end graphics
-		SECRET COLLECT if you get it
-			keep playing sound effect
-		GAME OVER if you die
+	+ go to title screen if reset pressed
 
 MINOR:
 	+ scores/mans slightly not centered

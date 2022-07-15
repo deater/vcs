@@ -166,7 +166,7 @@ go_done_loop:
 
 
 	;==========================
-	; overscan
+	; overscan (30 scanlines)
 	;==========================
 
 	lda	#$2		; turn off beam
@@ -176,13 +176,30 @@ go_done_loop:
 go_overscan_loop:
 	sta	WSYNC
 	inx
-	cpx	#28
+	cpx	#27
 	bne	go_overscan_loop
 
-	;==============
-	; handle sound
+	;=================================
+	; check input to go back to title
+
+	lda	INPT4			; check if joystick button pressed
+	bpl	set_done_go
+
+	lda	SWCHB			; check if reset
+	lsr				; put reset into carry
+	bcc	set_done_go
+
+	sta	WSYNC
+
+
+
+	;============================
+	; handle sound (2 scanlines)
 
 	jsr	update_sound
 
 	jmp	go_frame
 
+
+set_done_go:
+	jmp	restart_game

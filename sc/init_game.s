@@ -3,9 +3,8 @@ init_game:
 
 	lda	#$00		; BCD
 	sta	SCORE_HIGH
-
-	lda	#$00		; BCD
 	sta	SCORE_LOW
+;	sta	DONE_TITLE
 
 	lda	#$90
 	sta	ZAP_BASE
