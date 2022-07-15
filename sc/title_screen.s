@@ -2,6 +2,19 @@
 	; title screen
 	;==========================
 
+
+	lda	#0
+	sta	FRAME
+
+	lda	#$28
+	sta	BASE_TITLE_COLOR
+
+	lda	#0
+	sta	BACKGROUND_COLOR
+
+	lda	#$0E
+	sta	TEXT_COLOR
+
 start_title:
 
 	; Start Vertical Blank
@@ -39,28 +52,40 @@ vbsc_loop:
 
         sta     WSYNC
 
-	;=======================
-	; scanline 36 -- align sprite
+	;===================
+	; now scanline 36
+	;===================
+	; center the sprite position
+	; needs to be right after a WSYNC
 
-	ldx	#7		;					; 2
-scad_x:
+	; to center exactly would want sprite0 at
+	;	CPU cycle 41.3
+	; and sprite1 at
+	;	GPU cycle 44
+
+	ldx	#0		; sprite 0 display nothing		; 2
+	stx	GRP0		;					; 3
+
+	ldx	#6		;					; 2
+tpad_x:
 	dex			;					; 2
-	bne	scad_x		;					; 2/3
-
-	; 2+1 + 5*X each time through
-	;       so 18+7+9=38
-
-	nop
-	nop
+	bne	tpad_x		;					; 2/3
+	; 3 + 5*X each time through
 
 	; beam is at proper place
-	sta	RESP0
+	sta	RESP0							; 3
+	; 41 (GPU=123, want 124) +1
+	sta	RESP1							; 3
+	; 44 (GPU=132, want 132) 0
 
-	lda	#$F0		; fine adjust				; 2
-	sta	HMP0
+	lda	#$F0		; opposite what you'd think		; 2
+	sta	HMP0							; 3
+	lda	#$00							; 2
+	sta	HMP1							; 3
 
 	sta	WSYNC
-	sta	HMOVE
+	sta	HMOVE		; adjust fine tune, must be after WSYNC
+
 
 	;=======================
 	; scanline 37 -- config
@@ -70,8 +95,11 @@ scad_x:
 	stx	GRP0
 	stx	GRP1
 
-	lda	#$28
+	lda	BASE_TITLE_COLOR
 	sta	TITLE_COLOR
+
+	lda	BACKGROUND_COLOR
+	sta	COLUBK
 
 	sta	WSYNC
 
@@ -177,7 +205,7 @@ done_loop:
 
 	; set color
 
-	lda	#$0E	; bright white					; 2
+	lda	TEXT_COLOR	; bright white				; 3
 	sta	COLUP0	; set sprite color				; 3
 	sta	COLUP1	; set sprite color				; 3
 
@@ -200,42 +228,11 @@ done_loop:
 	sta	WSYNC							; 3
 								;===========
 
-
 	;===================
 	; now scanline 183
 	;===================
-	; center the sprite position
-	; needs to be right after a WSYNC
-
-	; to center exactly would want sprite0 at
-	;	CPU cycle 41.3
-	; and sprite1 at
-	;	GPU cycle 44
-
-
-	ldx	#0		; sprite 0 display nothing		; 2
-	stx	GRP0		;					; 3
-
-	ldx	#6		;					; 2
-tpad_x:
-	dex			;					; 2
-	bne	tpad_x		;					; 2/3
-	; 3 + 5*X each time through
-
-	; beam is at proper place
-	sta	RESP0							; 3
-	; 41 (GPU=123, want 124) +1
-	sta	RESP1							; 3
-	; 44 (GPU=132, want 132) 0
-
-	lda	#$F0		; opposite what you'd think		; 2
-	sta	HMP0							; 3
-	lda	#$00							; 2
-	sta	HMP1							; 3
 
 	sta	WSYNC
-	sta	HMOVE		; adjust fine tune, must be after WSYNC
-
 
 	;===================
 	; now scanline 184
@@ -327,8 +324,37 @@ title_spriteloop:
 
 set_done_title:
 	inc	DONE_TITLE
-
 done_check_input:
+
+	;=========================
+	; screensaver
+
+	inc	FRAME
+	lda	FRAME
+
+	and	#$3f
+	bne	no_rotate_color
+
+	clc
+	lda	BASE_TITLE_COLOR
+	adc	#$17
+	sta	BASE_TITLE_COLOR
+
+	clc
+	lda	BACKGROUND_COLOR
+	adc	#$10
+	sta	BACKGROUND_COLOR
+
+	clc
+	lda	TEXT_COLOR
+	adc	#$10
+	sta	TEXT_COLOR
+
+no_rotate_color:
+
+
+
+
 
 
 	.repeat 17
