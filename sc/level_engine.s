@@ -349,14 +349,16 @@ no_sound_to_play:
 	;==================================
 	; overscan 30, collision detection
 
-	lda	CXPPMM			; check if p0/p1 collision
-	bpl	no_collision_secret
+	lda	CXPPMM			; check if p0/p1 collision	; 3
+	bpl	no_collision_secret					; 2/3
 collision_secret:
-	inc	LEVEL_OVER
-	ldy	#SFX_COLLECT
-;	ldy	#SFX_GAMEOVER
-	sty	SOUND_TO_PLAY
-	jmp	collision_done
+; 5
+	lda	#LEVEL_OVER_SC						; 2
+	sta	LEVEL_OVER						; 3
+	ldy	#SFX_COLLECT						; 2
+	sty	SOUND_TO_PLAY						; 3
+	jmp	collision_done						; 3
+; 18
 
 no_collision_secret:
 
@@ -373,7 +375,6 @@ collision_wall:
 	lda	OLD_STRONGBAD_Y_END
 	sta	STRONGBAD_Y_END
 
-;	ldy	#SFX_ZAP
 	ldy	#SFX_COLLIDE
 	sty	SOUND_TO_PLAY
 
@@ -381,7 +382,19 @@ no_collision_wall:
 
 
 collision_done:
+
+	lda	#$ff
+	bit	LEVEL_OVER
+	beq	nothing_special
+	bmi	goto_sc
+
+nothing_special:
 	sta	WSYNC
 
 	jmp	level_frame
 
+goto_sc:
+	jmp	secret_collect_animation
+
+goto_go:
+	jmp	game_over_animation

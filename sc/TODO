@@ -16,6 +16,8 @@ LEVEL:
 GAMEPLAY:
 	+ end graphics
 		SECRET COLLECT if you get it
+			add up score
+			keep playing sound effect
 		GAME OVER if you die
 
 MINOR:

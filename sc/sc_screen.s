@@ -1,5 +1,10 @@
 ; draw strongbad collecting the secret
 
+	lda	#0		; turn off reflect on playfield
+	sta	CTRLPF
+	sta	VDELP0
+
+	sta	WSYNC
 
 secret_collect_frame:
 
