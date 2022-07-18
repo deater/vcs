@@ -15,9 +15,10 @@ static unsigned char reverse_byte(unsigned char b) {
 }
 
 static void print_help(char *name) {
-	fprintf(stderr,"Usage:\t%s [-2] [-4] INFILE OUTFILE\n\n",name);
+	fprintf(stderr,"Usage:\t%s [-2] [-4] [-8] INFILE OUTFILE\n\n",name);
 	fprintf(stderr,"\t-2 : only draw every 2nd line\n");
 	fprintf(stderr,"\t-4 : only draw every 4th line\n");
+	fprintf(stderr,"\t-8 : only draw every 8th line\n");
 	exit(-1);
 }
 
@@ -39,7 +40,7 @@ int main(int argc, char **argv) {
 
 
 	/* Check command line arguments */
-	while ((c = getopt (argc, argv,"24dhv"))!=-1) {
+	while ((c = getopt (argc, argv,"248dhv"))!=-1) {
 		switch (c) {
 		case 'd':
 			fprintf(stderr,"DEBUG enabled\n");
@@ -56,6 +57,9 @@ int main(int argc, char **argv) {
 			break;
 		case '4':
 			skip=4;
+			break;
+		case '8':
+			skip=8;
 			break;
 		}
 	}

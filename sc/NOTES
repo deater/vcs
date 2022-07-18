@@ -1,3 +1,8 @@
+Optimization:
+	$0FF0 = end of ROM data (two levels)
+v1.0:
+	$0EBC = optimize "game over" code a lot.  lost a column
+		of the duck animation but probably worth it
 
 
 

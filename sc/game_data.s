@@ -781,97 +781,7 @@ sc_overlay:
 ; game over data
 ;====================================
 
-go_colors:
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $1C
-	.byte $1C
-	.byte $1C
-	.byte $1C
-	.byte $1C
-	.byte $1C
-	.byte $1C
-	.byte $1C
-	.byte $1C
-	.byte $1C
-	.byte $1C
-	.byte $1C
-	.byte $1C
-	.byte $1C
-	.byte $1C
-	.byte $1C
-	.byte $1C
-	.byte $1C
-	.byte $1C
-	.byte $1C
-	.byte $1C
-	.byte $1C
-	.byte $1C
-	.byte $1C
-	.byte $1C
-	.byte $1C
-	.byte $1C
-	.byte $1C
-	.byte $1C
-	.byte $1C
-	.byte $1C
-	.byte $1C
-	.byte $1C
-	.byte $1C
-	.byte $00
-	.byte $C8
-	.byte $C8
-	.byte $C8
-	.byte $C8
-	.byte $C8
-	.byte $C8
-	.byte $C8
-	.byte $00
-	.byte $00
-
-
 go_playfield0_left:
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
 	.byte $60
 	.byte $90
 	.byte $10
@@ -883,45 +793,6 @@ go_playfield0_left:
 	.byte $00
 
 go_playfield1_left:
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
 	.byte $24
 	.byte $56
 	.byte $55
@@ -933,45 +804,6 @@ go_playfield1_left:
 	.byte $00
 
 go_playfield2_left:
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $30
-	.byte $30
-	.byte $78
-	.byte $78
-	.byte $58
-	.byte $58
-	.byte $70
-	.byte $70
-	.byte $70
-	.byte $70
-	.byte $20
-	.byte $20
-	.byte $20
-	.byte $20
-	.byte $70
-	.byte $70
-	.byte $F0
-	.byte $F0
-	.byte $F8
-	.byte $F8
-	.byte $F8
-	.byte $F8
-	.byte $F8
-	.byte $F8
-	.byte $F8
-	.byte $F8
-	.byte $F8
-	.byte $F8
-	.byte $F0
-	.byte $F0
-	.byte $E0
-	.byte $E0
-	.byte $40
-	.byte $40
-	.byte $00
 	.byte $3A
 	.byte $0B
 	.byte $0A
@@ -982,8 +814,7 @@ go_playfield2_left:
 	.byte $00
 	.byte $00
 
-.align $100
-
+.if 0
 go_playfield0_right:
 	.byte $00
 	.byte $00
@@ -994,86 +825,9 @@ go_playfield0_right:
 	.byte $00
 	.byte $00
 	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $10
-	.byte $10
-	.byte $30
-	.byte $30
-	.byte $30
-	.byte $30
-	.byte $30
-	.byte $30
-	.byte $30
-	.byte $30
-	.byte $10
-	.byte $10
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
+.endif
 
 go_playfield1_right:
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
 	.byte $4A
 	.byte $AA
 	.byte $AA
@@ -1085,45 +839,6 @@ go_playfield1_right:
 	.byte $00
 
 go_playfield2_right:
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
 	.byte $77
 	.byte $51
 	.byte $51
@@ -1133,101 +848,104 @@ go_playfield2_right:
 	.byte $57
 	.byte $00
 	.byte $00
+
+; sprite, open mouth
 game_overlay:
-	.byte $08
-	.byte $08
-	.byte $10
-	.byte $10
-	.byte $20
-	.byte $20
-	.byte $C0
-	.byte $C0
-	.byte $80
-	.byte $80
-	.byte $80
-	.byte $80
-	.byte $C0
-	.byte $C0
-	.byte $20
-	.byte $20
-	.byte $10
-	.byte $10
-	.byte $88
-	.byte $88
-	.byte $C0
-	.byte $C0
-	.byte $E0
-	.byte $E0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $E0
-	.byte $E0
-	.byte $C0
-	.byte $C0
-	.byte $80
-	.byte $80
+	.byte $01
+	.byte $01
+	.byte $02
+	.byte $02
+	.byte $64
+	.byte $64
 	.byte $F8
 	.byte $F8
-	.byte $08
-	.byte $08
+	.byte $D0
+	.byte $D0
+	.byte $70
+	.byte $70
+	.byte $78
+	.byte $78
+	.byte $24
+	.byte $24
+	.byte $22
+	.byte $22
+	.byte $71
+	.byte $71
+	.byte $78
+	.byte $78
+	.byte $FC
+	.byte $FC
+	.byte $FE
+	.byte $FE
+	.byte $FE
+	.byte $FE
+	.byte $FE
+	.byte $FE
+	.byte $FE
+	.byte $FE
+	.byte $7C
+	.byte $7C
 	.byte $38
 	.byte $38
+	.byte $10
+	.byte $10
+	.byte $1F
+	.byte $1F
+	.byte $01
+	.byte $01
+	.byte $07
+	.byte $07
 	.byte $00
 	.byte $00
 	.byte $00
 	.byte $00
 
+; sprite, close mouth
 game_overlay2:
 	.byte $00
 	.byte $00
 	.byte $00
 	.byte $00
-	.byte $00
-	.byte $00
-	.byte $80
-	.byte $80
+	.byte $60
+	.byte $60
+	.byte $F0
+	.byte $F0
+	.byte $DF
+	.byte $DF
+	.byte $70
+	.byte $70
+	.byte $70
+	.byte $70
+	.byte $20
+	.byte $20
+	.byte $20
+	.byte $20
+	.byte $70
+	.byte $70
+	.byte $78
+	.byte $78
 	.byte $FC
 	.byte $FC
-	.byte $80
-	.byte $80
-	.byte $80
-	.byte $80
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $80
-	.byte $80
-	.byte $C0
-	.byte $C0
-	.byte $E0
-	.byte $E0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $E0
-	.byte $E0
-	.byte $C0
-	.byte $C0
-	.byte $80
-	.byte $80
-	.byte $F8
-	.byte $F8
-	.byte $08
-	.byte $08
+	.byte $FE
+	.byte $FE
+	.byte $FE
+	.byte $FE
+	.byte $FE
+	.byte $FE
+	.byte $FE
+	.byte $FE
+	.byte $7C
+	.byte $7C
 	.byte $38
 	.byte $38
+	.byte $10
+	.byte $10
+	.byte $1F
+	.byte $1F
+	.byte $01
+	.byte $01
+	.byte $07
+	.byte $07
 	.byte $00
 	.byte $00
 	.byte $00
