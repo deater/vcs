@@ -162,8 +162,9 @@ game_over_animation:
 .include	"sound_update.s"
 
 ; data, which has alignment constraints
-.include	"game_data.s"
-.include	"level_data.s"
+.include	"level_data.inc"
+.include	"game_data.inc"
+.include	"level_playfields.inc"
 
 ; FIXME: move to gaps
 ;.byte "by Vince `deater` Weaver <vince@deater.net>"

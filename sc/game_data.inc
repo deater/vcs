@@ -3,52 +3,7 @@
 ; otherwise it can take an extra cycle to load which will throw
 ; off all of our calculations
 
-;.align	$100
-
-; Level 1 Playfield data
-
-l1_playfield0_left:
-	.byte	$F0,$10,$10,$10,$10,$10,$10,$10
-	.byte	$10,$10,$10,$10,$10,$10,$10,$10
-	.byte	$10,$10,$10,$10,$10,$10,$10,$10
-	.byte	$10,$10,$10,$10,$10,$10,$10,$10
-	.byte	$10,$10,$10,$10,$10,$F0
-l1_playfield1_left:
-	.byte	$FF,$00,$00,$00,$00,$7f,$7f,$7f
-	.byte	$7f,$18,$18,$18,$18,$18,$18,$18
-	.byte	$18,$18,$18,$18,$18,$18,$18,$18
-	.byte	$18,$18,$18,$18,$18,$7f,$7f,$7f
-	.byte	$7f,$00,$00,$00,$00,$FF
-l1_playfield2_left:
-	.byte	$FF,$00,$00,$00,$00,$1f,$1f,$1f
-	.byte	$1f,$00,$00,$00,$00,$00,$fe,$fe
-	.byte	$1e,$02,$02,$02,$02,$1e,$fe,$fe
-	.byte	$00,$00,$00,$00,$00,$1f,$1f,$1f
-	.byte	$1f,$00,$00,$00,$00,$FF
-
-.align $100
-
-; Level 2 playfield data
-l2_playfield0_left:
-	.byte	$F0,$10,$10,$10,$10,$10,$10,$10
-	.byte	$10,$10,$10,$10,$10,$10,$10,$10
-	.byte	$10,$10,$10,$10,$10,$10,$10,$10
-	.byte	$10,$10,$10,$10,$10,$10,$10,$10
-	.byte	$10,$10,$10,$10,$10,$F0
-l2_playfield1_left:
-	.byte	$FF,$00,$00,$00,$00,$00,$00,$00
-	.byte	$7f,$18,$18,$18,$18,$18,$18,$18
-	.byte	$3F,$3F,$18,$18,$18,$18,$18,$18
-	.byte	$18,$18,$18,$18,$18,$00,$00,$00
-	.byte	$00,$00,$00,$00,$00,$FF
-l2_playfield2_left:
-	.byte	$FF,$00,$00,$00,$FF,$FF,$FF,$FF
-	.byte	$FF,$00,$AA,$54,$00,$00,$00,$00
-	.byte	$70,$70,$00,$00,$00,$F0,$F0,$F0
-	.byte	$F0,$F0,$F0,$F0,$F0,$F0,$F0,$F0
-	.byte	$F0,$F0,$F0,$F0,$F0,$FF
-
-
+.align	$100
 
 	; values for adjusting sprite offsets
 fine_adjust_table:
@@ -138,7 +93,7 @@ SFX_PING	=	sfx_ping-sfx_start-1
 SFX_GAMEOVER	=	sfx_game_over-sfx_start-1
 
 
-
+.align $100
 
 ; ----**-- ----**-- ----**-- ----**-- --**--**
 ; --**--** --****-- --**--** --**--** --**--**
@@ -189,7 +144,7 @@ big_level_four:	.byte	$10,$10,$10,         $70,  $50,$50,$50,$50
 
 ; note, this goes backwards from bottom to top
 
-.align $100
+;.align $100
 
 title_bitmap0:
 prod_bitmap0:	.byte	$84,$84,$E4,$97,$E0,$00,$00,$00,$00
@@ -208,6 +163,8 @@ vmw_bitmap1:	.byte	$00,$00,$00,$00,$00,$01,$01,$01
 and_bitmap1:	.byte	$00,$00,$00,$00,$00,$00,$00,$00
 		.byte	$00,$00,$00,$00,$00
 vid_bitmap1:	.byte	$00,$4e,$52,$4e,$02,$42,$80,$80
+
+.align	$100
 
 title_bitmap2:
 prod_bitmap2:	.byte	$E6,$29,$E9,$29,$20,$00,$00,$00,$00
@@ -237,7 +194,7 @@ and_bitmap4:	.byte	$00,$00,$00,$00,$00,$00,$00,$00
 		.byte	$00,$00,$00,$00,$00
 vid_bitmap4:	.byte	$00,$34,$44,$44,$f7,$40,$00,$00
 
-.align $100
+;.align $100
 
 title_bitmap5:
 prod_bitmap5:	.byte	$96,$91,$92,$E4,$03,$00,$00,$00,$00
@@ -311,6 +268,8 @@ title_playfield2_left:
 	.byte $6F
 	.byte $67
 	.byte $00
+
+.align $100
 
 title_playfield0_right:
 	.byte $00
@@ -476,7 +435,7 @@ collect_playfield1_left:
 	.byte $00
 	.byte $00
 
-.align $100
+;.align $100
 
 sc_playfield2_left:
 	.byte $C0
@@ -582,6 +541,9 @@ sc_playfield0_right:
 	.byte $00
 	.byte $00
 
+
+.align $100
+
 secret_playfield0_right:
 	.byte $00
 	.byte $30
@@ -594,6 +556,8 @@ secret_playfield0_right:
 	.byte $00
 	.byte $00
 
+	; note: can't add alignment here
+
 collect_playfield0_right:
 	.byte $00
 	.byte $E0
@@ -605,6 +569,7 @@ collect_playfield0_right:
 	.byte $E0
 	.byte $00
 	.byte $00
+
 
 
 sc_playfield1_right:
@@ -720,12 +685,6 @@ sc_overlay_colors:
 	.byte $80
 	.byte $00
 	.byte $00
-
-time_bcd:
-	.byte $00,$05,$10,$15,$20,$25,$30,$35,$40,$45
-	.byte $50,$55,$60,$65,$70,$75,$80,$85,$90,$95
-
-.align $100
 
 sc_overlay:
 	.byte $00
@@ -849,6 +808,8 @@ go_playfield2_right:
 	.byte $00
 	.byte $00
 
+.align $100
+
 ; sprite, open mouth
 game_overlay:
 	.byte $01
@@ -951,4 +912,8 @@ game_overlay2:
 	.byte $00
 	.byte $00
 
+
+time_bcd:
+	.byte $00,$05,$10,$15,$20,$25,$30,$35,$40,$45
+	.byte $50,$55,$60,$65,$70,$75,$80,$85,$90,$95
 
