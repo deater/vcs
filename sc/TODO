@@ -1,21 +1,13 @@
-Gameplay:
-	; at least 4 levels?
-	; wrap after 4?
-	; if you wrap, time per level goes down
-
-
 
 TITLE SCREEN:
-	
-SCORE:
-	+ update six digits? (currently 4)
 
-MANS:
-
-LEVEL:
-	+ add multi-level support
+LEVEL ENGINE:
+	+ SCORE: update six digits? (currently 4)
+	+ LEVEL: add more level numbers
 	+ go to title screen if reset pressed
-
-MINOR:
 	+ scores/mans slightly not centered
-
+	+ slow down default speed
+	+ add speed power ups
+	+ if you wrap levels, give less time to complete
+	+ add fine adjust for the secret on-screen position
+	+ fix all the timing glitches
