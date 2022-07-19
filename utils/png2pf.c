@@ -30,8 +30,9 @@ int main(int argc, char **argv) {
 	int col=0;
 	int skip=1;
 	int color;
-	int playfield_left[192],playfield_right[192];
+	int playfield_left[192],playfield_right[192],background[192];
 	int c,debug=0;
+	int generate_bg=0;
 
 	char input_filename[BUFSIZ],output_filename[BUFSIZ];
 	unsigned char *image;
@@ -40,8 +41,11 @@ int main(int argc, char **argv) {
 
 
 	/* Check command line arguments */
-	while ((c = getopt (argc, argv,"248dhv"))!=-1) {
+	while ((c = getopt (argc, argv,"248bdhv"))!=-1) {
 		switch (c) {
+		case 'b':
+			generate_bg=1;
+			break;
 		case 'd':
 			fprintf(stderr,"DEBUG enabled\n");
 			debug=1;
@@ -102,12 +106,24 @@ int main(int argc, char **argv) {
 		return -1;
 	}
 
+	for(row=0;row<ysize;row++) background[row]=0;
+
+	/* generate background color table */
+	if (generate_bg) {
+		fprintf(outfile,"bg_colors:\n");
+		for(row=0;row<ysize;row+=skip) {
+			background[row]=image[row*xsize];
+			fprintf(outfile,"\t.byte $%02X\n",background[row]);
+		}
+	}
+
+
 	/* generate color table */
 	fprintf(outfile,"colors:\n");
 	for(row=0;row<ysize;row+=skip) {
 		color=0;
 		for(col=0;col<xsize;col++) {
-			if (image[row*xsize+col]!=0) color=image[row*xsize+col];
+			if (image[row*xsize+col]!=background[row]) color=image[row*xsize+col];
 		}
 		fprintf(outfile,"\t.byte $%02X\n",color);
 	}
@@ -117,7 +133,7 @@ int main(int argc, char **argv) {
 		playfield_left[row]=0;
 		for(col=0;col<20;col++) {
 			playfield_left[row]<<=1;
-			if (image[row*xsize+col]!=0) playfield_left[row]|=1;
+			if (image[row*xsize+col]!=background[row]) playfield_left[row]|=1;
 		}
 	}
 
@@ -145,7 +161,7 @@ int main(int argc, char **argv) {
 		playfield_right[row]=0;
 		for(col=0;col<20;col++) {
 			playfield_right[row]<<=1;
-			if (image[row*xsize+col+20]!=0) playfield_right[row]|=1;
+			if (image[row*xsize+col+20]!=background[row]) playfield_right[row]|=1;
 		}
 	}
 

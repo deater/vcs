@@ -129,8 +129,37 @@ done_loop:
 overscan_loop:
 	sta	WSYNC
 	inx
-	cpx	#30
+	cpx	#29
 	bne	overscan_loop
+
+	;============================
+	; Overscan scanline 29
+	;============================
+	; check for button or RESET
+        ;===================================
+
+
+;	lda     TITLE_COUNTDOWN
+;       beq     waited_enough
+;      dec     TITLE_COUNTDOWN
+;        jmp     done_check_input
+
+waited_enough:
+	lda	INPT4			; check if joystick button pressed
+	bpl	set_done_title
+
+	lda	SWCHB			; check if reset
+	lsr				; put reset into carry
+	bcc	set_done_title
+
+	jmp     done_check_input
+
+set_done_title:
+	jmp	done_title
+done_check_input:
+
 
 	jmp	title_frame
 
+done_title:
+	sta	WSYNC

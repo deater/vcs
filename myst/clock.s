@@ -35,18 +35,15 @@ clock_frame:
 	;=================================
 	;=================================
 
-	ldx	#29
+	ldx	#28
 le_vblank_loop:
 	sta	WSYNC
 	dex
 	bne	le_vblank_loop
 
-;.repeat 14
-;	sta	WSYNC
-;.endrepeat
 								;	15
 	;=============================
-	; now at VBLANK scanline 29
+	; now at VBLANK scanline 28
 	;=============================
 	; handle left being pressed
 
@@ -66,7 +63,7 @@ after_check_left:
 					;	 		9 / 20 / 16
 
 	;=============================
-	; now at VBLANK scanline 30
+	; now at VBLANK scanline 29
 	;=============================
 	; handle right being pressed
 
@@ -85,7 +82,7 @@ after_check_right:
 					; 			11 / 22 / 18
 
 	;===========================
-	; now at VBLANK scanline 31
+	; now at VBLANK scanline 30
 	;===========================
 	; handle up being pressed
 
@@ -106,7 +103,7 @@ after_check_up:
 					; 			11 / 18 / 44
 
 	;==========================
-	; now VBLANK scanline 32
+	; now VBLANK scanline 31
 	;==========================
 	; handle down being pressed
 
@@ -125,62 +122,9 @@ after_check_down:
 					;	==============================
 					; 			11 / 18 / 44
 
-	;==========================
-	; now VBLANK scanline 33
-	;==========================
-	; set up playfield
-
-	lda	LEVEL
-	lsr
-	bcc	setup_level2
-setup_level1:
-	lda	#<l1_playfield0_left
-	sta	PF0_ZPL
-	lda	#>l1_playfield0_left
-	sta	PF0_ZPH
-
-	lda	#<l1_playfield1_left
-	sta	PF1_ZPL
-	lda	#>l1_playfield1_left
-	sta	PF1_ZPH
-
-	lda	#<l1_playfield2_left
-	sta	PF2_ZPL
-	lda	#>l1_playfield2_left
-	jmp	done_setup_level
-setup_level2:
-
-	lda	#<l2_playfield0_left
-	sta	PF0_ZPL
-	lda	#>l2_playfield0_left
-	sta	PF0_ZPH
-
-	lda	#<l2_playfield1_left
-	sta	PF1_ZPL
-	lda	#>l2_playfield1_left
-	sta	PF1_ZPH
-
-	lda	#<l2_playfield2_left
-	sta	PF2_ZPL
-	lda	#>l2_playfield2_left
-
-
-done_setup_level:
-	sta	PF2_ZPH
-
-	sta	WSYNC
-
-	;========================
-	; now VBLANK scanline 34
-	;========================
-	; empty for now
-
-	sta	WSYNC
-
-
 
 	;=======================
-	; now scanline 35
+	; now scanline 32
 	;========================
 	; increment frame
 	; handle any frame-related activity
@@ -222,7 +166,7 @@ dont_rotate_zap:
 
 
 	;=============================
-	; now VBLANK scanline 36
+	; now VBLANK scanline 33
 	;=============================
 	; do some init
 
@@ -234,39 +178,9 @@ dont_rotate_zap:
 
 	sta	WSYNC
 
-	; now scanline 37
-
-	;===============================
-	;===============================
-	;===============================
-	; visible area: 192 lines (NTSC)
-	;===============================
-	;===============================
-	;===============================
-
-
-	;============================================================
-	; draw playfield (4 scanlines setup + 152 scanlines display)
-	;============================================================
-
-
-	; Level 1 Playfield
-
-
-	;===============================
-	; set up playfield (4 scanlines)
-	;===============================
-
-	jmp	blurgh3
-.align	$100
-
-huge_hack:
-	jmp	not_blue
-blurgh3:
-
-	; now in setup scanline 0
-	; WE CAN DO STUFF HERE
-
+	;======================
+	; now VBLANK scanline 34
+	;======================
 
 	;==========================================
 	; set up sprite1 to be at proper X position
@@ -296,10 +210,11 @@ qpad_x:
 
 	sta	WSYNC
 
+	;======================================
+	; now vblank 35
 	;=======================================
 	; update strongbad horizontal position
 	;=======================================
-	; now in setup scanline 1
 
 	; do this separately as too long to fit in with left/right code
 
@@ -308,10 +223,11 @@ qpad_x:
 					;====================================
 					;				57
 
+	;=========================================
+	; now vblank 36
 	;==========================================
 	; set up sprite to be at proper X position
 	;==========================================
-	; now in setup scanline 2
 ; 0
 	; we can do this here and the sprite will be drawn as a long
 	; vertical column
@@ -340,11 +256,12 @@ pad_x:
 				; also draws black artifact on left of
 				; screen
 
-
+	;==========================================
+	; now vblank 37
 	;==========================================
 	; Final setup before going
 	;==========================================
-	; now in setup scanline 3
+
 ; 3 (from HMOVE)
 	ldx	#28			; current scanline?		; 2
 
@@ -380,11 +297,11 @@ pad_x:
 								;============
 								;	28
 ; 54
-	sta	CXCLR	; clear collisions				; 3
+;	sta	CXCLR	; clear collisions				; 3
 ; 57
 
-	lda	(PF0_ZPL),Y		;				; 5+
- ;       sta	PF0			;				; 3
+;	lda	(PF0_ZPL),Y		;				; 5+
+;       sta	PF0			;				; 3
 
 	sta	WSYNC							; 3
 								;============
@@ -394,7 +311,7 @@ pad_x:
 	;===========================================
 	;===========================================
 	;===========================================
-	; draw playfield, 192-28-12 = 152 scanlines (38 4-line blocks)
+	; draw playfield, 192 scanlines
 	;===========================================
 	;===========================================
 	;===========================================
@@ -407,68 +324,31 @@ draw_playfield_even:
 	; draw playfield
 	;===================
 ; 0
-	sta	PF0							; 3
-;	lda	l1_playfield0_left,Y	;				;
-;	lda	(PF0_ZPL),Y		;				; 5+
-;       sta	PF0			;				; 3
+	lda	clock_playfield0_left,Y	;				; 4+
+	sta	PF0			;				; 3
 	;   has to happen by 22
-; 3
+; 7
 
-        lda	(PF1_ZPL),Y		;				; 5+
+	lda	clock_playfield1_left,Y	;				; 4+
         sta	PF1			;				; 3
 	;  has to happen by 31
-; 11
-
+; 14
+	lda	clock_playfield2_left,Y	;				; 4+
+        sta	PF2			;				; 3
+; 21
 	; has to happen by 30-3
 
 
+        lda	clock_playfield0_right,Y		;			; 4
+        sta	PF0				;			; 3
+; 28
+        lda	clock_playfield1_right,Y		;			; 4
+        sta	PF1				;			; 3
+; 35
+        lda	clock_playfield2_right,Y		;			; 4
+        sta	PF2				;			; 3
+; 42
 
-
-	;=======================
-	; set bad stuff to blue
-
-;	cpy	#9							; 2
-;	bcc	not_blue_waste12					; 2/3
-;	cpy	#29							; 2
-;	bcs	not_blue_waste8						; 2/3
-;	lda	ZAP_COLOR	; blue					; 3
-;	sta	COLUPF							; 3
-;	jmp	done_blue						; 3
-;not_blue_waste12:
-;	nop
-;	nop
-;not_blue_waste8:
-;	nop
-;	nop
-;	nop
-;	nop
-;done_blue:
-								;============
-								;  5 / 9 / 17
-
-
-
-	lda	ZAP_COLOR	; blue					; 3
-	cpy	#9							; 2
-	bcc	huge_hack						; 2/3
-	cpy	#29							; 2
-	bcc	yes_blue						; 2/3
-not_blue:
-	.byte	$2C	; bit trick, 4 cycles
-yes_blue:
-	sta	COLUPF							; 3
-
-
-							;==================
-							; 12 / 15 /15
-; 26
-
-	;  has to happen by
-        lda	(PF2_ZPL),Y		;				; 5
-        sta	PF2			;				; 3
-
-
-; 34
 
 	;==============================
 	; activate secret sprite
@@ -492,7 +372,7 @@ after_secret:
 								;============
 								; 12 / 16 / 16
 
-; 50
+; 58
 	inc	ZAP_COLOR	; increment color			; 5
 	lda	ZAP_COLOR						; 3
 	and	#$9F		; keep in $80-$90 range			; 2
@@ -611,8 +491,8 @@ done_inc_block:
                                                                 ; 11/11
 
 ; 55
-	lda	(PF0_ZPL),Y		;				; 5+
-	sta	TEMP1							; 3
+;	lda	(PF0_ZPL),Y		;				; 5+
+;	sta	TEMP1							; 3
 
 ; 63
 
