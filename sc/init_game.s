@@ -9,7 +9,7 @@ init_game:
 	lda	#$90
 	sta	ZAP_BASE
 
-	lda	#0
+	lda	#2
 	sta	MANS
 
 	lda	#1

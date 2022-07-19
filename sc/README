@@ -4,7 +4,25 @@ secret collect.
 
 based on the Videlectrix game from Homestarrunner.com
 
+ATARI 2600 port by Vince `deater` Weaver <vince@deater.net>
+	http://www.deater.net/weave/vmwprod/secret_collect/
 
-by Vince `deater` Weaver	<vince@deater.net>
+DIRECTIONS:
+~~~~~~~~~~~
+
+	You are Strongbad (the Red Box)
+
+	You need to collect the secret (the Yellow Box)
+
+	Avoid the pulsing blue walls, which will zap you
+
+	You need to collect the secret before time runs out
+
+	A small puslsing blue pixel will make you go faster (TODO)
+
+	Collect as many secrets as you can before the duck gets you!
+
+
+
 
 

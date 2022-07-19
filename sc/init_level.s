@@ -16,6 +16,8 @@ init_level:
 	sta	LEVEL_OVER						; 3
 ; 18
 
+reinit_strongbad:
+
 copy_level_data_in:
 	ldx	LEVEL							; 3
 	dex								; 2
@@ -43,14 +45,10 @@ copy_level_data_loop:
 								; (16*15)-1
 								; 	239
 
-init_strongbad:
-;	lda	START_X			; set initial x position	; 2
-;	sta	STRONGBAD_X						; 5
+
 	jsr	strongbad_moved_horizontally	;              		; 6+48
 ; 61 (79)
 
-;	lda     START_Y			; initial sprite Y		; 2
-;	sta     STRONGBAD_Y						; 3
 	jsr     strongbad_moved_vertically				; 6+16
 ; 88 (106)
 

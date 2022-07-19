@@ -295,7 +295,7 @@ dont_rotate_zap:
 	; draw playfield (4 scanlines setup + 152 scanlines display)
 	;============================================================
 
-	.include "level1_playfield.s"
+	.include "level_playfield.s"
 
 	;=========================================
 	;=========================================
@@ -371,14 +371,15 @@ no_collision_secret:
 	bpl	no_collision_wall					; 2/3
 collision_wall:
 ; 11
-	; if between Y>9*4 && Y<29*4 X and X>1 and Y<150 we got zapped!
+	; if STRONGBAD_Y>ZAP_BEGIN && STRONGBAD_Y<ZAP_END
+	;	 and STRONGBAD_X>1 and STRONGBAD_X<150 we got zapped!
 
 	lda	STRONGBAD_X						; 3
 	cmp	#12							; 2
-	bcc	regular_collision					; 2/3
+	bcc	regular_collision	; blt				; 2/3
 ; 18
 	cmp	#150	; $9E						; 2
-	bcs	regular_collision					; 2/3
+	bcs	regular_collision	; bge				; 2/3
 ; 22
 	lda	STRONGBAD_Y						; 3
 	cmp	#64	; $40						; 2
@@ -436,7 +437,7 @@ goto_zap:
 	ldy	#SFX_ZAP
 ;	sty	SOUND_TO_PLAY
 	jsr	trigger_sound
-	jsr	init_strongbad	; reset position
+	jsr	reinit_strongbad	; reset position
 	lda	#0
 	sta	LEVEL_OVER
 

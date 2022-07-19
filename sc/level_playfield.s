@@ -28,7 +28,7 @@ blurgh3:
 	ldx	#0		; sprite 0 display nothing		2
 	stx	GRP1		; (FIXME: this already set?)		3
 ; 8
-	ldx	#6		;					3
+	ldx	SECRET_X	;					3
 	inx			;					2
 	inx			;					2
 qpad_x:
