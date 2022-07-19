@@ -102,21 +102,22 @@ LEVEL_SPRITE15		=	$CF
 LEVEL_INFO		=	SECRET_X	; use as pointer to this
 
 SECRET_X		=	$D0
-SECRET_Y		=	$D1
-BONUS_X			=	$D2
-BONUS_Y			=	$D3
-ZAP_BEGIN		=	$D4
-ZAP_END			=	$D5
-STRONGBAD_X		=	$D6
-STRONGBAD_Y		=	$D7
-PF0_ZPL			=	$D8
-PF0_ZPH			=	$D9
-PF1_ZPL			=	$DA
-PF1_ZPH			=	$DB
-PF2_ZPL			=	$DC
-PF2_ZPH			=	$DD
-FUTURE3			=	$DE
-FUTURE4			=	$DF
+SECRET_Y_START		=	$D1
+SECRET_Y_END		=	$D2
+FUTURE4			=	$D3
+BONUS_X			=	$D4
+BONUS_Y			=	$D5
+ZAP_BEGIN		=	$D6
+ZAP_END			=	$D7
+STRONGBAD_X		=	$D8
+STRONGBAD_Y		=	$D9
+PF0_ZPL			=	$DA
+PF0_ZPH			=	$DB
+PF1_ZPL			=	$DC
+PF1_ZPH			=	$DD
+PF2_ZPL			=	$DE
+PF2_ZPH			=	$DF
+
 
 
 

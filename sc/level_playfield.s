@@ -170,31 +170,7 @@ draw_playfield_even:
 	; has to happen by 30-3
 
 
-
-
-	;=======================
-	; set bad stuff to blue
-
-;	cpy	#9							; 2
-;	bcc	not_blue_waste12					; 2/3
-;	cpy	#29							; 2
-;	bcs	not_blue_waste8						; 2/3
-;	lda	ZAP_COLOR	; blue					; 3
-;	sta	COLUPF							; 3
-;	jmp	done_blue						; 3
-;not_blue_waste12:
-;	nop
-;	nop
-;not_blue_waste8:
-;	nop
-;	nop
-;	nop
-;	nop
-;done_blue:
-								;============
-								;  5 / 9 / 17
-
-
+	; draw blue zap if in range
 
 	lda	ZAP_COLOR	; blue					; 3
 	cpy	#9							; 2
@@ -223,31 +199,30 @@ yes_blue:
 
 	; X = current scanline
 	lda	#$F0			; load sprite data		; 2
-	cpx	#80							; 2
-	bcs	turn_off_secret_delay4					; 2/3
-	cpx	#72							; 2
+	cpx	SECRET_Y_END						; 3
+	bcs	turn_off_secret_delay5					; 2/3
+	cpx	SECRET_Y_START						; 3
 	bcc	turn_off_secret						; 2/3
 turn_on_secret:
 	sta	GRP1			; and display it		; 3
 	jmp	after_secret						; 3
-turn_off_secret_delay4:
-	nop								; 2
+turn_off_secret_delay5:
+	lda	$80			; nop3				; 3
 	nop								; 2
 turn_off_secret:
 	lda	#0			; turn off sprite		; 2
 	sta	GRP1							; 3
 after_secret:
 								;============
-								; 12 / 16 / 16
+								; 12 / 18 / 18
 
-; 50
+; 52
 	inc	ZAP_COLOR	; increment color			; 5
 	lda	ZAP_COLOR						; 3
 	and	#$9F		; keep in $80-$90 range			; 2
 	sta	ZAP_COLOR						; 3
-; 63
+; 65
 
-	nop
 	nop
 ; 67
 
