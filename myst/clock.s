@@ -263,18 +263,13 @@ pad_x:
 	;==========================================
 
 ; 3 (from HMOVE)
-	ldx	#28			; current scanline?		; 2
+	ldx	#0			; current scanline?		; 2
 
 	lda	#$0							; 2
 	sta	PF0			; disable playfield		; 3
 	sta	PF1							; 3
 	sta	PF2							; 3
 
-	lda	#$C2			; green				; 2
-	sta	COLUPF			; playfield color		; 3
-
-	lda	#CTRLPF_REF		; reflect playfield		; 2
-	sta	CTRLPF							; 3
 								;===========
 								;        23
 ; 26
@@ -296,12 +291,6 @@ pad_x:
 	tay			; X=current block			; 2
 								;============
 								;	28
-; 54
-;	sta	CXCLR	; clear collisions				; 3
-; 57
-
-;	lda	(PF0_ZPL),Y		;				; 5+
-;       sta	PF0			;				; 3
 
 	sta	WSYNC							; 3
 								;============
@@ -323,35 +312,44 @@ draw_playfield_even:
 	;===================
 	; draw playfield
 	;===================
+
+; FIXME: move this into previous loop, A/X?
+
 ; 0
+	lda	clock_colors,Y						; 4+
+	sta	COLUPF							; 3
+; 7
+	lda	clock_bg_colors,Y					; 4+
+	sta	COLUBK							; 3
+; 14
 	lda	clock_playfield0_left,Y	;				; 4+
 	sta	PF0			;				; 3
-	;   has to happen by 22
-; 7
+	;   has to happen by 22 (GPU 68)
+; 21
 
 	lda	clock_playfield1_left,Y	;				; 4+
         sta	PF1			;				; 3
-	;  has to happen by 31
-; 14
+	;  has to happen by 24 (GPU 72)
+; 28
 	lda	clock_playfield2_left,Y	;				; 4+
-        sta	PF2			;				; 3
-; 21
+        sta	PF2
+	;  has to happen by 26 (GPU 80)	;				; 3
+; 35
 	; has to happen by 30-3
 
-
-        lda	clock_playfield0_right,Y		;			; 4
+        lda	clock_playfield0_right,Y	;			; 4
         sta	PF0				;			; 3
-; 28
-        lda	clock_playfield1_right,Y		;			; 4
-        sta	PF1				;			; 3
-; 35
-        lda	clock_playfield2_right,Y		;			; 4
-        sta	PF2				;			; 3
 ; 42
+        lda	clock_playfield1_right,Y	;			; 4
+        sta	PF1				;			; 3
+; 49
+        lda	clock_playfield2_right,Y	;			; 4
+        sta	PF2				;			; 3
+; 56
 
 
 	;==============================
-	; activate secret sprite
+	; activate sprite1
 
 	; X = current scanline
 	lda	#$F0			; load sprite data		; 2
@@ -372,29 +370,12 @@ after_secret:
 								;============
 								; 12 / 16 / 16
 
-; 58
-	inc	ZAP_COLOR	; increment color			; 5
-	lda	ZAP_COLOR						; 3
-	and	#$9F		; keep in $80-$90 range			; 2
-	sta	ZAP_COLOR						; 3
-; 63
-
-	nop
-	nop
-; 67
-
-	; turn playfield back to green for edge
-	; this needs to happen before cycle 70
-	lda	#$C2		; green					; 2
-	sta	COLUPF							; 3
 ; 72
 
 	inx								; 2
-
 ; 74
-	lda	$80							; 3
-;	nop
-; 77
+	nop
+; 76
 
 	;=============================================
 	;=============================================
@@ -409,53 +390,7 @@ draw_playfield_odd:
 
 	;===================
 	; draw playfield
-; 1
-	inc	TEMP1					; 5
-	inc	TEMP1					; 5
-						;============
-						;	10
-; 11
-
-	;=======================
-	; set bad stuff to blue
-	; really want this to start at least cycle 10
-
-	lda	ZAP_COLOR	; blue					; 3
-	cpy	#9							; 2
-	bcc	huge_hack2						; 2/3
-	cpy	#29							; 2
-	bcc	oyes_blue						; 2/3
-onot_blue:
-	.byte	$2C	; bit trick, 4 cycles
-oyes_blue:
-	sta	COLUPF							; 3
-
-
-								;==========
-								; 15 / 15 /15
-
-;	cpy	#9							; 2
-;	bcc	onot_blue_waste12					; 2/3
-;	cpy	#29							; 2
-;	bcs	onot_blue_waste8					; 2/3
-;	lda	ZAP_COLOR	; blue					; 3
-;	sta	COLUPF							; 3
-;	jmp	odone_blue						; 3
-;onot_blue_waste12:
-;	nop								; 2
-;	nop								; 2
-;onot_blue_waste8:
-;	nop								; 2
-;	nop								; 2
-;	nop								; 2
-;	nop								; 2
-;odone_blue:
-								;============
-								;  5 / 9 / 17
-
-	; has to happen by 30-3 but after 24-3
-
-; 26
+; 0
 
 	; activate strongbad sprite if necessary
 
@@ -477,7 +412,7 @@ after_sprite:
 								;============
 								; 13 / 18 / 18
 
-; 44
+; 18
 
 	inx								; 2
 	txa								; 2
@@ -490,31 +425,15 @@ done_inc_block:
                                                                 ;===========
                                                                 ; 11/11
 
-; 55
-;	lda	(PF0_ZPL),Y		;				; 5+
-;	sta	TEMP1							; 3
 
-; 63
-
-	; this needs to happen before cycle 70
-	lda	#$C2		; restore green wall			; 2
-	sta	COLUPF							; 3
-; 68
-
-	lda	TEMP1							; 3
-	cpx	#180		; see if hit end			; 2
+	cpx	#192		; see if hit end			; 2
+	sta	WSYNC
 	bne	draw_playfield						; 2/3
 done_playfield:
 								;=============
 								; 10 / 10
 
-; 76
-	jmp	skip
 
-huge_hack2:
-	jmp	onot_blue
-
-skip:
 
 	;=============================================
 	; vertical blank

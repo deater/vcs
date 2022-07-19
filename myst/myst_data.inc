@@ -513,6 +513,8 @@ clock_playfield1_left:
 	.byte $EF
 	.byte $00
 
+.align $100
+
 clock_playfield2_left:
 	.byte $FE
 	.byte $FC
