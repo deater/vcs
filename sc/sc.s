@@ -99,12 +99,26 @@ LEVEL_SPRITE13		=	$CD
 LEVEL_SPRITE14		=	$CE
 LEVEL_SPRITE15		=	$CF
 
-PF0_ZPL			=	$D0
-PF0_ZPH			=	$D1
-PF1_ZPL			=	$D2
-PF1_ZPH			=	$D3
-PF2_ZPL			=	$D4
-PF2_ZPH			=	$D5
+; Level info
+LEVEL_INFO		=	SECRET_X	; use as pointer to this
+
+SECRET_X		=	$D0
+SECRET_Y		=	$D1
+BONUS_X			=	$D2
+BONUS_Y			=	$D3
+ZAP_BEGIN		=	$D4
+ZAP_END			=	$D5
+START_X			=	$D6
+START_Y			=	$D7
+PF0_ZPL			=	$D6
+PF0_ZPH			=	$D7
+PF1_ZPL			=	$D8
+PF1_ZPH			=	$D9
+PF2_ZPL			=	$DA
+PF2_ZPH			=	$DB
+FUTURE3			=	$DE
+FUTURE4			=	$DF
+
 
 
 start:
@@ -150,6 +164,7 @@ game_over_animation:
 
 ; data, which has alignment constraints
 .include	"game_data.s"
+.include	"level_data.s"
 
 ; FIXME: move to gaps
 ;.byte "by Vince `deater` Weaver <vince@deater.net>"
