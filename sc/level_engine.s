@@ -156,45 +156,7 @@ after_check_down:
 	;==========================
 	; now VBLANK scanline 33
 	;==========================
-	; set up playfield
-
-	lda	LEVEL
-	lsr
-	bcc	setup_level2
-setup_level1:
-	lda	#<l1_playfield0_left
-	sta	PF0_ZPL
-	lda	#>l1_playfield0_left
-	sta	PF0_ZPH
-
-	lda	#<l1_playfield1_left
-	sta	PF1_ZPL
-	lda	#>l1_playfield1_left
-	sta	PF1_ZPH
-
-	lda	#<l1_playfield2_left
-	sta	PF2_ZPL
-	lda	#>l1_playfield2_left
-	jmp	done_setup_level
-setup_level2:
-
-	lda	#<l2_playfield0_left
-	sta	PF0_ZPL
-	lda	#>l2_playfield0_left
-	sta	PF0_ZPH
-
-	lda	#<l2_playfield1_left
-	sta	PF1_ZPL
-	lda	#>l2_playfield1_left
-	sta	PF1_ZPH
-
-	lda	#<l2_playfield2_left
-	sta	PF2_ZPL
-	lda	#>l2_playfield2_left
-
-
-done_setup_level:
-	sta	PF2_ZPH
+	; empty for now
 
 	sta	WSYNC
 

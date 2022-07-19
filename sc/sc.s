@@ -1,10 +1,11 @@
 ; secret collect.
 ;
+;	for NTSC Atari 2600/VCS
+;
 ; based on the Videlectrix game from Homestarrunner.com
 ;
 
 ; by Vince `deater` Weaver	<vince@deater.net>
-
 
 .include "../vcs.inc"
 
@@ -15,8 +16,6 @@ VID_LOGO_START		=	181
 
 ; zero page addresses
 
-STRONGBAD_X		=	$80
-STRONGBAD_Y		=	$81
 OLD_STRONGBAD_X		=	$82
 OLD_STRONGBAD_Y		=	$83
 STRONGBAD_Y_END		=	$84
@@ -108,14 +107,14 @@ BONUS_X			=	$D2
 BONUS_Y			=	$D3
 ZAP_BEGIN		=	$D4
 ZAP_END			=	$D5
-START_X			=	$D6
-START_Y			=	$D7
-PF0_ZPL			=	$D6
-PF0_ZPH			=	$D7
-PF1_ZPL			=	$D8
-PF1_ZPH			=	$D9
-PF2_ZPL			=	$DA
-PF2_ZPH			=	$DB
+STRONGBAD_X		=	$D6
+STRONGBAD_Y		=	$D7
+PF0_ZPL			=	$D8
+PF0_ZPH			=	$D9
+PF1_ZPL			=	$DA
+PF1_ZPH			=	$DB
+PF2_ZPL			=	$DC
+PF2_ZPH			=	$DD
 FUTURE3			=	$DE
 FUTURE4			=	$DF
 

@@ -20,6 +20,7 @@ copy_level_data_in:
 	ldx	LEVEL							; 3
 	dex								; 2
 	txa								; 2
+	and	#$1		; currently only 2 levels		; 2
 	asl			; in 16 byte chunks			; 2
 	asl								; 2
 	asl								; 2
@@ -32,7 +33,7 @@ copy_level_data_in:
 	sta	INH							; 3
 	ldy	#15							; 2
 								;===========
-								;	31
+								;	33
 copy_level_data_loop:
 	lda	(INL),Y							; 5
 	sta	LEVEL_INFO,Y						; 5
@@ -43,13 +44,13 @@ copy_level_data_loop:
 								; 	239
 
 init_strongbad:
-	lda	START_X			; set initial x position	; 2
-	sta	STRONGBAD_X						; 5
+;	lda	START_X			; set initial x position	; 2
+;	sta	STRONGBAD_X						; 5
 	jsr	strongbad_moved_horizontally	;              		; 6+48
 ; 61 (79)
 
-	lda     START_Y			; initial sprite Y		; 2
-	sta     STRONGBAD_Y						; 3
+;	lda     START_Y			; initial sprite Y		; 2
+;	sta     STRONGBAD_Y						; 3
 	jsr     strongbad_moved_vertically				; 6+16
 ; 88 (106)
 
