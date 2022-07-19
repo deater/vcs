@@ -22,7 +22,7 @@ copy_level_data_in:
 	ldx	LEVEL							; 3
 	dex								; 2
 	txa								; 2
-	and	#$1		; currently only 2 levels		; 2
+	and	#$7		; currently only 8 levels		; 2
 	asl			; in 16 byte chunks			; 2
 	asl								; 2
 	asl								; 2
