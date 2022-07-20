@@ -2,6 +2,8 @@
 	; the clock
 	;=====================
 
+	jmp	clock_frame
+.align	$100
 clock_frame:
 
 	;============================
@@ -292,6 +294,9 @@ pad_x:
 								;============
 								;	28
 
+	lda	clock_colors						; 4
+	ldx	clock_bg_colors
+
 	sta	WSYNC							; 3
 								;============
 								;============
@@ -310,44 +315,46 @@ draw_playfield:
 draw_playfield_even:
 
 	;===================
-	; draw playfield
+	; draw playfield 1/4
 	;===================
 
-; FIXME: move this into previous loop, A/X?
+	; Y is zero
+	; A has clock_colors,Y
+	; X has clock_bg_colors,Y
 
-; 0
-	lda	clock_colors,Y						; 4+
+; 1
 	sta	COLUPF							; 3
+	stx	COLUBK							; 3
 ; 7
-	lda	clock_bg_colors,Y					; 4+
-	sta	COLUBK							; 3
-; 14
-	lda	clock_playfield0_left,Y	;				; 4+
+	lda	clock_playfield0_left,Y	;				; 4
 	sta	PF0			;				; 3
 	;   has to happen by 22 (GPU 68)
+; 14
+	lda	clock_playfield1_left,Y	;				; 4
+	sta	PF1			;				; 3
+	;  has to happen by 28 (GPU 84)
 ; 21
-
-	lda	clock_playfield1_left,Y	;				; 4+
-        sta	PF1			;				; 3
-	;  has to happen by 24 (GPU 72)
+	lda	clock_playfield2_left,Y	;				; 4
+        sta	PF2							; 3
+	;  has to happen by 38 (GPU 116)	;
 ; 28
-	lda	clock_playfield2_left,Y	;				; 4+
-        sta	PF2
-	;  has to happen by 26 (GPU 80)	;				; 3
-; 35
-	; has to happen by 30-3
 
-        lda	clock_playfield0_right,Y	;			; 4
+	lda	clock_playfield0_right,Y	;			; 4
         sta	PF0				;			; 3
-; 42
+	; has to happen 28-49 (GPU 84-148)
+; 35
         lda	clock_playfield1_right,Y	;			; 4
         sta	PF1				;			; 3
-; 49
+	; has to happen 38-56 (GPU 116-170)
+; 42
         lda	clock_playfield2_right,Y	;			; 4
         sta	PF2				;			; 3
-; 56
+	; has to happen 49-67 (GPU148-202)
+; 49
 
+	lda	$80
 
+; 52
 	;==============================
 	; activate sprite1
 
@@ -370,30 +377,46 @@ after_secret:
 								;============
 								; 12 / 16 / 16
 
-; 72
-
-	inx								; 2
-; 74
-	nop
+; 68
+	inc	CURRENT_SCANLINE					; 5
+	lda	$80		; nop3					; 3
 ; 76
 
-	;=============================================
-	;=============================================
-	;=============================================
-	; draw playfield odd
-	;=============================================
-	;=============================================
-	;=============================================
-
-
-draw_playfield_odd:
-
 	;===================
-	; draw playfield
+	; draw playfield 2/4
+	;===================
 ; 0
+	lda	clock_playfield0_left,Y	;				; 4
+	sta	PF0			;				; 3
+	;   has to happen by 22 (GPU 68)
+; 7
+	lda	clock_playfield1_left,Y	;				; 4
+        sta	PF1			;				; 3
+	;  has to happen by 28 (GPU 84)
+; 14
+	lda	clock_playfield2_left,Y	;				; 4
+        sta	PF2							; 3
+	;  has to happen by 38 (GPU 116)	;
+; 21
+	lda	clock_playfield0_right,Y	;			; 4+
+	sta	PF0				;			; 3
+	; has to happen 28-49 (GPU 84-148)
+; 28
+	lda	clock_playfield1_right,Y	;			; 4+
+	ldx	$80							; 3
+	nop
+	sta	PF1				;			; 3
+	; has to happen 39-56 (GPU 116-170)
+; 40
+	lda	clock_playfield2_right,Y	;			; 4+
+	nop
+	nop
+	sta	PF2				;			; 3
+	; has to happen 50-67 (GPU148-202)
+; 51
 
 	; activate strongbad sprite if necessary
-
+	ldx	CURRENT_SCANLINE
 	; X = current scanline
 	lda	#$F0			; load sprite data		; 2
 	cpx	STRONGBAD_Y_END						; 3
@@ -411,27 +434,133 @@ turn_off_strongbad:
 after_sprite:
 								;============
 								; 13 / 18 / 18
+; 69
+	inc	CURRENT_SCANLINE					; 5
+; 74
+	nop
 
-; 18
+	;===================
+	; draw playfield 3/4
+	;===================
+; 0
+	lda	clock_playfield0_left,Y	;				; 4
+	sta	PF0			;				; 3
+	;   has to happen by 22 (GPU 68)
+; 7
+	lda	clock_playfield1_left,Y	;				; 4
+        sta	PF1			;				; 3
+	;  has to happen by 28 (GPU 84)
+; 14
+	lda	clock_playfield2_left,Y	;				; 4
+        sta	PF2							; 3
+	;  has to happen by 38 (GPU 116)	;
+; 21
+	lda	clock_playfield0_right,Y	;			; 4+
+	sta	PF0				;			; 3
+	; has to happen 28-49 (GPU 84-148)
+; 28
+	lda	clock_playfield1_right,Y	;			; 4+
+	ldx	$80							; 3
+	nop
+	sta	PF1				;			; 3
+	; has to happen 39-56 (GPU 116-170)
+; 40
+	lda	clock_playfield2_right,Y	;			; 4+
+	nop
+	nop
+        sta	PF2				;			; 3
+	; has to happen 50-67 (GPU148-202)
+; 51
+	inc	CURRENT_SCANLINE
+	sta	WSYNC
 
-	inx								; 2
-	txa								; 2
-	and	#$3							; 2
-	beq	yes_inc4						; 2/3
-	.byte	$A5     ; begin of LDA ZP				; 3
-yes_inc4:
-	iny             ; $E8 should be harmless to load		; 2
-done_inc_block:
+	;===================
+	; draw playfield 4/4
+	;===================
+; 0
+	lda	clock_playfield0_left,Y	;				; 4
+	sta	PF0			;				; 3
+	;   has to happen by 22 (GPU 68)
+; 7
+	lda	clock_playfield1_left,Y	;				; 4
+        sta	PF1			;				; 3
+	;  has to happen by 28 (GPU 84)
+; 14
+	lda	clock_playfield2_left,Y	;				; 4
+        sta	PF2							; 3
+	;  has to happen by 38 (GPU 116)	;
+; 21
+	lda	clock_playfield0_right,Y	;			; 4+
+	sta	PF0				;			; 3
+	; has to happen 28-49 (GPU 84-148)
+; 28
+	lda	clock_playfield1_right,Y	;			; 4+
+	ldx	$80							; 3
+	nop								; 2
+	sta	PF1				;			; 3
+	; has to happen 39-56 (GPU 116-170)
+; 40
+	lda	clock_playfield2_right,Y	;			; 4+
+	nop								; 2
+	nop								; 2
+	sta	PF2				;			; 3
+	; has to happen 50-67 (GPU148-202)
+; 51
+
+	; activate strongbad sprite if necessary
+.if 0
+	ldx	CURRENT_SCANLINE
+	; X = current scanline
+	lda	#$F0			; load sprite data		; 2
+	cpx	STRONGBAD_Y_END						; 3
+	bcs	turn_off_strongbad_delay5				; 2/3
+	cpx	STRONGBAD_Y						; 3
+	bcc	turn_off_strongbad					; 2/3
+turn_on_strongbad:
+	sta	GRP0			; and display it		; 3
+	jmp	after_sprite						; 3
+turn_off_strongbad_delay5:
+	inc	TEMP1							; 5
+turn_off_strongbad:
+	lda	#0			; turn off sprite		; 2
+	sta	GRP0							; 3
+after_sprite:
+								;============
+								; 13 / 18 / 18
+.endif
+
+;	inx								; 2
+;	txa								; 2
+;	and	#$3							; 2
+;	beq	yes_inc4						; 2/3
+;	.byte	$A5     ; begin of LDA ZP				; 3
+;yes_inc4:
+;	iny             ; $E8 should be harmless to load		; 2
+;done_inc_block:
                                                                 ;===========
                                                                 ; 11/11
 
+; 50
+	iny								; 2
+; 52
+	lda	$80
+	nop
+	lda	$80
+	nop
 
-	cpx	#192		; see if hit end			; 2
-	sta	WSYNC
-	bne	draw_playfield						; 2/3
+; 62
+	lda	clock_colors,Y						; 4+
+	ldx	clock_bg_colors,Y					; 4+
+; 70
+
+	cpy	#48		; see if hit end			; 2
+; 72
+	beq	done_playfield						; 2/3
+; 74
+	jmp	draw_playfield						; 3
+; 77
 done_playfield:
-								;=============
-								; 10 / 10
+
 
 
 

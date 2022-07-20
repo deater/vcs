@@ -25,6 +25,14 @@ FRAME		=	$92
 CURRENT_SCANLINE=	$93
 LEVEL		=	$94
 
+PF0L_CACHE	=	$A0
+PF1L_CACHE	=	$A1
+PF2L_CACHE	=	$A2
+PF0R_CACHE	=	$A3
+PF1R_CACHE	=	$A4
+PF2R_CACHE	=	$A5
+
+
 myst:
 	sei		; disable interrupts
 	cld		; clear decimal bit
