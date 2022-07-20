@@ -49,7 +49,7 @@ static int convert_color(int color, char *filename) {
 /* xsize, ysize is the size of the result, not size of */
 /* the input image */
 int loadpng(char *filename, unsigned char **image_ptr, int *xsize, int *ysize,
-	int png_type) {
+	int png_type, int skip) {
 
 	int x,y,ystart,yadd,xadd;
 	int color;
@@ -104,9 +104,20 @@ int loadpng(char *filename, unsigned char **image_ptr, int *xsize, int *ysize,
 
 	/* get the xadd */
 	if (width==320) {
-		*xsize=40;
-		xadd=8;
-		yadd=1;
+		if (skip==8) {
+			*xsize=40;
+			xadd=8;
+			yadd=1;
+		}
+		else if (skip==2) {
+			*xsize=160;
+			xadd=2;
+			yadd=1;
+		}
+		else {
+			fprintf(stderr,"Unsupported skip %d!\n",skip);
+			return -1;
+		}
 	}
 	else {
 		fprintf(stderr,"Unsupported width %d\n",width);

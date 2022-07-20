@@ -93,7 +93,7 @@ int main(int argc, char **argv) {
 		exit(-1);
 	}
 
-	if (loadpng(input_filename,&image,&xsize,&ysize,PNG_WHOLETHING)<0) {
+	if (loadpng(input_filename,&image,&xsize,&ysize,PNG_WHOLETHING,8)<0) {
 		fprintf(stderr,"Error loading png!\n");
 		exit(-1);
 	}
