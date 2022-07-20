@@ -129,40 +129,13 @@ after_check_down:
 	; now scanline 32
 	;========================
 	; increment frame
-	; handle any frame-related activity
-; 0
+	; setup missile
 	inc	FRAME							; 5
-	lda	FRAME							; 3
-; 8
-.if 0
 
-	; update zap color
-	; every other frame?
+	lda	#$2
+	sta	ENAM0	; enable missile 0
 
-	ldx	ZAP_BASE
 
-	and	#$1
-	beq	done_rotate_zap
-
-	dec	ZAP_BASE						; 5
-	ldx	ZAP_BASE						; 3
-	cpx	#$7f							; 2
-	bcs	done_rotate_zap						; 2/3
-	ldx	#$AF							; 2
-	stx	ZAP_BASE						; 3
-done_rotate_zap:
-	stx	ZAP_COLOR						; 3
-dont_rotate_zap:
-
-;	dec	ZAP_BASE
-;	lda	ZAP_BASE
-;	and	#$3F
-;	sta	ZAP_BASE
-;	sta	ZAP_COLOR
-
-                                                                ;============
-                                                                ; 20 worse case
-.endif
 
 	sta	WSYNC							; 3
 
