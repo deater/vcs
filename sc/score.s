@@ -97,7 +97,7 @@ blurgh:
 	lda	score_bitmap0,X		; load sprite data		; 4+
 	sta	GRP0			; 				; 3
 ; 15
-	lda	score_bitmap1,X	; load sprite data			; 4+
+	lda	score_bitmap0,X	; load sprite data			; 4+
 	sta	GRP1			; 1->[GRP1], [GRP0 (0)]-->GRP0	; 3
 ; 22
 
