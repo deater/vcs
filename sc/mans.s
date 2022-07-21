@@ -36,13 +36,10 @@ blurgh2:
 
 	; try to draw level number on right of screen
 
-;	lda     $80	; nop 3						; 3
-
-	lda	#$36	; orange					; 2
-	sta	COLUPF	;						; 3
+	nop								; 2
+	lda	$80							; 3
 
 	lda	LEVEL_SPRITE9,X						; 4
-;	lda	#$AA	; 2   '1' sprite?				; 2
 	sta	PF0							; 3
 ; 36
 

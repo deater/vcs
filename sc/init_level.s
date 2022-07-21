@@ -61,9 +61,9 @@ copy_level_data_loop:
 	jsr	strongbad_moved_horizontally	;              		; 6+48
 ; 61 (79)
 
-	jsr     strongbad_moved_vertically				; 6+16
+	jmp     strongbad_moved_vertically				; 6+16
 ; 88 (106)
 
-	rts								; 6
+;	rts								; 6
 
 ; 94 (112)
