@@ -7,28 +7,21 @@
 clock_frame:
 
 	;============================
-	; Start Vertical Blank
+	; 3 scanlines of Vertical Sync
 	;============================
-
+	; VBLANK should be on here from before
+	; want VSYNC on for three scanlines
+; in scanline 0
+	lda	#2
+	sta	VSYNC			; turn on Vertical Sync signal
+	sta	WSYNC
+; in scanline 1
+	sta	WSYNC
+; in scanline 2
+	sta	WSYNC
+; in scanline 3
 	lda	#0
-	sta	VBLANK			; turn on beam
-
-	lda	#2			; reset beam to top of screen
-	sta	VSYNC
-
-	;=================================
-	; wait for 3 scanlines of VSYNC
-	;=================================
-
-	sta	WSYNC			; wait until end of scanline
-	sta	WSYNC
-	sta	WSYNC
-
-	; now in VSYNC scanline 3
-
-	lda	#0			; done beam reset
-	sta	VSYNC
-
+	sta	VSYNC			; turn off Vertical Sync
 
 
 	;=================================
@@ -36,6 +29,8 @@ clock_frame:
 	; 37 lines of vertical blank
 	;=================================
 	;=================================
+
+; in VBLANK scanline 0
 
 	ldx	#28
 le_vblank_loop:
@@ -49,7 +44,7 @@ le_vblank_loop:
 	;=============================
 	; handle left being pressed
 
-	lda	STRONGBAD_X		;				; 3
+	lda	POINTER_X		;				; 3
 	beq	after_check_left	;				; 2/3
 
 	lda	#$40			; check left			; 2
@@ -57,7 +52,7 @@ le_vblank_loop:
 	bne	after_check_left	;				; 2/3
 
 left_pressed:
-	dec	STRONGBAD_X		; move sprite left		; 5
+	dec	POINTER_X		; move sprite left		; 5
 
 after_check_left:
 	sta	WSYNC			;				; 3
@@ -69,7 +64,7 @@ after_check_left:
 	;=============================
 	; handle right being pressed
 
-	lda	STRONGBAD_X_END		;				; 3
+	lda	POINTER_X_END		;				; 3
 	cmp	#167			;				; 2
 	bcs	after_check_right	;				; 2/3
 
@@ -77,7 +72,7 @@ after_check_left:
 	bit	SWCHA			;				; 3
 	bne	after_check_right	;				; 2/3
 
-	inc	STRONGBAD_X		; move sprite right		; 5
+	inc	POINTER_X		; move sprite right		; 5
 after_check_right:
 	sta	WSYNC			;				; 3
 					;	===========================
@@ -88,7 +83,7 @@ after_check_right:
 	;===========================
 	; handle up being pressed
 
-	lda	STRONGBAD_Y		;				; 3
+	lda	POINTER_Y		;				; 3
 	cmp	#1			;				; 2
 	beq	after_check_up		;				; 2/3
 
@@ -96,9 +91,9 @@ after_check_right:
 	bit	SWCHA			;				; 3
 	bne	after_check_up		;				; 2/3
 
-	dec	STRONGBAD_Y		; move sprite up		; 5
+	dec	POINTER_Y		; move sprite up		; 5
 
-	jsr	strongbad_moved_vertically	; 			; 6+16
+	jsr	pointer_moved_vertically	; 			; 6+16
 after_check_up:
 	sta	WSYNC			; 				; 3
 					;	===============================
@@ -109,16 +104,16 @@ after_check_up:
 	;==========================
 	; handle down being pressed
 
-	lda	STRONGBAD_Y_END		;				; 3
-	cmp	#VID_LOGO_START		;				; 2
+	lda	POINTER_Y_END		;				; 3
+	cmp	#160			;				; 2
 	bcs	after_check_down	;				; 2/3
 
 	lda	#$20			;				; 2
 	bit	SWCHA			;				; 3
 	bne	after_check_down	;				; 2/3
 
-	inc	STRONGBAD_Y		; move sprite down		; 5
-	jsr	strongbad_moved_vertically	;			; 6+16
+	inc	POINTER_Y		; move sprite down		; 5
+	jsr	pointer_moved_vertically	;			; 6+16
 after_check_down:
 	sta	WSYNC			;				; 3
 					;	==============================
@@ -188,12 +183,12 @@ qpad_x:
 	;======================================
 	; now vblank 35
 	;=======================================
-	; update strongbad horizontal position
+	; update pointer horizontal position
 	;=======================================
 
 	; do this separately as too long to fit in with left/right code
 
-	jsr	strongbad_moved_horizontally	;			6+48
+	jsr	pointer_moved_horizontally	;			6+48
 	sta	WSYNC			;				3
 					;====================================
 					;				57
@@ -211,7 +206,7 @@ qpad_x:
 	ldx	#0		; sprite 0 display nothing		2
 	stx	GRP0		; (FIXME: this already set?)		3
 
-	ldx	STRONGBAD_X_COARSE	;				3
+	ldx	POINTER_X_COARSE	;				3
 	inx			;					2
 	inx			;					2
 ; 12
@@ -266,6 +261,11 @@ pad_x:
 	tay			; X=current block			; 2
 								;============
 								;	28
+
+	lda	#0
+	sta	VBLANK			; turn on beam
+
+
 
 	lda	clock_colors						; 4
 	ldx	clock_bg_colors
@@ -392,9 +392,9 @@ after_secret:
 	ldx	CURRENT_SCANLINE
 	; X = current scanline
 	lda	#$F0			; load sprite data		; 2
-	cpx	STRONGBAD_Y_END						; 3
+	cpx	POINTER_Y_END						; 3
 	bcs	turn_off_strongbad_delay5				; 2/3
-	cpx	STRONGBAD_Y						; 3
+	cpx	POINTER_Y						; 3
 	bcc	turn_off_strongbad					; 2/3
 turn_on_strongbad:
 	sta	GRP0			; and display it		; 3
@@ -485,9 +485,9 @@ after_sprite:
 	ldx	CURRENT_SCANLINE
 	; X = current scanline
 	lda	#$F0			; load sprite data		; 2
-	cpx	STRONGBAD_Y_END						; 3
+	cpx	POINTER_Y_END						; 3
 	bcs	turn_off_strongbad_delay5				; 2/3
-	cpx	STRONGBAD_Y						; 3
+	cpx	POINTER_Y						; 3
 	bcc	turn_off_strongbad					; 2/3
 turn_on_strongbad:
 	sta	GRP0			; and display it		; 3
@@ -556,10 +556,6 @@ le_overscan_loop:
 	dex
 	bne	le_overscan_loop
 
-;	.repeat 26
-;	sta	WSYNC
-;	.endrepeat
-
 	;==================================
 	; overscan 27, trigger sound
 
@@ -605,14 +601,14 @@ collision_wall:
 ; 11
 	; if between Y>9*4 && Y<29*4 X and X>1 and Y<150 we got zapped!
 
-	lda	STRONGBAD_X						; 3
+	lda	POINTER_X						; 3
 	cmp	#12							; 2
 	bcc	regular_collision					; 2/3
 ; 18
 	cmp	#150	; $9E						; 2
 	bcs	regular_collision					; 2/3
 ; 22
-	lda	STRONGBAD_Y						; 3
+	lda	POINTER_Y						; 3
 	cmp	#64	; $40						; 2
 	bcc	regular_collision					; 2/3
 ; 29
@@ -626,15 +622,15 @@ got_zapped:
 
 regular_collision:
 	; reset strongbad position
-	lda	OLD_STRONGBAD_X
-	sta	STRONGBAD_X
-	lda	OLD_STRONGBAD_Y
-	sta	STRONGBAD_Y
+	lda	OLD_POINTER_X
+	sta	POINTER_X
+	lda	OLD_POINTER_Y
+	sta	POINTER_Y
 
-	lda	OLD_STRONGBAD_X_END
-	sta	STRONGBAD_X_END
-	lda	OLD_STRONGBAD_Y_END
-	sta	STRONGBAD_Y_END
+	lda	OLD_POINTER_X_END
+	sta	POINTER_X_END
+	lda	OLD_POINTER_Y_END
+	sta	POINTER_Y_END
 
 	ldy	#SFX_COLLIDE
 	;sty	SOUND_TO_PLAY
