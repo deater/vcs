@@ -128,12 +128,16 @@ start:
 	;============================
 	;============================
 
+	sei			; disable interrupts
 	cld			; clear decimal mode
 
 	ldx	#$FF		; set stack to $1FF (mirrored at $FF)
 	txs
 
 restart_game:
+	lda	#2
+	sta	VBLANK		; disable beam
+
 	jsr	init_game
 
 	jsr	init_level

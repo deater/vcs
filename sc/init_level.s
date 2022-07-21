@@ -1,20 +1,34 @@
+; NEEDS CYCLE RECOUNT
+
 	;============================
-	; init levels
+	; init level
 	;============================
 
 
 init_level:
 ; 0
-	lda	#20		; 20 seconds				; 2
+	; set timeout.  Gets faster as level increases
+
+	lda	LEVEL							; 3
+	lsr								; 2
+	lsr								; 2
+	lsr			; get LEVEL/8				; 2
+	tax								; 2
+	lda	#40		; 20 seconds				; 2
+hardness_loop:
+	lsr								; 2
+	dex								; 2
+	bpl	hardness_loop						; 2/3
+
 	sta	TIME							; 3
-; 5
-	lda	#59							; 2
+; ?FIXME
+;	lda	#59							; 2
 	sta	TIME_SUBSECOND						; 3
-; 10
+; ?+5
 	lda	#0							; 2
 	sta	FRAME							; 3
 	sta	LEVEL_OVER						; 3
-; 18
+; ?+18
 
 reinit_strongbad:
 
