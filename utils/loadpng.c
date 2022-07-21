@@ -103,7 +103,18 @@ int loadpng(char *filename, unsigned char **image_ptr, int *xsize, int *ysize,
 	height = png_get_image_height(png_ptr, info_ptr);
 
 	/* get the xadd */
-	if (width==320) {
+	if (width==160) {
+		if (skip==2) {
+			*xsize=160;
+			xadd=1;
+			yadd=1;
+		}
+		else {
+			fprintf(stderr,"Unsupported skip %d!\n",skip);
+			return -1;
+		}
+	}
+	else if (width==320) {
 		if (skip==8) {
 			*xsize=40;
 			xadd=8;
