@@ -21,8 +21,8 @@ hardness_loop:
 	bpl	hardness_loop						; 2/3
 
 	sta	TIME							; 3
-; ?FIXME
-;	lda	#59							; 2
+
+	lda	#59							; 2
 	sta	TIME_SUBSECOND						; 3
 ; ?+5
 	lda	#0							; 2
@@ -33,9 +33,7 @@ hardness_loop:
 reinit_strongbad:
 
 copy_level_data_in:
-	ldx	LEVEL							; 3
-	dex								; 2
-	txa								; 2
+	lda	LEVEL							; 3
 	and	#$7		; currently only 8 levels		; 2
 	asl			; in 16 byte chunks			; 2
 	asl								; 2

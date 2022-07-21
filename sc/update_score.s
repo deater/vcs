@@ -169,9 +169,7 @@ mans_loop:
 
 	; update level
 
-	ldy	LEVEL							; 3
-	dey								; 2
-	tya								; 2
+	lda	LEVEL							; 3
 	asl								; 2
 	asl								; 2
 	asl								; 2
