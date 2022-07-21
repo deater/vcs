@@ -1,9 +1,12 @@
 
 TITLE SCREEN:
+	+ Avoid weird glitch at start.  Start with VBLANK off?
 
 LEVEL ENGINE:
 	+ SCORE: update six digits? (currently 4)
-	+ LEVEL: add more level numbers
+	+ LEVEL: add more level numbers, wrap at 8 but change color
+		of level indicator
+	+ lose points if hit wall?
 	+ go to title screen if reset pressed
 	+ scores/mans slightly not centered
 	+ slow down default speed

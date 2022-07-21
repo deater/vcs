@@ -130,13 +130,18 @@ mans_ones:	.byte	$02,$86,$82,$02,$82,$82,$07,$00
 mans_twos:	.byte	$02,$85,$81,$02,$84,$84,$07,$00
 mans_threes:	.byte	$02,$85,$81,$02,$81,$85,$02,$00
 
-;big_level_one:	.byte	$20,$60,$20,$20,$20,$20,$20,$70
+;big_level_one:		.byte	$20,$60,$20,$20,$20,$20,$20,$70
+;big_level_five:	.byte	$70,$40,$40,$60,$50,$50,$50,$60
 
-;                       frontward at end    middle  backwards at start
+;                       frontward at end    middle  forwards at start
 big_level_one:	.byte	$20,$20,$70,         $20,  $20,$20,$60,$20
 big_level_two:	.byte	$40,$40,$70,         $20,  $20,$50,$10,$20
 big_level_three:.byte	$10,$60,$00,         $10,  $60,$10,$10,$60
 big_level_four:	.byte	$10,$10,$10,         $70,  $50,$50,$50,$50
+big_level_five:	.byte	$10,$10,$60,         $10,  $70,$40,$40,$60
+big_level_six:	.byte	$50,$50,$60,         $50,  $70,$40,$40,$60
+big_level_seven:.byte	$20,$20,$20,         $20,  $70,$10,$10,$10
+big_level_eight:.byte	$20,$50,$50,         $50,  $20,$50,$50,$20
 
 
 ;===================
@@ -155,6 +160,8 @@ and_bitmap0:	.byte	$00,$00,$00,$00,$00,$00,$00,$00
 		.byte	$00,$00,$00,$00,$00
 vid_bitmap0:	.byte	$18,$24,$24,$5A,$DB,$A5,$42,$C3
 
+;.align $100
+
 title_bitmap1:
 prod_bitmap1:	.byte	$18,$25,$A4,$18,$00,$00,$00,$00,$00
 vmw_bitmap1:	.byte	$00,$00,$00,$00,$00,$01,$01,$01
@@ -164,7 +171,7 @@ and_bitmap1:	.byte	$00,$00,$00,$00,$00,$00,$00,$00
 		.byte	$00,$00,$00,$00,$00
 vid_bitmap1:	.byte	$00,$4e,$52,$4e,$02,$42,$80,$80
 
-.align	$100
+;.align	$100
 
 title_bitmap2:
 prod_bitmap2:	.byte	$E6,$29,$E9,$29,$20,$00,$00,$00,$00
@@ -269,7 +276,7 @@ title_playfield2_left:
 	.byte $67
 	.byte $00
 
-.align $100
+;.align $100
 
 title_playfield0_right:
 	.byte $00
@@ -300,7 +307,7 @@ title_playfield0_right:
 	.byte $90
 	.byte $B0
 	.byte $30
-	.byte $00
+;	.byte $00
 
 title_playfield1_right:
 	.byte $00
@@ -331,8 +338,8 @@ title_playfield1_right:
 	.byte $21
 	.byte $BD
 	.byte $9C
-	.byte $00
-	.byte $00
+;	.byte $00
+;	.byte $00
 
 title_playfield2_right:
 	.byte $00
@@ -438,213 +445,46 @@ collect_playfield1_left:
 ;.align $100
 
 sc_playfield2_left:
-	.byte $C0
-	.byte $C0
-	.byte $E0
-	.byte $E0
-	.byte $D0
-	.byte $D0
-	.byte $90
-	.byte $90
-	.byte $50
-	.byte $50
-	.byte $90
-	.byte $90
-	.byte $D0
-	.byte $D0
-	.byte $E0
-	.byte $E0
-	.byte $C0
-	.byte $C0
-	.byte $80
-	.byte $80
-	.byte $C0
-	.byte $C0
-	.byte $F0
-	.byte $F0
-	.byte $E8
-	.byte $E8
-	.byte $E6
-	.byte $E6
-	.byte $C6
-	.byte $C6
-	.byte $40
-	.byte $40
-	.byte $60
-	.byte $60
-	.byte $70
-	.byte $70
-	.byte $00
-	.byte $00
+	.byte $C0,$C0,$E0,$E0,$D0,$D0,$90,$90
+	.byte $50,$50,$90,$90,$D0,$D0,$E0,$E0
+	.byte $C0,$C0,$80,$80,$C0,$C0,$F0,$F0
+	.byte $E8,$E8,$E6,$E6,$C6,$C6,$40,$40
+	.byte $60,$60,$70,$70,$00;,$00
 
 secret_playfield2_left:
-	.byte $00
-	.byte $67
-	.byte $11
-	.byte $11
-	.byte $13
-	.byte $11
-	.byte $11
-	.byte $67
-	.byte $00
-	.byte $00
-
-collect_playfield2_left:
-	.byte $00
-	.byte $22
-	.byte $22
-	.byte $22
-	.byte $22
-	.byte $22
-	.byte $22
-	.byte $EE
-	.byte $00
-	.byte $00
+	.byte $00,$67,$11,$11,$13,$11,$11,$67,$00,$00
+collect_playfield2_left:	; must be 10 after previous
+	.byte $00,$22,$22,$22,$22,$22,$22,$EE,$00,$00
 
 sc_playfield0_right:
-	.byte $10
-	.byte $10
-	.byte $30
-	.byte $30
-	.byte $50
-	.byte $50
-	.byte $40
-	.byte $40
-	.byte $50
-	.byte $50
-	.byte $40
-	.byte $40
-	.byte $50
-	.byte $50
-	.byte $30
-	.byte $30
-	.byte $10
-	.byte $10
-	.byte $80
-	.byte $80
-	.byte $50
-	.byte $50
-	.byte $30
-	.byte $30
-	.byte $30
-	.byte $30
-	.byte $30
-	.byte $30
-	.byte $10
-	.byte $10
-	.byte $10
-	.byte $10
-	.byte $30
-	.byte $30
-	.byte $70
-	.byte $70
-	.byte $00
-	.byte $00
+	.byte $10,$10,$30,$30,$50,$50,$40,$40
+	.byte $50,$50,$40,$40,$50,$50,$30,$30
+	.byte $10,$10,$80,$80,$50,$50,$30,$30
+	.byte $30,$30,$30,$30,$10,$10,$10,$10
+	.byte $30,$30,$70,$70,$00,$00
 
 
 .align $100
 
 secret_playfield0_right:
-	.byte $00
-	.byte $30
-	.byte $50
-	.byte $50
-	.byte $30
-	.byte $50
-	.byte $50
-	.byte $50
-	.byte $00
-	.byte $00
-
-	; note: can't add alignment here
-
-collect_playfield0_right:
-	.byte $00
-	.byte $E0
-	.byte $20
-	.byte $20
-	.byte $60
-	.byte $20
-	.byte $20
-	.byte $E0
-	.byte $00
-	.byte $00
-
-
+	.byte $00,$30,$50,$50,$30,$50,$50,$50,$00,$00
+collect_playfield0_right:	; must follow 10 bytes after secret_playfield0_right
+	.byte $00,$E0,$20,$20,$60,$20,$20,$E0;,$00,$00
 
 sc_playfield1_right:
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $0E
-	.byte $0E
-	.byte $0E
-	.byte $0E
-	.byte $0E
-	.byte $0E
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $C0
-	.byte $C0
-	.byte $C0
-	.byte $C0
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
+	.byte $00,$00,$00,$00,$00,$0E,$0E,$0E
+	.byte $0E,$0E,$0E,$00,$00,$00,$C0,$C0
+	.byte $C0,$C0,$00,$00,$00,$00,$00,$00
+	.byte $00,$00,$00,$00,$00,$00,$00,$00
+	.byte $00,$00,$00,$00,$00;,$00
 
 secret_playfield1_right:
-	.byte $00
-	.byte $EE
-	.byte $84
-	.byte $84
-	.byte $C4
-	.byte $84
-	.byte $84
-	.byte $E4
-	.byte $00
-	.byte $00
-
-collect_playfield1_right:
-	.byte $00
-	.byte $37
-	.byte $42
-	.byte $42
-	.byte $42
-	.byte $42
-	.byte $42
-	.byte $32
-	.byte $00
-	.byte $00
+	.byte $00,$EE,$84,$84,$C4,$84,$84,$E4,$00,$00
+collect_playfield1_right:	; must follow 10 bytes after secret_playfield1_right
+	.byte $00,$37,$42,$42,$42,$42,$42,$32;,$00,$00
 
 sc_overlay_colors:
-	.byte $00
-	.byte $00
-	.byte $A8
-	.byte $A8
-	.byte $A8
-	.byte $A8
-	.byte $A8
-	.byte $A8
+	.byte $00,$00,$A8,$A8,$A8,$A8,$A8,$A8
 	.byte $C6
 	.byte $C2
 	.byte $00
@@ -683,8 +523,8 @@ sc_overlay_colors:
 	.byte $80
 	.byte $80
 	.byte $80
-	.byte $00
-	.byte $00
+;	.byte $00
+;	.byte $00
 
 sc_overlay:
 	.byte $00
@@ -915,7 +755,4 @@ game_overlay2:
 	.byte $00
 	.byte $00
 	.byte $00
-
-
-
 
