@@ -1,21 +1,24 @@
-; RECALC TIMINGS
-
 	;===============================================
-	; 13 scanlines to update top of screen sprites
+	;===============================================
+	; update score
+	;===============================================
+	;===============================================
+	; 14 scanlines to update top of screen sprites
 
+; comes in with 4 cycles
 
 update_score:
 
 	;=====================
 	; setup digit pointers
 	;=====================
-
+; 4
 	lda	#<score_zeros						; 2
 	sta	INL							; 3
 	lda	#>score_zeros						; 2
 	sta	INH							; 3
 
-;10
+;14
 
 	;=================
 	;=================
@@ -23,19 +26,20 @@ update_score:
 	;=================
 	;=================
 
-	lda	SCORE_LOW						; 3
-	and	#$f							; 2
+	lda	SCORE_LOW	; get bottom 2 digits			; 3
+	and	#$f		; get bottom digit			; 2
+	asl			; multiply by 8				; 2
 	asl								; 2
 	asl								; 2
-	asl								; 2
-	tay								; 2
-	ldx	#6							; 2
-								;===========
-								;	15
-; 25
+	tay			; point to font data			; 2
+	ldx	#6		; want to copy 7 lines			; 2
+								;==========
+								; 	15
+
+; 29
 
 low_right_score_loop:
-	lda	(INL),Y							; 5+
+	lda	(INL),Y			; copy font data to zero page	; 5+
 	sta	SCORE_SPRITE_LOW_0,X					; 4
 	iny								; 2
 	dex								; 2
@@ -44,7 +48,8 @@ low_right_score_loop:
 								; 16*7 = 112
 								;	-1
 
-; 136
+; 140
+	; get 10s digit
 
 	lda	SCORE_LOW						; 3
 	lsr		; >>4 then <<3					; 2
@@ -54,8 +59,9 @@ low_right_score_loop:
 								;==========
 								;	11
 
-;147
+;151
 
+	; get digit data and mask with ones digit
 low_left_score_loop:
 	lda	(INL),Y							; 5+
 	and	#$f0							; 2
@@ -70,7 +76,7 @@ low_left_score_loop:
 								;============
 								; 30*7=210
 								; 	-1
-;356	~5 scanlines
+;360	~4.7 scanlines
 
 	;=================
 	;=================
@@ -78,6 +84,7 @@ low_left_score_loop:
 	;=================
 	;=================
 
+	; get hundreds digit
 	lda	SCORE_HIGH						; 3
 	and	#$f							; 2
 	asl								; 2
@@ -87,8 +94,9 @@ low_left_score_loop:
 	ldx	#6							; 2
 								;===========
 								;	15
-; 371
+; 375
 
+	; copy to zero page
 high_right_score_loop:
 	lda	(INL),Y							; 5+
 	sta	SCORE_SPRITE_HIGH_0,X					; 4
@@ -99,7 +107,8 @@ high_right_score_loop:
 								; 16*7 = 112
 								;	-1
 
-; 482
+; 486
+	; get thousands digit
 
 	lda	SCORE_HIGH						; 3
 	lsr		; >>4 then <<3					; 2
@@ -109,8 +118,9 @@ high_right_score_loop:
 								;==========
 								;	11
 
-; 493
+; 497
 
+	; mask into place
 high_left_score_loop:
 	lda	(INL),Y							; 5+
 	and	#$f0							; 2
@@ -125,7 +135,7 @@ high_left_score_loop:
 								;============
 								; 30*7=210
 								; 	-1
-;702	~10 scanlines
+;706	9.3 scanlines (round up to 10)
 
 update_mans:
 
@@ -138,7 +148,7 @@ update_mans:
 	lda	#>mans_zeros						; 2
 	sta	INH							; 3
 
-; 712
+; 716
 
 	;=================
 	;=================
@@ -155,7 +165,7 @@ update_mans:
 	ldx	#6							; 2
 								;===========
 								;	15
-; 727
+; 731
 
 mans_loop:
 	lda	(INL),Y							; 5+
@@ -167,7 +177,7 @@ mans_loop:
 								; 16*7 = 112
 								;	-1
 
-; 839 (just over 11)
+; 842 = 11.07 scanlines
 
 	; update level
 
@@ -179,8 +189,8 @@ mans_loop:
 	tay			; point to proper sprite offset		; 2
 	ldx	#15							; 2
 								;==========
-								;	19
-; 858
+								;	15
+; 857
 
 level_write_loop:
 	lda	big_level_one,Y						; 4
@@ -191,9 +201,10 @@ level_write_loop:
 	dex								; 2
 	bpl	level_write_loop					; 2/3
 
-	; (8*21)-1 = 167
+				; (8*21)-1 = 167
 
 
-; 1025 = 13+ scanlines
+; 1024 = 13.4 scanlines
 	sta	WSYNC							; 3
 
+; 14 scanlines

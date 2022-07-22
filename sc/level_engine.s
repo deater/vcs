@@ -1,16 +1,13 @@
-
 	;=====================
 	; the "game engine"
 	;=====================
+	; ideally called with VBLANK disabled
 
 level_frame:
 
 	;============================
 	; Start Vertical Blank
 	;============================
-
-	lda	#0
-	sta	VBLANK			; turn on beam
 
 	lda	#2			; reset beam to top of screen
 	sta	VSYNC
@@ -25,8 +22,8 @@ level_frame:
 
 	; now in VSYNC scanline 3
 
-	lda	#0			; done beam reset
-	sta	VSYNC
+	lda	#0			; done beam reset		; 2
+	sta	VSYNC							; 3
 
 
 
@@ -38,15 +35,15 @@ level_frame:
 
 	ldx	#14
 le_vblank_loop:
-	sta	WSYNC
-	dex
-	bne	le_vblank_loop
+	sta	WSYNC							; 3
+	dex								; 2
+	bne	le_vblank_loop						; 2/3
 
 	;=============================
-	; now at VBLANK scanline 18
+	; now at VBLANK scanline 14
 	;=============================
 	; update score/mans/level values
-
+; 4
 	; 14 scanlines
 	.include "update_score.s"
 
@@ -211,11 +208,10 @@ dont_rotate_zap:
 	;=============================
 	; do some init
 
-	ldx	#$00
-	stx	COLUBK		; set background color to black
-
-	lda	#0
-	sta	CURRENT_SCANLINE	; reset scanline counter
+	lda	#0							; 2
+	sta	VBLANK			; turn on beam			; 3
+	sta	CURRENT_SCANLINE	; reset scanline counter	; 3
+	sta	COLUBK			; set background color to black	; 3
 
 	sta	WSYNC
 
