@@ -3,6 +3,7 @@
 	;=====================
 	; ideally called with VBLANK disabled
 
+	; comes in with 3 cycles from loop
 level_frame:
 
 	;============================
@@ -317,6 +318,8 @@ dont_rotate_zap:
 
 	.include "vid_logo.s"
 
+; 10
+
 	sta	WSYNC
 
 	;=============================================
@@ -332,27 +335,121 @@ beam_off:
 	;===========================
 	;===========================
 
-	ldx	#26
+	ldx	#24							; 2
 le_overscan_loop:
-	sta	WSYNC
-	dex
-	bne	le_overscan_loop
+	sta	WSYNC							; 3
+	dex								; 2
+	bne	le_overscan_loop					; 2/3
 
-;	.repeat 26
-;	sta	WSYNC
-;	.endrepeat
 
 	;==================================
+	; overscan 25, setup
+	;==================================
+	ldy	#0
+	sty	TRIGGER_SOUND
+	sta	WSYNC
+
+	;==================================
+	; overscan 26, collision detection
+	;==================================
+; 0
+	lda	CXPPMM			; check if p0/p1 collision	; 3
+	bpl	no_collision_secret					; 2/3
+collision_secret:
+; 5
+	lda	#LEVEL_OVER_SC						; 2
+	sta	LEVEL_OVER						; 3
+	ldy	#SFX_COLLECT						; 2
+	sty	TRIGGER_SOUND						; 3
+	jmp	collision_done						; 3
+; 18
+
+no_collision_secret:
+; 6
+	lda	CXP0FB			; check if p0/pf collision	; 3
+; 9
+	bpl	no_collision_wall					; 2/3
+collision_wall:
+; 11
+	; if STRONGBAD_Y>ZAP_BEGIN && STRONGBAD_Y<ZAP_END
+	;	 and STRONGBAD_X>1 and STRONGBAD_X<150 we got zapped!
+
+	lda	STRONGBAD_X						; 3
+	cmp	#12							; 2
+; 16
+	bcc	regular_collision	; blt				; 2/3
+; 18
+	cmp	#150	; $9E						; 2
+; 20
+	bcs	regular_collision	; bge				; 2/3
+; 22
+	lda	STRONGBAD_Y						; 3
+	cmp	#64	; $40						; 2
+; 27
+	bcc	regular_collision					; 2/3
+; 29
+	cmp	#134	; $86						; 2
+; 31
+	bcs	regular_collision					; 2/3
+; 33
+got_zapped:
+	lda	#LEVEL_OVER_ZAP						; 2
+	sta	LEVEL_OVER						; 3
+	jmp	collision_done						; 3
+; 41
+
+regular_collision:
+; 19 / 23 / 30 / 34
+	; reset strongbad position
+	lda	OLD_STRONGBAD_X						; 3
+	sta	STRONGBAD_X						; 3
+	lda	OLD_STRONGBAD_Y						; 3
+	sta	STRONGBAD_Y						; 3
+
+	lda	OLD_STRONGBAD_X_END					; 3
+	sta	STRONGBAD_X_END						; 3
+	lda	OLD_STRONGBAD_Y_END					; 3
+	sta	STRONGBAD_Y_END						; 3
+; +24
+	ldy	#SFX_COLLIDE						; 2
+	sty	TRIGGER_SOUND						; 3
+; + 29
+
+no_collision_wall:
+; 12
+
+collision_done:
+; 18 / 41 / 12 / 59 (worst case)
+
+	sta	WSYNC
+
+	;==================================
+	; overscan 27, setup/trigger sounds
+	;==================================
+
+	lda	LEVEL_OVER						; 3
+check_zap:
+	cmp	#LEVEL_OVER_ZAP
+	bne	check_oot
+	ldy	#SFX_ZAP
+	jmp	do_a_sound
+check_oot:
+	cmp	#LEVEL_OVER_TIME					; 2
+	bne	done_setup
+	ldy	#SFX_GAMEOVER
+do_a_sound:
+	sty	TRIGGER_SOUND
+done_setup:
+;	sta	WSYNC
+
+
+	;==============================
 	; overscan 27, trigger sound
 
-;	ldy	SOUND_TO_PLAY
-;	beq	no_sound_to_play
-
-;	jsr	trigger_sound		; 6+40
-
-;	ldy	#0
-;	sty	SOUND_TO_PLAY
-;no_sound_to_play:
+	ldy	TRIGGER_SOUND						; 3
+	beq	end_no_trigger_sound					; 2/3
+	jsr	trigger_sound						; 6+40
+end_no_trigger_sound:
 	sta	WSYNC
 
 	;==================================
@@ -362,105 +459,54 @@ le_overscan_loop:
 
 	sta	WSYNC
 
+
 	;==================================
-	; overscan 30, collision detection
+	; overscan 30, handle end
+	;==================================
 
-	lda	CXPPMM			; check if p0/p1 collision	; 3
-	bpl	no_collision_secret					; 2/3
-collision_secret:
+handle_end_level:
+	lda	LEVEL_OVER						; 3
+	beq	nothing_special						; 2/3
 ; 5
-	lda	#LEVEL_OVER_SC						; 2
-	sta	LEVEL_OVER						; 3
-	ldy	#SFX_COLLECT						; 2
-	jsr	trigger_sound
-;	sty	SOUND_TO_PLAY						; 3
-	jmp	collision_done						; 3
-; 18
-
-no_collision_secret:
-; 6
-	lda	CXP0FB			; check if p0/pf collision	; 3
-	bpl	no_collision_wall					; 2/3
-collision_wall:
+	bmi	goto_sc							; 2/3
+; 7
+	cmp	#LEVEL_OVER_ZAP						; 2
+; 9
+	beq	goto_zap						; 2/3
 ; 11
-	; if STRONGBAD_Y>ZAP_BEGIN && STRONGBAD_Y<ZAP_END
-	;	 and STRONGBAD_X>1 and STRONGBAD_X<150 we got zapped!
-
-	lda	STRONGBAD_X						; 3
-	cmp	#12							; 2
-	bcc	regular_collision	; blt				; 2/3
-; 18
-	cmp	#150	; $9E						; 2
-	bcs	regular_collision	; bge				; 2/3
-; 22
-	lda	STRONGBAD_Y						; 3
-	cmp	#64	; $40						; 2
-	bcc	regular_collision					; 2/3
-; 29
-	cmp	#134	; $86						; 2
-	bcs	regular_collision					; 2/3
-;33
-got_zapped:
-	lda	#LEVEL_OVER_ZAP
-	sta	LEVEL_OVER
-	jmp	collision_done
-
-regular_collision:
-	; reset strongbad position
-	lda	OLD_STRONGBAD_X
-	sta	STRONGBAD_X
-	lda	OLD_STRONGBAD_Y
-	sta	STRONGBAD_Y
-
-	lda	OLD_STRONGBAD_X_END
-	sta	STRONGBAD_X_END
-	lda	OLD_STRONGBAD_Y_END
-	sta	STRONGBAD_Y_END
-
-	ldy	#SFX_COLLIDE
-	;sty	SOUND_TO_PLAY
-	jsr	trigger_sound
-
-no_collision_wall:
-
-
-collision_done:
-
-	lda	LEVEL_OVER
-	beq	nothing_special
-	bmi	goto_sc
-	cmp	#LEVEL_OVER_ZAP
-	beq	goto_zap
-	cmp	#LEVEL_OVER_TIME
-	beq	goto_oot
+	cmp	#LEVEL_OVER_TIME					; 2
+; 13
+	beq	goto_oot						; 2/3
 
 nothing_special:
+; 5 / 15
 	sta	WSYNC
-
-	jmp	level_frame
+	jmp	level_frame		; do another frame
 
 goto_sc:
+; 8
 	jmp	secret_collect_animation
 
 goto_go:
+	; game over
+
 	jmp	game_over_animation
 
 goto_zap:
-	ldy	#SFX_ZAP
-;	sty	SOUND_TO_PLAY
-	jsr	trigger_sound
-	jsr	reinit_strongbad	; reset position
-	lda	#0
-	sta	LEVEL_OVER
+	; zapped by wall
+; 12
+	jsr	reinit_strongbad	; reset position		; 6+!!!
 
+	lda	#0			; reset game over
+	sta	LEVEL_OVER
 	jmp	level_frame
 
 goto_oot:
-	ldy	#SFX_GAMEOVER
-	jsr	trigger_sound
+	; out of time
+; 16
+	dec	MANS			; done one life
+	bmi	goto_go			; if negative, game over
 
-	dec	MANS
-	bmi	goto_go
+	jsr	init_level		; restart level			;6+!!!
 
-	jsr	init_level
 	jmp	level_frame
