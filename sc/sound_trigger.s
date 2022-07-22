@@ -4,14 +4,16 @@
 	; disable sound
 	;====================
 disable_sound:
-	ldx	#0		; silence sound output
-	stx	SFX_LEFT
-	stx	SFX_RIGHT
-	stx	AUDV0
-	stx	AUDV1
-	stx	AUDC0
-	stx	AUDC1
-	rts
+	ldx	#0		; silence sound output			; 2
+	stx	SFX_LEFT						; 3
+	stx	SFX_RIGHT						; 3
+	stx	AUDV0							; 3
+	stx	AUDV1							; 3
+	stx	AUDC0							; 3
+	stx	AUDC1							; 3
+	rts								; 6
+								;===========
+								;        26
 
 	;=======================
 	; trigger sound
@@ -54,7 +56,11 @@ rightnotfree:
 leftnotlower:
 ; 26
 	cpy	SFX_RIGHT	; test sfx priority right channel	; 3
+; 29
 	bcc	rightnotlower	; skip ahead has lower priority		; 2/3
+; 31
 	sty	SFX_RIGHT	; new has higher priority so use right	; 3
 rightnotlower:
+; 34 / 32
 	rts								; 6
+; 40 / 38

@@ -12,7 +12,6 @@
 ; some defines
 
 STRONGBAD_HEIGHT	=	8
-VID_LOGO_START		=	181
 
 ; zero page addresses
 STRONGBAD_X		=	$80
@@ -82,6 +81,7 @@ MANS_SPRITE_3		=	$B3
 MANS_SPRITE_4		=	$B4
 MANS_SPRITE_5		=	$B5
 MANS_SPRITE_6		=	$B6
+TRIGGER_SOUND		=	$B7
 
 LEVEL_SPRITE0		=	$C0
 LEVEL_SPRITE1		=	$C1

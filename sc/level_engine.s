@@ -46,7 +46,7 @@ le_vblank_loop:
 ; 4
 	; 14 scanlines
 	.include "update_score.s"
-
+; 0
 	;=============================
 	; now at VBLANK scanline 28
 	;=============================
@@ -62,15 +62,15 @@ le_vblank_loop:
 	sta	OLD_STRONGBAD_X_END					; 3
 	lda	STRONGBAD_Y_END						; 3
 	sta	OLD_STRONGBAD_Y_END					; 3
+; 24
 
 	sta	WSYNC							; 3
-								;============
-								;	15
+
 	;=============================
 	; now at VBLANK scanline 29
 	;=============================
 	; handle left being pressed
-
+; 0
 	lda	STRONGBAD_X		;				; 3
 	beq	after_check_left	;				; 2/3
 
@@ -90,7 +90,7 @@ after_check_left:
 	; now at VBLANK scanline 30
 	;=============================
 	; handle right being pressed
-
+; 0
 	lda	STRONGBAD_X_END		;				; 3
 	cmp	#167			;				; 2
 	bcs	after_check_right	;				; 2/3
@@ -110,15 +110,17 @@ after_check_right:
 	;===========================
 	; handle up being pressed
 
-	lda	STRONGBAD_Y		;				; 3
-	cmp	#1			;				; 2
-	beq	after_check_up		;				; 2/3
+	; FIXME: needed? always a wall?
+;	lda	STRONGBAD_Y		;				; 3
+;	cmp	#1			;				; 2
+;	beq	after_check_up		;				; 2/3
 
 	lda	#$10			; check up			; 2
 	bit	SWCHA			;				; 3
 	bne	after_check_up		;				; 2/3
 
 	dec	STRONGBAD_Y		; move sprite up		; 5
+;	dec	STRONGBAD_Y		; move sprite up		; 5
 
 	jsr	strongbad_moved_vertically	; 			; 6+16
 after_check_up:
@@ -131,9 +133,10 @@ after_check_up:
 	;==========================
 	; handle down being pressed
 
-	lda	STRONGBAD_Y_END		;				; 3
-	cmp	#VID_LOGO_START		;				; 2
-	bcs	after_check_down	;				; 2/3
+	; FIXME: needed?
+;	lda	STRONGBAD_Y_END		;				; 3
+;	cmp	#181			;				; 2
+;	bcs	after_check_down	;				; 2/3
 
 	lda	#$20			;				; 2
 	bit	SWCHA			;				; 3
@@ -151,6 +154,8 @@ after_check_down:
 	;==========================
 	; empty for now
 
+	; FIXME: remove
+
 	sta	WSYNC
 
 	;========================
@@ -159,8 +164,6 @@ after_check_down:
 	; empty for now
 
 	sta	WSYNC
-
-
 
 	;=======================
 	; now scanline 35
@@ -175,29 +178,27 @@ after_check_down:
 	; update zap color
 	; every other frame?
 
-	ldx	ZAP_BASE
-
-	and	#$1
-	beq	done_rotate_zap
+	ldx	ZAP_BASE						; 3
+	and	#$1							; 2
+; 13
+	beq	done_rotate_zap						; 2/3
 
 	dec	ZAP_BASE						; 5
 	ldx	ZAP_BASE						; 3
 	cpx	#$7f							; 2
+; 25
 	bcs	done_rotate_zap						; 2/3
 	ldx	#$AF							; 2
 	stx	ZAP_BASE						; 3
+; 32
 done_rotate_zap:
+; 16 / 28 / 32
 	stx	ZAP_COLOR						; 3
 dont_rotate_zap:
 
-;	dec	ZAP_BASE
-;	lda	ZAP_BASE
-;	and	#$3F
-;	sta	ZAP_BASE
-;	sta	ZAP_COLOR
 
                                                                 ;============
-                                                                ; 20 worse case
+                                                                ; 35 worst case
 
 
 	sta	WSYNC							; 3
@@ -207,7 +208,7 @@ dont_rotate_zap:
 	; now VBLANK scanline 36
 	;=============================
 	; do some init
-
+; 0
 	lda	#0							; 2
 	sta	VBLANK			; turn on beam			; 3
 	sta	CURRENT_SCANLINE	; reset scanline counter	; 3
@@ -215,7 +216,9 @@ dont_rotate_zap:
 
 	sta	WSYNC
 
-	; now scanline 37
+	;==============================
+	; now VBLANK scanline 37
+	;==============================
 
 	;===============================
 	;===============================
@@ -233,7 +236,8 @@ dont_rotate_zap:
 
 	.include "score.s"
 
-	; at VISIBLE scanline 8
+	;============================
+	; now at VISIBLE scanline 8
 
 	;=============================
 	;=============================
@@ -272,6 +276,10 @@ dont_rotate_zap:
 ;36
 	sta	WSYNC
 
+	;===========================
+	; now at VISIBLE scanline 10
+
+
 	;============================
 	;============================
 	; draw MANS, 7 scanlines
@@ -281,7 +289,8 @@ dont_rotate_zap:
 	.include "mans.s"
 	sta	WSYNC
 
-	; at VISIBLE scanline 10
+	;===========================
+	; now at VISIBLE scanline 17
 
 	;============================
 	;============================
@@ -290,6 +299,9 @@ dont_rotate_zap:
 	;============================
 
 	.include	"timer_bar.s"
+
+	;===========================
+	; now at VISIBLE scanline 23
 
 	;============================================================
 	; draw playfield (4 scanlines setup + 152 scanlines display)
@@ -308,9 +320,9 @@ dont_rotate_zap:
 	sta	WSYNC
 
 	;=============================================
-	; vertical blank
+	; turn off beam
 	;=============================================
-vertical_blank:
+beam_off:
 	lda	#$42		; enable INPT4/INPT5, turn off beam
 	sta	VBLANK
 
