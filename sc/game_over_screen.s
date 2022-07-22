@@ -148,7 +148,7 @@ done_iny:
 	cpx	#80
 	bne	no_switch_sprite_bottom
 switch_sprite_bottom:
-	lda	#<(game_overlay_common-80)	; assume in same page
+	lda	#<(game_overlay_common-20)	; assume in same page
 	sta	INL
 
 no_switch_sprite_bottom:
