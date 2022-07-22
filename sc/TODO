@@ -1,16 +1,12 @@
-
 TITLE SCREEN:
-	+ Avoid weird glitch at start.  Start with VBLANK off?
+	+ show red/yellow box animation
 
 LEVEL ENGINE:
 	+ SCORE: update six digits? (currently 4)
-	+ LEVEL: add more level numbers, wrap at 8 but change color
-		of level indicator
+	+ LEVEL: wrap at 8 but change color of level indicator
 	+ lose points if hit wall?
 	+ go to title screen if reset pressed
-	+ scores/mans slightly not centered
 	+ slow down default speed
 	+ add speed power ups
-	+ if you wrap levels, give less time to complete
 	+ add fine adjust for the secret on-screen position
-	+ fix all the timing glitches
+	+ fix all the timing glitches, mostly with sound

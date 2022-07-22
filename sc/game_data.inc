@@ -340,19 +340,23 @@ fine_adjust_table:
 .align $100
 
 ; sprite, open mouth
-game_overlay:
+game_overlay_top:
 	.byte $01,$01,$02,$02,$64,$64,$F8,$F8
 	.byte $D0,$D0,$70,$70,$78,$78,$24,$24
-	.byte $22,$22,$71,$71,$78,$78,$FC,$FC	; note duplicate 28 bytes
+	.byte $22,$22,$71,$71
+game_overlay_common:
+	.byte $78,$78,$FC,$FC			; note duplicate 28 bytes
 	.byte $FE,$FE,$FE,$FE,$FE,$FE,$FE,$FE
 	.byte $7C,$7C,$38,$38,$10,$10,$1F,$1F
 	.byte $01,$01,$07,$07;,$00,$00,$00,$00
 
 ; sprite, close mouth
-game_overlay2:
+game_overlay2_top:
 	.byte $00,$00,$00,$00,$60,$60,$F0,$F0
 	.byte $DF,$DF,$70,$70,$70,$70,$20,$20
-	.byte $20,$20,$70,$70,$78,$78,$FC,$FC
+	.byte $20,$20,$70,$70
+game_overlay2_common:
+	.byte $78,$78,$FC,$FC
 	.byte $FE,$FE,$FE,$FE,$FE,$FE,$FE,$FE
 	.byte $7C,$7C,$38,$38,$10,$10,$1F,$1F
 	.byte $01,$01,$07,$07,$00,$00,$00,$00

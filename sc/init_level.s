@@ -6,6 +6,13 @@
 
 
 init_level:
+;	lda	LEVEL
+;	and	#$f8		; mask off bottom 3 bits
+;	asl
+;	asl			; carry should be clear (unless level really hi)
+	adc	#$36		; offset from orange
+	sta	LEVEL_COLOR
+
 ; 0
 	; set timeout.  Gets faster as level increases
 

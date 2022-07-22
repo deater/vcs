@@ -1,28 +1,28 @@
-; game over screen, with the duck
+	;===================================
+	; game over screen, with the duck
+	;===================================
+	; ideally VBLANK is off (2) when we get here
 
-        lda     #0
-        sta     CTRLPF		; turn off reflect on playfield
-        sta     VDELP0		; turn off vdelay on sprite0
-        sta     FRAME		; reset frame counter
+        lda     #0							; 2
+        sta     CTRLPF		; turn off reflect on playfield		; 3
+        sta     VDELP0		; turn off vdelay on sprite0		; 3
+        sta     FRAME		; reset frame counter			; 3
 
 go_frame:
 
 	; Start Vertical Blank
 
-	lda	#0			; turn on beam
-	sta	VBLANK
-
-	lda	#2			; reset beam to top of screen
-	sta	VSYNC
+	lda	#2			; reset beam to top of screen	; 2
+	sta	VSYNC							; 3
 
 	; wait for 3 scanlines of VSYNC
 
-	sta	WSYNC			; wait until end of scanline
-	sta	WSYNC
-	sta	WSYNC
+	sta	WSYNC			; wait until end of scanline	; 3
+	sta	WSYNC							; 3
+	sta	WSYNC							; 3
 
-	lda	#0			; done beam reset
-	sta	VSYNC
+	lda	#0			; done beam reset		; 2
+	sta	VSYNC							; 3
 
 	;=============================
 	; 37 lines of vertical blank
@@ -35,35 +35,39 @@ vbgo_loop:
         dex
         bne     vbgo_loop
 
-; in vblank 35?
+	;=============================
+	; vblank scanline 35
 
 	sta	WSYNC
 
-	;=======================
-	; scanline 36 -- align sprite
-
-	ldx	#7		;					; 2
+	;====================================
+	; vblank scanline 36 -- align sprite
+; 0
+	ldx	#6		;					; 2
+; 2
 goad_x:
 	dex			;					; 2
 	bne	goad_x		;					; 2/3
 
-	; 2+1 + 5*X each time through
-	;       so 18+7+9=38
-
-	nop
-	nop
+	; (5*X)-1
+	;       so for X=7 34
+; 36
+	nop								; 2
+	nop								; 2
+; 40
 
 	; beam is at proper place
-	sta	RESP0
-
+	sta	RESP0							; 3
+; 43
 	lda	#$70		; fine adjust				; 2
-	sta	HMP0
-
-	sta	WSYNC
+	sta	HMP0							; 3
+; 48
+	sta	WSYNC							; 3
+; 0
 	sta	HMOVE
 
 	;=======================
-	; scanline 37 -- config
+	; vblank scanline 37 -- config
 
 ; 3
 	lda	#NUSIZ_QUAD_SIZE					; 2
@@ -93,22 +97,25 @@ goad_x:
 	bne	beak_closed						; 2/3
 beak_open:
 ; 46
-	lda	#<game_overlay						; 2
+	lda	#<game_overlay_top					; 2
 	sta	INL							; 3
-	lda	#>game_overlay						; 2
+	lda	#>game_overlay_top					; 2
 	jmp	beak_done						; 3
 ; 56
 beak_closed:
 ; 47
-	lda	#<game_overlay2						; 2
+	lda	#<game_overlay2_top					; 2
 	sta	INL							; 3
-	lda	#>game_overlay2						; 2
+	lda	#>game_overlay2_top					; 2
 ; 54
 beak_done:
 ; 54/56
 	sta	INH							; 3
 ; 57/59
 
+	lda	#0			; turn on beam			; 2
+	sta	VBLANK							; 3
+; 62/64
 	sta	WSYNC							; 3
 
 
