@@ -145,6 +145,13 @@ done_iny:
                                                                 ; 11/11
 ; 19
 
+	cpx	#80
+	bne	no_switch_sprite_bottom
+switch_sprite_bottom:
+	lda	#<(game_overlay_common-80)	; assume in same page
+	sta	INL
+
+no_switch_sprite_bottom:
 	cpx	#156							; 2
 	sta	WSYNC
 	bne	game_over_loop_top					; 2/3

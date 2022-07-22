@@ -355,10 +355,10 @@ game_overlay2_top:
 	.byte $00,$00,$00,$00,$60,$60,$F0,$F0
 	.byte $DF,$DF,$70,$70,$70,$70,$20,$20
 	.byte $20,$20,$70,$70
-game_overlay2_common:
-	.byte $78,$78,$FC,$FC
-	.byte $FE,$FE,$FE,$FE,$FE,$FE,$FE,$FE
-	.byte $7C,$7C,$38,$38,$10,$10,$1F,$1F
-	.byte $01,$01,$07,$07,$00,$00,$00,$00
+;game_overlay2_common:
+;	.byte $78,$78,$FC,$FC
+;	.byte $FE,$FE,$FE,$FE,$FE,$FE,$FE,$FE
+;	.byte $7C,$7C,$38,$38,$10,$10,$1F,$1F
+;	.byte $01,$01,$07,$07,$00,$00,$00,$00
 
 

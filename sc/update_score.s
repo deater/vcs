@@ -1,3 +1,5 @@
+; RECALC TIMINGS
+
 	;===============================================
 	; 13 scanlines to update top of screen sprites
 
@@ -170,14 +172,15 @@ mans_loop:
 	; update level
 
 	lda	LEVEL							; 3
+	and	#$7							; 2
 	asl								; 2
 	asl								; 2
 	asl								; 2
 	tay			; point to proper sprite offset		; 2
 	ldx	#15							; 2
 								;==========
-								;	17
-; 856
+								;	19
+; 858
 
 level_write_loop:
 	lda	big_level_one,Y						; 4
@@ -191,6 +194,6 @@ level_write_loop:
 	; (8*21)-1 = 167
 
 
-; 1023 = 13+ scanlines
+; 1025 = 13+ scanlines
 	sta	WSYNC							; 3
 

@@ -15,7 +15,8 @@ STRONGBAD_HEIGHT	=	8
 VID_LOGO_START		=	181
 
 ; zero page addresses
-
+STRONGBAD_X		=	$80
+STRONGBAD_Y		=	$81
 OLD_STRONGBAD_X		=	$82
 OLD_STRONGBAD_Y		=	$83
 STRONGBAD_Y_END		=	$84
@@ -104,6 +105,19 @@ LEVEL_INFO		=	SECRET_X	; use as pointer to this
 
 SECRET_X		=	$D0
 SECRET_Y_START		=	$D1
+PF0_ZPL			=	$D2
+PF0_ZPH			=	$D3
+PF1_ZPL			=	$D4
+PF1_ZPH			=	$D5
+PF2_ZPL			=	$D6
+PF2_ZPH			=	$D7
+
+SECRET_Y_END		=	$D8
+
+; we wanted 16-bytes of state, but no room...
+.if 0
+SECRET_X		=	$D0
+SECRET_Y_START		=	$D1
 SECRET_Y_END		=	$D2
 FUTURE4			=	$D3
 BONUS_X			=	$D4
@@ -118,7 +132,7 @@ PF1_ZPL			=	$DC
 PF1_ZPH			=	$DD
 PF2_ZPL			=	$DE
 PF2_ZPH			=	$DF
-
+.endif
 
 
 
