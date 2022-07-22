@@ -13,6 +13,7 @@
 
 	ldx	#6							; 2
 	jmp	blurgh2							; 3
+; 5
 
 manloop:
 	sta	WSYNC							; 3
@@ -21,7 +22,6 @@ manloop:
 	lda	$80		; nop3					; 3
 
 blurgh2:
-
 ; 5
 	lda	#0	; clear level# on playfield			; 2
 	sta	PF0							; 3
@@ -54,7 +54,7 @@ blurgh2:
 	sty	GRP1							; 3
 ; 50
 
-	dex								; 5
+	dex								; 2
 	bpl	manloop							; 2/3
 	; aim for 76 if no WSYNC
 
@@ -63,14 +63,14 @@ blurgh2:
 	;
 	; done drawing mans
 	;
-
-	inc	TEMP1			; nop				; 5
-
+; 54
+	inc	TEMP1			; nop5				; 5
+; 59
 	; turn off sprites
-	ldy	#0
-	sty	GRP1
-	sty	GRP0
-	sty	PF0
-
+	ldy	#0							; 2
+	sty	GRP1							; 3
+	sty	GRP0							; 3
+	sty	PF0							; 3
+; 70
 	sta	WSYNC
 

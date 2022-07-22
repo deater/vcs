@@ -42,10 +42,6 @@ le_vblank_loop:
 	dex
 	bne	le_vblank_loop
 
-;.repeat 14
-;	sta	WSYNC
-;.endrepeat
-
 	;=============================
 	; now at VBLANK scanline 18
 	;=============================
@@ -243,41 +239,49 @@ dont_rotate_zap:
 
 	; at VISIBLE scanline 8
 
+	;=============================
+	;=============================
+	; draw playfield level # for 2 scanlines
+	;=============================
+	;=============================
+	; FIXME: make this a loop?
+
+	lda	#$0						; 2
+	sta	PF0						; 3
+; 5
+	; need to write after 28
+	inc	TEMP1						; 5
+	inc	TEMP1						; 5
+	inc	TEMP1						; 5
+	inc	TEMP1						; 5
+	inc	TEMP1						; 5
+	lda	LEVEL_SPRITE8					; 3
+	sta	PF0						; 3
+; 36
+	sta	WSYNC
+
+	; draw part of the playfield level #
+; 0
+	lda	#$0						; 2
+	sta	PF0						; 3
+; 5
+	; need to write after 28
+	inc	TEMP1						; 5
+	inc	TEMP1						; 5
+	inc	TEMP1						; 5
+	inc	TEMP1						; 5
+	inc	TEMP1						; 5
+	lda	LEVEL_SPRITE9					; 3
+	sta	PF0						; 3
+;36
+	sta	WSYNC
+
 	;============================
 	;============================
 	; draw MANS, 7 scanlines
 	;============================
 	;============================
 
-	; draw part of the playfield level #
-
-	lda	#$0	; 2
-	sta	PF0	; 3
-	; after 28
-	inc	TEMP1
-	inc	TEMP1
-	inc	TEMP1
-	inc	TEMP1
-	inc	TEMP1
-	lda	LEVEL_SPRITE8
-	sta	PF0
-
-	sta	WSYNC
-
-	; draw part of the playfield level #
-
-	lda	#$0	; 2
-	sta	PF0	; 3
-	; after 28
-	inc	TEMP1
-	inc	TEMP1
-	inc	TEMP1
-	inc	TEMP1
-	inc	TEMP1
-	lda	LEVEL_SPRITE9
-	sta	PF0
-
-	sta	WSYNC
 	.include "mans.s"
 	sta	WSYNC
 
