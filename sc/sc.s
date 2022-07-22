@@ -161,7 +161,7 @@ title_screen:
 
 	.include "title_screen.s"
 
-level1:
+do_level:
 
 	.include "level_engine.s"
 

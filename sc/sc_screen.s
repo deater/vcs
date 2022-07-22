@@ -1,18 +1,21 @@
-; draw strongbad collecting the secret
+	;=======================================
+	;=======================================
+	; draw strongbad collecting the secret
+	;=======================================
+	;=======================================
+	; arrive with cycles=11 at end overscan
 
-	lda	#0		; turn off reflect on playfield
-	sta	CTRLPF
-	sta	VDELP0
-	sta	FRAME
-
+;11
+	lda	#0		; turn off reflect on playfield		; 2
+	sta	CTRLPF							; 3
+	sta	VDELP0							; 3
+	sta	FRAME							; 3
+; 22
 	sta	WSYNC
 
 secret_collect_frame:
-
+; 0 / 8
 	; Start Vertical Blank
-
-	lda	#0			; turn on beam
-	sta	VBLANK
 
 	lda	#2			; reset beam to top of screen
 	sta	VSYNC
@@ -36,66 +39,72 @@ vbscs_loop:
 	dex
 	bne	vbscs_loop
 
-; in scanline 35?
+	;=======================
+	; in VBLANK scanline 35
+	;=======================
 
 	sta	WSYNC
 
-; in scanline 36
-
+	;=======================
+	; in VBLANK scanline 36
 	;=======================
 	; scanline 36 -- align sprite
-
+	; must follow a WSYNC
+; 0
 	ldx	#7		;					; 2
+; 2
 scad_x:
 	dex			;					; 2
 	bne	scad_x		;					; 2/3
 
-	; 2+1 + 5*X each time through
-	;       so 18+7+9=38
-
-	nop
-	nop
+	; (5*X)-1, so with X=7, 34
+; 36
+	nop								; 2
+	nop								; 2
+; 40
 
 	; beam is at proper place
-	sta	RESP0
-
+	sta	RESP0							; 3
+; 43
 	lda	#$F0		; fine adjust				; 2
-	sta	HMP0
-
+	sta	HMP0							; 3
+; 48
 	sta	WSYNC
 	sta	HMOVE
 
 	;=======================
 	; scanline 37 -- config
-
-	lda	#NUSIZ_QUAD_SIZE
-	sta	NUSIZ0
-
-	lda	#$80		; set color
-	sta	COLUP0
-
-	ldy	#0
-	ldx	#0
-	stx	GRP0
-
+; 3
+	lda	#NUSIZ_QUAD_SIZE					; 2
+	sta	NUSIZ0							; 3
+; 8
+	lda	#0			; turn on beam			; 2
+	sta	VBLANK							; 3
+; 13
+	lda	#$80		; set color				; 2
+	sta	COLUP0							; 3
+; 18
+	ldy	#0							; 2
+	ldx	#0							; 2
+	stx	GRP0							; 3
+; 25
 	sta	WSYNC
 
 
 	;=============================================
 	;=============================================
-	;=============================================
-	;=============================================
-
 	; draw 152 lines
 	; need to race beam to draw other half of playfield
+	;=============================================
+	;=============================================
 
 sc_loop:
+; 0
 	lda	sc_colors,X		;				; 4+
 	sta	COLUPF			; set playfield color		; 3
 ; 7
 	lda	sc_overlay_colors,X					; 4+
 	sta	COLUP0							; 3
-
 ; 14
 	lda	#0			; always zero			; 2
 	sta	PF0			;				; 3
@@ -113,32 +122,28 @@ sc_loop:
 	lda	sc_overlay,X						; 4
 	sta	GRP0							; 3
 ; 36
-;	lda	$80	; nop3						; 3
-; 39
 
 	lda	sc_playfield0_right,X	;				; 4+
 	sta	PF0			;				; 3
 	; must write by CPU 49 [GPU 148]
-; 46
+; 43
 	lda	sc_playfield1_right,X	;				; 4+
 	sta	PF1			;				; 3
 	; must write by CPU 54 [GPU 164]
-
-; 53
+; 50
 	lda	#$0							; 2
 	sta	PF2			;				; 3
 	; must write by CPU 65 [GPU 196]
-
-; 58
+; 55
 	; make secret yellow
 	lda	#$1C							; 2
 	sta	COLUPF							; 3
-; 63
+; 60
 
 	iny								; 2
 	tya								; 2
 	and	#$3							; 2
-	beq	scyes_inx							; 2/3
+	beq	scyes_inx						; 2/3
 	.byte	$A5	; begin of LDA ZP				; 3
 scyes_inx:
 	inx		; $E8 should be harmless to load		; 2
@@ -153,26 +158,31 @@ scdone_inx:
 
 
 
+; 75
 
 done_sc_loop:
 
 	;===================
 	; prep for text
-
-	inc	FRAME
-	lda	FRAME
-	and	#$40
-	bne	collect
-	ldx	#0
-	beq	done_which
+; -1
+	inc	FRAME							; 5
+	lda	FRAME							; 3
+	and	#$40							; 2
+; 9
+	bne	collect							; 2/3
+; 11
+	ldx	#0		; offset to "SECRET"			; 2
+	beq	done_which	; bra					; 3
 collect:
-	ldx	#10
+; 12
+	ldx	#10		; offset to "COLLECT"			; 2
 done_which:
-	ldy	#0
+; 16 / 14
+	ldy	#0							; 2
 
-	lda	#$80	; always blue
-	sta	COLUPF
-
+	lda	#$80	; always blue					; 2
+	sta	COLUPF							; 3
+; 23 / 21
 	sta	WSYNC
 
 
@@ -181,12 +191,11 @@ done_which:
 	; Bottom text
 	;==========================================
 	;==========================================
-
-
 	; draw 40 lines
 	; need to race beam to draw other half of playfield
 
 sctext_loop:
+; 0
 	lda	$80	; nop 3 					; 3
 	inc	TEMP1	; nop 5						; 5
 	nop								; 2
@@ -240,7 +249,7 @@ done_inx2:
 	bne	sctext_loop						; 2/3
 ; 76
 
-
+; 75
 done_sctext_loop:
 	sta	WSYNC
 	sta	WSYNC
@@ -266,27 +275,29 @@ sc_overscan_loop:
 
 	sta	WSYNC
 
-	lda	FRAME
-	beq	done_sc
-
+	lda	FRAME							; 3
+	beq	done_sc							; 2/3
+; 5
 	jmp	secret_collect_frame
+; 8
 
 done_sc:
+; 6
 	; move to next level
-	inc	LEVEL
+	inc	LEVEL							; 5
+; 11
+	; update score by adding in time
+	ldx	TIME							; 3
+	lda	time_bcd,X						; 4
+	sed				; set BCD mode			; 2
+	clc								; 2
+	adc	SCORE_LOW						; 3
+	sta	SCORE_LOW						; 3
+	lda	#0							; 2
+	adc	SCORE_HIGH						; 3
+	sta	SCORE_HIGH						; 3
+	cld				; disable BCD mode		; 2
 
-	; update score
-	ldx	TIME
-	lda	time_bcd,X
-	sed
-	clc
-	adc	SCORE_LOW
-	sta	SCORE_LOW
-	lda	#0
-	adc	SCORE_HIGH
-	sta	SCORE_HIGH
-	cld
+	jsr	init_level						; 6+!!!
 
-	jsr	init_level
-
-	jmp	level1
+	jmp	do_level
