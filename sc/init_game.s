@@ -10,11 +10,8 @@ init_game:
 	lda	#$90		; init the zappy wall colors		; 2
 	sta	ZAP_BASE						; 3
 
-	lda	#0		; number of lives			; 2
+	lda	#3		; number of lives			; 2
 	sta	MANS							; 3
-
-;	lda	#$36		; orange				; 2
-;	sta	LEVEL_COLOR	; color of level indicator		; 3
 
 	jmp	disable_sound	; disable sound				; 6+
 

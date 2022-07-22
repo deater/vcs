@@ -3,10 +3,11 @@ TITLE SCREEN:
 
 LEVEL ENGINE:
 	+ SCORE: update six digits? (currently 4)
-	+ LEVEL: wrap at 8 but change color of level indicator
 	+ lose points if hit wall?
 	+ go to title screen if reset pressed
 	+ slow down default speed
 	+ add speed power ups
 	+ add fine adjust for the secret on-screen position
 	+ fix all the timing glitches, mostly with sound
+	+ make sure zap detection works at the edges
+	+ fix right wall collision detection if possible
