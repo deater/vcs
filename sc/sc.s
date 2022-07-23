@@ -111,6 +111,7 @@ PF2_ZPH			=	$D7
 SECRET_Y_END		=	$D8
 SECRET_X_COARSE		=	$D9
 SECRET_X_FINE		=	$DA
+SECRET_ON		=	$DB
 
 ; we wanted 16-bytes of state, but no room...
 .if 0

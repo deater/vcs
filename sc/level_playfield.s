@@ -1,20 +1,27 @@
-	; Level 1 Playfield
+	;====================
+	;====================
+	;====================
+	; Level Playfield
+	;====================
+	;====================
+	;====================
 
+; come in with 0 cycles
 
 	;===============================
 	; set up playfield (4 scanlines)
 	;===============================
 
-	jmp	blurgh3
+	jmp	blurgh3							; 3
 .align	$100
 
 huge_hack:
 	jmp	not_blue
 blurgh3:
 
-	;==========================================
+	;====================================================
 	; set up sprite1 (secret) to be at proper X position
-	;==========================================
+	;====================================================
 	; now in setup scanline 0
 
 	; we can do this here and the sprite will be drawn as a long
@@ -41,9 +48,9 @@ qpad_x:
 
 	sta	WSYNC
 
-	;==========================================
-	; set up sprite to be at proper X position
-	;==========================================
+	;=======================================================
+	; set up sprite0 (strongbad)  to be at proper X position
+	;=======================================================
 	; now in setup scanline 1
 ; 0
 	; we can do this here and the sprite will be drawn as a long
@@ -98,12 +105,11 @@ fpad_x:
 done_done:
 
 	;==========================================
-	; Final setup before going
+	; Hack for the HMOVE timing
 	;==========================================
 	; now in setup scanline two
 
 ; 0/3
-;	jsr	strongbad_moved_horizontally				; 6+?
 
 	sta	WSYNC
 	sta	HMOVE
@@ -129,7 +135,7 @@ done_done:
 								;===========
 								;        23
 ; 26
-	; reset back to strongbad sprite
+	; Set up sprite data
 
 	lda	#$40		; dark red				; 2
 	sta	COLUP0		; set strongbad color (sprite0)		; 3
@@ -151,13 +157,10 @@ done_done:
 	sta	CXCLR	; clear collisions				; 3
 ; 57
 
-	lda	(PF0_ZPL),Y		;				; 5+
- ;       sta	PF0			;				; 3
+	lda	(PF0_ZPL),Y		; preload PF0 value into A	; 5+
 
 	sta	WSYNC							; 3
-								;============
-								;============
-								;	60
+; 65
 
 	;===========================================
 	;===========================================
@@ -174,21 +177,16 @@ draw_playfield_even:
 	;===================
 	; draw playfield
 	;===================
+	; PF0 value should be in A here
+
 ; 0
 	sta	PF0							; 3
-;	lda	l1_playfield0_left,Y	;				;
-;	lda	(PF0_ZPL),Y		;				; 5+
-;       sta	PF0			;				; 3
 	;   has to happen by 22
 ; 3
-
         lda	(PF1_ZPL),Y		;				; 5+
         sta	PF1			;				; 3
 	;  has to happen by 31
 ; 11
-
-	; has to happen by 30-3
-
 
 	; draw blue zap if in range
 
@@ -204,13 +202,13 @@ yes_blue:
 
 
 							;==================
-							; 12 / 15 /15
+							; 15 / 15 /15
 ; 26
 
 	;  has to happen by
         lda	(PF2_ZPL),Y		;				; 5
         sta	PF2			;				; 3
-
+	; has to happen by 33?
 
 ; 34
 
@@ -224,17 +222,19 @@ yes_blue:
 	cpx	SECRET_Y_START						; 3
 	bcc	turn_off_secret						; 2/3
 turn_on_secret:
-	sta	GRP1			; and display it		; 3
+;	sta	GRP1			; and display it		; 3
+	sta	SECRET_ON
 	jmp	after_secret						; 3
 turn_off_secret_delay5:
 	lda	$80			; nop3				; 3
 	nop								; 2
 turn_off_secret:
 	lda	#0			; turn off sprite		; 2
-	sta	GRP1							; 3
+;	sta	GRP1							; 3
+	sta	SECRET_ON
 after_secret:
 								;============
-								; 12 / 18 / 18
+								; 18 / 18 / 18
 
 ; 52
 	inc	ZAP_COLOR	; increment color			; 5
@@ -273,8 +273,12 @@ draw_playfield_odd:
 	;===================
 	; draw playfield
 ; 1
-	inc	TEMP1					; 5
-	inc	TEMP1					; 5
+	lda	SECRET_ON				; 3
+	sta	GRP1					; 3
+	nop
+	nop
+;	inc	TEMP1					; 5
+;	inc	TEMP1					; 5
 						;============
 						;	10
 ; 11

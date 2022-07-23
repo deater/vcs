@@ -100,11 +100,7 @@ reinit_strongbad:
 	lda	#32							; 2
 	sta	STRONGBAD_Y						; 3
 
-
-
-
 ; 61 (79)
+	rts
 
-;	jmp     strongbad_moved_vertically				; 6+16
-; 88 (106)					; tail call
 
