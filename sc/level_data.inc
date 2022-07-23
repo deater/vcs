@@ -1,5 +1,5 @@
 level1_data:
-	.byte	6,72		; secret_x, secret_y
+	.byte	108,72		; secret_x, secret_y
 ;	.byte	72,80		; secret_ystart, secret_yend
 ;	.byte	$FF		; padding
 ;	.byte	$FF,$FF		; bonus_x,bonus_y
@@ -10,7 +10,7 @@ level1_data:
 	.byte	<l1_playfield2_left,>l1_playfield2_left
 
 level2_data:
-	.byte	3,72		; secret_x, secret_y
+	.byte	71,72		; secret_x, secret_y
 ;	.byte	72,80		; secret_ystart, secret_yend
 ;	.byte	$FF		; padding
 ;	.byte	$FF,$FF		; bonus_x,bonus_y
@@ -21,7 +21,7 @@ level2_data:
 	.byte	<l2_playfield2_left,>l2_playfield2_left
 
 level3_data:
-	.byte	8,72		; secret_x, secret_y
+	.byte	136,72		; secret_x, secret_y
 ;	.byte	72,80		; secret_ystart, secret_yend
 ;	.byte	$FF		; padding
 ;	.byte	$FF,$FF		; bonus_x,bonus_y
@@ -32,7 +32,7 @@ level3_data:
 	.byte	<l3_playfield2_left,>l3_playfield2_left
 
 level4_data:
-	.byte	8,164		; secret_x, secret_y
+	.byte	146,163		; secret_x, secret_y
 ;	.byte	164,172		; secret_ystart, secret_yend
 ;	.byte	$FF		; padding
 ;	.byte	$FF,$FF		; bonus_x,bonus_y
@@ -43,7 +43,7 @@ level4_data:
 	.byte	<l1_playfield2_left,>l1_playfield2_left
 
 level5_data:
-	.byte	8,120		; secret_x, secret_y
+	.byte	71,91		; secret_x, secret_y
 ;	.byte	120,128		; secret_ystart, secret_yend
 ;	.byte	$FF		; padding
 ;	.byte	$FF,$FF		; bonus_x,bonus_y
@@ -54,7 +54,7 @@ level5_data:
 	.byte	<l4_playfield2_left,>l4_playfield2_left
 
 level6_data:
-	.byte	4,128		; secret_x, secret_y
+	.byte	145,98		; secret_x, secret_y
 ;	.byte	128,136		; secret_ystart, secret_yend
 ;	.byte	$FF		; padding
 ;	.byte	$FF,$FF		; bonus_x,bonus_y
@@ -65,7 +65,7 @@ level6_data:
 	.byte	<l1_playfield2_left,>l1_playfield2_left
 
 level7_data:
-	.byte	6,112		; secret_x,secret_y
+	.byte	112,108		; secret_x,secret_y
 ;	.byte	112,120		; secret_ystart, secret_yend
 ;	.byte	$FF		; padding
 ;	.byte	$FF,$FF		; bonus_x,bonus_y
@@ -77,7 +77,7 @@ level7_data:
 
 	; weird hat level
 level8_data:
-	.byte	6,72		; secret_x, secret_y
+	.byte	108,76		; secret_x, secret_y
 ;	.byte	72,80		; secret_ystart, secret_yend
 ;	.byte	$FF		; padding
 ;	.byte	$FF,$FF		; bonus_x,bonus_y

@@ -101,9 +101,9 @@ LEVEL_SPRITE14		=	$CE
 LEVEL_SPRITE15		=	$CF
 
 ; Level info
-LEVEL_INFO		=	SECRET_X	; use as pointer to this
+LEVEL_INFO		=	SECRET_X_START	; use as pointer to this
 
-SECRET_X		=	$D0
+SECRET_X_START		=	$D0
 SECRET_Y_START		=	$D1
 PF0_ZPL			=	$D2
 PF0_ZPH			=	$D3
@@ -113,6 +113,8 @@ PF2_ZPL			=	$D6
 PF2_ZPH			=	$D7
 
 SECRET_Y_END		=	$D8
+SECRET_X_COARSE		=	$D9
+SECRET_X_FINE		=	$DA
 
 ; we wanted 16-bytes of state, but no room...
 .if 0

@@ -9,7 +9,7 @@
 
 strongbad_moved_horizontally:
 ; 0
-	clc								; 2
+;	clc								; 2
 	lda	STRONGBAD_X						; 3
 ; 5
 	; spritex DIV 16

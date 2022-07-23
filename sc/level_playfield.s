@@ -24,7 +24,7 @@ blurgh3:
 	ldx	#0		; sprite 0 display nothing		2
 	stx	GRP1		; (FIXME: this already set?)		3
 ; 8
-	ldx	SECRET_X	;					3
+	ldx	SECRET_X_COARSE	;					3
 	inx			;					2
 	inx			;					2
 qpad_x:
@@ -36,6 +36,8 @@ qpad_x:
 	; beam is at proper place
 	sta	RESP1							; 3
 
+	lda	SECRET_X_FINE
+	sta	HMP1
 
 	sta	WSYNC
 

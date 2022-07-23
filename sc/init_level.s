@@ -63,22 +63,42 @@ copy_level_data_loop:
 								; (16*15)-1
 								; 	239
 
+	; adjust strong bad position
+	;	for now, fixed start
+
 	lda	#8
 	sta	STRONGBAD_X
 	lda	#32
 	sta	STRONGBAD_Y
+
+	; adjust secret data
 
 	lda	SECRET_Y_START
 	clc
 	adc	#8
 	sta	SECRET_Y_END
 
-;	jsr	strongbad_moved_horizontally	;              		; 6+48
+	lda	SECRET_X_START
+	lsr								; 2
+	lsr								; 2
+	lsr								; 2
+	lsr								; 2
+	sta	SECRET_X_COARSE					; 3
+; 16
+	; apply fine adjust
+	lda	SECRET_X_START						; 3
+	and	#$0f							; 2
+	tax								; 2
+	lda	fine_adjust_table,X					; 4+
+	sta	SECRET_X_FINE							; 3
+; 30
+
+
+
+
+
 ; 61 (79)
 
 	jmp     strongbad_moved_vertically				; 6+16
-; 88 (106)
+; 88 (106)					; tail call
 
-;	rts								; 6
-
-; 94 (112)
