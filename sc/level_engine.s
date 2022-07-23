@@ -123,7 +123,7 @@ after_check_right:
 	dec	STRONGBAD_Y		; move sprite up		; 5
 ;	dec	STRONGBAD_Y		; move sprite up		; 5
 
-	jsr	strongbad_moved_vertically	; 			; 6+16
+;	jsr	strongbad_moved_vertically	; 			; 6+16
 after_check_up:
 	sta	WSYNC			; 				; 3
 					;	===============================
@@ -144,7 +144,7 @@ after_check_up:
 	bne	after_check_down	;				; 2/3
 
 	inc	STRONGBAD_Y		; move sprite down		; 5
-	jsr	strongbad_moved_vertically	;			; 6+16
+;	jsr	strongbad_moved_vertically	;			; 6+16
 after_check_down:
 	sta	WSYNC			;				; 3
 					;	==============================
@@ -153,7 +153,16 @@ after_check_down:
 	;==========================
 	; now VBLANK scanline 33
 	;==========================
-	; empty for now
+	; adjust strongbad vertical position
+
+strongbad_moved_vertically:
+	clc				;				2
+	lda	STRONGBAD_Y		;				3
+	adc	#STRONGBAD_HEIGHT	;				2
+	sta	STRONGBAD_Y_END		;				3
+; 10
+
+
 
 ;	jsr	strongbad_moved_horizontally
 
@@ -276,10 +285,36 @@ dont_rotate_zap:
 	sta	PF0						; 3
 ; 31
 
-	.include "adjust_horiz.s"
+	;================================
+;================================
+; strongbad moved horizontally
+;================================
+;================================
+; call after X changes
+;	compute horizontal fine adjust
+;	assume sprite width of 8
 
-;	jsr	strongbad_moved_horizontally			; 6+36
-;36
+strongbad_moved_horizontally:
+; 0
+;	clc								; 2
+	lda	STRONGBAD_X						; 3
+; 5
+	; spritex DIV 16
+
+	lsr								; 2
+	lsr								; 2
+	lsr								; 2
+	lsr								; 2
+	sta	STRONGBAD_X_COARSE					; 3
+; 16
+	; apply fine adjust
+	lda	STRONGBAD_X						; 3
+	and	#$0f							; 2
+	tax								; 2
+	lda	fine_adjust_table,X					; 4+
+	sta	HMP0							; 3
+; 30
+
 	sta	WSYNC
 
 	;===========================

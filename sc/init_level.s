@@ -6,14 +6,16 @@
 
 
 init_level:
-	lda	LEVEL
-	and	#$f8		; mask off bottom 3 bits
-	asl
-	asl			; carry should be clear (unless level really hi)
-	adc	#$36		; offset from orange
-	sta	LEVEL_COLOR
-
 ; 0
+	lda	LEVEL							; 3
+	and	#$f8		; mask off bottom 3 bits		; 2
+	asl								; 2
+	asl			; carry should be clear			; 2
+				; (unless level really hi)
+	adc	#$36		; offset from orange			; 2
+	sta	LEVEL_COLOR						; 3
+
+; 14
 	; set timeout.  Gets faster as level increases
 
 	lda	LEVEL							; 3
@@ -22,6 +24,7 @@ init_level:
 	lsr			; get LEVEL/8				; 2
 	tax								; 2
 	lda	#40		; 20 seconds				; 2
+; 27
 hardness_loop:
 	lsr								; 2
 	dex								; 2
@@ -37,7 +40,7 @@ hardness_loop:
 	sta	LEVEL_OVER						; 3
 ; ?+18
 
-reinit_strongbad:
+
 
 copy_level_data_in:
 	lda	LEVEL							; 3
@@ -52,8 +55,8 @@ copy_level_data_in:
 	adc	#>level1_data						; 2
 	sta	INH							; 3
 	ldy	#7							; 2
-								;===========
-								;	33
+; 33
+
 copy_level_data_loop:
 	lda	(INL),Y							; 5
 	sta	LEVEL_INFO,Y						; 5
@@ -63,15 +66,9 @@ copy_level_data_loop:
 								; (16*15)-1
 								; 	239
 
-	; adjust strong bad position
-	;	for now, fixed start
 
-	lda	#8
-	sta	STRONGBAD_X
-	lda	#32
-	sta	STRONGBAD_Y
-
-	; adjust secret data
+	;========================
+	; adjust secret position
 
 	lda	SECRET_Y_START
 	clc
@@ -83,22 +80,31 @@ copy_level_data_loop:
 	lsr								; 2
 	lsr								; 2
 	lsr								; 2
-	sta	SECRET_X_COARSE					; 3
+	sta	SECRET_X_COARSE						; 3
 ; 16
 	; apply fine adjust
 	lda	SECRET_X_START						; 3
 	and	#$0f							; 2
 	tax								; 2
 	lda	fine_adjust_table,X					; 4+
-	sta	SECRET_X_FINE							; 3
+	sta	SECRET_X_FINE						; 3
 ; 30
 
+
+reinit_strongbad:
+	; adjust strong bad position
+	;	for now, fixed start
+
+	lda	#8							; 2
+	sta	STRONGBAD_X						; 3
+	lda	#32							; 2
+	sta	STRONGBAD_Y						; 3
 
 
 
 
 ; 61 (79)
 
-	jmp     strongbad_moved_vertically				; 6+16
+;	jmp     strongbad_moved_vertically				; 6+16
 ; 88 (106)					; tail call
 

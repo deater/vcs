@@ -177,7 +177,7 @@ game_over_animation:
 	.include "game_over_screen.s"
 
 
-.include	"adjust_sprite.s"
+;.include	"adjust_sprite.s"
 .include	"init_game.s"
 .include	"init_level.s"
 .include	"sound_trigger.s"
