@@ -59,8 +59,8 @@ le_vblank_loop:
 	lda	STRONGBAD_Y						; 3
 	sta	OLD_STRONGBAD_Y						; 3
 
-	lda	STRONGBAD_X_END						; 3
-	sta	OLD_STRONGBAD_X_END					; 3
+;	lda	STRONGBAD_X_END						; 3
+;	sta	OLD_STRONGBAD_X_END					; 3
 	lda	STRONGBAD_Y_END						; 3
 	sta	OLD_STRONGBAD_Y_END					; 3
 ; 24
@@ -92,9 +92,9 @@ after_check_left:
 	;=============================
 	; handle right being pressed
 ; 0
-	lda	STRONGBAD_X_END		;				; 3
-	cmp	#167			;				; 2
-	bcs	after_check_right	;				; 2/3
+;	lda	STRONGBAD_X_END		;				; 3
+;	cmp	#167			;				; 2
+;	bcs	after_check_right	;				; 2/3
 
 	lda	#$80			; check right			; 2
 	bit	SWCHA			;				; 3
@@ -155,7 +155,7 @@ after_check_down:
 	;==========================
 	; empty for now
 
-	; FIXME: remove
+;	jsr	strongbad_moved_horizontally
 
 	sta	WSYNC
 
@@ -274,6 +274,11 @@ dont_rotate_zap:
 	inc	TEMP1						; 5
 	lda	LEVEL_SPRITE9					; 3
 	sta	PF0						; 3
+; 31
+
+	.include "adjust_horiz.s"
+
+;	jsr	strongbad_moved_horizontally			; 6+36
 ;36
 	sta	WSYNC
 
@@ -406,8 +411,8 @@ regular_collision:
 	lda	OLD_STRONGBAD_Y						; 3
 	sta	STRONGBAD_Y						; 3
 
-	lda	OLD_STRONGBAD_X_END					; 3
-	sta	STRONGBAD_X_END						; 3
+;	lda	OLD_STRONGBAD_X_END					; 3
+;	sta	STRONGBAD_X_END						; 3
 	lda	OLD_STRONGBAD_Y_END					; 3
 	sta	STRONGBAD_Y_END						; 3
 ; +24

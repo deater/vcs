@@ -73,7 +73,7 @@ copy_level_data_loop:
 	adc	#8
 	sta	SECRET_Y_END
 
-	jsr	strongbad_moved_horizontally	;              		; 6+48
+;	jsr	strongbad_moved_horizontally	;              		; 6+48
 ; 61 (79)
 
 	jmp     strongbad_moved_vertically				; 6+16

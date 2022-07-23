@@ -12,12 +12,8 @@ huge_hack:
 	jmp	not_blue
 blurgh3:
 
-	; now in setup scanline 0
-	; WE CAN DO STUFF HERE
-
-
 	;==========================================
-	; set up sprite1 to be at proper X position
+	; set up sprite1 (secret) to be at proper X position
 	;==========================================
 	; now in setup scanline 0
 
@@ -36,7 +32,6 @@ qpad_x:
 	bne	qpad_x		;					2/3
 				;===========================================
 				;	12-1+5*(coarse_x+2)
-				; FIXME: describe better what's going on
 
 	; beam is at proper place
 	sta	RESP1							; 3
@@ -44,49 +39,72 @@ qpad_x:
 
 	sta	WSYNC
 
-	;=======================================
-	; update strongbad horizontal position
-	;=======================================
-	; now in setup scanline 1
-
-	; do this separately as too long to fit in with left/right code
-
-	jsr	strongbad_moved_horizontally	;			6+48
-	sta	WSYNC			;				3
-					;====================================
-					;				57
-
 	;==========================================
 	; set up sprite to be at proper X position
 	;==========================================
-	; now in setup scanline 2
+	; now in setup scanline 1
 ; 0
 	; we can do this here and the sprite will be drawn as a long
 	; vertical column
 	; later we only enable it for the lines we want
 
-	ldx	#0		; sprite 0 display nothing		2
-	stx	GRP0		; (FIXME: this already set?)		3
+	ldx	a:STRONGBAD_X_COARSE	; force 4-cycle version		; 4
 
-	ldx	STRONGBAD_X_COARSE	;				3
-	inx			;					2
-	inx			;					2
-; 12
+	cpx	#$A							; 2
+	bcs	far_right	; bge					; 2/3
+
+; 8
+	inx			;					; 2
+	inx			;					; 2
+; 12 (want to be 12 here)
 
 pad_x:
 	dex			;					2
 	bne	pad_x		;					2/3
 				;===========================================
-				;	12-1+5*(coarse_x+2)
-;
-
+				;	5*(coarse_x+2)-1
+				; MAX is 9, so up to 54
+; up to 66
 	; beam is at proper place
 	sta	RESP0							; 3
-
+; up to 69
 	sta	WSYNC							; 3
-	sta	HMOVE		; adjust fine tune, must be after WSYNC	; 3
-				; also draws black artifact on left of
-				; screen
+; up to 72
+	jmp	done_done						; 3
+
+	; special case for when COARSE_X = 10
+	; won't fit with standard loop above
+far_right:
+; 9
+	ldx	#11							; 2
+; 11
+fpad_x:
+	dex			;					; 2
+	bne	fpad_x		;					; 2/3
+				; (5*X)-1 = 54
+; 65
+	nop								; 2
+	nop								; 2
+	nop								; 2
+
+; 71
+	sta	RESP0							; 3
+; 74
+	nop
+; 76
+
+done_done:
+
+	;==========================================
+	; Final setup before going
+	;==========================================
+	; now in setup scanline two
+
+; 0/3
+;	jsr	strongbad_moved_horizontally				; 6+?
+
+	sta	WSYNC
+	sta	HMOVE
 
 
 	;==========================================

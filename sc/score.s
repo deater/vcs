@@ -86,7 +86,7 @@ spad_x:
 ; 8
 
 
-.align	$100
+;.align	$100
 
 	;===================
 	; now scanline 1..7
