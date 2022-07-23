@@ -92,10 +92,6 @@ after_check_left:
 	;=============================
 	; handle right being pressed
 ; 0
-;	lda	STRONGBAD_X_END		;				; 3
-;	cmp	#167			;				; 2
-;	bcs	after_check_right	;				; 2/3
-
 	lda	#$80			; check right			; 2
 	bit	SWCHA			;				; 3
 	bne	after_check_right	;				; 2/3
@@ -111,11 +107,6 @@ after_check_right:
 	;===========================
 	; handle up being pressed
 
-	; FIXME: needed? always a wall?
-;	lda	STRONGBAD_Y		;				; 3
-;	cmp	#1			;				; 2
-;	beq	after_check_up		;				; 2/3
-
 	lda	#$10			; check up			; 2
 	bit	SWCHA			;				; 3
 	bne	after_check_up		;				; 2/3
@@ -123,32 +114,26 @@ after_check_right:
 	dec	STRONGBAD_Y		; move sprite up		; 5
 ;	dec	STRONGBAD_Y		; move sprite up		; 5
 
-;	jsr	strongbad_moved_vertically	; 			; 6+16
 after_check_up:
 	sta	WSYNC			; 				; 3
 					;	===============================
-					; 			11 / 18 / 44
+					; 			15 / 11
 
 	;==========================
 	; now VBLANK scanline 32
 	;==========================
 	; handle down being pressed
 
-	; FIXME: needed?
-;	lda	STRONGBAD_Y_END		;				; 3
-;	cmp	#181			;				; 2
-;	bcs	after_check_down	;				; 2/3
-
 	lda	#$20			;				; 2
 	bit	SWCHA			;				; 3
 	bne	after_check_down	;				; 2/3
 
 	inc	STRONGBAD_Y		; move sprite down		; 5
-;	jsr	strongbad_moved_vertically	;			; 6+16
+
 after_check_down:
 	sta	WSYNC			;				; 3
 					;	==============================
-					; 			11 / 18 / 44
+					; 			15 / 11
 
 	;==========================
 	; now VBLANK scanline 33
@@ -156,15 +141,12 @@ after_check_down:
 	; adjust strongbad vertical position
 
 strongbad_moved_vertically:
-	clc				;				2
-	lda	STRONGBAD_Y		;				3
-	adc	#STRONGBAD_HEIGHT	;				2
-	sta	STRONGBAD_Y_END		;				3
+; 0
+	clc				;				; 2
+	lda	STRONGBAD_Y		;				; 3
+	adc	#8			; STRONGBAD_HEIGHT		; 2
+	sta	STRONGBAD_Y_END		;				; 3
 ; 10
-
-
-
-;	jsr	strongbad_moved_horizontally
 
 	sta	WSYNC
 
@@ -286,19 +268,11 @@ dont_rotate_zap:
 ; 31
 
 	;================================
-;================================
-; strongbad moved horizontally
-;================================
-;================================
-; call after X changes
-;	compute horizontal fine adjust
-;	assume sprite width of 8
-
+	; strongbad moved horizontally
 strongbad_moved_horizontally:
-; 0
-;	clc								; 2
+; 31
 	lda	STRONGBAD_X						; 3
-; 5
+; 34
 	; spritex DIV 16
 
 	lsr								; 2
@@ -306,14 +280,14 @@ strongbad_moved_horizontally:
 	lsr								; 2
 	lsr								; 2
 	sta	STRONGBAD_X_COARSE					; 3
-; 16
+; 45
 	; apply fine adjust
 	lda	STRONGBAD_X						; 3
 	and	#$0f							; 2
 	tax								; 2
 	lda	fine_adjust_table,X					; 4+
 	sta	HMP0							; 3
-; 30
+; 59
 
 	sta	WSYNC
 
@@ -446,8 +420,6 @@ regular_collision:
 	lda	OLD_STRONGBAD_Y						; 3
 	sta	STRONGBAD_Y						; 3
 
-;	lda	OLD_STRONGBAD_X_END					; 3
-;	sta	STRONGBAD_X_END						; 3
 	lda	OLD_STRONGBAD_Y_END					; 3
 	sta	STRONGBAD_Y_END						; 3
 ; +24
