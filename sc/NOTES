@@ -3,6 +3,9 @@ Optimization:
 v1.0:
 	$0EBC = optimize "game over" code a lot.  lost a column
 		of the duck animation but probably worth it
+v1.3:
+	Ran out of room, code ends at 0x8fe
+	common vblank -> 0x8e2
 
 
 

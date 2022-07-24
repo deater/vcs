@@ -6,6 +6,8 @@ init_game:
 	sta	SCORE_HIGH	; score, in BCD				; 3
 	sta	SCORE_LOW						; 3
 	sta	LEVEL		; level is actually LEVEL+1		; 3
+	sta	SPEED
+;	sta	TRIGGER_SOUND
 
 	lda	#$90		; init the zappy wall colors		; 2
 	sta	ZAP_BASE						; 3

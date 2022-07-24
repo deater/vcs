@@ -16,7 +16,7 @@
 secret_collect_frame:
 ; 0 / 8
 	; Start Vertical Blank
-
+.if 0
 	lda	#2			; reset beam to top of screen
 	sta	VSYNC
 
@@ -28,6 +28,14 @@ secret_collect_frame:
 
 	lda	#0			; done beam reset
 	sta	VSYNC
+
+
+
+.endif
+
+	jsr	common_vblank
+
+; 9
 
 	;=============================
 	; 37 lines of vertical blank

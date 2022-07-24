@@ -21,6 +21,7 @@
 start_title:
 	; in scanline 0
 
+.if 0
 	; Start Vertical Blank
 
 	lda	#2			; reset beam to top of screen
@@ -36,7 +37,11 @@ start_title:
 	; in scanline 3
 	lda	#0			; done beam reset
 	sta	VSYNC
+.endif
 
+	jsr	common_vblank
+
+; 9
 	;=============================
 	; 37 lines of vertical blank
 	;=============================

@@ -9,7 +9,7 @@
         sta     FRAME		; reset frame counter			; 3
 
 go_frame:
-
+.if 0
 	; Start Vertical Blank
 
 	lda	#2			; reset beam to top of screen	; 2
@@ -23,7 +23,10 @@ go_frame:
 
 	lda	#0			; done beam reset		; 2
 	sta	VSYNC							; 3
+.endif
 
+	jsr	common_vblank
+; 9
 	;=============================
 	; 37 lines of vertical blank
 	;=============================

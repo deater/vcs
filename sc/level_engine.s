@@ -6,6 +6,9 @@
 	; comes in with 3 cycles from loop
 level_frame:
 
+	jsr	common_vblank
+
+.if 0
 	;============================
 	; Start Vertical Blank
 	;============================
@@ -25,8 +28,10 @@ level_frame:
 
 	lda	#0			; done beam reset		; 2
 	sta	VSYNC							; 3
+.endif
 
 
+; 9
 
 	;=================================
 	;=================================
@@ -111,7 +116,16 @@ after_check_right:
 	bit	SWCHA			;				; 3
 	bne	after_check_up		;				; 2/3
 
-	dec	STRONGBAD_Y		; move sprite up		; 5
+	lda	SPEED							; 3
+	lsr								; 2
+	clc
+	adc	#1								; 2
+	sta	TEMP1
+	lda	STRONGBAD_Y						; 3
+	sec
+	sbc	TEMP1
+	sta	STRONGBAD_Y		; move sprite down		; 3
+
 ;	dec	STRONGBAD_Y		; move sprite up		; 5
 
 after_check_up:
@@ -123,12 +137,16 @@ after_check_up:
 	; now VBLANK scanline 32
 	;==========================
 	; handle down being pressed
-
+; 0
 	lda	#$20			;				; 2
 	bit	SWCHA			;				; 3
 	bne	after_check_down	;				; 2/3
 
-	inc	STRONGBAD_Y		; move sprite down		; 5
+	lda	SPEED							; 3
+	lsr								; 2
+	sec								; 2
+	adc	STRONGBAD_Y						; 3
+	sta	STRONGBAD_Y		; move sprite down		; 3
 
 after_check_down:
 	sta	WSYNC			;				; 3
@@ -527,8 +545,11 @@ goto_zap:
 
 	lda	#0			; reset game over
 	sta	LEVEL_OVER
-	sta	SPEED			; reset speed
 
+	lda	SPEED
+	beq	speed_already_slow
+	dec	SPEED			; reset speed
+speed_already_slow:
 	jmp	level_frame
 
 goto_oot:

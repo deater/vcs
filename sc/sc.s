@@ -185,6 +185,7 @@ game_over_animation:
 .include	"init_level.s"
 .include	"sound_trigger.s"
 .include	"sound_update.s"
+.include	"common_routines.s"
 
 ; data, which has alignment constraints
 .include	"game_data.inc"

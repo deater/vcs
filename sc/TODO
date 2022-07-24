@@ -9,6 +9,8 @@ LEVEL ENGINE:
 	+ slow down default speed
 	+ fix all the timing glitches, mostly with sound
 
+	; re-evaluate sound effects
+
 	+ speed
 		0 1 2 3 
 		1+(speed/2)
