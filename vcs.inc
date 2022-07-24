@@ -49,9 +49,9 @@ CTRLPF	=	$0A	; control the playfield
 	CTRLPF_SCORE	=	$02	; left/right colors P0/P1 colors
 	CTRLPF_PFP	=	$04	; playfield has priority (sprites go behind)
 	CTRLPF_BALL_SIZE1=	$00	; ball size
-	CTRLPF_BALL_SIZE2=	$20
-	CTRLPF_BALL_SIZE4=	$40
-	CTRLPF_BALL_SIZE8=	$60
+	CTRLPF_BALL_SIZE2=	$10
+	CTRLPF_BALL_SIZE4=	$20
+	CTRLPF_BALL_SIZE8=	$30
 REFP0	=	$0B
 REFP1	=	$0C
 

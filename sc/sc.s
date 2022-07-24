@@ -112,6 +112,8 @@ SECRET_Y_END		=	$D8
 SECRET_X_COARSE		=	$D9
 SECRET_X_FINE		=	$DA
 SECRET_ON		=	$DB
+STRONGBAD_ON		=	$DC
+BALL_ON			=	$DE
 
 ; we wanted 16-bytes of state, but no room...
 .if 0

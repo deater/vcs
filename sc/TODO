@@ -11,3 +11,4 @@ LEVEL ENGINE:
 	+ fix all the timing glitches, mostly with sound
 	+ make sure zap detection works at the edges
 
+	+ speed reset after blue, not timeout

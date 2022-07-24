@@ -192,6 +192,10 @@ dont_rotate_zap:
                                                                 ;============
                                                                 ; 35 worst case
 
+	lda	#2
+;	sta	ENABL	; enable ball
+	sta	BALL_ON	; FIXME: check BALL_AVAIL
+
 
 	sta	WSYNC							; 3
 
