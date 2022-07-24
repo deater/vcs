@@ -21,7 +21,7 @@ level2_data:
 	.byte	<l2_playfield2_left,>l2_playfield2_left
 
 level3_data:
-	.byte	136,72		; secret_x, secret_y
+	.byte	144,72		; secret_x, secret_y
 ;	.byte	72,80		; secret_ystart, secret_yend
 ;	.byte	$FF		; padding
 ;	.byte	$FF,$FF		; bonus_x,bonus_y

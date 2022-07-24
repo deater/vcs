@@ -190,6 +190,8 @@ game_over_animation:
 ; FIXME: move to gaps
 ;.byte "by Vince `deater` Weaver <vince@deater.net>"
 
+.byte "by deater"
+
 .segment "IRQ_VECTORS"
 	.word start	; NMI
 	.word start	; RESET

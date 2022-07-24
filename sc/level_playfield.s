@@ -31,19 +31,24 @@ blurgh3:
 ; 8
 	ldx	SECRET_X_COARSE	;					3
 	inx			;					2
-	inx			;					2
+	nop			;					2
+;	inx			;					2
+; 15
 qpad_x:
 	dex			;					2
 	bne	qpad_x		;					2/3
 				;===========================================
-				;	12-1+5*(coarse_x+2)
+				;	5*(coarse_x+2)-1
+				; max is 9, so worst case is 54
 
-	; beam is at proper place
-	sta	RESP1							; 3
+	nop
 	sta	RESBL
 
-	lda	SECRET_X_FINE
-	sta	HMP1
+; 69 worst case
+	; beam is at proper place
+	sta	RESP1							; 3
+; 72 worst case
+
 
 	sta	WSYNC
 
@@ -110,6 +115,12 @@ done_done:
 
 ; 0/3
 
+	lda	#$70
+	sta	HMBL
+
+	lda	SECRET_X_FINE
+	sta	HMP1
+
 	sta	WSYNC
 	sta	HMOVE
 
@@ -129,7 +140,7 @@ done_done:
 	lda	#$C2			; green				; 2
 	sta	COLUPF			; playfield color		; 3
 
-	lda	#CTRLPF_REF|CTRLPF_BALL_SIZE2				; 2
+	lda	#CTRLPF_REF|CTRLPF_BALL_SIZE4				; 2
 					; reflect playfield
 	sta	CTRLPF							; 3
 								;===========
@@ -350,7 +361,7 @@ done_inc_block:
 ; 68
 
 	lda	TEMP1		; restore playfield to A		; 3
-	cpx	#168		; see if hit end			; 2
+	cpx	#166		; see if hit end			; 2
 	bne	draw_playfield						; 2/3
 done_playfield:
 ; 76
@@ -371,25 +382,24 @@ skip:
 draw_playfield_bonus:
 
 	;=================================================
-	; draw playfield bonus (168-176)
+	; draw playfield bonus (165-176)
 	;=================================================
 	; draw 8 lines at bottom, where bonus appears
 
-; 2/3
+; 3
 	; enable secret if it's visible
 
 	lda	STRONGBAD_ON				; 3
 	sta	GRP0					; 3
+	lda	BALL_ON					; 3
+	sta	ENABL					; 3
 	lda	SECRET_ON				; 3
 	sta	GRP1					; 3
-	lda	BALL_ON
-	sta	ENABL
-; 15
 
-	lda	#$82		; blue ball		; 2
-	sta	COLUPF		;			; 3
-
-; 25
+; 21
+	ldy	#$82		; blue ball		; 2
+	sty	COLUPF		;			; 3
+; 26
 
 	; activate strongbad sprite if necessary
 	lda	#$F0			; load sprite data		; 2
@@ -399,62 +409,56 @@ draw_playfield_bonus:
 	cpx	STRONGBAD_Y						; 3
 	bcc	turn_off_strongbad2					; 2/3
 turn_on_strongbad2:
-;	sta	GRP0			; and display it		; 3
-	sta	STRONGBAD_ON
+	sta	STRONGBAD_ON						; 3
 	jmp	after_sprite2						; 3
 turn_off_strongbad2_delay5:
-	inc	TEMP1							; 5
+	inc	TEMP1			; nop5				; 5
 turn_off_strongbad2:
 	lda	#0			; turn off sprite		; 2
 update_sprite2:
-;	sta	GRP0							; 3
-	sta	STRONGBAD_ON
+	sta	STRONGBAD_ON						; 3
 after_sprite2:
 								;============
 								; 13 / 18 / 18
 								; 18 / 18 / 18
 
-; 43
+; 44
+	inc	TEMP1			; nop5				; 5
+	lda	$80			; nop3				; 3
 
-	;==============================
-	; activate secret sprite
-
-	; X = current scanline
-	lda	#$F0			; load sprite data		; 2
-	cpx	SECRET_Y_END						; 3
-	bcs	turn_off_secret2_delay5					; 2/3
-	cpx	SECRET_Y_START						; 3
-	bcc	turn_off_secret2						; 2/3
-turn_on_secret2:
-	sta	SECRET_ON
-	jmp	after_secret2						; 3
-turn_off_secret2_delay5:
-	lda	$80			; nop3				; 2
-	nop								; 2
-turn_off_secret2:
-	lda	#0			; turn off sprite		; 2
-	sta	SECRET_ON
-after_secret2:
-								;============
-								; 18 / 18 / 18
-
+; 52
+	lda	#0							; 2
+	cpx	#172							; 2
+	bcc	all_good						; 2/3
+	sta	SECRET_ON						; 3
+	sta	BALL_ON							; 3
+	jmp	all_done						; 3
+all_good:
+	nop
+	nop
+	nop
+	nop
+all_done:
+								;==========
+								; 15 / 7
+; 67
 
 	; this needs to happen before cycle 70
 	lda	#$C2		; restore green wall			; 2
 	sta	COLUPF							; 3
-
+; 72
 	inx								; 2
 	cpx	#176		; see if hit end			; 2
-	sta	WSYNC
-	bne	draw_playfield_bonus					; 2/3_bonus
-
+; 76
+	bne	draw_playfield_bonus					; 2/3
+; want +3
 
 	;=========================
 	; 176 - 180
 	;=========================
 	; draw bottom 4 lines
 	; FIXME: collision detection on bottom is weird
-
+; 2
 draw_bottom:
 	lda	#$F0
 	sta	PF0
