@@ -91,6 +91,8 @@ copy_level_data_loop:
 ; 30
 
 
+
+
 reinit_strongbad:
 	; adjust strong bad position
 	;	for now, fixed start
@@ -99,6 +101,14 @@ reinit_strongbad:
 	sta	STRONGBAD_X						; 3
 	lda	#32							; 2
 	sta	STRONGBAD_Y						; 3
+
+	; init balls
+	lda	#0
+	ldx	BALLS_LEFT
+	bmi	no_balls_left
+	lda	#1
+no_balls_left:
+	sta	BALL_OUT
 
 ; 61 (79)
 	rts

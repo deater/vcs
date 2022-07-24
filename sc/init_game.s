@@ -12,6 +12,7 @@ init_game:
 
 	lda	#3		; number of lives			; 2
 	sta	MANS							; 3
+	sta	BALLS_LEFT	; speed powerups left			; 3
 
 	jmp	disable_sound	; disable sound				; 6+
 

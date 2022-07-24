@@ -78,6 +78,9 @@ MANS_SPRITE_4		=	$B4
 MANS_SPRITE_5		=	$B5
 MANS_SPRITE_6		=	$B6
 TRIGGER_SOUND		=	$B7
+BALL_OUT		=	$B8
+BALLS_LEFT		=	$B9
+SPEED			=	$BA		; I pity the fool
 
 LEVEL_SPRITE0		=	$C0
 LEVEL_SPRITE1		=	$C1
@@ -114,6 +117,7 @@ SECRET_X_FINE		=	$DA
 SECRET_ON		=	$DB
 STRONGBAD_ON		=	$DC
 BALL_ON			=	$DE
+
 
 ; we wanted 16-bytes of state, but no room...
 .if 0

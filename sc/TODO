@@ -1,5 +1,5 @@
 TITLE SCREEN:
-	+ show red/yellow box animation
+	+ show red/yellow box animation?
 
 LEVEL ENGINE:
 	+ SCORE: update six digits? (currently 4)
@@ -7,8 +7,6 @@ LEVEL ENGINE:
 	+ lose points if hit wall?
 	+ go to title screen if reset pressed
 	+ slow down default speed
-	+ add speed power ups
 	+ fix all the timing glitches, mostly with sound
 	+ make sure zap detection works at the edges
-
 	+ speed reset after blue, not timeout

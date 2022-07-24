@@ -192,10 +192,12 @@ dont_rotate_zap:
                                                                 ;============
                                                                 ; 35 worst case
 
-	lda	#2
-;	sta	ENABL	; enable ball
-	sta	BALL_ON	; FIXME: check BALL_AVAIL
+	lda	BALL_OUT						; 3
+	beq	no_balls						; 2/3
 
+	lda	#2
+	sta	BALL_ON
+no_balls:
 
 	sta	WSYNC							; 3
 
@@ -384,9 +386,21 @@ collision_secret:
 
 no_collision_secret:
 ; 6
-	lda	CXP0FB			; check if p0/pf collision	; 3
+	lda	#$CC							; 2
+	bit	CXP0FB			; check p0 vs pf/bl collision	; 3
 ; 9
+	bvs	collision_ball
 	bpl	no_collision_wall					; 2/3
+	bmi	collision_wall
+collision_ball:
+	lda	#0
+	sta	BALL_OUT
+	dec	BALLS_LEFT
+	inc	SPEED
+	ldy	#SFX_PING
+	sty	TRIGGER_SOUND
+	jmp	collision_done
+
 collision_wall:
 ; 11
 	; if STRONGBAD_Y>ZAP_BEGIN && STRONGBAD_Y<ZAP_END
@@ -456,12 +470,6 @@ check_oot:
 do_a_sound:
 	sty	TRIGGER_SOUND
 done_setup:
-;	sta	WSYNC
-
-
-	;==============================
-	; overscan 27, trigger sound
-
 	ldy	TRIGGER_SOUND						; 3
 	beq	end_no_trigger_sound					; 2/3
 	jsr	trigger_sound						; 6+40
@@ -511,10 +519,16 @@ goto_go:
 goto_zap:
 	; zapped by wall
 ; 12
+
+	lda	#3
+	sta	BALLS_LEFT
+
 	jsr	reinit_strongbad	; reset position		; 6+!!!
 
 	lda	#0			; reset game over
 	sta	LEVEL_OVER
+	sta	SPEED			; reset speed
+
 	jmp	level_frame
 
 goto_oot:
