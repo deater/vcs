@@ -460,14 +460,31 @@ all_done:
 	; FIXME: collision detection on bottom is weird
 ; 2
 draw_bottom:
-	lda	#$F0
-	sta	PF0
-	lda	#$FF
-	sta	PF1
-	lda	#$FF
-	sta	PF2
-	lda	#0
-	sta	ENABL
+	lda	#$F0							; 2
+	sta	PF0							; 3
+	lda	#$FF							; 2
+	sta	PF1							; 3
+	sta	PF2							; 3
+	lda	STRONGBAD_ON						; 3
+	sta	GRP0							; 2
+	lda	#0							; 2
+	sta	ENABL							; 3
+
+; 23
+
+	lda	#0							; 2
+	cpx	STRONGBAD_Y_END						; 3
+	bcc	let_be_strongbad3					; 2/3
+turn_off_strongbad3:
+	sta	STRONGBAD_ON						; 3
+	jmp	turn_off_strongbad3_done				; 3
+let_be_strongbad3:
+	inc	TEMP1		; nop5					; 5
+turn_off_strongbad3_done:
+								;============
+								; 13 / 13
+; 36
+
 
 	inx
 	cpx	#180
