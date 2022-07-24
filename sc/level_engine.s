@@ -416,7 +416,7 @@ collision_wall:
 	bcs	regular_collision	; bge				; 2/3
 ; 22
 	lda	STRONGBAD_Y						; 3
-	cmp	#64	; $40						; 2
+	cmp	#62	; $40-2						; 2
 ; 27
 	bcc	regular_collision					; 2/3
 ; 29

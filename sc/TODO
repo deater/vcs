@@ -4,9 +4,16 @@ TITLE SCREEN:
 LEVEL ENGINE:
 	+ SCORE: update six digits? (currently 4)
 		In theory not possible to score that high...
-	+ lose points if hit wall?
+	+ bonus if no hit wall?
 	+ go to title screen if reset pressed
 	+ slow down default speed
 	+ fix all the timing glitches, mostly with sound
-	+ make sure zap detection works at the edges
-	+ speed reset after blue, not timeout
+
+	+ speed
+		0 1 2 3 
+		1+(speed/2)
+		1 1 2 2 
+
+		fall by 1 when zapped?
+
+		0 0 1 2
