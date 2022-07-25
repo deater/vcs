@@ -18,8 +18,10 @@ draw_timer_bar:
 	sta	TRIGGER_SOUND						; 3
 ; 11
 	; set playfield to mirrored
-	lda	#CTRLPF_REF	; reflect playfield			; 2
-	sta	CTRLPF							; 3
+	nop
+	lda	$80
+;	lda	#CTRLPF_REF	; reflect playfield			; 2
+;	sta	CTRLPF							; 3
 ; 16
 	dec	TIME_SUBSECOND	; count down				; 5
 ; 21

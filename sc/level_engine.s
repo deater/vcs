@@ -6,6 +6,11 @@
 	; comes in with 3 cycles from loop
 level_frame:
 
+       lda     #CTRLPF_REF|CTRLPF_BALL_SIZE4                           ; 2
+                                        ; reflect playfield
+       sta     CTRLPF                                                  ; 3
+
+
 	;============================
 	; Start Vertical Blank
 	;============================

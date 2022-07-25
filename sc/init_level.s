@@ -111,6 +111,7 @@ reinit_strongbad:
 	lda	#0							; 2
 	sta	STRONGBAD_X_LOW						; 3
 	sta	STRONGBAD_Y_LOW						; 3
+	sta	STRONGBAD_ON
 
 ; 61 (79)
 	rts

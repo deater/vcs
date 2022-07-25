@@ -141,9 +141,9 @@ done_done:
 	lda	#$C2			; green				; 2
 	sta	COLUPF			; playfield color		; 3
 
-	lda	#CTRLPF_REF|CTRLPF_BALL_SIZE4				; 2
+;	lda	#CTRLPF_REF|CTRLPF_BALL_SIZE4				; 2
 					; reflect playfield
-	sta	CTRLPF							; 3
+;	sta	CTRLPF							; 3
 								;===========
 								;        23
 ; 26
