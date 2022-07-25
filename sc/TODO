@@ -21,3 +21,15 @@ LEVEL ENGINE:
 		fall by 1 when zapped?
 
 		0 0 1 2
+
+speed		xadd	yadd
+0		00,80	1
+1		01,00	1
+2		01,80	2
+3		02,00	2
+
+
+
+
+
+

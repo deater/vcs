@@ -55,6 +55,9 @@ le_vblank_loop:
 	; now at VBLANK scanline 29
 	;=============================
 	; handle left being pressed
+
+	ldx	SPEED			; we need this for all checks
+
 ; 0
 	lda	#$40			; check left			; 2
 	bit	SWCHA			;				; 3
@@ -62,7 +65,7 @@ le_vblank_loop:
 
 left_pressed:
 
-	ldx	SPEED
+;	ldx	SPEED
 	lda	STRONGBAD_X_LOW
 	sec
 	sbc	xspeed_lookup_low,X
@@ -70,9 +73,6 @@ left_pressed:
 	lda	STRONGBAD_X
 	sbc	xspeed_lookup,X
 	sta	STRONGBAD_X
-
-
-;	dec	STRONGBAD_X		; move sprite left		; 5
 
 after_check_left:
 	sta	WSYNC			;				; 3
@@ -88,7 +88,7 @@ after_check_left:
 	bit	SWCHA			;				; 3
 	bne	after_check_right	;				; 2/3
 
-	ldx	SPEED
+;	ldx	SPEED
 	lda	STRONGBAD_X_LOW
 	adc	xspeed_lookup_low,X
 	sta	STRONGBAD_X_LOW
@@ -111,13 +111,14 @@ after_check_right:
 	bit	SWCHA			;				; 3
 	bne	after_check_up		;				; 2/3
 
-	ldx	SPEED							; 3
+;	ldx	SPEED							; 3
 	sec
+	lda	STRONGBAD_Y_LOW						; 3
+	sbc	yspeed_lookup_low,X
+	sta	STRONGBAD_Y_LOW
 	lda	STRONGBAD_Y						; 3
 	sbc	yspeed_lookup,X
 	sta	STRONGBAD_Y		; move sprite down		; 3
-
-;	dec	STRONGBAD_Y		; move sprite up		; 5
 
 after_check_up:
 	sta	WSYNC			; 				; 3
@@ -133,17 +134,14 @@ after_check_up:
 	bit	SWCHA			;				; 3
 	bne	after_check_down	;				; 2/3
 
-	ldx	SPEED
+;	ldx	SPEED
 	clc
+	lda	STRONGBAD_Y_LOW
+	adc	yspeed_lookup_low,X
+	sta	STRONGBAD_Y_LOW
 	lda	STRONGBAD_Y
 	adc	yspeed_lookup,X
 	sta	STRONGBAD_Y
-
-;	lda	SPEED							; 3
-;	lsr								; 2
-;	sec								; 2
-;	adc	STRONGBAD_Y						; 3
-;	sta	STRONGBAD_Y		; move sprite down		; 3
 
 after_check_down:
 	sta	WSYNC			;				; 3

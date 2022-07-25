@@ -8,30 +8,15 @@
 ;11
 	lda	#0		; turn off reflect on playfield		; 2
 	sta	CTRLPF							; 3
-	sta	VDELP0							; 3
-	sta	FRAME							; 3
+	sta	VDELP0		; turn off delay on sprite0		; 3
+	sta	FRAME		; reset frame count			; 3
 ; 22
 	sta	WSYNC
 
 secret_collect_frame:
 ; 0 / 8
+	;======================
 	; Start Vertical Blank
-.if 0
-	lda	#2			; reset beam to top of screen
-	sta	VSYNC
-
-	; wait for 3 scanlines of VSYNC
-
-	sta	WSYNC			; wait until end of scanline
-	sta	WSYNC
-	sta	WSYNC
-
-	lda	#0			; done beam reset
-	sta	VSYNC
-
-
-
-.endif
 
 	jsr	common_vblank
 
@@ -204,9 +189,10 @@ done_which:
 
 sctext_loop:
 ; 0
-	lda	$80	; nop 3 					; 3
+	; want 14 cycles of nops
+
+	inc	TEMP1	; nop 5 					; 5
 	inc	TEMP1	; nop 5						; 5
-	nop								; 2
 	nop								; 2
 	nop								; 2
 ; 14
@@ -233,11 +219,16 @@ sctext_loop:
 	sta	PF1			;				; 3
 	; must write by CPU 54 [GPU 164]
 ; 51
-	nop								; 2
+
+;	nop								; 2
+;	nop								; 2
+
+	lda	$80	; nop3
+	; this is a hack to account for branch below crossing page
+
 	lda	#0			;				; 2
 	sta	PF2			;				; 3
 	; must write by CPU 65 [GPU 196]
-	nop								; 2
 
 ; 60
 
@@ -269,18 +260,6 @@ done_sctext_loop:
 
 	ldx	#28
 	jsr	common_overscan
-
-.if 0
-	lda	#$2		; turn off beam
-	sta	VBLANK
-
-	ldx	#0
-sc_overscan_loop:
-	sta	WSYNC
-	inx
-	cpx	#28
-	bne	sc_overscan_loop
-.endif
 
 ; 10
 

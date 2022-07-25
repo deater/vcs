@@ -215,8 +215,12 @@ collect_playfield1_left:	; must be within 10 of previous
 	.byte $00,$32,$45,$45,$45,$45,$45,$32,$00,$00
 
 	; speed constants
+	; can easily optimize this for space
+
 yspeed_lookup:
 	.byte   $01,$01,$02,$02
+yspeed_lookup_low:
+	.byte   $00,$80,$00,$80
 xspeed_lookup:
 	.byte   $00,$01,$01,$02
 xspeed_lookup_low:
