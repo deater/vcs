@@ -1,61 +1,74 @@
 ; Myst title
 
+	;================================
+	; title screen
+	;================================
+	; arrive here with unknown number of cycles
+	; hopefully VBLANK=2 (beam is off)
 
-title_frame:
+	lda	#0							; 2
+	sta	FRAME							; 3
 
+	lda	#$20			; gold/brown			; 2
+	sta	TITLE_COLOR						; 3
+
+
+title_frame_loop:
+
+	;=======================
 	; Start Vertical Blank
+	;=======================
 
-	lda	#0			; turn on beam
-	sta	VBLANK
-
-	lda	#2			; reset beam to top of screen
-	sta	VSYNC
-
-	; wait for 3 scanlines of VSYNC
-
-	sta	WSYNC			; wait until end of scanline
-	sta	WSYNC
-	sta	WSYNC
-
-	lda	#0			; done beam reset
-	sta	VSYNC
+	jsr	common_vblank
 
 	;=============================
 	; 37 lines of vertical blank
 	;=============================
 
+	ldx	#36							; 2
+vtitle_loop:
+	sta	WSYNC							; 3
+	dex								; 2
+	bne	vtitle_loop						; 2/3
 
-.repeat 36
-	sta	WSYNC
-.endrepeat
+; 4
+	;==============================
+	; VBLANK scanline 37 -- config
+	;==============================
+; 4
+	inc	FRAME							; 5
+	lda	FRAME							; 3
+	and	#$f			; every 2/16 frame (~.5s)	; 2
+	bne	no_rotate_title						; 2/3
+	inc	TITLE_COLOR						; 5
+no_rotate_title:
 
-	;=======================
-	; scanline 37 -- config
-
-	ldy	#0
-	ldx	#0
-	stx	GRP0
-	stx	GRP1
-	stx	CTRLPF
-
-	lda	#$20
-	sta	TITLE_COLOR
+;
+	ldy	#0							; 2
+	ldx	#0							; 2
+	stx	GRP0							; 3
+	stx	GRP1							; 3
+	stx	CTRLPF							; 3
+	stx	VBLANK			; re-enable beam		; 3
+;
 
 	sta	WSYNC
 
 
 	;=============================================
 	;=============================================
-	; draw title
+	; draw title playfield
 	;=============================================
 	;=============================================
 	; draw 192 lines
 	; need to race beam to draw other half of playfield
 
-title_loop:
-	lda	TITLE_COLOR	; green	;				; 3
+title_playfield_loop:
+	lda	TITLE_COLOR		;				; 3
+	and	#$2F			; keep it gold			; 2
 	sta	COLUPF			; set playfield color		; 3
-	inc	TITLE_COLOR						; 5
+	sta	TITLE_COLOR						; 3
+
 ; 11
 	lda	title_playfield0_left,X	;				; 4+
 	sta	PF0			;				; 3
@@ -68,30 +81,27 @@ title_loop:
 	lda	title_playfield2_left,X	;				; 4+
 	sta	PF2			;				; 3
 	; must write by CPU 38 [GPU 116]
-
-
-	nop
-	nop
-	lda	$80
-
 ; 32
+
+
+	inc	TITLE_COLOR		; advance color			; 5
+	nop								; 2
+
+; 39
 	lda	title_playfield0_right,X	;			; 4+
 	sta	PF0			;				; 3
 
 
 	; must write by CPU 49 [GPU 148]
-; 39
+; 46
 
 	lda	title_playfield1_right,X	;			4+
 	sta	PF1			;				3
 	; must write by CPU 54 [GPU 164]
-; 46
+; 53
 	lda	title_playfield2_right,X	;			4+
 	sta	PF2			;				3
 	; must write by CPU 65 [GPU 196]
-; 53
-
-
 ; 60
 
         iny                                                             ; 2
@@ -106,43 +116,26 @@ done_inx:
                                                                 ; 11/11
 
 ; 71
-	cpy	#(192)							; 2
-	bne	title_loop						; 2/3
+	cpy	#192							; 2
+	bne	title_playfield_loop					; 2/3
 
 ; 76
 
 done_loop:
 
-;	.repeat 18
-;	sta	WSYNC
-;	.endrepeat
-
-
+; -1
 	;==========================
 	; overscan
 	;==========================
 
-	lda	#$2		; turn off beam
-	sta	VBLANK
-
-	ldx	#0
-overscan_loop:
-	sta	WSYNC
-	inx
-	cpx	#29
-	bne	overscan_loop
+	ldx	#30			; turn off beam and wait 29 scanlines
+	jsr	common_overscan
 
 	;============================
-	; Overscan scanline 29
+	; Overscan scanline 30
 	;============================
 	; check for button or RESET
-        ;===================================
-
-
-;	lda     TITLE_COUNTDOWN
-;       beq     waited_enough
-;      dec     TITLE_COUNTDOWN
-;        jmp     done_check_input
+        ;============================
 
 waited_enough:
 	lda	INPT4			; check if joystick button pressed
@@ -158,8 +151,7 @@ set_done_title:
 	jmp	done_title
 done_check_input:
 
-
-	jmp	title_frame
+	jmp	title_frame_loop
 
 done_title:
-	sta	WSYNC
+

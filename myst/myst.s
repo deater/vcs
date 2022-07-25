@@ -36,16 +36,12 @@ myst:
 	sei		; disable interrupts
 	cld		; clear decimal bit
 	ldx	#$ff
-	txs		; point stack to top of zero page
+	txs		; point stack to $1FF (mirrored at top of zero page)
 
-	; clear out the Zero Page (RAM and TIA registers)
+restart_game:
 
-	ldx	#0
-	txa
-clear_loop:
-	sta	$0,X
-	inx
-	bne	clear_loop
+	lda	#2
+	sta	VBLANK	; disable beam
 
 	;===========================
 	;===========================
@@ -63,9 +59,8 @@ clear_loop:
 	;===========================
 
 	.include "clock.s"
-
-
 	.include "adjust_sprite.s"
+	.include "common_routines.s"
 
 .align $100
 
