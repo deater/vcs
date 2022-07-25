@@ -6,12 +6,10 @@
 
 	lda	#0							; 2
 	sta	FRAME							; 3
+	sta	BACKGROUND_COLOR					; 3
 
 	lda	#$28							; 2
 	sta	BASE_TITLE_COLOR					; 3
-
-	lda	#0							; 2
-	sta	BACKGROUND_COLOR					; 3
 
 	lda	#$0E							; 2
 	sta	TEXT_COLOR						; 3
@@ -19,25 +17,12 @@
 
 	; comes in at 14 cycles from bottom of loop
 start_title:
+
+	;=================
+	; start VBLANK
+	;=================
 	; in scanline 0
 
-.if 0
-	; Start Vertical Blank
-
-	lda	#2			; reset beam to top of screen
-	sta	VSYNC			; by turning on VSYNC
-
-	; wait for 3 scanlines of VSYNC
-
-	sta	WSYNC			; wait until end of scanline
-	; in scanline 1
-	sta	WSYNC
-	; in scanline 2
-	sta	WSYNC
-	; in scanline 3
-	lda	#0			; done beam reset
-	sta	VSYNC
-.endif
 
 	jsr	common_vblank
 
@@ -300,11 +285,9 @@ title_spriteloop:
 	; (need this to be 52 .. 54)
 ; 53
 
-	nop								; 2
-	nop								; 2
-	nop								; 2
-	nop								; 2
-	nop								; 2
+	; need 12 cycles of nops
+	inc	TEMP1		; nop5					; 5
+	inc	TEMP1		; nop5					; 5
 	nop								; 2
 
 ; 65
@@ -409,18 +392,6 @@ endtitle_loop:
 
 	ldx	#30
 	jsr	common_overscan
-
-.if 0
-	lda	#$2		; turn off beam				; 2
-	sta	VBLANK							; 3
-
-	ldx	#0							; 2
-overscan_loop:
-	sta	WSYNC							; 3
-	inx								; 2
-	cpx	#30							; 2
-	bne	overscan_loop						; 2/3
-.endif
 
 ; 10
 	lda	DONE_TITLE						; 3
