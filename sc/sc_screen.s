@@ -283,6 +283,26 @@ done_sc:
 	; update score by adding in time
 	ldx	TIME							; 3
 	lda	time_bcd,X						; 4
+
+	jsr	add_to_score						; 6+?
+
+	; add in bonus
+	lda	DIDNT_TOUCH_WALL					; 3
+	bne	did_touch_wall						; 2/3
+	lda	#$50							; 2
+	jsr	add_to_score						; 6+?
+did_touch_wall:
+
+	jsr	init_level						; 6+!!!
+
+	jmp	do_level
+
+	;=====================
+	; add to score
+	;=====================
+	; value to add in A
+add_to_score:
+
 	sed				; set BCD mode			; 2
 	clc								; 2
 	adc	SCORE_LOW						; 3
@@ -292,6 +312,4 @@ done_sc:
 	sta	SCORE_HIGH						; 3
 	cld				; disable BCD mode		; 2
 
-	jsr	init_level						; 6+!!!
-
-	jmp	do_level
+	rts

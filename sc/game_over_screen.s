@@ -31,8 +31,9 @@ vbgo_loop:
 
 	sta	WSYNC
 
-	;====================================
-	; vblank scanline 36 -- align sprite
+	;========================================================
+	; vblank scanline 36 -- align sprite (has to start at 0)
+	;========================================================
 ; 0
 	ldx	#7		;					; 2
 ; 2
@@ -89,18 +90,16 @@ goad_x:
 beak_open:
 ; 46
 	lda	#<game_overlay_top					; 2
-	sta	INL							; 3
-	lda	#>game_overlay_top					; 2
 	jmp	beak_done						; 3
-; 56
+; 51
 beak_closed:
 ; 47
 	lda	#<game_overlay2_top					; 2
-	sta	INL							; 3
-	lda	#>game_overlay2_top					; 2
-; 54
 beak_done:
-; 54/56
+; 49/51
+	sta	INL							; 3
+	; ASSUME ALWAYS IN SAME PAGE
+	lda	#>game_overlay_top					; 2
 	sta	INH							; 3
 ; 57/59
 
@@ -224,18 +223,6 @@ go_done_loop:
 
 	ldx	#27
 	jsr	common_overscan
-.if 0
-
-	lda	#$2		; turn off beam
-	sta	VBLANK
-
-	ldx	#0
-go_overscan_loop:
-	sta	WSYNC
-	inx
-	cpx	#27
-	bne	go_overscan_loop
-.endif
 
 ; 10
 	;=================================

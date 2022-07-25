@@ -20,14 +20,14 @@ level_frame:
 	;=================================
 	;=================================
 
-	ldx	#14
+	ldx	#15
 le_vblank_loop:
 	sta	WSYNC							; 3
 	dex								; 2
 	bne	le_vblank_loop						; 2/3
 
 	;=============================
-	; now at VBLANK scanline 14
+	; now at VBLANK scanline 15
 	;=============================
 	; update score/mans/level values
 ; 4
@@ -35,7 +35,7 @@ le_vblank_loop:
 	.include "update_score.s"
 ; 0
 	;=============================
-	; now at VBLANK scanline 28
+	; now at VBLANK scanline 29
 	;=============================
 	; stuff for collision detection
 
@@ -52,7 +52,7 @@ le_vblank_loop:
 	sta	WSYNC							; 3
 
 	;=============================
-	; now at VBLANK scanline 29
+	; now at VBLANK scanline 30
 	;=============================
 	; handle left being pressed
 
@@ -80,7 +80,7 @@ after_check_left:
 					;	 		9 / 20 / 16
 
 	;=============================
-	; now at VBLANK scanline 30
+	; now at VBLANK scanline 31
 	;=============================
 	; handle right being pressed
 ; 0
@@ -103,7 +103,7 @@ after_check_right:
 					; 			11 / 22 / 18
 
 	;===========================
-	; now at VBLANK scanline 31
+	; now at VBLANK scanline 32
 	;===========================
 	; handle up being pressed
 
@@ -126,7 +126,7 @@ after_check_up:
 					; 			15 / 11
 
 	;==========================
-	; now VBLANK scanline 32
+	; now VBLANK scanline 33
 	;==========================
 	; handle down being pressed
 ; 0
@@ -149,7 +149,7 @@ after_check_down:
 					; 			15 / 11
 
 	;==========================
-	; now VBLANK scanline 33
+	; now VBLANK scanline 34
 	;==========================
 	; adjust strongbad vertical position
 
@@ -163,12 +163,6 @@ strongbad_moved_vertically:
 
 	sta	WSYNC
 
-	;========================
-	; now VBLANK scanline 34
-	;========================
-	; empty for now
-
-	sta	WSYNC
 
 	;=======================
 	; now scanline 35
@@ -540,13 +534,12 @@ goto_zap:
 	; zapped by wall
 ; 12
 
-;	lda	#2
-;	sta	BALLS_LEFT
-
-	jsr	reinit_strongbad	; reset position		; 6+!!!
+	jsr	reinit_strongbad	; reset position		; 6+24
 
 	lda	#0			; reset game over
 	sta	LEVEL_OVER
+
+	inc	DIDNT_TOUCH_WALL	; note we touched the wall
 
 	lda	SPEED
 	beq	speed_already_slow

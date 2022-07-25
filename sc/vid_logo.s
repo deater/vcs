@@ -134,11 +134,9 @@ spriteloop:
 	sty	GRP0			; ?->[GRP0], [GRP1 (5)]-->GRP1 	; 3
 	; 53 (need this to be 52 .. 54)
 ; 53
-	nop								; 2
-	nop								; 2
-	nop								; 2
-	nop								; 2
-	nop								; 2
+	; 12 cycles of nops
+	inc	TEMP1							; 5
+	inc	TEMP1							; 5
 	nop								; 2
 
 ; 65

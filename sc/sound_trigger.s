@@ -1,20 +1,5 @@
 ; based on code by SpiceWare
-.if 0
-	;====================
-	; disable sound
-	;====================
-disable_sound:
-	ldx	#0		; silence sound output			; 2
-	stx	SFX_LEFT						; 3
-	stx	SFX_RIGHT						; 3
-	stx	AUDV0							; 3
-	stx	AUDV1							; 3
-	stx	AUDC0							; 3
-	stx	AUDC1							; 3
-	rts								; 6
-								;===========
-								;        26
-.endif
+
 	;=======================
 	; trigger sound
 	;=======================

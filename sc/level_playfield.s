@@ -12,10 +12,11 @@
 	; set up playfield (4 scanlines)
 	;===============================
 
-	jmp	blurgh3							; 3
+;	jmp	blurgh3							; 3
 ;.align	$100
 
-blurgh3:
+;blurgh3:
+	lda	$80		; nop3					; 3
 
 	;====================================================
 	; set up sprite1 (secret) to be at proper X position
@@ -434,10 +435,10 @@ after_sprite2:
 	sta	BALL_ON							; 3
 	jmp	all_done						; 3
 all_good:
-	nop
-	nop
-	nop
-	nop
+	nop								; 2
+	nop								; 2
+	nop								; 2
+	nop								; 2
 all_done:
 								;==========
 								; 15 / 7
