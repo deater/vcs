@@ -79,7 +79,7 @@ MANS_SPRITE_5		=	$B5
 MANS_SPRITE_6		=	$B6
 TRIGGER_SOUND		=	$B7
 BALL_OUT		=	$B8
-;BALLS_LEFT		=	$B9
+DIDNT_TOUCH_WALL	=	$B9
 SPEED			=	$BA	; I pity the fool (0..3)
 
 LEVEL_SPRITE0		=	$C0
@@ -180,7 +180,6 @@ game_over_animation:
 	.include "game_over_screen.s"
 
 
-;.include	"adjust_sprite.s"
 .include	"init_game.s"
 .include	"init_level.s"
 .include	"sound_trigger.s"

@@ -1,5 +1,5 @@
 ; based on code by SpiceWare
-
+.if 0
 	;====================
 	; disable sound
 	;====================
@@ -14,7 +14,7 @@ disable_sound:
 	rts								; 6
 								;===========
 								;        26
-
+.endif
 	;=======================
 	; trigger sound
 	;=======================

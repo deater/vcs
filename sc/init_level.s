@@ -38,6 +38,7 @@ hardness_loop:
 	lda	#0							; 2
 	sta	FRAME							; 3
 	sta	LEVEL_OVER						; 3
+	sta	DIDNT_TOUCH_WALL					; 3
 ; ?+18
 
 
@@ -109,7 +110,7 @@ reinit_strongbad:
 	sta	STRONGBAD_Y						; 3
 	lda	#0							; 2
 	sta	STRONGBAD_X_LOW						; 3
-
+	sta	STRONGBAD_Y_LOW						; 3
 
 ; 61 (79)
 	rts
