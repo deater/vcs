@@ -414,9 +414,8 @@ no_collision_secret:
 collision_ball:
 	lda	#0							; 2
 	sta	BALL_OUT		; remove ball			; 3
-;	dec	BALLS_LEFT		; decrement left count		; 5
 	inc	SPEED			; increment speed		; 5
-	ldy	#SFX_PING		; load sound			; 2
+	ldy	#SFX_SPEED		; load sound			; 2
 	sty	TRIGGER_SOUND		; trigger the sound		; 3
 	jmp	collision_done		; done				; 3
 
