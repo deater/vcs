@@ -90,8 +90,14 @@ copy_level_data_loop:
 	sta	SECRET_X_FINE						; 3
 ; 30
 
-
-
+	; init balls
+	lda	#0
+	ldx	SPEED
+	cpx	#3
+	bcs	too_many_balls
+	lda	#1
+too_many_balls:
+	sta	BALL_OUT
 
 reinit_strongbad:
 	; adjust strong bad position
@@ -104,13 +110,6 @@ reinit_strongbad:
 	lda	#0							; 2
 	sta	STRONGBAD_X_LOW						; 3
 
-	; init balls
-	lda	#0
-	ldx	BALLS_LEFT
-	bmi	no_balls_left
-	lda	#1
-no_balls_left:
-	sta	BALL_OUT
 
 ; 61 (79)
 	rts

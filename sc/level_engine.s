@@ -415,13 +415,13 @@ no_collision_secret:
 	bpl	no_collision_wall					; 2/3
 	bmi	collision_wall
 collision_ball:
-	lda	#0
-	sta	BALL_OUT
-	dec	BALLS_LEFT
-	inc	SPEED
-	ldy	#SFX_PING
-	sty	TRIGGER_SOUND
-	jmp	collision_done
+	lda	#0							; 2
+	sta	BALL_OUT		; remove ball			; 3
+;	dec	BALLS_LEFT		; decrement left count		; 5
+	inc	SPEED			; increment speed		; 5
+	ldy	#SFX_PING		; load sound			; 2
+	sty	TRIGGER_SOUND		; trigger the sound		; 3
+	jmp	collision_done		; done				; 3
 
 collision_wall:
 ; 11
@@ -542,8 +542,8 @@ goto_zap:
 	; zapped by wall
 ; 12
 
-	lda	#3
-	sta	BALLS_LEFT
+;	lda	#2
+;	sta	BALLS_LEFT
 
 	jsr	reinit_strongbad	; reset position		; 6+!!!
 
