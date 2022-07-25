@@ -23,6 +23,7 @@ TEMP2		=	$91
 FRAME		=	$92
 CURRENT_SCANLINE=	$93
 LEVEL		=	$94
+INPUT_COUNTDOWN	=	$95
 
 PF0L_CACHE	=	$A0
 PF1L_CACHE	=	$A1
@@ -51,6 +52,13 @@ restart_game:
 
 	.include "title.s"
 
+	;===========================
+	;===========================
+	; cleft
+	;===========================
+	;===========================
+
+	.include "cleft.s"
 
 	;===========================
 	;===========================
@@ -59,6 +67,11 @@ restart_game:
 	;===========================
 
 	.include "clock.s"
+
+	;===========================
+	; common routines
+	;===========================
+
 	.include "adjust_sprite.s"
 	.include "common_routines.s"
 
