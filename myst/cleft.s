@@ -9,6 +9,9 @@
 	lda	#0							; 2
 	sta	FRAME							; 3
 
+	lda	#CTRLPF_PFP	; playfield has priority over sprites	; 2
+	sta	CTRLPF							; 3
+
 	lda	#30
 	sta	INPUT_COUNTDOWN
 
@@ -43,9 +46,19 @@ vcleft_loop:
 	stx	GRP1							; 3
 	stx	CTRLPF							; 3
 	stx	VBLANK			; re-enable beam		; 3
+
+	lda	#$0f
+	sta	COLUPF
+
+	lda	#$2
+	sta	ENABL
+
+	sta	RESBL
+	lda	#$70
+	sta	HMBL
 ;
 
-	sta	WSYNC
+
 
 
 	;=============================================
@@ -57,10 +70,11 @@ vcleft_loop:
 	; need to race beam to draw other half of playfield
 
 cleft_playfield_loop:
-	lda	TITLE_COLOR		;				; 3
-	and	#$2F			; keep it gold			; 2
-	sta	COLUPF			; set playfield color		; 3
-	sta	TITLE_COLOR						; 3
+	sta	WSYNC							; 3
+	sta	HMOVE							; 3
+
+	lda	$80
+	nop
 
 ; 11
 	lda	title_playfield0_left,X	;				; 4+
@@ -77,7 +91,7 @@ cleft_playfield_loop:
 ; 32
 
 
-	inc	TITLE_COLOR		; advance color			; 5
+	inc	TEMP1	; nop5						; 5
 	nop								; 2
 
 ; 39
@@ -97,13 +111,13 @@ cleft_playfield_loop:
 	; must write by CPU 65 [GPU 196]
 ; 60
 
-        iny                                                             ; 2
-        tya                                                             ; 2
-        and     #$3                                                     ; 2
-        beq     yes_in2x                                                 ; 2/3
+        iny								; 2
+        tya								; 2
+        and     #$3							; 2
+        beq     yes_in2x						; 2/3
         .byte   $A5     ; begin of LDA ZP                               ; 3
 yes_in2x:
-        inx             ; $E8 should be harmless to load                ; 2
+        inx             ; $E8 should be harmless to load		; 2
 done_in2x:
                                                                 ;===========
                                                                 ; 11/11

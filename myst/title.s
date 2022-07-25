@@ -8,6 +8,7 @@
 
 	lda	#0							; 2
 	sta	FRAME							; 3
+	sta	CTRLPF			; no-reflect			; 3
 
 	lda	#$20			; gold/brown			; 2
 	sta	TITLE_COLOR						; 3
