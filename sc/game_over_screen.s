@@ -9,21 +9,9 @@
         sta     FRAME		; reset frame counter			; 3
 
 go_frame:
-.if 0
-	; Start Vertical Blank
-
-	lda	#2			; reset beam to top of screen	; 2
-	sta	VSYNC							; 3
-
-	; wait for 3 scanlines of VSYNC
-
-	sta	WSYNC			; wait until end of scanline	; 3
-	sta	WSYNC							; 3
-	sta	WSYNC							; 3
-
-	lda	#0			; done beam reset		; 2
-	sta	VSYNC							; 3
-.endif
+	;=============================
+	; start VBLANK
+	;=============================
 
 	jsr	common_vblank
 ; 9
@@ -46,7 +34,7 @@ vbgo_loop:
 	;====================================
 	; vblank scanline 36 -- align sprite
 ; 0
-	ldx	#6		;					; 2
+	ldx	#7		;					; 2
 ; 2
 goad_x:
 	dex			;					; 2
@@ -234,6 +222,10 @@ go_done_loop:
 	; overscan (30 scanlines)
 	;==========================
 
+	ldx	#27
+	jsr	common_overscan
+.if 0
+
 	lda	#$2		; turn off beam
 	sta	VBLANK
 
@@ -243,7 +235,9 @@ go_overscan_loop:
 	inx
 	cpx	#27
 	bne	go_overscan_loop
+.endif
 
+; 10
 	;=================================
 	; check input to go back to title
 

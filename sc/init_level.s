@@ -101,6 +101,8 @@ reinit_strongbad:
 	sta	STRONGBAD_X						; 3
 	lda	#32							; 2
 	sta	STRONGBAD_Y						; 3
+	lda	#0							; 2
+	sta	STRONGBAD_X_LOW						; 3
 
 	; init balls
 	lda	#0

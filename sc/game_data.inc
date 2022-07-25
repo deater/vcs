@@ -214,6 +214,15 @@ secret_playfield1_left:
 collect_playfield1_left:	; must be within 10 of previous
 	.byte $00,$32,$45,$45,$45,$45,$45,$32,$00,$00
 
+	; speed constants
+yspeed_lookup:
+	.byte   $01,$01,$02,$02
+xspeed_lookup:
+	.byte   $00,$01,$01,$02
+xspeed_lookup_low:
+	.byte   $80,$00,$80,$00
+
+
 .align $100
 
 title_playfield2_left:
@@ -270,7 +279,6 @@ sc_playfield0_right:
 	.byte $10,$10,$80,$80,$50,$50,$30,$30
 	.byte $30,$30,$30,$30,$10,$10,$10,$10
 	.byte $30,$30,$70,$70,$00,$00
-
 
 .align $100
 

@@ -9,6 +9,8 @@ LEVEL ENGINE:
 	+ slow down default speed
 	+ fix all the timing glitches, mostly with sound
 
+	+ fix issue where speed bonus reappears if time expires
+
 	; re-evaluate sound effects
 
 	+ speed

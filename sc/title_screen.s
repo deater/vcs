@@ -407,6 +407,10 @@ endtitle_loop:
 	; overscan for 30 scanlines
 	;==========================
 
+	ldx	#30
+	jsr	common_overscan
+
+.if 0
 	lda	#$2		; turn off beam				; 2
 	sta	VBLANK							; 3
 
@@ -416,12 +420,14 @@ overscan_loop:
 	inx								; 2
 	cpx	#30							; 2
 	bne	overscan_loop						; 2/3
+.endif
 
+; 10
 	lda	DONE_TITLE						; 3
 	bne	done_title						; 2/3
-; 11
+; 15
 	jmp	start_title						; 3
-; 14
+; 18
 
 done_title:
-; 12
+; 16

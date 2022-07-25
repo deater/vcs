@@ -6,30 +6,11 @@
 	; comes in with 3 cycles from loop
 level_frame:
 
-	jsr	common_vblank
-
-.if 0
 	;============================
 	; Start Vertical Blank
 	;============================
 
-	lda	#2			; reset beam to top of screen
-	sta	VSYNC
-
-	;=================================
-	; wait for 3 scanlines of VSYNC
-	;=================================
-
-	sta	WSYNC			; wait until end of scanline
-	sta	WSYNC
-	sta	WSYNC
-
-	; now in VSYNC scanline 3
-
-	lda	#0			; done beam reset		; 2
-	sta	VSYNC							; 3
-.endif
-
+	jsr	common_vblank
 
 ; 9
 
@@ -61,11 +42,9 @@ le_vblank_loop:
 	; save old X/Y in case we have a collision
 	lda	STRONGBAD_X						; 3
 	sta	OLD_STRONGBAD_X						; 3
+
 	lda	STRONGBAD_Y						; 3
 	sta	OLD_STRONGBAD_Y						; 3
-
-;	lda	STRONGBAD_X_END						; 3
-;	sta	OLD_STRONGBAD_X_END					; 3
 	lda	STRONGBAD_Y_END						; 3
 	sta	OLD_STRONGBAD_Y_END					; 3
 ; 24
@@ -77,15 +56,23 @@ le_vblank_loop:
 	;=============================
 	; handle left being pressed
 ; 0
-	lda	STRONGBAD_X		;				; 3
-	beq	after_check_left	;				; 2/3
-
 	lda	#$40			; check left			; 2
 	bit	SWCHA			;				; 3
 	bne	after_check_left	;				; 2/3
 
 left_pressed:
-	dec	STRONGBAD_X		; move sprite left		; 5
+
+	ldx	SPEED
+	lda	STRONGBAD_X_LOW
+	sec
+	sbc	xspeed_lookup_low,X
+	sta	STRONGBAD_X_LOW
+	lda	STRONGBAD_X
+	sbc	xspeed_lookup,X
+	sta	STRONGBAD_X
+
+
+;	dec	STRONGBAD_X		; move sprite left		; 5
 
 after_check_left:
 	sta	WSYNC			;				; 3
@@ -101,7 +88,15 @@ after_check_left:
 	bit	SWCHA			;				; 3
 	bne	after_check_right	;				; 2/3
 
-	inc	STRONGBAD_X		; move sprite right		; 5
+	ldx	SPEED
+	lda	STRONGBAD_X_LOW
+	adc	xspeed_lookup_low,X
+	sta	STRONGBAD_X_LOW
+	lda	STRONGBAD_X
+	adc	xspeed_lookup,X
+	sta	STRONGBAD_X
+
+;	inc	STRONGBAD_X		; move sprite right		; 5
 after_check_right:
 	sta	WSYNC			;				; 3
 					;	===========================
@@ -116,14 +111,10 @@ after_check_right:
 	bit	SWCHA			;				; 3
 	bne	after_check_up		;				; 2/3
 
-	lda	SPEED							; 3
-	lsr								; 2
-	clc
-	adc	#1								; 2
-	sta	TEMP1
-	lda	STRONGBAD_Y						; 3
+	ldx	SPEED							; 3
 	sec
-	sbc	TEMP1
+	lda	STRONGBAD_Y						; 3
+	sbc	yspeed_lookup,X
 	sta	STRONGBAD_Y		; move sprite down		; 3
 
 ;	dec	STRONGBAD_Y		; move sprite up		; 5
@@ -142,11 +133,17 @@ after_check_up:
 	bit	SWCHA			;				; 3
 	bne	after_check_down	;				; 2/3
 
-	lda	SPEED							; 3
-	lsr								; 2
-	sec								; 2
-	adc	STRONGBAD_Y						; 3
-	sta	STRONGBAD_Y		; move sprite down		; 3
+	ldx	SPEED
+	clc
+	lda	STRONGBAD_Y
+	adc	yspeed_lookup,X
+	sta	STRONGBAD_Y
+
+;	lda	SPEED							; 3
+;	lsr								; 2
+;	sec								; 2
+;	adc	STRONGBAD_Y						; 3
+;	sta	STRONGBAD_Y		; move sprite down		; 3
 
 after_check_down:
 	sta	WSYNC			;				; 3
@@ -364,6 +361,8 @@ strongbad_moved_horizontally:
 	; turn off beam
 	;=============================================
 beam_off:
+
+.if 0
 	lda	#$42		; enable INPT4/INPT5, turn off beam
 	sta	VBLANK
 
@@ -378,7 +377,12 @@ le_overscan_loop:
 	sta	WSYNC							; 3
 	dex								; 2
 	bne	le_overscan_loop					; 2/3
+.endif
 
+	ldx	#24
+	jsr	common_overscan
+
+; 10
 
 	;==================================
 	; overscan 25, setup

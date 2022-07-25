@@ -267,6 +267,10 @@ done_sctext_loop:
 	; overscan
 	;==========================
 
+	ldx	#28
+	jsr	common_overscan
+
+.if 0
 	lda	#$2		; turn off beam
 	sta	VBLANK
 
@@ -276,6 +280,9 @@ sc_overscan_loop:
 	inx
 	cpx	#28
 	bne	sc_overscan_loop
+.endif
+
+; 10
 
 	;======================
 	; takes two scanlines
