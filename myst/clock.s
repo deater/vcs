@@ -7,22 +7,11 @@
 clock_frame:
 
 	;============================
-	; 3 scanlines of Vertical Sync
+	; start VBLANK
 	;============================
-	; VBLANK should be on here from before
-	; want VSYNC on for three scanlines
-; in scanline 0
-	lda	#2
-	sta	VSYNC			; turn on Vertical Sync signal
-	sta	WSYNC
-; in scanline 1
-	sta	WSYNC
-; in scanline 2
-	sta	WSYNC
-; in scanline 3
-	lda	#0
-	sta	VSYNC			; turn off Vertical Sync
+	; in scanline 0
 
+	jsr	common_vblank
 
 	;=================================
 	;=================================
@@ -536,25 +525,14 @@ done_playfield:
 
 
 
-
-	;=============================================
-	; vertical blank
-	;=============================================
-vertical_blank:
-	lda	#$42		; enable INPT4/INPT5, turn off beam
-	sta	VBLANK
-
 	;===========================
 	;===========================
 	; overscan (30 cycles)
 	;===========================
 	;===========================
 
-	ldx	#26
-le_overscan_loop:
-	sta	WSYNC
-	dex
-	bne	le_overscan_loop
+	ldx	#25
+	jsr	common_overscan
 
 	;==================================
 	; overscan 27, trigger sound
