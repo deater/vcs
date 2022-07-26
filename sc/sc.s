@@ -151,14 +151,31 @@ start:
 	sei			; disable interrupts
 	cld			; clear decimal mode
 
-	ldx	#$FF		; set stack to $1FF (mirrored at $FF)
-	txs
+;	ldx	#$FF		; set stack to $1FF (mirrored at $FF)
+;	txs
+
+
+
 
 restart_game:
+
+
+	ldx	#0
+	txa
+clear_loop:
+	sta	$0,X
+	inx
+	bne	clear_loop
+	dex
+	txs
+
 	lda	#2
 	sta	VBLANK		; disable beam
 
-	jsr	init_game
+	; inline this?
+
+
+	.include "init_game.s"
 
 	jsr	init_level
 
@@ -180,7 +197,7 @@ game_over_animation:
 	.include "game_over_screen.s"
 
 
-.include	"init_game.s"
+;.include	"init_game.s"
 .include	"init_level.s"
 .include	"sound_trigger.s"
 .include	"sound_update.s"
