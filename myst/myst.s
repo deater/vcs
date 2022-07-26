@@ -36,13 +36,28 @@ PF2R_CACHE	=	$A5
 myst:
 	sei		; disable interrupts
 	cld		; clear decimal bit
-	ldx	#$ff
-	txs		; point stack to $1FF (mirrored at top of zero page)
+
+;	ldx	#$ff
+;	txs		; point stack to $1FF (mirrored at top of zero page)
 
 restart_game:
 
+
+	; init zero page and addresses to 0
+
+	ldx	#0
+	txa
+clear_loop:
+	sta	$0,X
+	inx
+	bne	clear_loop
+	dex
+	txs
+
 	lda	#2
 	sta	VBLANK	; disable beam
+
+
 
 	;===========================
 	;===========================
