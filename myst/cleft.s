@@ -47,9 +47,6 @@ vcleft_loop:
 	stx	CTRLPF							; 3
 	stx	VBLANK			; re-enable beam		; 3
 
-	lda	#$0f
-	sta	COLUPF
-
 	lda	#$2
 	sta	ENABL
 
@@ -73,40 +70,43 @@ cleft_playfield_loop:
 	sta	WSYNC							; 3
 	sta	HMOVE							; 3
 
-	lda	$80
-	nop
+	lda	cleft_colors,X						; 4
+	sta	COLUPF							; 3
+;	nop
 
-; 11
-	lda	title_playfield0_left,X	;				; 4+
+;	lda	$80
+;	nop
+
+; 13
+	lda	cleft_playfield0_left,X	;				; 4+
 	sta	PF0			;				; 3
 	; must write by CPU 22 [GPU 68]
-; 18
-	lda	title_playfield1_left,X	;				; 4+
+; 20
+	lda	cleft_playfield1_left,X	;				; 4+
 	sta	PF1			;				; 3
 	; must write by CPU 28 [GPU 84]
-; 25
-	lda	title_playfield2_left,X	;				; 4+
+; 27
+	lda	cleft_playfield2_left,X	;				; 4+
 	sta	PF2			;				; 3
 	; must write by CPU 38 [GPU 116]
-; 32
+; 34
 
 
 	inc	TEMP1	; nop5						; 5
-	nop								; 2
 
 ; 39
-	lda	title_playfield0_right,X	;			; 4+
+	lda	cleft_playfield0_right,X	;			; 4+
 	sta	PF0			;				; 3
 
 
 	; must write by CPU 49 [GPU 148]
 ; 46
 
-	lda	title_playfield1_right,X	;			4+
+	lda	cleft_playfield1_right,X	;			4+
 	sta	PF1			;				3
 	; must write by CPU 54 [GPU 164]
 ; 53
-	lda	title_playfield2_right,X	;			4+
+	lda	cleft_playfield2_right,X	;			4+
 	sta	PF2			;				3
 	; must write by CPU 65 [GPU 196]
 ; 60
