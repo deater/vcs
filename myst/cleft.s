@@ -72,17 +72,15 @@ cleft_playfield_loop:
 
 	lda	cleft_colors,X						; 4
 	sta	COLUPF							; 3
-;	nop
-
-;	lda	$80
-;	nop
 
 ; 13
-	lda	cleft_playfield0_left,X	;				; 4+
+	lda	#0			; always black			; 2
+	nop								; 2
 	sta	PF0			;				; 3
 	; must write by CPU 22 [GPU 68]
 ; 20
-	lda	cleft_playfield1_left,X	;				; 4+
+	lda	#0			; always black			; 2
+	nop
 	sta	PF1			;				; 3
 	; must write by CPU 28 [GPU 84]
 ; 27
@@ -102,12 +100,14 @@ cleft_playfield_loop:
 	; must write by CPU 49 [GPU 148]
 ; 46
 
-	lda	cleft_playfield1_right,X	;			4+
-	sta	PF1			;				3
+	lda	#0			; always black			; 2
+	nop								; 2
+	sta	PF1			;				; 3
 	; must write by CPU 54 [GPU 164]
 ; 53
-	lda	cleft_playfield2_right,X	;			4+
-	sta	PF2			;				3
+	lda	#0			; always black			; 2
+	nop				;				; 2
+	sta	PF2			;				; 3
 	; must write by CPU 65 [GPU 196]
 ; 60
 
