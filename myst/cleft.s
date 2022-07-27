@@ -53,6 +53,9 @@ vcleft_loop:
 	sta	RESBL
 	lda	#$70
 	sta	HMBL
+
+	lda	#0							; 2
+	sta	PF1			; playfield 1 is always 0	; 3
 ;
 
 
@@ -69,47 +72,51 @@ vcleft_loop:
 cleft_playfield_loop:
 	sta	WSYNC							; 3
 	sta	HMOVE							; 3
-
+; 3
 	lda	cleft_colors,X						; 4
 	sta	COLUPF							; 3
-
-; 13
+; 10
 	lda	#0			; always black			; 2
-	nop								; 2
 	sta	PF0			;				; 3
 	; must write by CPU 22 [GPU 68]
-; 20
-	lda	#0			; always black			; 2
-	nop
-	sta	PF1			;				; 3
-	; must write by CPU 28 [GPU 84]
-; 27
+; 15
 	lda	cleft_playfield2_left,X	;				; 4+
 	sta	PF2			;				; 3
 	; must write by CPU 38 [GPU 116]
-; 34
+; 22
+	tya								; 2
+	and	#$f							; 2
+	bne	not8							; 2/3
+	lda	#2							; 2
+	jmp	done8							; 3
+not8:
+	lda	#0							; 2
+	nop
+done8:
+	sta	ENABL							; 3
+								;===========
+								; 14 / 12
 
-
+; 36
 	inc	TEMP1	; nop5						; 5
 
-; 39
+; 41
 	lda	cleft_playfield0_right,X	;			; 4+
 	sta	PF0			;				; 3
 
 
 	; must write by CPU 49 [GPU 148]
-; 46
+; 48
 
 	lda	#0			; always black			; 2
-	nop								; 2
-	sta	PF1			;				; 3
-	; must write by CPU 54 [GPU 164]
-; 53
-	lda	#0			; always black			; 2
-	nop				;				; 2
 	sta	PF2			;				; 3
 	; must write by CPU 65 [GPU 196]
-; 60
+; 53
+
+	nop				;				; 2
+	nop				;       			; 2
+
+; 57
 
         iny								; 2
         tya								; 2
@@ -122,11 +129,11 @@ done_in2x:
                                                                 ;===========
                                                                 ; 11/11
 
-; 71
+; 68
 	cpy	#192							; 2
 	bne	cleft_playfield_loop					; 2/3
 
-; 76
+; 73 (+3 in WSYNC ABOVE)
 
 done_cleft_playfield:
 
