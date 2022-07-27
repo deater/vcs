@@ -175,10 +175,10 @@ zzpad_x:
 								;===========
 								;        23
 ; 26
-	; reset back to strongbad sprite
+	; setup hand sprite
 
-	lda	#$40		; dark red				; 2
-	sta	COLUP0		; set strongbad color (sprite0)		; 3
+	lda	#$24		; middle orange				; 2
+	sta	COLUP0		; set hand color (sprite0)		; 3
 
 	lda	#$1E		; yellow				; 2
 	sta	COLUP1		; set secret color (sprite1)		; 3
@@ -187,20 +187,20 @@ zzpad_x:
 	sta	NUSIZ0							; 3
 	sta	NUSIZ1							; 3
 
-	lda	#0							; 2
-	sta	VDELP0							; 3
-	sta	VDELP1							; 3
-	tay			; X=current block			; 2
+	ldy	#0		; X=current block			; 2
 								;============
 								;	28
 
 	lda	#0
 	sta	VBLANK			; turn on beam
+	sta	POINTER_ON
+
+	lda	#CTRLPF_REF		; reflect playfield
+	sta	CTRLPF
 
 
-
-	lda	#$0E			; book color (grey)		; 2
-	sta	COLUPF							; 3
+;	lda	#$0E			; book color (grey)		; 2
+;	sta	COLUPF							; 3
 	lda	#0			; bg color			; 2
 	sta	COLUBK							; 3
 
@@ -217,6 +217,36 @@ zzpad_x:
 	;===========================================
 	;===========================================
 
+	;==========================
+	; draw top eight lines
+
+	;==========================
+	; black line
+	lda	#$00		; black
+	sta	COLUPF
+	sta	WSYNC
+	sta	WSYNC
+	sta	WSYNC
+	sta	WSYNC
+
+	;==========================
+	; grey line
+	lda	#$04		; dark grey				; 2
+	sta	COLUPF							; 3
+	lda	#$7F		; overhanging page			; 2
+	sta	PF1							; 3
+	lda	#$FF							; 2
+	sta	PF2							; 3
+	sta	WSYNC
+	sta	WSYNC
+	sta	WSYNC
+	sta	WSYNC
+
+
+
+
+	jmp	book_draw_playfield_plus_3				; 3
+
 book_draw_playfield:
 
 book_draw_playfield_even:
@@ -224,58 +254,41 @@ book_draw_playfield_even:
 	;===================
 	; draw playfield 1/4
 	;===================
+	;
 
-	; Y is zero
-	; A has clock_colors,Y
-	; X has clock_bg_colors,Y
+; 3
+book_draw_playfield_plus_3:
 
-; 1
-	lda	$80							; 3
-	lda	$80		; nop3					; 3
-; 7
-;	lda	book_playfield0_left,Y	;				; 4
-	lda	#$0							; 2
-	nop								; 2
-	sta	PF0			;				; 3
-	;   has to happen by 22 (GPU 68)
-; 14
-	lda	book_playfield1_left,Y	;				; 4
+	lda	#$0E		; reset book color (lgrey)		; 2
+	sta	COLUPF		; store playfield color			; 3
+; 8
+;	lda	#$0		; always 0				; 2
+;	sta	PF0							; 3
+	; has to happen by 22 (GPU 68)
+; 13
+	lda	#$3F
+;	lda	book_playfield1_left,Y	;				; 4
 	sta	PF1			;				; 3
 	;  has to happen by 28 (GPU 84)
-; 21
-	lda	book_playfield2_left,Y	;				; 4
+; 20
+;	lda	book_playfield2_left,Y	;				; 4
+	lda	#$FF
         sta	PF2							; 3
 	;  has to happen by 38 (GPU 116)	;
-; 28
+; 27
 
-	lda	book_playfield0_right,Y	;			; 4
-        sta	PF0				;			; 3
-	; has to happen 28-49 (GPU 84-148)
-; 35
-        lda	book_playfield1_right,Y	;			; 4
-        sta	PF1				;			; 3
-	; has to happen 38-56 (GPU 116-170)
-; 42
-        lda	book_playfield2_right,Y	;			; 4
-        sta	PF2				;			; 3
-	; has to happen 49-67 (GPU148-202)
-; 49
-
-	lda	$80
-
-; 52
 	;==============================
 	; activate sprite1
 
 	; X = current scanline
 	lda	#$F0			; load sprite data		; 2
 	cpx	#80							; 2
-	bcs	book_turn_off_secret_delay4					; 2/3
+	bcs	book_turn_off_secret_delay4				; 2/3
 	cpx	#72							; 2
-	bcc	book_turn_off_secret						; 2/3
+	bcc	book_turn_off_secret					; 2/3
 book_turn_on_secret:
 	sta	GRP1			; and display it		; 3
-	jmp	book_after_secret						; 3
+	jmp	book_after_secret					; 3
 book_turn_off_secret_delay4:
 	nop								; 2
 	nop								; 2
@@ -284,201 +297,109 @@ book_turn_off_secret:
 	sta	GRP1							; 3
 book_after_secret:
 								;============
-								; 12 / 16 / 16
 
-; 68
+; 43								; 12 / 16 / 16
+
 	inc	CURRENT_SCANLINE					; 5
-	lda	$80		; nop3					; 3
+	sta	WSYNC
 ; 76
 
 	;===================
 	; draw playfield 2/4
 	;===================
 ; 0
-;	lda	book_playfield0_left,Y	;				; 4
-	nop								; 2
-	lda	#$0							; 2
-	sta	PF0			;				; 3
-	;   has to happen by 22 (GPU 68)
-; 7
-	lda	book_playfield1_left,Y	;				; 4
-        sta	PF1			;				; 3
-	;  has to happen by 28 (GPU 84)
-; 14
-	lda	book_playfield2_left,Y	;				; 4
-        sta	PF2							; 3
-	;  has to happen by 38 (GPU 116)	;
-; 21
-	lda	book_playfield0_right,Y	;			; 4+
-	sta	PF0				;			; 3
-	; has to happen 28-49 (GPU 84-148)
-; 28
-	lda	book_playfield1_right,Y	;			; 4+
-	ldx	$80							; 3
-	nop
-	sta	PF1				;			; 3
-	; has to happen 39-56 (GPU 116-170)
-; 40
-	lda	book_playfield2_right,Y	;				; 4+
-	nop								; 2
-	nop								; 2
-	sta	PF2				;			; 3
-	; has to happen 50-67 (GPU148-202)
-; 51
 
-	; activate strongbad sprite if necessary
+	; activate hand sprite if necessary
 	ldx	CURRENT_SCANLINE					; 3
 	; X = current scanline
 	lda	HAND_SPRITE,X		; load sprite data		; 4
 	cpx	POINTER_Y_END						; 3
-	bcs	book_turn_off_strongbad_delay5				; 2/3
+	bcs	book_turn_off_hand_delay5				; 2/3
 	cpx	POINTER_Y						; 3
-	bcc	book_turn_off_strongbad					; 2/3
-book_turn_on_strongbad:
+	bcc	book_turn_off_hand					; 2/3
+book_turn_on_hand:
 	sta	GRP0			; and display it		; 3
-	jmp	book_after_sprite					; 3
-book_turn_off_strongbad_delay5:
+	jmp	book_after_hand						; 3
+book_turn_off_hand_delay5:
 	inc	TEMP1							; 5
-book_turn_off_strongbad:
+book_turn_off_hand:
 	lda	#0			; turn off sprite		; 2
 	sta	GRP0							; 3
-book_after_sprite:
+book_after_hand:
 								;============
-								; 13 / 18 / 18
-; 69
-	inc	CURRENT_SCANLINE					; 5
-; 74
-	nop
+								; 23 / 23 / 23
+; 23
+
+;	inc	CURRENT_SCANLINE					; 5
+; 28
+
+;	sta	WSYNC
 
 	;===================
 	; draw playfield 3/4
 	;===================
 ; 0
-;	lda	book_playfield0_left,Y	;				; 4
-	lda	#$0							; 2
-	nop								; 2
-	sta	PF0			;				; 3
-	;   has to happen by 22 (GPU 68)
-; 7
-	lda	book_playfield1_left,Y	;				; 4
-        sta	PF1			;				; 3
-	;  has to happen by 28 (GPU 84)
-; 14
-	lda	book_playfield2_left,Y	;				; 4
-        sta	PF2							; 3
-	;  has to happen by 38 (GPU 116)	;
-; 21
-	lda	book_playfield0_right,Y	;			; 4+
-	sta	PF0				;			; 3
-	; has to happen 28-49 (GPU 84-148)
-; 28
-	lda	book_playfield1_right,Y	;			; 4+
-	ldx	$80							; 3
-	nop
-	sta	PF1				;			; 3
-	; has to happen 39-56 (GPU 116-170)
-; 40
-	lda	book_playfield2_right,Y	;			; 4+
-	nop
-	nop
-        sta	PF2				;			; 3
-	; has to happen 50-67 (GPU148-202)
-; 51
-	inc	CURRENT_SCANLINE
-	sta	WSYNC
+;	inc	CURRENT_SCANLINE					; 5
+;	sta	WSYNC
 
 	;===================
 	; draw playfield 4/4
 	;===================
 ; 0
-;	lda	book_playfield0_left,Y	;				; 4
-	lda	#$0							; 2
-	nop								; 2
-	sta	PF0			;				; 3
-	;   has to happen by 22 (GPU 68)
-; 7
-	lda	book_playfield1_left,Y	;				; 4
-        sta	PF1			;				; 3
-	;  has to happen by 28 (GPU 84)
-; 14
-	lda	book_playfield2_left,Y	;				; 4
-        sta	PF2							; 3
-	;  has to happen by 38 (GPU 116)	;
-; 21
-	lda	book_playfield0_right,Y	;			; 4+
-	sta	PF0				;			; 3
-	; has to happen 28-49 (GPU 84-148)
-; 28
-	lda	book_playfield1_right,Y	;			; 4+
-	ldx	$80							; 3
-	nop								; 2
-	sta	PF1				;			; 3
-	; has to happen 39-56 (GPU 116-170)
-; 40
-	lda	book_playfield2_right,Y	;			; 4+
-	nop								; 2
-	nop								; 2
-	sta	PF2				;			; 3
-	; has to happen 50-67 (GPU148-202)
-; 51
+;	inc	CURRENT_SCANLINE
 
-	; activate strongbad sprite if necessary
-.if 0
-	ldx	CURRENT_SCANLINE
-	; X = current scanline
-	lda	#$F0			; load sprite data		; 2
-	cpx	POINTER_Y_END						; 3
-	bcs	turn_off_strongbad_delay5				; 2/3
-	cpx	POINTER_Y						; 3
-	bcc	turn_off_strongbad					; 2/3
-turn_on_strongbad:
-	sta	GRP0			; and display it		; 3
-	jmp	after_sprite						; 3
-turn_off_strongbad_delay5:
-	inc	TEMP1							; 5
-turn_off_strongbad:
-	lda	#0			; turn off sprite		; 2
-	sta	GRP0							; 3
-after_sprite:
-								;============
-								; 13 / 18 / 18
-.endif
-
-;	inx								; 2
-;	txa								; 2
-;	and	#$3							; 2
-;	beq	yes_inc4						; 2/3
-;	.byte	$A5     ; begin of LDA ZP				; 3
-;yes_inc4:
-;	iny             ; $E8 should be harmless to load		; 2
-;done_inc_block:
+	lda	CURRENT_SCANLINE					; 3
+	and	#$1							; 2
+	beq	yes_inc4						; 2/3
+	.byte	$A5     ; begin of LDA ZP				; 3
+yes_inc4:
+	iny             ; $E8 should be harmless to load		; 2
+done_inc_block:
                                                                 ;===========
-                                                                ; 11/11
+                                                                ; 10/10
 
-; 50
-	iny								; 2
-; 52
-	lda	$80
-	nop
-	lda	$80
-	nop
-
-; 62
-	nop
-	nop
-	nop
-	nop
-; 70
-
-	cpy	#48		; see if hit end			; 2
+	cpy	#44		; see if hit end			; 2
 ; 72
-	beq	book_done_playfield						; 2/3
+	beq	book_done_playfield					; 2/3
 ; 74
-	jmp	book_draw_playfield						; 3
+	sta	WSYNC
+	jmp	book_draw_playfield					; 3
 ; 77
 book_done_playfield:
 
 
+	;==========================
+	; grey line
+	lda	#$04		; dark grey				; 2
+	sta	COLUPF							; 3
+	lda	#$7F		; overhanging page			; 2
+	sta	PF1							; 3
+	lda	#$FF		; needed???				; 2
+	sta	PF2							; 3
+	sta	WSYNC
+	sta	WSYNC
+	sta	WSYNC
+	sta	WSYNC
+
+
+	;==========================
+	; black line
+	lda	#$00		; black					; 2
+	sta	PF0							; 3
+	sta	PF1							; 3
+	sta	PF2							; 3
+	sta	COLUPF							; 3
+
+	sta	WSYNC
+	sta	WSYNC
+	sta	WSYNC
+	sta	WSYNC
+
+
+
+
+	; extra for some reason?
+	sta	WSYNC
 
 	;===========================
 	;===========================
