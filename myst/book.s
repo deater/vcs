@@ -21,12 +21,27 @@ book_frame:
 
 ; in VBLANK scanline 0
 
-	ldx	#28
+	ldx	#25
 book_vblank_loop:
 	sta	WSYNC
 	dex
 	bne	book_vblank_loop
 
+
+	;=============================
+	; now at VBLANK scanline 25
+	;=============================
+	; copy in hand sprite
+	ldx	#15							; 2
+hand_copy_loop:
+	lda	hand_sprite,X						; 4+
+	sta	HAND_SPRITE,X						; 4
+	dex								; 2
+	bpl	hand_copy_loop						; 2/3
+
+	; 2+(13*16)-1 = 209
+	;	around 2.75 scanlines
+	sta	WSYNC
 
 	;=============================
 	; now at VBLANK scanline 28
@@ -184,8 +199,10 @@ zzpad_x:
 
 
 
-	lda	book_colors						; 4
-	ldx	#0			; bg color
+	lda	#$0E			; book color (grey)		; 2
+	sta	COLUPF							; 3
+	lda	#0			; bg color			; 2
+	sta	COLUBK							; 3
 
 	sta	WSYNC							; 3
 								;============
@@ -213,10 +230,12 @@ book_draw_playfield_even:
 	; X has clock_bg_colors,Y
 
 ; 1
-	sta	COLUPF							; 3
-	stx	COLUBK							; 3
+	lda	$80							; 3
+	lda	$80		; nop3					; 3
 ; 7
-	lda	book_playfield0_left,Y	;				; 4
+;	lda	book_playfield0_left,Y	;				; 4
+	lda	#$0							; 2
+	nop								; 2
 	sta	PF0			;				; 3
 	;   has to happen by 22 (GPU 68)
 ; 14
@@ -276,7 +295,9 @@ book_after_secret:
 	; draw playfield 2/4
 	;===================
 ; 0
-	lda	book_playfield0_left,Y	;				; 4
+;	lda	book_playfield0_left,Y	;				; 4
+	nop								; 2
+	lda	#$0							; 2
 	sta	PF0			;				; 3
 	;   has to happen by 22 (GPU 68)
 ; 7
@@ -298,24 +319,24 @@ book_after_secret:
 	sta	PF1				;			; 3
 	; has to happen 39-56 (GPU 116-170)
 ; 40
-	lda	book_playfield2_right,Y	;			; 4+
-	nop
-	nop
+	lda	book_playfield2_right,Y	;				; 4+
+	nop								; 2
+	nop								; 2
 	sta	PF2				;			; 3
 	; has to happen 50-67 (GPU148-202)
 ; 51
 
 	; activate strongbad sprite if necessary
-	ldx	CURRENT_SCANLINE
+	ldx	CURRENT_SCANLINE					; 3
 	; X = current scanline
-	lda	#$F0			; load sprite data		; 2
+	lda	HAND_SPRITE,X		; load sprite data		; 4
 	cpx	POINTER_Y_END						; 3
 	bcs	book_turn_off_strongbad_delay5				; 2/3
 	cpx	POINTER_Y						; 3
 	bcc	book_turn_off_strongbad					; 2/3
 book_turn_on_strongbad:
 	sta	GRP0			; and display it		; 3
-	jmp	book_after_sprite						; 3
+	jmp	book_after_sprite					; 3
 book_turn_off_strongbad_delay5:
 	inc	TEMP1							; 5
 book_turn_off_strongbad:
@@ -333,7 +354,9 @@ book_after_sprite:
 	; draw playfield 3/4
 	;===================
 ; 0
-	lda	book_playfield0_left,Y	;				; 4
+;	lda	book_playfield0_left,Y	;				; 4
+	lda	#$0							; 2
+	nop								; 2
 	sta	PF0			;				; 3
 	;   has to happen by 22 (GPU 68)
 ; 7
@@ -368,7 +391,9 @@ book_after_sprite:
 	; draw playfield 4/4
 	;===================
 ; 0
-	lda	book_playfield0_left,Y	;				; 4
+;	lda	book_playfield0_left,Y	;				; 4
+	lda	#$0							; 2
+	nop								; 2
 	sta	PF0			;				; 3
 	;   has to happen by 22 (GPU 68)
 ; 7
@@ -439,8 +464,9 @@ after_sprite:
 	nop
 
 ; 62
-	lda	book_colors,Y						; 4+
-	ldx	#0						; 4+
+	nop
+	nop
+	nop
 	nop
 ; 70
 

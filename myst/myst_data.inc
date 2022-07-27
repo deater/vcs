@@ -864,108 +864,6 @@ cleft_playfield0_right:
 	.byte $00
 	.byte $00
 
-
-
-book_colors:
-	.byte $00
-	.byte $0E
-	.byte $0E
-	.byte $0E
-	.byte $0E
-	.byte $0E
-	.byte $0E
-	.byte $0E
-	.byte $0E
-	.byte $0E
-	.byte $0E
-	.byte $0E
-	.byte $0E
-	.byte $0E
-	.byte $0E
-	.byte $0E
-	.byte $0E
-	.byte $0E
-	.byte $0E
-	.byte $0E
-	.byte $0E
-	.byte $0E
-	.byte $0E
-	.byte $0E
-	.byte $0E
-	.byte $0E
-	.byte $0E
-	.byte $0E
-	.byte $0E
-	.byte $0E
-	.byte $0E
-	.byte $0E
-	.byte $0E
-	.byte $0E
-	.byte $0E
-	.byte $0E
-	.byte $0E
-	.byte $0E
-	.byte $0E
-	.byte $0E
-	.byte $0E
-	.byte $0E
-	.byte $0E
-	.byte $0E
-	.byte $0E
-	.byte $0E
-	.byte $0E
-	.byte $00
-
-book_playfield0_left:
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-
 book_playfield1_left:
 	.byte $00
 	.byte $7F
@@ -1217,3 +1115,10 @@ book_playfield2_right:
 	.byte $03
 	.byte $07
 	.byte $00
+
+hand_sprite:
+	.byte	$08,$08,$08,$08,$08,$08,$4C,$6D
+	.byte	$2F,$3F,$1F,$1F,$0E,$0E,$0E,$00
+
+
+
