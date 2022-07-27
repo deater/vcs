@@ -1,10 +1,10 @@
 	;=====================
-	; the clock
+	; Linking Book
 	;=====================
 
-	jmp	clock_frame
+	jmp	book_frame
 .align	$100
-clock_frame:
+book_frame:
 
 	;============================
 	; start VBLANK
@@ -22,18 +22,19 @@ clock_frame:
 ; in VBLANK scanline 0
 
 	ldx	#28
-le_vblank_loop:
+book_vblank_loop:
 	sta	WSYNC
 	dex
-	bne	le_vblank_loop
+	bne	book_vblank_loop
 
-								;	15
+
 	;=============================
 	; now at VBLANK scanline 28
 	;=============================
 	; 4 scanlines of handling input
 
 	jsr	hand_motion
+
 ; 6
 
 	;=======================
@@ -83,9 +84,9 @@ le_vblank_loop:
 	ldx	#6		;					3
 	inx			;					2
 	inx			;					2
-qpad_x:
+zpad_x:
 	dex			;					2
-	bne	qpad_x		;					2/3
+	bne	zpad_x		;					2/3
 				;===========================================
 				;	12-1+5*(coarse_x+2)
 				; FIXME: describe better what's going on
@@ -127,9 +128,9 @@ qpad_x:
 	inx			;					2
 ; 12
 
-pad_x:
+zzpad_x:
 	dex			;					2
-	bne	pad_x		;					2/3
+	bne	zzpad_x		;					2/3
 				;===========================================
 				;	12-1+5*(coarse_x+2)
 ;
@@ -183,8 +184,8 @@ pad_x:
 
 
 
-	lda	clock_colors						; 4
-	ldx	clock_bg_colors
+	lda	book_colors						; 4
+	ldx	#0			; bg color
 
 	sta	WSYNC							; 3
 								;============
@@ -199,9 +200,9 @@ pad_x:
 	;===========================================
 	;===========================================
 
-draw_playfield:
+book_draw_playfield:
 
-draw_playfield_even:
+book_draw_playfield_even:
 
 	;===================
 	; draw playfield 1/4
@@ -215,28 +216,28 @@ draw_playfield_even:
 	sta	COLUPF							; 3
 	stx	COLUBK							; 3
 ; 7
-	lda	clock_playfield0_left,Y	;				; 4
+	lda	book_playfield0_left,Y	;				; 4
 	sta	PF0			;				; 3
 	;   has to happen by 22 (GPU 68)
 ; 14
-	lda	clock_playfield1_left,Y	;				; 4
+	lda	book_playfield1_left,Y	;				; 4
 	sta	PF1			;				; 3
 	;  has to happen by 28 (GPU 84)
 ; 21
-	lda	clock_playfield2_left,Y	;				; 4
+	lda	book_playfield2_left,Y	;				; 4
         sta	PF2							; 3
 	;  has to happen by 38 (GPU 116)	;
 ; 28
 
-	lda	clock_playfield0_right,Y	;			; 4
+	lda	book_playfield0_right,Y	;			; 4
         sta	PF0				;			; 3
 	; has to happen 28-49 (GPU 84-148)
 ; 35
-        lda	clock_playfield1_right,Y	;			; 4
+        lda	book_playfield1_right,Y	;			; 4
         sta	PF1				;			; 3
 	; has to happen 38-56 (GPU 116-170)
 ; 42
-        lda	clock_playfield2_right,Y	;			; 4
+        lda	book_playfield2_right,Y	;			; 4
         sta	PF2				;			; 3
 	; has to happen 49-67 (GPU148-202)
 ; 49
@@ -250,19 +251,19 @@ draw_playfield_even:
 	; X = current scanline
 	lda	#$F0			; load sprite data		; 2
 	cpx	#80							; 2
-	bcs	turn_off_secret_delay4					; 2/3
+	bcs	book_turn_off_secret_delay4					; 2/3
 	cpx	#72							; 2
-	bcc	turn_off_secret						; 2/3
-turn_on_secret:
+	bcc	book_turn_off_secret						; 2/3
+book_turn_on_secret:
 	sta	GRP1			; and display it		; 3
-	jmp	after_secret						; 3
-turn_off_secret_delay4:
+	jmp	book_after_secret						; 3
+book_turn_off_secret_delay4:
 	nop								; 2
 	nop								; 2
-turn_off_secret:
+book_turn_off_secret:
 	lda	#0			; turn off sprite		; 2
 	sta	GRP1							; 3
-after_secret:
+book_after_secret:
 								;============
 								; 12 / 16 / 16
 
@@ -275,29 +276,29 @@ after_secret:
 	; draw playfield 2/4
 	;===================
 ; 0
-	lda	clock_playfield0_left,Y	;				; 4
+	lda	book_playfield0_left,Y	;				; 4
 	sta	PF0			;				; 3
 	;   has to happen by 22 (GPU 68)
 ; 7
-	lda	clock_playfield1_left,Y	;				; 4
+	lda	book_playfield1_left,Y	;				; 4
         sta	PF1			;				; 3
 	;  has to happen by 28 (GPU 84)
 ; 14
-	lda	clock_playfield2_left,Y	;				; 4
+	lda	book_playfield2_left,Y	;				; 4
         sta	PF2							; 3
 	;  has to happen by 38 (GPU 116)	;
 ; 21
-	lda	clock_playfield0_right,Y	;			; 4+
+	lda	book_playfield0_right,Y	;			; 4+
 	sta	PF0				;			; 3
 	; has to happen 28-49 (GPU 84-148)
 ; 28
-	lda	clock_playfield1_right,Y	;			; 4+
+	lda	book_playfield1_right,Y	;			; 4+
 	ldx	$80							; 3
 	nop
 	sta	PF1				;			; 3
 	; has to happen 39-56 (GPU 116-170)
 ; 40
-	lda	clock_playfield2_right,Y	;			; 4+
+	lda	book_playfield2_right,Y	;			; 4+
 	nop
 	nop
 	sta	PF2				;			; 3
@@ -309,18 +310,18 @@ after_secret:
 	; X = current scanline
 	lda	#$F0			; load sprite data		; 2
 	cpx	POINTER_Y_END						; 3
-	bcs	turn_off_strongbad_delay5				; 2/3
+	bcs	book_turn_off_strongbad_delay5				; 2/3
 	cpx	POINTER_Y						; 3
-	bcc	turn_off_strongbad					; 2/3
-turn_on_strongbad:
+	bcc	book_turn_off_strongbad					; 2/3
+book_turn_on_strongbad:
 	sta	GRP0			; and display it		; 3
-	jmp	after_sprite						; 3
-turn_off_strongbad_delay5:
+	jmp	book_after_sprite						; 3
+book_turn_off_strongbad_delay5:
 	inc	TEMP1							; 5
-turn_off_strongbad:
+book_turn_off_strongbad:
 	lda	#0			; turn off sprite		; 2
 	sta	GRP0							; 3
-after_sprite:
+book_after_sprite:
 								;============
 								; 13 / 18 / 18
 ; 69
@@ -332,29 +333,29 @@ after_sprite:
 	; draw playfield 3/4
 	;===================
 ; 0
-	lda	clock_playfield0_left,Y	;				; 4
+	lda	book_playfield0_left,Y	;				; 4
 	sta	PF0			;				; 3
 	;   has to happen by 22 (GPU 68)
 ; 7
-	lda	clock_playfield1_left,Y	;				; 4
+	lda	book_playfield1_left,Y	;				; 4
         sta	PF1			;				; 3
 	;  has to happen by 28 (GPU 84)
 ; 14
-	lda	clock_playfield2_left,Y	;				; 4
+	lda	book_playfield2_left,Y	;				; 4
         sta	PF2							; 3
 	;  has to happen by 38 (GPU 116)	;
 ; 21
-	lda	clock_playfield0_right,Y	;			; 4+
+	lda	book_playfield0_right,Y	;			; 4+
 	sta	PF0				;			; 3
 	; has to happen 28-49 (GPU 84-148)
 ; 28
-	lda	clock_playfield1_right,Y	;			; 4+
+	lda	book_playfield1_right,Y	;			; 4+
 	ldx	$80							; 3
 	nop
 	sta	PF1				;			; 3
 	; has to happen 39-56 (GPU 116-170)
 ; 40
-	lda	clock_playfield2_right,Y	;			; 4+
+	lda	book_playfield2_right,Y	;			; 4+
 	nop
 	nop
         sta	PF2				;			; 3
@@ -367,29 +368,29 @@ after_sprite:
 	; draw playfield 4/4
 	;===================
 ; 0
-	lda	clock_playfield0_left,Y	;				; 4
+	lda	book_playfield0_left,Y	;				; 4
 	sta	PF0			;				; 3
 	;   has to happen by 22 (GPU 68)
 ; 7
-	lda	clock_playfield1_left,Y	;				; 4
+	lda	book_playfield1_left,Y	;				; 4
         sta	PF1			;				; 3
 	;  has to happen by 28 (GPU 84)
 ; 14
-	lda	clock_playfield2_left,Y	;				; 4
+	lda	book_playfield2_left,Y	;				; 4
         sta	PF2							; 3
 	;  has to happen by 38 (GPU 116)	;
 ; 21
-	lda	clock_playfield0_right,Y	;			; 4+
+	lda	book_playfield0_right,Y	;			; 4+
 	sta	PF0				;			; 3
 	; has to happen 28-49 (GPU 84-148)
 ; 28
-	lda	clock_playfield1_right,Y	;			; 4+
+	lda	book_playfield1_right,Y	;			; 4+
 	ldx	$80							; 3
 	nop								; 2
 	sta	PF1				;			; 3
 	; has to happen 39-56 (GPU 116-170)
 ; 40
-	lda	clock_playfield2_right,Y	;			; 4+
+	lda	book_playfield2_right,Y	;			; 4+
 	nop								; 2
 	nop								; 2
 	sta	PF2				;			; 3
@@ -438,17 +439,18 @@ after_sprite:
 	nop
 
 ; 62
-	lda	clock_colors,Y						; 4+
-	ldx	clock_bg_colors,Y					; 4+
+	lda	book_colors,Y						; 4+
+	ldx	#0						; 4+
+	nop
 ; 70
 
 	cpy	#48		; see if hit end			; 2
 ; 72
-	beq	done_playfield						; 2/3
+	beq	book_done_playfield						; 2/3
 ; 74
-	jmp	draw_playfield						; 3
+	jmp	book_draw_playfield						; 3
 ; 77
-done_playfield:
+book_done_playfield:
 
 
 
@@ -559,15 +561,15 @@ nothing_special:
 
 	sta	WSYNC
 
-	jmp	clock_frame
+	jmp	book_frame
 
-goto_sc:
+book_goto_sc:
 ;	jmp	secret_collect_animation
 
-goto_go:
+book_goto_go:
 ;	jmp	game_over_animation
 
-goto_zap:
+book_goto_zap:
 ;	ldy	#SFX_ZAP
 ;	jsr	trigger_sound
 ;	jsr	init_strongbad	; reset position
@@ -576,7 +578,7 @@ goto_zap:
 
 ;	jmp	level_frame
 
-goto_oot:
+book_goto_oot:
 ;	ldy	#SFX_GAMEOVER
 ;	jsr	trigger_sound
 
@@ -584,4 +586,4 @@ goto_oot:
 ;	bmi	goto_go
 
 ;	jsr	init_level
-	jmp	clock_frame
+	jmp	book_frame

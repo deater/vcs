@@ -81,7 +81,7 @@ clear_loop:
 	;===========================
 	;===========================
 
-;	.include "book.s"
+	.include "book.s"
 
 	;===========================
 	;===========================
@@ -97,6 +97,7 @@ clear_loop:
 
 	.include "adjust_sprite.s"
 	.include "common_routines.s"
+	.include "hand_motion.s"
 
 .align $100
 
