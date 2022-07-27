@@ -59,8 +59,7 @@ hand_copy_loop:
 	; setup missile
 	inc	FRAME							; 5
 
-	lda	#$2
-	sta	ENAM0	; enable missile 0
+
 
 
 
@@ -183,8 +182,9 @@ zzpad_x:
 	lda	#$1E		; yellow				; 2
 	sta	COLUP1		; set secret color (sprite1)		; 3
 
-	lda	#NUSIZ_ONE_COPY						; 2
+	lda	#NUSIZ_DOUBLE_SIZE|NUSIZ_MISSILE_WIDTH_8		; 2
 	sta	NUSIZ0							; 3
+	lda	#NUSIZ_QUAD_SIZE					; 2
 	sta	NUSIZ1							; 3
 
 	ldy	#0		; X=current block			; 2
@@ -240,6 +240,10 @@ zzpad_x:
 	sta	WSYNC
 	sta	WSYNC
 	sta	WSYNC
+
+	lda	#$2
+	sta	ENAM0	; enable missile 0
+	sta	ENAM1	; enable missile 1
 	sta	WSYNC
 
 
@@ -249,12 +253,15 @@ zzpad_x:
 
 book_draw_playfield:
 
-book_draw_playfield_even:
 
-	;===================
-	; draw playfield 1/4
-	;===================
-	;
+
+	;================================
+	;================================
+	; draw playfield EVEN
+	;================================
+	;================================
+
+book_draw_playfield_even:
 
 ; 3
 book_draw_playfield_plus_3:
@@ -262,91 +269,94 @@ book_draw_playfield_plus_3:
 	lda	#$0E		; reset book color (lgrey)		; 2
 	sta	COLUPF		; store playfield color			; 3
 ; 8
-;	lda	#$0		; always 0				; 2
-;	sta	PF0							; 3
-	; has to happen by 22 (GPU 68)
-; 13
-	lda	#$3F
-;	lda	book_playfield1_left,Y	;				; 4
+	lda	#$3F		; FIXME: this could be moved outside?	; 2
 	sta	PF1			;				; 3
-	;  has to happen by 28 (GPU 84)
-; 20
-;	lda	book_playfield2_left,Y	;				; 4
-	lda	#$FF
+; 13
+	lda	#$FF							; 2
         sta	PF2							; 3
 	;  has to happen by 38 (GPU 116)	;
-; 27
+; 18
 
 	;==============================
-	; activate sprite1
+	; update sprite1
 
-	; X = current scanline
-	lda	#$F0			; load sprite data		; 2
-	cpx	#80							; 2
-	bcs	book_turn_off_secret_delay4				; 2/3
-	cpx	#72							; 2
-	bcc	book_turn_off_secret					; 2/3
-book_turn_on_secret:
-	sta	GRP1			; and display it		; 3
-	jmp	book_after_secret					; 3
-book_turn_off_secret_delay4:
-	nop								; 2
-	nop								; 2
-book_turn_off_secret:
-	lda	#0			; turn off sprite		; 2
-	sta	GRP1							; 3
-book_after_secret:
-								;============
+	lda	#$FF		; sprite 0 display nothing		2
+	sta	GRP1		;					3
+; 23
 
-; 43								; 12 / 16 / 16
 
+	; activate hand sprite if necessary
+	lda	#$f							; 2
+	ldx	CURRENT_SCANLINE					; 3
+	cpx	POINTER_Y						; 3
+	bne	no_activate_hand					; 2/3
+	sta	POINTER_ON						; 3
+	jmp	done_activate_hand					; 3
+no_activate_hand:
+	inc	TEMP1			; nop5				; 5
+done_activate_hand:
+								;===========
+								; 16 / 16
+
+; 39
 	inc	CURRENT_SCANLINE					; 5
+
+; 44
+
+	lda	#$F8		; change color to tan			; 2
+	sta	COLUPF		; store playfield color			; 3
+	; want this to happen around 49..50
+; 49
+
+
+
 	sta	WSYNC
 ; 76
 
-	;===================
-	; draw playfield 2/4
-	;===================
+	;====================
+	;====================
+	; draw playfield ODD
+	;====================
+	;====================
 ; 0
+	lda	#$0E		; reset book color (lgrey)		; 2
+	sta	COLUPF		; store playfield color			; 3
 
-	; activate hand sprite if necessary
-	ldx	CURRENT_SCANLINE					; 3
-	; X = current scanline
-	lda	HAND_SPRITE,X		; load sprite data		; 4
-	cpx	POINTER_Y_END						; 3
-	bcs	book_turn_off_hand_delay5				; 2/3
-	cpx	POINTER_Y						; 3
-	bcc	book_turn_off_hand					; 2/3
-book_turn_on_hand:
-	sta	GRP0			; and display it		; 3
-	jmp	book_after_hand						; 3
-book_turn_off_hand_delay5:
-	inc	TEMP1							; 5
-book_turn_off_hand:
-	lda	#0			; turn off sprite		; 2
+; 5
+
+	;==================
+	; draw pointer
+	;==================
+
+	ldx	POINTER_ON						; 3
+	beq	no_pointer						; 2/3
+	lda	HAND_SPRITE,X						; 4
 	sta	GRP0							; 3
-book_after_hand:
-								;============
-								; 23 / 23 / 23
-; 23
+	dec	POINTER_ON						; 5
+	jmp	done_pointer						; 3
+no_pointer:
+	inc	TEMP1		; nop5					; 5
+	inc	TEMP1		; nop5					; 5
+	nop			;					; 2
+	nop								; 2
 
-;	inc	CURRENT_SCANLINE					; 5
-; 28
+done_pointer:
+								;===========
+								; 20 / 6
+; 25
 
-;	sta	WSYNC
+	inc	TEMP1	; nop5
+	inc	TEMP1	; nop5
+	inc	TEMP1	; nop5
+	inc	TEMP1	; nop5
 
-	;===================
-	; draw playfield 3/4
-	;===================
-; 0
-;	inc	CURRENT_SCANLINE					; 5
-;	sta	WSYNC
+; 45
 
-	;===================
-	; draw playfield 4/4
-	;===================
-; 0
-;	inc	CURRENT_SCANLINE
+
+	lda	#$F8		; change color to tan			; 2
+	sta	COLUPF		; store playfield color			; 3
+	; want this to happen around 49..50
+; 50
 
 	lda	CURRENT_SCANLINE					; 3
 	and	#$1							; 2
@@ -358,6 +368,7 @@ done_inc_block:
                                                                 ;===========
                                                                 ; 10/10
 
+; 60
 	cpy	#44		; see if hit end			; 2
 ; 72
 	beq	book_done_playfield					; 2/3
@@ -367,6 +378,8 @@ done_inc_block:
 ; 77
 book_done_playfield:
 
+	lda	#$00
+	sta	GRP1
 
 	;==========================
 	; grey line
@@ -376,6 +389,11 @@ book_done_playfield:
 	sta	PF1							; 3
 	lda	#$FF		; needed???				; 2
 	sta	PF2							; 3
+
+	lda	#$0
+	sta	ENAM0	; disable missile 0
+	sta	ENAM1	; disable missile 1
+
 	sta	WSYNC
 	sta	WSYNC
 	sta	WSYNC
@@ -389,6 +407,7 @@ book_done_playfield:
 	sta	PF1							; 3
 	sta	PF2							; 3
 	sta	COLUPF							; 3
+
 
 	sta	WSYNC
 	sta	WSYNC
