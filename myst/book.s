@@ -59,10 +59,6 @@ hand_copy_loop:
 	; setup missile
 	inc	FRAME							; 5
 
-
-
-
-
 	sta	WSYNC							; 3
 
 
@@ -70,13 +66,11 @@ hand_copy_loop:
 	; now VBLANK scanline 33
 	;=============================
 	; do some init
-
-	ldx	#$00
-	stx	COLUBK		; set background color to black
-
-	lda	#0
-	sta	CURRENT_SCANLINE	; reset scanline counter
-
+; 0
+	ldx	#$00							; 2
+	stx	COLUBK			; set background color to black	; 3
+	stx	CURRENT_SCANLINE	; reset scanline counter	; 3
+; 8
 	sta	WSYNC
 
 	;======================
@@ -86,12 +80,8 @@ hand_copy_loop:
 	;==========================================
 	; set up sprite1 to be at proper X position
 	;==========================================
-	; now in setup scanline 0
 
-	; we can do this here and the sprite will be drawn as a long
-	; vertical column
-	; later we only enable it for the lines we want
-; 3
+; 0
 	ldx	#0		; sprite 0 display nothing		2
 	stx	GRP1		; (FIXME: this already set?)		3
 ; 8
@@ -130,10 +120,6 @@ zpad_x:
 	; set up sprite to be at proper X position
 	;==========================================
 ; 0
-	; we can do this here and the sprite will be drawn as a long
-	; vertical column
-	; later we only enable it for the lines we want
-
 	ldx	#0		; sprite 0 display nothing		2
 	stx	GRP0		; (FIXME: this already set?)		3
 
@@ -164,50 +150,40 @@ zzpad_x:
 	;==========================================
 
 ; 3 (from HMOVE)
-	ldx	#0			; current scanline?		; 2
-
 	lda	#$0							; 2
 	sta	PF0			; disable playfield		; 3
 	sta	PF1							; 3
 	sta	PF2							; 3
+; 14
 
-								;===========
-								;        23
-; 26
 	; setup hand sprite
 
 	lda	#$24		; middle orange				; 2
 	sta	COLUP0		; set hand color (sprite0)		; 3
-
-	lda	#$1E		; yellow				; 2
-	sta	COLUP1		; set secret color (sprite1)		; 3
-
+; 19
+	lda	#$0C		; off white				; 2
+	sta	COLUP1		; set page color (sprite1)		; 3
+; 24
 	lda	#NUSIZ_DOUBLE_SIZE|NUSIZ_MISSILE_WIDTH_8		; 2
 	sta	NUSIZ0							; 3
 	lda	#NUSIZ_QUAD_SIZE					; 2
 	sta	NUSIZ1							; 3
+; 34
+	ldy	#0		; Y=current block (scanline/4)		; 2
+; 36
 
-	ldy	#0		; X=current block			; 2
-								;============
-								;	28
+	lda	#0							; 2
+	sta	VBLANK			; turn on beam			; 3
+	sta	POINTER_ON						; 3
+; 44
+	lda	#CTRLPF_REF		; reflect playfield		; 2
+	sta	CTRLPF							; 3
+; 49
 
-	lda	#0
-	sta	VBLANK			; turn on beam
-	sta	POINTER_ON
-
-	lda	#CTRLPF_REF		; reflect playfield
-	sta	CTRLPF
-
-
-;	lda	#$0E			; book color (grey)		; 2
-;	sta	COLUPF							; 3
 	lda	#0			; bg color			; 2
 	sta	COLUBK							; 3
-
+; 54
 	sta	WSYNC							; 3
-								;============
-								;============
-								;	60
 
 	;===========================================
 	;===========================================
@@ -221,29 +197,54 @@ zzpad_x:
 	; draw top eight lines
 
 	;==========================
-	; black line
-	lda	#$00		; black
-	sta	COLUPF
+	; black line (4 lines)
+	;==========================
+
+	; in playfield scanline 0
+	lda	#$00		; black					; 2
+	sta	COLUPF							; 3
 	sta	WSYNC
+
+	; in playfield scanline 1
+
 	sta	WSYNC
+
+	; in playfield scanline 2
+
 	sta	WSYNC
+
+	; in playfield scanline 3
+
 	sta	WSYNC
 
 	;==========================
-	; grey line
+	; grey line (4 lines)
+	;==========================
+
+	; in playfield scanline 4
+; 0
 	lda	#$04		; dark grey				; 2
 	sta	COLUPF							; 3
 	lda	#$7F		; overhanging page			; 2
 	sta	PF1							; 3
 	lda	#$FF							; 2
 	sta	PF2							; 3
-	sta	WSYNC
-	sta	WSYNC
+; 15
 	sta	WSYNC
 
-	lda	#$2
-	sta	ENAM0	; enable missile 0
-	sta	ENAM1	; enable missile 1
+	; in playfield scanline 5
+
+	sta	WSYNC
+
+	; in playfield scanline 6
+
+	sta	WSYNC
+
+	; in playfield scanline 7
+
+	lda	#$2							; 2
+	sta	ENAM0	; enable missile 0				; 3
+	sta	ENAM1	; enable missile 1				; 3
 	sta	WSYNC
 
 
@@ -260,6 +261,7 @@ book_draw_playfield:
 	; draw playfield EVEN
 	;================================
 	;================================
+	; playfield scanlines 8 .. ?
 
 book_draw_playfield_even:
 
@@ -280,10 +282,9 @@ book_draw_playfield_plus_3:
 	;==============================
 	; update sprite1
 
-	lda	#$FF		; sprite 0 display nothing		2
+	lda	page_sprite,Y		; load sprite1 data		4+
 	sta	GRP1		;					3
-; 23
-
+; 25
 
 	; activate hand sprite if necessary
 	lda	#$f							; 2
@@ -298,20 +299,20 @@ done_activate_hand:
 								;===========
 								; 16 / 16
 
-; 39
-	inc	CURRENT_SCANLINE					; 5
-
-; 44
+; 41
+	nop
+	nop
+; 45
 
 	lda	#$F8		; change color to tan			; 2
 	sta	COLUPF		; store playfield color			; 3
 	; want this to happen around 49..50
-; 49
+; 50
 
-
+	inc	CURRENT_SCANLINE					; 5
+; 55
 
 	sta	WSYNC
-; 76
 
 	;====================
 	;====================
@@ -370,30 +371,31 @@ done_inc_block:
 
 ; 60
 	cpy	#44		; see if hit end			; 2
-; 72
-	beq	book_done_playfield					; 2/3
-; 74
+; 62
 	sta	WSYNC
-	jmp	book_draw_playfield					; 3
-; 77
+; 0
+	bne	book_draw_playfield					; 2/3
+
+
 book_done_playfield:
 
-	lda	#$00
-	sta	GRP1
+
+; 2
 
 	;==========================
-	; grey line
+	; bottom grey line
+
 	lda	#$04		; dark grey				; 2
 	sta	COLUPF							; 3
 	lda	#$7F		; overhanging page			; 2
 	sta	PF1							; 3
-	lda	#$FF		; needed???				; 2
-	sta	PF2							; 3
+; 12
 
-	lda	#$0
-	sta	ENAM0	; disable missile 0
-	sta	ENAM1	; disable missile 1
-
+	lda	#$0							; 2
+	sta	ENAM0	; disable missile 0				; 3
+	sta	ENAM1	; disable missile 1				; 3
+	sta	GRP1							; 3
+; 23
 	sta	WSYNC
 	sta	WSYNC
 	sta	WSYNC
@@ -402,23 +404,18 @@ book_done_playfield:
 
 	;==========================
 	; black line
-	lda	#$00		; black					; 2
-	sta	PF0							; 3
+; 0
+	lda	#$00		;					; 2
+	sta	PF0		; turn off playfield			; 3
 	sta	PF1							; 3
 	sta	PF2							; 3
-	sta	COLUPF							; 3
-
-
+	sta	COLUPF		; color black				; 3
+; 14
 	sta	WSYNC
 	sta	WSYNC
 	sta	WSYNC
 	sta	WSYNC
 
-
-
-
-	; extra for some reason?
-	sta	WSYNC
 
 	;===========================
 	;===========================

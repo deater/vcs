@@ -44,7 +44,7 @@ pointer_moved_horizontally:
 pointer_moved_vertically:
 	clc				;				2
 	lda	POINTER_Y		;				3
-	adc	#POINTER_HEIGHT	;				2
+	adc	#POINTER_HEIGHT		;				2
 	sta	POINTER_Y_END		;				3
 	rts				;				6
 					;=================================

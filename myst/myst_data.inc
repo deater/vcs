@@ -864,10 +864,56 @@ cleft_playfield0_right:
 	.byte $00
 	.byte $00
 
+
+
+page_sprite:
+	.byte $18
+	.byte $0D
+	.byte $0F
+	.byte $7F
+	.byte $5B
+	.byte $1F
+	.byte $1D
+	.byte $1B
+	.byte $FF
+	.byte $FF
+	.byte $FF
+	.byte $FF
+	.byte $FF
+	.byte $FF
+	.byte $FF
+	.byte $FF
+	.byte $FF
+	.byte $FF
+	.byte $FF
+	.byte $FF
+	.byte $FF
+	.byte $7E
+	.byte $3F
+	.byte $5F
+	.byte $5E
+	.byte $3E
+	.byte $7F
+	.byte $76
+	.byte $5F
+	.byte $DF
+	.byte $6E
+	.byte $2E
+	.byte $5E
+	.byte $DE
+	.byte $EE
+	.byte $6E
+	.byte $6E
+	.byte $3E
+	.byte $27
+	.byte $CF
+	.byte $7F
+	.byte $4D
+	.byte $3F
+	.byte $3E
+
 hand_sprite:
 ;	.byte	$08,$08,$08,$08,$08,$08,$4C,$6D
 ;	.byte	$2F,$3F,$1F,$1F,$0E,$0E,$0E,$00
 	.byte	$00,$00,$0E,$0E,$1F,$1F,$3F,$2F
 	.byte	$6D,$4C,$08,$08,$08,$08,$08,$08
-
-
