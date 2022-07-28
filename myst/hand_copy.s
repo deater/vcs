@@ -16,7 +16,8 @@ hand_copy:
 	asl								; 2
 	asl	; multiply by 16
 ; 15
-	lda	#<hand_sprite						; 2
+	; carry should be 0 from the shifting
+	adc	#<hand_sprite						; 2
 	sta	INL							; 3
 	lda	#>hand_sprite						; 2
 	sta	INH							; 3

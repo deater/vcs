@@ -6,7 +6,7 @@ hand_sprite:
 
 	; hand sprite grab
 hand_sprite_grab:
-	.byte	$00,$3C,$3C,$3C,$7E,$7E,$7F,$FF
+	.byte	$00,$00,$3C,$3C,$7E,$7E,$7F,$FF
 	.byte	$FF,$BF,$35,$55,$55,$54,$54,$10
 
 hand_sprite_left:
