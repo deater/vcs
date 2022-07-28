@@ -454,11 +454,11 @@ done_playfield:
 	;===========================
 	;===========================
 
-	ldx	#25
+	ldx	#24
 	jsr	common_overscan
 
 	;==================================
-	; overscan 27, trigger sound
+	; overscan 26, trigger sound
 
 ;	ldy	SOUND_TO_PLAY
 ;	beq	no_sound_to_play
@@ -471,7 +471,7 @@ done_playfield:
 	sta	WSYNC
 
 	;==================================
-	; overscan 28+29, update sound
+	; overscan 27+28, update sound
 
 ;	jsr	update_sound
 
@@ -479,105 +479,29 @@ done_playfield:
 	sta	WSYNC
 
 	;==================================
-	; overscan 30, collision detection
+	; overscan 29, collision detection
 
-.if 0
-	lda	CXPPMM			; check if p0/p1 collision	; 3
-	bpl	no_collision_secret					; 2/3
-collision_secret:
-; 5
-	lda	#LEVEL_OVER_SC						; 2
-	sta	LEVEL_OVER						; 3
-	ldy	#SFX_COLLECT						; 2
-	jsr	trigger_sound
-;	sty	SOUND_TO_PLAY						; 3
-	jmp	collision_done						; 3
-; 18
-
-no_collision_secret:
-; 6
-	lda	CXP0FB			; check if p0/pf collision	; 3
-	bpl	no_collision_wall					; 2/3
-collision_wall:
-; 11
-	; if between Y>9*4 && Y<29*4 X and X>1 and Y<150 we got zapped!
+	lda     #POINTER_TYPE_POINT					; 2
+	sta     POINTER_TYPE						; 3
 
 	lda	POINTER_X						; 3
-	cmp	#12							; 2
-	bcc	regular_collision					; 2/3
-; 18
-	cmp	#150	; $9E						; 2
-	bcs	regular_collision					; 2/3
-; 22
-	lda	POINTER_Y						; 3
-	cmp	#64	; $40						; 2
-	bcc	regular_collision					; 2/3
-; 29
-	cmp	#134	; $86						; 2
-	bcs	regular_collision					; 2/3
-;33
-got_zapped:
-	lda	#LEVEL_OVER_ZAP
-	sta	LEVEL_OVER
-	jmp	collision_done
+	cmp	#32
+	bcs	clock_not_left
+	lda	#POINTER_TYPE_LEFT
+	sta	POINTER_TYPE
+	jmp	clock_done_collision
+clock_not_left:
+	cmp	#128
+	bcc	clock_done_collision
+	lda	#POINTER_TYPE_RIGHT
+	sta	POINTER_TYPE
+clock_done_collision:
 
-regular_collision:
-	; reset strongbad position
-	lda	OLD_POINTER_X
-	sta	POINTER_X
-	lda	OLD_POINTER_Y
-	sta	POINTER_Y
+        sta     WSYNC
 
-	lda	OLD_POINTER_X_END
-	sta	POINTER_X_END
-	lda	OLD_POINTER_Y_END
-	sta	POINTER_Y_END
-
-	ldy	#SFX_COLLIDE
-	;sty	SOUND_TO_PLAY
-	jsr	trigger_sound
-
-no_collision_wall:
-
-
-collision_done:
-
-	lda	LEVEL_OVER
-	beq	nothing_special
-	bmi	goto_sc
-	cmp	#LEVEL_OVER_ZAP
-	beq	goto_zap
-	cmp	#LEVEL_OVER_TIME
-	beq	goto_oot
-
-nothing_special:
-.endif
+	;==================================
+	; overscan 30, see if end of level
 
 	sta	WSYNC
 
-	jmp	clock_frame
-
-goto_sc:
-;	jmp	secret_collect_animation
-
-goto_go:
-;	jmp	game_over_animation
-
-goto_zap:
-;	ldy	#SFX_ZAP
-;	jsr	trigger_sound
-;	jsr	init_strongbad	; reset position
-;	lda	#0
-;	sta	LEVEL_OVER
-
-;	jmp	level_frame
-
-goto_oot:
-;	ldy	#SFX_GAMEOVER
-;	jsr	trigger_sound
-
-;	dec	MANS
-;	bmi	goto_go
-
-;	jsr	init_level
 	jmp	clock_frame
