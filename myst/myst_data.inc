@@ -912,8 +912,60 @@ page_sprite:
 	.byte $3F
 	.byte $3E
 
+
+book_edge_colors:
+	.byte $00
+	.byte $F0
+	.byte $F0
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $F4
+	.byte $30
+	.byte $30
+	.byte $F0
+	.byte $32
+	.byte $F0
+	.byte $30
+	.byte $F4
+	.byte $F0
+	.byte $F4
+	.byte $F0
+	.byte $30
+	.byte $30
+	.byte $28
+	.byte $F4
+	.byte $32
+	.byte $12
+	.byte $F0
+	.byte $F4
+	.byte $F4
+	.byte $F4
+	.byte $F4
+	.byte $30
+	.byte $F4
+	.byte $F0
+	.byte $30
+	.byte $30
+	.byte $30
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+
+
+	; note, upside down
+
+	; hand sprite point
 hand_sprite:
-;	.byte	$08,$08,$08,$08,$08,$08,$4C,$6D
-;	.byte	$2F,$3F,$1F,$1F,$0E,$0E,$0E,$00
 	.byte	$00,$00,$0E,$0E,$1F,$1F,$3F,$2F
 	.byte	$6D,$4C,$08,$08,$08,$08,$08,$08
+
+	; hand sprite grab
+

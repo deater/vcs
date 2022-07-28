@@ -57,22 +57,29 @@ hand_copy_loop:
 	;========================
 	; increment frame
 	; setup missile
+; 6
 	inc	FRAME							; 5
-
-	ldx	#3
+; 11
+	ldx	#3							; 2
+; 13
 bzpad_x:
-	dex			;					2
-	bne	bzpad_x		;					2/3
+	dex			;					; 2
+	bne	bzpad_x		; (X*5)-1, X=3=14			; 2/3
 
-	sta	RESM1
 
-	inc	TEMP1
-	inc	TEMP1
-	nop
-	nop
+; 27
+	sta	RESM1		; adjust missile location for		; 3
+				; left edge of book
 
-	sta	RESM0
-
+; 30
+	inc	TEMP1							; 5
+	inc	TEMP1							; 5
+	nop								; 2
+	nop								; 2
+; 44
+	sta	RESM0		; adjust missile0 location		; 3
+				; for spine of book
+; 47
 	sta	WSYNC							; 3
 
 
@@ -98,26 +105,28 @@ bzpad_x:
 ; 0
 	ldx	#0		; sprite 0 display nothing		2
 	stx	GRP1		; (FIXME: this already set?)		3
-; 8
+; 5
 	ldx	#6		;					3
 	inx			;					2
 	inx			;					2
+; 12
 zpad_x:
 	dex			;					2
 	bne	zpad_x		;					2/3
 				;===========================================
-				;	12-1+5*(coarse_x+2)
+				;	5*(6+2)-1 = 39
 				; FIXME: describe better what's going on
 
+; 51
 	; beam is at proper place
 	sta	RESP1							; 3
-
-	lda	#$40
-	sta	HMM1
-
-	lda	#$40
-	sta	HMP1
-
+; 54
+	lda	#$60		; fine tune missile1 (book edge)	; 2
+	sta	HMM1							; 3
+; 59
+	lda	#$40		; fine tune sprite1 (book page)		; 2
+	sta	HMP1							; 3
+; 64
 	sta	WSYNC
 
 	;======================================
@@ -141,7 +150,7 @@ zpad_x:
 ; 0
 	ldx	#0		; sprite 0 display nothing		2
 	stx	GRP0		; (FIXME: this already set?)		3
-
+; 5
 	ldx	POINTER_X_COARSE	;				3
 	inx			;					2
 	inx			;					2
@@ -151,7 +160,7 @@ zzpad_x:
 	dex			;					2
 	bne	zzpad_x		;					2/3
 				;===========================================
-				;	12-1+5*(coarse_x+2)
+				;	5*(coarse_x+2)-1
 ;
 
 	; beam is at proper place
@@ -185,7 +194,7 @@ zzpad_x:
 ; 24
 	lda	#NUSIZ_DOUBLE_SIZE|NUSIZ_MISSILE_WIDTH_8		; 2
 	sta	NUSIZ0							; 3
-	lda	#NUSIZ_QUAD_SIZE|NUSIZ_MISSILE_WIDTH_2			; 2
+	lda	#NUSIZ_QUAD_SIZE|NUSIZ_MISSILE_WIDTH_4			; 2
 	sta	NUSIZ1							; 3
 ; 34
 	ldy	#0		; Y=current block (scanline/4)		; 2
@@ -260,16 +269,23 @@ zzpad_x:
 	sta	WSYNC
 
 	; in playfield scanline 7
-
+; 0
 	; delay things a bit so we enable towards the end of the scanline
 	ldx	#6
+; 2
 pbook_x:
 	dex			;					2
-	bne	pbook_x		;					2/3
-
+	bne	pbook_x		; (6*5)-1 = 29				2/3
+; 31
 	lda	#$2							; 2
 	sta	ENAM0	; enable missile 0				; 3
 	sta	ENAM1	; enable missile 1				; 3
+; 39
+	lda	#$3F		; Set playfield				; 2
+	sta	PF1							; 3
+	lda	#$FF							; 2
+        sta	PF2							; 3
+; 49
 	sta	WSYNC
 
 
@@ -296,20 +312,20 @@ book_draw_playfield_plus_3:
 	lda	#$0E		; reset book color (lgrey)		; 2
 	sta	COLUPF		; store playfield color			; 3
 ; 8
-	lda	#$3F		; FIXME: this could be moved outside?	; 2
-	sta	PF1			;				; 3
-; 13
-	lda	#$FF							; 2
-        sta	PF2							; 3
-	;  has to happen by 38 (GPU 116)	;
-; 18
+	lda	book_edge_colors,Y					; 4
+	sta	COLUP1		; set edge colors (missile1)		; 3
+; 15
+
+;	lda	$80		; nop3					; 3
+; 15
+
 
 	;==============================
 	; update sprite1
 
 	lda	page_sprite,Y		; load sprite1 data		4+
 	sta	GRP1		;					3
-; 25
+; 22
 
 	; activate hand sprite if necessary
 	lda	#$f							; 2
@@ -324,11 +340,12 @@ done_activate_hand:
 								;===========
 								; 16 / 16
 
-; 41
-	nop
-	nop
-; 45
+; 38
+	lda	#$0C		; off white				; 2
+	sta	COLUP1		; set page color (sprite1)		; 3
+; 43
 
+	nop
 	lda	#$F8		; change color to tan			; 2
 	sta	COLUPF		; store playfield color			; 3
 	; want this to happen around 49..50
@@ -347,8 +364,11 @@ done_activate_hand:
 ; 0
 	lda	#$0E		; reset book color (lgrey)		; 2
 	sta	COLUPF		; store playfield color			; 3
-
 ; 5
+	lda	book_edge_colors,Y					; 4
+	sta	COLUP1							; 3
+
+; 12
 
 	;==================
 	; draw pointer
@@ -369,15 +389,13 @@ no_pointer:
 done_pointer:
 								;===========
 								; 20 / 6
-; 25
-
-	inc	TEMP1	; nop5
-	inc	TEMP1	; nop5
-	inc	TEMP1	; nop5
-	inc	TEMP1	; nop5
-
+; 32
+	inc	TEMP1	; nop5						; 5
+	lda	$80	; nop3						; 3
+; 40
+	lda	#$0C		; off white				; 2
+	sta	COLUP1		; set page color (sprite1)		; 3
 ; 45
-
 
 	lda	#$F8		; change color to tan			; 2
 	sta	COLUPF		; store playfield color			; 3
