@@ -21,13 +21,22 @@ clock_frame:
 
 ; in VBLANK scanline 0
 
-	ldx	#28
+	ldx	#24
 le_vblank_loop:
 	sta	WSYNC
 	dex
 	bne	le_vblank_loop
 
-								;	15
+
+	;=============================
+	; now at VBLANK scanline 24
+	;=============================
+	; copy in hand sprite
+	; takes 4 scanlines
+
+	jsr	hand_copy
+; 6
+
 	;=============================
 	; now at VBLANK scanline 28
 	;=============================
@@ -56,17 +65,15 @@ le_vblank_loop:
 	;=============================
 	; do some init
 
-	ldx	#$00
-	stx	COLUBK		; set background color to black
-
-	lda	#0
-	sta	CURRENT_SCANLINE	; reset scanline counter
+	ldx	#$00							; 2
+	stx	COLUBK			; set background color to black	; 3
+	stx	CURRENT_SCANLINE	; reset scanline counter	; 3
 
 	sta	WSYNC
 
-	;======================
+	;=======================
 	; now VBLANK scanline 34
-	;======================
+	;=======================
 
 	;==========================================
 	; set up sprite1 to be at proper X position
@@ -150,11 +157,9 @@ pad_x:
 
 ; 3 (from HMOVE)
 	ldx	#0			; current scanline?		; 2
-
-	lda	#$0							; 2
-	sta	PF0			; disable playfield		; 3
-	sta	PF1							; 3
-	sta	PF2							; 3
+	stx	PF0			; disable playfield		; 3
+	stx	PF1							; 3
+	stx	PF2							; 3
 
 								;===========
 								;        23
@@ -171,12 +176,11 @@ pad_x:
 	sta	NUSIZ0							; 3
 	sta	NUSIZ1							; 3
 
-	lda	#0							; 2
-	sta	VDELP0							; 3
-	sta	VDELP1							; 3
-	tay			; X=current block			; 2
+	ldy	#0		; current block 			; 2
 								;============
 								;	28
+
+	sty	CTRLPF		; no_reflect
 
 	lda	#0
 	sta	VBLANK			; turn on beam
@@ -244,27 +248,20 @@ draw_playfield_even:
 	lda	$80
 
 ; 52
-	;==============================
-	; activate sprite1
 
-	; X = current scanline
-	lda	#$F0			; load sprite data		; 2
-	cpx	#80							; 2
-	bcs	turn_off_secret_delay4					; 2/3
-	cpx	#72							; 2
-	bcc	turn_off_secret						; 2/3
-turn_on_secret:
-	sta	GRP1			; and display it		; 3
-	jmp	after_secret						; 3
-turn_off_secret_delay4:
-	nop								; 2
-	nop								; 2
-turn_off_secret:
-	lda	#0			; turn off sprite		; 2
-	sta	GRP1							; 3
-after_secret:
-								;============
-								; 12 / 16 / 16
+	; activate hand sprite if necessary
+	lda	#$f							; 2
+	ldx	CURRENT_SCANLINE					; 3
+	cpx	POINTER_Y						; 3
+	bne	no_clock_activate_hand					; 2/3
+	sta	POINTER_ON						; 3
+	jmp	done_clock_activate_hand				; 3
+no_clock_activate_hand:
+	inc	TEMP1				; nop5			; 5
+done_clock_activate_hand:
+								;===========
+								; 16 / 16
+
 
 ; 68
 	inc	CURRENT_SCANLINE					; 5
@@ -304,29 +301,28 @@ after_secret:
 	; has to happen 50-67 (GPU148-202)
 ; 51
 
-	; activate strongbad sprite if necessary
-	ldx	CURRENT_SCANLINE
-	; X = current scanline
-	lda	#$F0			; load sprite data		; 2
-	cpx	POINTER_Y_END						; 3
-	bcs	turn_off_strongbad_delay5				; 2/3
-	cpx	POINTER_Y						; 3
-	bcc	turn_off_strongbad					; 2/3
-turn_on_strongbad:
-	sta	GRP0			; and display it		; 3
-	jmp	after_sprite						; 3
-turn_off_strongbad_delay5:
-	inc	TEMP1							; 5
-turn_off_strongbad:
-	lda	#0			; turn off sprite		; 2
+	;==================
+	; draw pointer
+	;==================
+
+	ldx	POINTER_ON						; 3
+	beq	clock_no_pointer					; 2/3
+	lda	HAND_SPRITE,X						; 4
 	sta	GRP0							; 3
-after_sprite:
-								;============
-								; 13 / 18 / 18
-; 69
+	dec	POINTER_ON						; 5
+	jmp	clock_done_pointer					; 3
+clock_no_pointer:
+	inc	TEMP1		; nop5					; 5
+	inc	TEMP1		; nop5					; 5
+	nop			;					; 2
+	nop								; 2
+clock_done_pointer:
+								;===========
+								; 20 / 6
+
+; 71
 	inc	CURRENT_SCANLINE					; 5
-; 74
-	nop
+; 76
 
 	;===================
 	; draw playfield 3/4
