@@ -59,6 +59,20 @@ hand_copy_loop:
 	; setup missile
 	inc	FRAME							; 5
 
+	ldx	#3
+bzpad_x:
+	dex			;					2
+	bne	bzpad_x		;					2/3
+
+	sta	RESM1
+
+	inc	TEMP1
+	inc	TEMP1
+	nop
+	nop
+
+	sta	RESM0
+
 	sta	WSYNC							; 3
 
 
@@ -98,6 +112,11 @@ zpad_x:
 	; beam is at proper place
 	sta	RESP1							; 3
 
+	lda	#$40
+	sta	HMM1
+
+	lda	#$40
+	sta	HMP1
 
 	sta	WSYNC
 
@@ -166,7 +185,7 @@ zzpad_x:
 ; 24
 	lda	#NUSIZ_DOUBLE_SIZE|NUSIZ_MISSILE_WIDTH_8		; 2
 	sta	NUSIZ0							; 3
-	lda	#NUSIZ_QUAD_SIZE					; 2
+	lda	#NUSIZ_QUAD_SIZE|NUSIZ_MISSILE_WIDTH_2			; 2
 	sta	NUSIZ1							; 3
 ; 34
 	ldy	#0		; Y=current block (scanline/4)		; 2
@@ -241,6 +260,12 @@ zzpad_x:
 	sta	WSYNC
 
 	; in playfield scanline 7
+
+	; delay things a bit so we enable towards the end of the scanline
+	ldx	#6
+pbook_x:
+	dex			;					2
+	bne	pbook_x		;					2/3
 
 	lda	#$2							; 2
 	sta	ENAM0	; enable missile 0				; 3
