@@ -21,7 +21,7 @@ book_frame:
 
 ; in VBLANK scanline 0
 
-	ldx	#25
+	ldx	#24
 book_vblank_loop:
 	sta	WSYNC
 	dex
@@ -29,19 +29,14 @@ book_vblank_loop:
 
 
 	;=============================
-	; now at VBLANK scanline 25
+	; now at VBLANK scanline 24
 	;=============================
 	; copy in hand sprite
-	ldx	#15							; 2
-hand_copy_loop:
-	lda	hand_sprite,X						; 4+
-	sta	HAND_SPRITE,X						; 4
-	dex								; 2
-	bpl	hand_copy_loop						; 2/3
+	; takes 4 scanlines
 
-	; 2+(13*16)-1 = 209
-	;	around 2.75 scanlines
-	sta	WSYNC
+	jsr	hand_copy
+
+; 6
 
 	;=============================
 	; now at VBLANK scanline 28

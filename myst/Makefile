@@ -9,7 +9,7 @@ myst.rom:	myst.o
 
 myst.o:	myst.s myst_data.inc \
 	title.s cleft.s book.s clock.s \
-	hand_motion.s adjust_sprite.s common_routines.s
+	hand_motion.s hand_copy.s adjust_sprite.s common_routines.s
 	ca65 -o myst.o myst.s -l myst.lst
 
 ###

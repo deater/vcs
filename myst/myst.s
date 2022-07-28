@@ -24,6 +24,14 @@ FRAME		=	$92
 CURRENT_SCANLINE=	$93
 LEVEL		=	$94
 INPUT_COUNTDOWN	=	$95
+POINTER_TYPE	=	$96
+	POINTER_TYPE_POINT	= $00
+	POINTER_TYPE_GRAB	= $01
+	POINTER_TYPE_LEFT	= $02
+	POINTER_TYPE_RIGHT	= $03
+
+INL		=	$9E
+INH		=	$9F
 
 PF0L_CACHE	=	$A0
 PF1L_CACHE	=	$A1
@@ -118,6 +126,7 @@ clear_loop:
 	.include "adjust_sprite.s"
 	.include "common_routines.s"
 	.include "hand_motion.s"
+	.include "hand_copy.s"
 
 .align $100
 
