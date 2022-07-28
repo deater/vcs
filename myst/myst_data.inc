@@ -1,3 +1,23 @@
+	; note, upside down
+	; hand sprite point
+hand_sprite:
+	.byte	$00,$00,$0E,$0E,$1F,$1F,$3F,$2F
+	.byte	$6D,$4C,$08,$08,$08,$08,$08,$08
+
+	; hand sprite grab
+hand_sprite_grab:
+	.byte	$00,$3C,$3C,$3C,$7E,$7E,$7F,$FF
+	.byte	$FF,$BF,$35,$55,$55,$54,$54,$10
+
+hand_sprite_left:
+	.byte	$00,$00,$1C,$0F,$1F,$0F,$1F,$0F
+	.byte	$FF,$FF,$06,$0C,$18,$00,$00,$00
+
+hand_sprite_right:
+	.byte	$00,$00,$38,$F0,$38,$F0,$38,$F0
+	.byte	$FF,$FF,$60,$30,$18,$00,$00,$00
+
+
 ; values for adjusting sprite offsets
 fine_adjust_table:
         ; left
@@ -155,6 +175,8 @@ title_playfield2_left:
 	.byte $00
 	.byte $00
 
+.align $100
+
 title_playfield0_right:
 	.byte $00
 	.byte $00
@@ -254,8 +276,6 @@ title_playfield1_right:
 	.byte $00
 	.byte $00
 	.byte $00
-
-.align $100
 
 title_playfield2_right:
 	.byte $00
@@ -410,6 +430,8 @@ clock_colors:
 	.byte $F0
 	.byte $00
 
+.align $100
+
 clock_playfield0_left:
 	.byte $40
 	.byte $40
@@ -509,8 +531,6 @@ clock_playfield1_left:
 	.byte $83
 	.byte $EF
 	.byte $00
-
-.align $100
 
 clock_playfield2_left:
 	.byte $FE
@@ -662,6 +682,7 @@ clock_playfield1_right:
 	.byte $00
 	.byte $00
 
+.align $100
 clock_playfield2_right:
 	.byte $FF
 	.byte $FF
@@ -761,8 +782,6 @@ cleft_colors:
 	.byte $00
 	.byte $00
 	.byte $00
-
-.align $100
 
 cleft_playfield2_left:
 	.byte $00
@@ -912,6 +931,7 @@ page_sprite:
 	.byte $3F
 	.byte $3E
 
+.align $100
 
 book_edge_colors:
 	.byte $00
@@ -960,12 +980,4 @@ book_edge_colors:
 	.byte $00
 
 
-	; note, upside down
-
-	; hand sprite point
-hand_sprite:
-	.byte	$00,$00,$0E,$0E,$1F,$1F,$3F,$2F
-	.byte	$6D,$4C,$08,$08,$08,$08,$08,$08
-
-	; hand sprite grab
 
