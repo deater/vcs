@@ -26,7 +26,7 @@ after_check_left:
 	; handle right being pressed
 
 	lda	POINTER_X_END		;				; 3
-	cmp	#167			;				; 2
+	cmp	#155			;				; 2
 	bcs	after_check_right	;				; 2/3
 
 	lda	#$80			; check right			; 2
@@ -66,7 +66,7 @@ after_check_up:
 	; handle down being pressed
 
 	lda	POINTER_Y_END		;				; 3
-	cmp	#160			;				; 2
+	cmp	#86			;				; 2
 	bcs	after_check_down	;				; 2/3
 
 	lda	#$20			;				; 2
