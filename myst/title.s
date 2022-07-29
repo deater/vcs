@@ -44,15 +44,17 @@ vtitle_loop:
 	inc	TITLE_COLOR						; 5
 no_rotate_title:
 
-;
+; 21
 	ldy	#0							; 2
 	ldx	#0							; 2
 	stx	GRP0							; 3
 	stx	GRP1							; 3
-	stx	CTRLPF							; 3
+	stx	CTRLPF			; no-mirror			; 3
 	stx	VBLANK			; re-enable beam		; 3
-;
-
+	stx	PF0							; 3
+	stx	PF1							; 3
+	stx	PF2							; 3
+; 46
 	sta	WSYNC
 
 
@@ -64,7 +66,24 @@ no_rotate_title:
 	; draw 192 lines
 	; need to race beam to draw other half of playfield
 
+
+
+
+	; first we have 17*4 blank lines
+	ldx	#67
+	jsr	common_delay_scanlines
+; 10
+	ldx	#0			; reset scanlines		; 2
+
+	sta	WSYNC
+
+	;===================================
+	; actual main title kernel
+	;===================================
+	; 11*4 lines with logo
+
 title_playfield_loop:
+; 0
 	lda	TITLE_COLOR		;				; 3
 	and	#$2F			; keep it gold			; 2
 	sta	COLUPF			; set playfield color		; 3
@@ -89,19 +108,20 @@ title_playfield_loop:
 	nop								; 2
 
 ; 39
-	lda	title_playfield0_right,X	;			; 4+
+	lda	#0			; always zero			; 2
+	nop								; 2
 	sta	PF0			;				; 3
 
 
 	; must write by CPU 49 [GPU 148]
 ; 46
 
-	lda	title_playfield1_right,X	;			4+
-	sta	PF1			;				3
+	lda	title_playfield1_right,X	;			; 4+
+	sta	PF1			;				; 3
 	; must write by CPU 54 [GPU 164]
 ; 53
-	lda	title_playfield2_right,X	;			4+
-	sta	PF2			;				3
+	lda	title_playfield2_right,X	;			; 4+
+	sta	PF2			;				; 3
 	; must write by CPU 65 [GPU 196]
 ; 60
 
@@ -117,14 +137,30 @@ done_inx:
                                                                 ; 11/11
 
 ; 71
-	cpy	#192							; 2
+	cpy	#44							; 2
 	bne	title_playfield_loop					; 2/3
 
 ; 76
 
 done_loop:
 
+	; then 20*4 blank lines
 ; -1
+	ldx	#0			; clear playfield		; 2
+	stx	PF0							; 3
+	stx	PF1							; 3
+	stx	PF2							; 3
+	clc								; 2
+	lda	TITLE_COLOR						; 3
+	adc	#4			; 4 is best?			; 2
+	sta	TITLE_COLOR						; 3
+	sta	WSYNC							; 3
+
+	; now we have 20*4 blank lines
+	ldx	#79
+	jsr	common_delay_scanlines
+; 10
+
 	;==========================
 	; overscan
 	;==========================

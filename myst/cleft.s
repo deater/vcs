@@ -58,9 +58,11 @@ vcleft_loop:
 	sta	PF1			; playfield 1 is always 0	; 3
 ;
 
+	jmp	skip
 
+.align $100
 
-
+skip:
 	;=============================================
 	;=============================================
 	; draw cleft playfield
