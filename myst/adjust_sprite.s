@@ -42,11 +42,11 @@ pointer_moved_horizontally:
 ; call after Y changes
 
 pointer_moved_vertically:
-	clc				;				2
-	lda	POINTER_Y		;				3
-	adc	#POINTER_HEIGHT		;				2
-	sta	POINTER_Y_END		;				3
-	rts				;				6
+	clc								; 2
+	lda	POINTER_Y						; 3
+	adc	#16	; pointer height				; 2
+	sta	POINTER_Y_END						; 3
+	rts								; 6
 					;=================================
 					;				16
 

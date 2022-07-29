@@ -452,20 +452,12 @@ done_rocket_playfield:
 	;==================================
 	; overscan 26, trigger sound
 
-;	ldy	SOUND_TO_PLAY
-;	beq	no_sound_to_play
-
-;	jsr	trigger_sound		; 6+40
-
-;	ldy	#0
-;	sty	SOUND_TO_PLAY
-;no_sound_to_play:
 	sta	WSYNC
 
 	;==================================
 	; overscan 27+28, update sound
 
-;	jsr	update_sound
+	jsr	update_sound
 
 	sta	WSYNC
 	sta	WSYNC

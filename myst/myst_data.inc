@@ -995,3 +995,29 @@ rocket_overlay_sprite:
 	.byte $FF
 	.byte $FF
 
+;=============================
+; sound data
+;=============================
+
+;=========================================
+; sound effects
+; doesn't need to be aligned?
+
+sfx_f:
+sfx_start:
+	.byte	0, 8, 8, 8, 8, 8, 8, 8
+	.byte	8, 8, 8, 8, 8, 8, 8, 8		; click
+sfx_click:
+	.byte   0 ,26,26,26,26,26,26,26
+	.byte	29,29,29,29,29,29,29		; link
+sfx_link:
+
+sfx_cv:
+	.byte   $00,$41,$42,$43,$44,$45,$46,$47
+	.byte	$48,$49,$4a,$4b,$4c,$4d,$4e,$4f	; click
+        .byte   $00,$7f,$7f,$7f,$7f,$7f,$7f,$7f
+        .byte   $1f,$1f,$1f,$1f,$1f,$1f,$1f	; link
+
+SFX_CLICK	=       sfx_click-sfx_start-1
+SFX_LINK	=       sfx_link-sfx_start-1
+

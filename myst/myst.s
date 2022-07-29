@@ -4,9 +4,6 @@
 
 .include "../vcs.inc"
 
-; defines
-POINTER_HEIGHT	= 16
-
 ; zero page addresses
 
 TITLE_COLOR	=	$80
@@ -17,6 +14,8 @@ POINTER_Y	=	$83
 POINTER_X_COARSE=	$84
 POINTER_X_END	=	$85
 POINTER_Y_END	=	$86
+
+SFX_PTR		=	$87
 
 TEMP1		=	$90
 TEMP2		=	$91
@@ -65,9 +64,6 @@ myst:
 	sei		; disable interrupts
 	cld		; clear decimal bit
 
-;	ldx	#$ff
-;	txs		; point stack to $1FF (mirrored at top of zero page)
-
 restart_game:
 
 
@@ -80,7 +76,7 @@ clear_loop:
 	inx
 	bne	clear_loop
 	dex
-	txs
+	txs	; point stack to $1FF (mirrored at top of zero page)
 
 	lda	#2
 	sta	VBLANK	; disable beam
@@ -135,6 +131,7 @@ clear_loop:
 	.include "common_routines.s"
 	.include "hand_motion.s"
 	.include "hand_copy.s"
+	.include "sound_update.s"
 
 .align $100
 

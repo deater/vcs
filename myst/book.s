@@ -523,6 +523,9 @@ book_clicked:
 
 ; otherwise, exit...
 
+	; start linking noise
+	ldy	#SFX_LINK
+	sty	SFX_PTR
 
 
 
