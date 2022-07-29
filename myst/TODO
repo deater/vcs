@@ -6,8 +6,9 @@ Cleft:
 
 Book:
 	adjust top left of page to not be uneven
-	sprite animation of destination
-	add linking noise
+	better sprite animation of destination
+	better linking noise
+	pause when in the process of linking, maybe black screen
 
 arrival:
 	get it working

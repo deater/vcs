@@ -115,6 +115,7 @@ clear_loop:
 	; arrival
 	;===========================
 	;===========================
+arrival:
 
 ;	.include "arrival.s"
 

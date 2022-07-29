@@ -968,18 +968,16 @@ rocket_overlay_sprite:
 
 sfx_f:
 sfx_start:
-	.byte	0, 8, 8, 8, 8, 8, 8, 8
-;	.byte	8, 8, 8, 8, 8, 8, 8, 8		; click
+	.byte	0, 31, 31
 sfx_click:
 	.byte   0 ,25,25,25,25
-	.byte   25 ,25,25,25,25,25,25,25
+	.byte   25,25,25,25,25,25,25,25
 	.byte   25,25,25,25,25 ,04,04,04
 	.byte	04,04,04,22,22,22,22,22		; link
 sfx_link:
 
 sfx_cv:
-	.byte   $00,$41,$42,$43,$44,$45,$46,$47
-;	.byte	$48,$49,$4a,$4b,$4c,$4d,$4e,$4f	; click
+	.byte   $00,$C3,$CF
 	.byte   $00,$32,$34,$36,$38
 	.byte   $3A,$38,$36,$38,$3A,$3C,$3A,$38
 	.byte   $3A,$3C,$3E,$3C,$3A, $E4,$E6,$EA

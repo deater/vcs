@@ -1,9 +1,12 @@
 	;=====================
 	; the rocket
 	;=====================
+do_rocket:
+	lda	#30
+	sta	INPUT_COUNTDOWN
 
-	jmp	rocket_frame
-.align	$100
+;	jmp	rocket_frame
+;.align	$100
 rocket_frame:
 
 	;============================
@@ -446,46 +449,83 @@ done_rocket_playfield:
 	;===========================
 	;===========================
 
-	ldx	#24
+	ldx	#26
 	jsr	common_overscan
 
-	;==================================
-	; overscan 26, trigger sound
-
-	sta	WSYNC
 
 	;==================================
-	; overscan 27+28, update sound
+	; overscan 28, update sound
 
 	jsr	update_sound
 
 	sta	WSYNC
-	sta	WSYNC
 
 	;==================================
-	; overscan 29, collision detection
+	; overscan 29, update_pointer
 
 	lda     #POINTER_TYPE_POINT					; 2
-	sta     POINTER_TYPE						; 3
 
-	lda	POINTER_X						; 3
-	cmp	#32
+	ldy	POINTER_Y
+	cpy	#17
+	bcc	rocket_check_side
+	cpy	#25
+	bcs	rocket_check_side
+	ldy	POINTER_X
+	cpy	#72 ; $46
+	bcc	rocket_check_side
+	cpy	#91 ; $5B
+	bcs	rocket_check_side
+
+	lda	#POINTER_TYPE_GRAB
+	jmp	rocket_done_update_pointer
+rocket_check_side:
+	ldy	POINTER_X						; 3
+	cpy	#32
 	bcs	rocket_not_left
 	lda	#POINTER_TYPE_LEFT
-	sta	POINTER_TYPE
-	jmp	rocket_done_collision
+	jmp	rocket_done_update_pointer
 rocket_not_left:
-	cmp	#128
-	bcc	rocket_done_collision
+	cpy	#128
+	bcc	rocket_done_update_pointer
 	lda	#POINTER_TYPE_RIGHT
+rocket_done_update_pointer:
 	sta	POINTER_TYPE
-rocket_done_collision:
-
         sta     WSYNC
 
 	;==================================
 	; overscan 30, see if end of level
 
+	lda     INPUT_COUNTDOWN						; 3
+	beq     waited_enough_rocket					; 2/3
+	dec     INPUT_COUNTDOWN						; 5
+	jmp	done_check_rocket_input					; 3
+
+waited_enough_rocket:
+
+	lda     INPT4                   ; check if joystick button pressed
+	bmi	done_check_rocket_input
+
+	; button was pressed
+
+	lda	POINTER_TYPE
+	cmp	#POINTER_TYPE_GRAB
+	bne	rocket_not_grabbing
+
+rocket_was_grabbing:
+	ldy	#SFX_CLICK
+	sty	SFX_PTR
+	jmp	done_check_rocket_input
+
+
+rocket_not_grabbing:
+	cmp	#POINTER_TYPE_POINT
+	beq	done_rocket		; done level
+
+
+rocket_not_walking:
+done_check_rocket_input:
 	sta	WSYNC
 
 	jmp	rocket_frame
+
+done_rocket:
