@@ -85,27 +85,22 @@ arrival_vblank_loop:
 	ldx	#0		; sprite 0 display nothing		2
 	stx	GRP1		; (FIXME: this already set?)		3
 ; 5
-	ldx	#6		;					3
-	inx			;					2
-	inx			;					2
-; 12
+	ldx	#7		;					3
+; 8
 zarrivalpad_x:
 	dex			;					2
-	bne	zarrivalpad_x		;					2/3
+	bne	zarrivalpad_x	;					2/3
 				;===========================================
-				;	5*(6+2)-1 = 39
-				; FIXME: describe better what's going on
+				;	(5*5)-1 = 24
 
-; 51
+
+; 32
 	; beam is at proper place
 	sta	RESP1							; 3
-; 54
-	lda	#$60		; fine tune missile1 (book edge)	; 2
-	sta	HMM1							; 3
-; 59
-	lda	#$40		; fine tune sprite1 (book page)		; 2
+; 35
+	lda	#$60		; fine tune sprite1 (book page)		; 2
 	sta	HMP1							; 3
-; 64
+; 40
 	sta	WSYNC
 
 	;======================================
@@ -168,8 +163,8 @@ zzarrivalpad_x:
 	lda	#$24		; middle orange				; 2
 	sta	COLUP0		; set hand color (sprite0)		; 3
 ; 19
-	lda	#$0C		; off white				; 2
-	sta	COLUP1		; set page color (sprite1)		; 3
+;	lda	#$0C		; off white				; 2
+;	sta	COLUP1		; set page color (sprite1)		; 3
 ; 24
 	lda	#NUSIZ_DOUBLE_SIZE|NUSIZ_MISSILE_WIDTH_8		; 2
 	sta	NUSIZ0							; 3
@@ -212,53 +207,56 @@ arrival_draw_playfield:
 arrival_draw_playfield_even:
 
 ; 0
-	lda	#$0E		; reset book color (lgrey)		; 2
+	lda	#$0E		; reset sky color (lgrey)		; 2
 	sta	COLUPF		; store playfield color			; 3
 ; 5
-	lda	arrival_playfield0_left,Y				; 4
+;	lda	arrival_playfield0_left,Y				; -
+	lda	#0		; always 0				; 2
 	sta	PF0							; 3
-; 12
+; 10
 	lda	arrival_playfield1_left,Y				; 4
 	sta	PF1							; 3
-; 19
+; 17
 	lda	arrival_playfield2_left,Y				; 4
 	sta	PF2							; 3
-; 26
+; 24
 
 
 	;==============================
 	; update sprite1
 
-	lda	page_sprite,Y		; load sprite1 data		4+
-	sta	GRP1		;					3
-; 33
+	lda	arrival_overlay,Y		; load sprite1 data	; 4+
+	sta	GRP1		;					; 3
+; 31
+	lda	arrival_overlay_colors,Y				; 4
+	sta	COLUP1		; set page color (sprite1)		; 3
 
+; 38
 	; activate hand sprite if necessary
 	lda	#$f							; 2
 	ldx	CURRENT_SCANLINE					; 3
 	cpx	POINTER_Y						; 3
-	bne	no_arrival_activate_hand					; 2/3
+	bne	no_arrival_activate_hand				; 2/3
 	sta	POINTER_ON						; 3
-	jmp	done_arrival_activate_hand					; 3
+	jmp	done_arrival_activate_hand				; 3
 no_arrival_activate_hand:
 	inc	TEMP1			; nop5				; 5
 done_arrival_activate_hand:
 								;===========
 								; 16 / 16
 
-; 49
+; 54
 	lda	#$0C		; off white				; 2
 	sta	COLUP1		; set page color (sprite1)		; 3
-; 54
+; 59
 
-	nop
 	lda	#$F8		; change color to tan			; 2
 	sta	COLUPF		; store playfield color			; 3
 	; want this to happen around 49..50
-; 59
+; 64
 
 	inc	CURRENT_SCANLINE					; 5
-; 64
+; 69
 
 	sta	WSYNC
 
@@ -271,8 +269,9 @@ done_arrival_activate_hand:
 	lda	#$0E		; reset book color (lgrey)		; 2
 	sta	COLUPF		; store playfield color			; 3
 ; 5
-	lda	book_edge_colors,Y					; 4
-	sta	COLUP1							; 3
+	nop
+	nop
+	lda	$80
 
 ; 12
 
@@ -281,11 +280,11 @@ done_arrival_activate_hand:
 	;==================
 
 	ldx	POINTER_ON						; 3
-	beq	no_arrival_pointer						; 2/3
+	beq	no_arrival_pointer					; 2/3
 	lda	HAND_SPRITE,X						; 4
 	sta	GRP0							; 3
 	dec	POINTER_ON						; 5
-	jmp	done_arrival_pointer						; 3
+	jmp	done_arrival_pointer					; 3
 no_arrival_pointer:
 	inc	TEMP1		; nop5					; 5
 	inc	TEMP1		; nop5					; 5
@@ -299,8 +298,8 @@ done_arrival_pointer:
 	inc	TEMP1	; nop5						; 5
 	lda	$80	; nop3						; 3
 ; 40
-	lda	#$0C		; off white				; 2
-	sta	COLUP1		; set page color (sprite1)		; 3
+	nop
+	lda	$80
 ; 45
 
 	lda	#$F8		; change color to tan			; 2
@@ -310,7 +309,7 @@ done_arrival_pointer:
 
 	lda	CURRENT_SCANLINE					; 3
 	and	#$1							; 2
-	beq	arrival_yes_inc4						; 2/3
+	beq	arrival_yes_inc4					; 2/3
 	.byte	$A5     ; begin of LDA ZP				; 3
 arrival_yes_inc4:
 	iny             ; $E8 should be harmless to load		; 2
