@@ -60,6 +60,8 @@ vcleft_loop:
 
 	jmp	skip
 
+	; bit of a hack, can store 32B here?
+
 .align $100
 
 skip:

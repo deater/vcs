@@ -15,7 +15,8 @@ static unsigned char reverse_byte(unsigned char b) {
 }
 
 static void print_help(char *name) {
-	fprintf(stderr,"Usage:\t%s [-2] [-4] [-8] INFILE OUTFILE\n\n",name);
+	fprintf(stderr,"Usage:\t%s [-2] [-4] [-8] [-b] INFILE OUTFILE\n\n",name);
+	fprintf(stderr,"\t-b : generate background color data\n");
 	fprintf(stderr,"\t-2 : only draw every 2nd line\n");
 	fprintf(stderr,"\t-4 : only draw every 4th line\n");
 	fprintf(stderr,"\t-8 : only draw every 8th line\n");

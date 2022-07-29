@@ -46,103 +46,103 @@ title_playfield2_right:
 ;===========================
 
 clock_bg_colors:
-	.byte $02
-	.byte $02
-	.byte $02
 	.byte $E0
 	.byte $E0
 	.byte $E0
-	.byte $02
-	.byte $02
 	.byte $E0
-	.byte $02
-	.byte $F0
-	.byte $02
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $02
-	.byte $02
-	.byte $02
-	.byte $02
-	.byte $02
-	.byte $02
-	.byte $02
-	.byte $02
-	.byte $02
-	.byte $F0
-	.byte $02
-	.byte $F0
-	.byte $02
-	.byte $02
-	.byte $F0
-	.byte $02
-	.byte $02
-	.byte $F0
-	.byte $02
-	.byte $02
-	.byte $02
-	.byte $E4
-	.byte $E4
-	.byte $E4
-	.byte $E4
-	.byte $E4
-	.byte $E4
-	.byte $E4
-	.byte $F0
-	.byte $E4
-	.byte $E4
-	.byte $E4
-	.byte $E4
+	.byte $E0
+	.byte $E0
+	.byte $E0
+	.byte $E0
+	.byte $E0
+	.byte $E0
+	.byte $E0
+	.byte $E0
+	.byte $E0
+	.byte $E0
+	.byte $E0
+	.byte $E0
+	.byte $E0
+	.byte $E0
+	.byte $E0
+	.byte $E0
+	.byte $E0
+	.byte $E0
+	.byte $E0
+	.byte $E0
+	.byte $E0
+	.byte $E0
+	.byte $E0
+	.byte $E0
+	.byte $E0
+	.byte $E0
+	.byte $E0
+	.byte $E0
+	.byte $E0
+	.byte $E0
+	.byte $E0
+	.byte $E0
+	.byte $E0
+	.byte $E0
+	.byte $E0
+	.byte $E0
+	.byte $E0
+	.byte $E0
+	.byte $E0
+	.byte $E0
+	.byte $E0
+	.byte $E0
+	.byte $E0
+	.byte $E0
 clock_colors:
-	.byte $0C
-	.byte $0E
-	.byte $0C
-	.byte $0C
-	.byte $0E
-	.byte $0E
-	.byte $0C
-	.byte $0C
-	.byte $0C
-	.byte $0C
-	.byte $0C
-	.byte $0E
-	.byte $0C
 	.byte $0E
 	.byte $0E
 	.byte $0E
 	.byte $0E
 	.byte $0E
-	.byte $0C
+	.byte $0E
+	.byte $0E
+	.byte $0E
+	.byte $0E
+	.byte $0E
+	.byte $0E
+	.byte $0E
+	.byte $0E
+	.byte $0E
+	.byte $0E
+	.byte $0E
+	.byte $0E
+	.byte $0E
+	.byte $0E
 	.byte $0E
 	.byte $0E
 	.byte $0E
 	.byte $0C
 	.byte $08
 	.byte $06
-	.byte $E6
-	.byte $E6
+	.byte $D8
+	.byte $D8
 	.byte $D6
-	.byte $E6
-	.byte $E4
-	.byte $E4
-	.byte $E4
-	.byte $E4
-	.byte $E4
-	.byte $E4
-	.byte $E4
-	.byte $F0
-	.byte $02
-	.byte $02
-	.byte $02
-	.byte $02
-	.byte $02
-	.byte $02
-	.byte $E4
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $00
+	.byte $D8
+	.byte $D6
+	.byte $D6
+	.byte $D6
+	.byte $D6
+	.byte $D6
+	.byte $D6
+	.byte $D6
+	.byte $D6
+	.byte $D6
+	.byte $D6
+	.byte $D6
+	.byte $D6
+	.byte $D6
+	.byte $D6
+	.byte $D6
+	.byte $D6
+	.byte $D6
+	.byte $D6
+	.byte $D6
 
 .align $100
 
@@ -161,6 +161,27 @@ clock_playfield0_left:
 	.byte $40
 	.byte $00
 	.byte $00
+	.byte $40
+	.byte $40
+	.byte $40
+	.byte $40
+	.byte $40
+	.byte $40
+	.byte $40
+	.byte $40
+	.byte $40
+	.byte $40
+	.byte $40
+	.byte $40
+	.byte $40
+	.byte $40
+	.byte $40
+	.byte $40
+	.byte $40
+	.byte $40
+	.byte $40
+	.byte $40
+	.byte $40
 	.byte $00
 	.byte $00
 	.byte $00
@@ -174,27 +195,6 @@ clock_playfield0_left:
 	.byte $00
 	.byte $00
 	.byte $00
-	.byte $80
-	.byte $80
-	.byte $80
-	.byte $80
-	.byte $80
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $E0
-	.byte $E0
-	.byte $E0
-	.byte $E0
-	.byte $E0
-	.byte $E0
-	.byte $E0
-	.byte $00
-	.byte $E0
-	.byte $E0
-	.byte $E0
-	.byte $E0
 
 clock_playfield1_left:
 	.byte $58
@@ -202,49 +202,49 @@ clock_playfield1_left:
 	.byte $58
 	.byte $88
 	.byte $00
-	.byte $01
-	.byte $01
+	.byte $00
+	.byte $00
 	.byte $30
 	.byte $38
-	.byte $F9
-	.byte $F9
-	.byte $F9
-	.byte $79
-	.byte $79
-	.byte $59
-	.byte $99
-	.byte $99
-	.byte $19
-	.byte $79
-	.byte $F9
-	.byte $79
-	.byte $79
-	.byte $79
-	.byte $79
-	.byte $7D
-	.byte $7D
-	.byte $7D
-	.byte $7D
-	.byte $7D
-	.byte $7D
-	.byte $7D
-	.byte $7D
+	.byte $FC
+	.byte $FF
+	.byte $FF
+	.byte $7F
+	.byte $7F
+	.byte $5F
+	.byte $9F
+	.byte $9F
+	.byte $1F
+	.byte $7F
+	.byte $FF
+	.byte $7F
+	.byte $7F
+	.byte $7F
+	.byte $7F
+	.byte $7F
+	.byte $7F
+	.byte $7F
+	.byte $7F
+	.byte $7F
+	.byte $7F
+	.byte $7F
+	.byte $7F
+	.byte $7F
+	.byte $7F
+	.byte $7F
+	.byte $7F
+	.byte $7E
+	.byte $78
 	.byte $7C
-	.byte $7C
-	.byte $7C
-	.byte $7C
-	.byte $83
-	.byte $97
-	.byte $87
-	.byte $87
-	.byte $87
-	.byte $C7
-	.byte $CF
-	.byte $3C
-	.byte $C3
-	.byte $83
-	.byte $EF
-	.byte $00
+	.byte $7B
+	.byte $78
+	.byte $08
+	.byte $30
+	.byte $15
+	.byte $2A
+	.byte $55
+	.byte $02
+	.byte $55
 
 clock_playfield2_left:
 	.byte $FE
@@ -278,23 +278,23 @@ clock_playfield2_left:
 	.byte $FF
 	.byte $FF
 	.byte $FF
-	.byte $FB
 	.byte $FF
 	.byte $FF
 	.byte $FF
-	.byte $FC
-	.byte $03
-	.byte $0F
-	.byte $0F
-	.byte $1E
-	.byte $1F
-	.byte $1F
-	.byte $0F
-	.byte $FE
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
+	.byte $F8
+	.byte $FD
+	.byte $F0
+	.byte $E8
+	.byte $E4
+	.byte $E5
+	.byte $E2
+	.byte $E0
+	.byte $F0
+	.byte $CE
+	.byte $15
+	.byte $AA
+	.byte $55
+	.byte $AA
 
 clock_playfield0_right:
 	.byte $F0
@@ -329,28 +329,28 @@ clock_playfield0_right:
 	.byte $00
 	.byte $00
 	.byte $00
-	.byte $D0
 	.byte $10
-	.byte $00
-	.byte $30
-	.byte $E0
-	.byte $F0
-	.byte $F0
-	.byte $E0
-	.byte $E0
-	.byte $A0
-	.byte $D0
+	.byte $10
+	.byte $90
 	.byte $70
-	.byte $80
-	.byte $00
-	.byte $00
-	.byte $00
+	.byte $90
+	.byte $50
+	.byte $B0
+	.byte $50
+	.byte $B0
+	.byte $50
+	.byte $B0
+	.byte $70
+	.byte $60
+	.byte $C0
+	.byte $10
+	.byte $A0
 
 clock_playfield1_right:
 	.byte $01
 	.byte $01
 	.byte $01
-	.byte $03
+	.byte $01
 	.byte $01
 	.byte $01
 	.byte $01
@@ -368,33 +368,33 @@ clock_playfield1_right:
 	.byte $03
 	.byte $03
 	.byte $03
-	.byte $43
-	.byte $23
+	.byte $63
 	.byte $93
 	.byte $93
-	.byte $13
+	.byte $93
 	.byte $03
 	.byte $03
 	.byte $03
 	.byte $03
+	.byte $01
+	.byte $01
+	.byte $02
+	.byte $80
+	.byte $84
+	.byte $57
+	.byte $AF
+	.byte $57
+	.byte $AF
+	.byte $57
+	.byte $AF
+	.byte $57
+	.byte $AF
+	.byte $57
+	.byte $AF
+	.byte $57
+	.byte $2F
 	.byte $03
-	.byte $03
-	.byte $BC
-	.byte $8C
-	.byte $03
-	.byte $03
-	.byte $FC
-	.byte $FE
-	.byte $F8
-	.byte $F9
-	.byte $FC
-	.byte $FC
-	.byte $F8
-	.byte $05
-	.byte $FC
-	.byte $F8
-	.byte $00
-	.byte $00
+	.byte $54
 
 .align $100
 clock_playfield2_right:
@@ -428,24 +428,26 @@ clock_playfield2_right:
 	.byte $FF
 	.byte $FF
 	.byte $FF
-	.byte $DF
-	.byte $DE
-	.byte $FF
-	.byte $FE
 	.byte $FF
 	.byte $FF
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
 	.byte $FF
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
+	.byte $FF
+	.byte $FF
+	.byte $FF
+	.byte $FF
+	.byte $FF
+	.byte $FF
+	.byte $FF
+	.byte $FF
+	.byte $FF
+	.byte $FF
+	.byte $FF
+	.byte $FF
+	.byte $FF
+	.byte $FF
+	.byte $FF
+
+
 
 cleft_colors:
 	.byte $00
@@ -692,6 +694,5 @@ book_edge_colors:
 	.byte $00
 	.byte $00
 	.byte $00
-
 
 
