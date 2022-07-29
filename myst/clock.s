@@ -50,13 +50,20 @@ le_vblank_loop:
 	;========================
 	; increment frame
 	; setup missile
+; 6
 	inc	FRAME							; 5
-
-	lda	#$2
-	sta	ENAM0	; enable missile 0
-
-
-
+; 11
+	ldx	#4							; 2
+; 13
+mclock_pad:
+	dex								; 2
+	bne	mclock_pad	; (X*5)-1 = 14				; 2/3
+; 27
+	sta	RESM0							; 3
+; 30
+	lda	#$2							; 2
+	sta	ENAM0	; enable missile 0				; 3
+; 35
 	sta	WSYNC							; 3
 
 
@@ -87,18 +94,21 @@ le_vblank_loop:
 	ldx	#0		; sprite 0 display nothing		2
 	stx	GRP1		; (FIXME: this already set?)		3
 ; 8
-	ldx	#6		;					3
+	ldx	#5		;					3
 	inx			;					2
 	inx			;					2
 qpad_x:
 	dex			;					2
 	bne	qpad_x		;					2/3
 				;===========================================
-				;	12-1+5*(coarse_x+2)
-				; FIXME: describe better what's going on
+				;	5*(6+2)-1 = 39
+
 
 	; beam is at proper place
 	sta	RESP1							; 3
+
+	lda	#$F0		; fine adjust overlay			; 2
+	sta	HMP1							; 3
 
 
 	sta	WSYNC
@@ -164,12 +174,11 @@ pad_x:
 								;===========
 								;        23
 ; 26
-	; reset back to strongbad sprite
 
-	lda	#$40		; dark red				; 2
-	sta	COLUP0		; set strongbad color (sprite0)		; 3
+	lda	#$22		; medium brown				; 2
+	sta	COLUP0		; set pointer color (sprite0)		; 3
 
-	lda	#$1E		; yellow				; 2
+	lda	clock_overlay_colors					; 4+
 	sta	COLUP1		; set secret color (sprite1)		; 3
 
 	lda	#NUSIZ_DOUBLE_SIZE|NUSIZ_MISSILE_WIDTH_8		; 2
@@ -177,21 +186,21 @@ pad_x:
 	lda	#NUSIZ_QUAD_SIZE|NUSIZ_MISSILE_WIDTH_4			; 2
 	sta	NUSIZ1							; 3
 
-	ldy	#0		; current block 			; 2
-								;============
-								;	28
+	lda	#0							; 2
+	tay			; current block 			; 2
+	sty	CTRLPF		; no_reflect				; 3
 
-	sty	CTRLPF		; no_reflect
+	lda	#$E0		; sort of a dark brown			; 2
+	sta	COLUBK							; 3
 
-	lda	#0
-	sta	VBLANK			; turn on beam
+	lda	#$FF
+	sta	GRP1
 
-
-
-	lda	clock_colors						; 4
-;	ldx	clock_bg_colors
+	lda	clock_colors
 
 	ldx	#0
+
+	stx	VBLANK			; turn on beam			; 3
 
 	sta	WSYNC							; 3
 								;============
@@ -216,33 +225,34 @@ draw_playfield:
 ; 0
 ;	lda	clock_colors,Y						; 4+
 	sta	COLUPF							; 3
-	lda	clock_bg_colors,Y					; 4+
-	sta	COLUBK							; 3
-; 14
+	lda	clock_overlay_sprite,Y					; 4
+	sta	GRP1							; 3
+; 10
 	lda	clock_playfield0_left,Y	;				; 4
 	sta	PF0			;				; 3
 	;   has to happen by 22 (GPU 68)
-; 21
+; 17
 	lda	clock_playfield1_left,Y	;				; 4
 	sta	PF1			;				; 3
 	;  has to happen by 28 (GPU 84)
-; 28
+; 24
 	lda	clock_playfield2_left,Y	;				; 4
         sta	PF2							; 3
 	;  has to happen by 38 (GPU 116)	;
-; 35
+; 31
 	lda	clock_playfield0_right,Y	;			; 4
         sta	PF0				;			; 3
 	; has to happen 28-49 (GPU 84-148)
-; 42
+; 38
         lda	clock_playfield1_right,Y	;			; 4
         sta	PF1				;			; 3
 	; has to happen 38-56 (GPU 116-170)
-; 49
-        lda	clock_playfield2_right,Y	;			; 4
+; 45
+        lda	#$FF				;			; 2
+	nop					;			; 2
         sta	PF2				;			; 3
 	; has to happen 49-67 (GPU148-202)
-; 56
+; 52
 	; activate hand sprite if necessary
 	lda	#$f							; 2
 	ldx	CURRENT_SCANLINE					; 3
@@ -255,6 +265,10 @@ no_clock_activate_hand:
 done_clock_activate_hand:
 								;===========
 								; 16 / 16
+; 68
+
+	nop
+	nop
 
 ; 72
 
@@ -303,7 +317,8 @@ clock_done_pointer:
 	sta	PF1				;			; 3
 	; has to happen 39-56 (GPU 116-170)
 ; 51
-	lda	clock_playfield2_right,Y	;			; 4+
+	lda	#$FF				;			; 2
+	nop								; 2
 	sta	PF2				;			; 3
 	; has to happen 50-67 (GPU148-202)
 ; 68
@@ -344,7 +359,8 @@ clock_done_pointer:
 	sta	PF1				;			; 3
 	; has to happen 39-56 (GPU 116-170)
 ; 51
-	lda	clock_playfield2_right,Y	;			; 4+
+	lda	#$FF				;			; 2
+	nop
 	sta	PF2				;			; 3
 	; has to happen 50-67 (GPU148-202)
 ; 58
@@ -397,13 +413,13 @@ clock_done_pointer2:
 	sta	PF1				;			; 3
 	; has to happen 39-56 (GPU 116-170)
 ; 51
-	lda	clock_playfield2_right,Y	;			; 4+
+	lda	#$FF				;			; 2
 	sta	PF2				;			; 3
 	; has to happen 50-67 (GPU148-202)
-; 58
-	lda	$80							; 3
-	nop								; 2
+; 56
 	iny								; 2
+	lda	clock_overlay_colors,Y					; 4
+	sta	COLUP1							; 3
 	lda	clock_colors,Y						; 4+
 ; 69
 	cpy	#48		; see if hit end			; 2

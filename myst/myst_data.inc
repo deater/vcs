@@ -45,55 +45,6 @@ title_playfield2_right:
 ; clock data
 ;===========================
 
-clock_bg_colors:
-	.byte $E0
-	.byte $E0
-	.byte $E0
-	.byte $E0
-	.byte $E0
-	.byte $E0
-	.byte $E0
-	.byte $E0
-	.byte $E0
-	.byte $E0
-	.byte $E0
-	.byte $E0
-	.byte $E0
-	.byte $E0
-	.byte $E0
-	.byte $E0
-	.byte $E0
-	.byte $E0
-	.byte $E0
-	.byte $E0
-	.byte $E0
-	.byte $E0
-	.byte $E0
-	.byte $E0
-	.byte $E0
-	.byte $E0
-	.byte $E0
-	.byte $E0
-	.byte $E0
-	.byte $E0
-	.byte $E0
-	.byte $E0
-	.byte $E0
-	.byte $E0
-	.byte $E0
-	.byte $E0
-	.byte $E0
-	.byte $E0
-	.byte $E0
-	.byte $E0
-	.byte $E0
-	.byte $E0
-	.byte $E0
-	.byte $E0
-	.byte $E0
-	.byte $E0
-	.byte $E0
-	.byte $E0
 clock_colors:
 	.byte $0E
 	.byte $0E
@@ -144,7 +95,7 @@ clock_colors:
 	.byte $D6
 	.byte $D6
 
-.align $100
+
 
 clock_playfield0_left:
 	.byte $40
@@ -195,6 +146,8 @@ clock_playfield0_left:
 	.byte $00
 	.byte $00
 	.byte $00
+
+.align $100
 
 clock_playfield1_left:
 	.byte $58
@@ -396,57 +349,108 @@ clock_playfield1_right:
 	.byte $03
 	.byte $54
 
-.align $100
-clock_playfield2_right:
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
 
+clock_overlay_colors:
+	.byte $04
+	.byte $04
+	.byte $04
+	.byte $04
+	.byte $04
+	.byte $04
+	.byte $00
+	.byte $14
+	.byte $14
+	.byte $14
+	.byte $14
+	.byte $14
+	.byte $14
+	.byte $14
+	.byte $14
+	.byte $14
+	.byte $14
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $22
+	.byte $22
+	.byte $22
+	.byte $22
+	.byte $22
+	.byte $22
+	.byte $22
+	.byte $22
+	.byte $00
+	.byte $04
+	.byte $C2
+	.byte $C2
+	.byte $C2
+	.byte $C2
+	.byte $C2
+	.byte $C2
+	.byte $C2
+	.byte $C2
+	.byte $C2
+	.byte $C2
+	.byte $C2
+	.byte $C2
+	.byte $C2
+	.byte $C2
+	.byte $00
+	.byte $E8
+
+.align $100
+
+clock_overlay_sprite:
+	.byte $03
+	.byte $1C
+	.byte $60
+	.byte $01
+	.byte $0E
+	.byte $70
+	.byte $00
+	.byte $0C
+	.byte $12
+	.byte $22
+	.byte $21
+	.byte $21
+	.byte $21
+	.byte $21
+	.byte $22
+	.byte $14
+	.byte $08
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $0C
+	.byte $0C
+	.byte $0C
+	.byte $1E
+	.byte $9E
+	.byte $9E
+	.byte $9E
+	.byte $9E
+	.byte $00
+	.byte $7F
+	.byte $08
+	.byte $EC
+	.byte $D5
+	.byte $2A
+	.byte $D5
+	.byte $AA
+	.byte $55
+	.byte $AA
+	.byte $55
+	.byte $AA
+	.byte $55
+	.byte $2A
+	.byte $35
+	.byte $1A
+	.byte $00
+	.byte $AA
 
 
 cleft_colors:
