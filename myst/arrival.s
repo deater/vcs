@@ -200,81 +200,7 @@ zzarrivalpad_x:
 	;===========================================
 	;===========================================
 
-	;==========================
-	; draw top eight lines
-
-	;==========================
-	; black line (4 lines)
-	;==========================
-
-	; in playfield scanline 0
-	lda	#$00		; black					; 2
-	sta	COLUPF							; 3
-	sta	WSYNC
-
-	; in playfield scanline 1
-
-	sta	WSYNC
-
-	; in playfield scanline 2
-
-	sta	WSYNC
-
-	; in playfield scanline 3
-
-	sta	WSYNC
-
-	;==========================
-	; grey line (4 lines)
-	;==========================
-
-	; in playfield scanline 4
-; 0
-	lda	#$04		; dark grey				; 2
-	sta	COLUPF							; 3
-	lda	#$7F		; overhanging page			; 2
-	sta	PF1							; 3
-	lda	#$FF							; 2
-	sta	PF2							; 3
-; 15
-	sta	WSYNC
-
-	; in playfield scanline 5
-
-	sta	WSYNC
-
-	; in playfield scanline 6
-
-	sta	WSYNC
-
-	; in playfield scanline 7
-; 0
-	; delay things a bit so we enable towards the end of the scanline
-	ldx	#6
-; 2
-parrival_x:
-	dex			;					2
-	bne	parrival_x		; (6*5)-1 = 29				2/3
-; 31
-	lda	#$2							; 2
-	sta	ENAM0	; enable missile 0				; 3
-	sta	ENAM1	; enable missile 1				; 3
-; 39
-	lda	#$3F		; Set playfield				; 2
-	sta	PF1							; 3
-	lda	#$FF							; 2
-        sta	PF2							; 3
-; 49
-	sta	WSYNC
-
-
-
-
-	jmp	arrival_draw_playfield_plus_3				; 3
-
 arrival_draw_playfield:
-
-
 
 	;================================
 	;================================
@@ -285,18 +211,19 @@ arrival_draw_playfield:
 
 arrival_draw_playfield_even:
 
-; 3
-arrival_draw_playfield_plus_3:
-
+; 0
 	lda	#$0E		; reset book color (lgrey)		; 2
 	sta	COLUPF		; store playfield color			; 3
-; 8
-	lda	book_edge_colors,Y					; 4
-	sta	COLUP1		; set edge colors (missile1)		; 3
-; 15
-
-;	lda	$80		; nop3					; 3
-; 15
+; 5
+	lda	arrival_playfield0_left,Y				; 4
+	sta	PF0							; 3
+; 12
+	lda	arrival_playfield1_left,Y				; 4
+	sta	PF1							; 3
+; 19
+	lda	arrival_playfield2_left,Y				; 4
+	sta	PF2							; 3
+; 26
 
 
 	;==============================
@@ -304,7 +231,7 @@ arrival_draw_playfield_plus_3:
 
 	lda	page_sprite,Y		; load sprite1 data		4+
 	sta	GRP1		;					3
-; 22
+; 33
 
 	; activate hand sprite if necessary
 	lda	#$f							; 2
@@ -319,19 +246,19 @@ done_arrival_activate_hand:
 								;===========
 								; 16 / 16
 
-; 38
+; 49
 	lda	#$0C		; off white				; 2
 	sta	COLUP1		; set page color (sprite1)		; 3
-; 43
+; 54
 
 	nop
 	lda	#$F8		; change color to tan			; 2
 	sta	COLUPF		; store playfield color			; 3
 	; want this to happen around 49..50
-; 50
+; 59
 
 	inc	CURRENT_SCANLINE					; 5
-; 55
+; 64
 
 	sta	WSYNC
 
@@ -392,7 +319,7 @@ done_arrival_inc_block:
                                                                 ; 10/10
 
 ; 60
-	cpy	#44		; see if hit end			; 2
+	cpy	#48		; see if hit end			; 2
 ; 62
 	sta	WSYNC
 ; 0
@@ -400,43 +327,6 @@ done_arrival_inc_block:
 
 
 arrival_done_playfield:
-
-
-; 2
-
-	;==========================
-	; bottom grey line
-
-	lda	#$04		; dark grey				; 2
-	sta	COLUPF							; 3
-	lda	#$7F		; overhanging page			; 2
-	sta	PF1							; 3
-; 12
-
-	lda	#$0							; 2
-	sta	ENAM0	; disable missile 0				; 3
-	sta	ENAM1	; disable missile 1				; 3
-	sta	GRP1							; 3
-; 23
-	sta	WSYNC
-	sta	WSYNC
-	sta	WSYNC
-	sta	WSYNC
-
-
-	;==========================
-	; black line
-; 0
-	lda	#$00		;					; 2
-	sta	PF0		; turn off playfield			; 3
-	sta	PF1							; 3
-	sta	PF2							; 3
-	sta	COLUPF		; color black				; 3
-; 14
-	sta	WSYNC
-	sta	WSYNC
-	sta	WSYNC
-	sta	WSYNC
 
 
 	;===========================
@@ -512,7 +402,6 @@ arrival_keep_going:
 done_check_arrival_input:
 	sta	WSYNC
 	jmp	arrival_frame
-
 
 done_arrival:
 
