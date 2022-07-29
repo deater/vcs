@@ -2,8 +2,11 @@
 	; Arrival Location
 	;=====================
 
-	jmp	arrival_frame
-.align	$100
+	lda	#30
+	sta	INPUT_COUNTDOWN
+
+;	jmp	arrival_frame
+;.align	$100
 arrival_frame:
 
 	;============================
@@ -55,26 +58,7 @@ arrival_vblank_loop:
 ; 6
 	inc	FRAME							; 5
 ; 11
-	ldx	#3							; 2
-; 13
-bzarrivalpad_x:
-	dex			;					; 2
-	bne	bzarrivalpad_x		; (X*5)-1, X=3=14			; 2/3
 
-
-; 27
-	sta	RESM1		; adjust missile location for		; 3
-				; left edge of book
-
-; 30
-	inc	TEMP1							; 5
-	inc	TEMP1							; 5
-	nop								; 2
-	nop								; 2
-; 44
-	sta	RESM0		; adjust missile0 location		; 3
-				; for spine of book
-; 47
 	sta	WSYNC							; 3
 
 
@@ -461,71 +445,75 @@ arrival_done_playfield:
 	;===========================
 	;===========================
 
-	ldx	#24
+	ldx	#26
 	jsr	common_overscan
 
 	;==================================
-	; overscan 26, trigger sound
+	; overscan 28, update sound
 
-;	ldy	SOUND_TO_PLAY
-;	beq	no_sound_to_play
+	jsr	update_sound
 
-;	jsr	trigger_sound		; 6+40
-
-;	ldy	#0
-;	sty	SOUND_TO_PLAY
-;no_sound_to_play:
-	sta	WSYNC
-
-	;==================================
-	; overscan 27+28, update sound
-
-;	jsr	update_sound
-
-	sta	WSYNC
 	sta	WSYNC
 
 	;==================================
 	; overscan 29, collision detection
 
 	lda	#POINTER_TYPE_POINT					; 2
-	sta	POINTER_TYPE						; 3
 
-	lda	POINTER_X						; 3
-	cmp	#88
-	bcc	arrival_not_in_window
-	cmp	#128
-	bcs	arrival_not_in_window
-	lda	POINTER_Y
-	cmp	#35
-	bcs	arrival_not_in_window
-	cmp	#8
-	bcc	arrival_not_in_window
-	lda	#POINTER_TYPE_GRAB
-	sta	POINTER_TYPE
+;	ldy	POINTER_X						; 3
+;	cpy	#88
+;	bcc	arrival_not_in_window
+;	cpy	#128
+;	bcs	arrival_not_in_window
+;	ldy	POINTER_Y
+;	cpy	#35
+;	bcs	arrival_not_in_window
+;	cpy	#8
+;	bcc	arrival_not_in_window
+;	lda	#POINTER_TYPE_GRAB
+
 arrival_not_in_window:
+arrival_check_side:
+	ldy	POINTER_X                                               ; 3
+	cpy	#32
+	bcs	arrival_not_left
+	lda	#POINTER_TYPE_LEFT
+	jmp	arrival_done_update_pointer
+arrival_not_left:
+	cpy	#128
+	bcc	arrival_done_update_pointer
+	lda	#POINTER_TYPE_RIGHT
+arrival_done_update_pointer:
+	sta	POINTER_TYPE
+
 	sta	WSYNC
 
 	;==================================
 	; overscan 30, see if at end
 
+	lda	INPUT_COUNTDOWN
+	beq	waited_enough_arrival
+	dec	INPUT_COUNTDOWN
+	jmp	done_check_arrival_input
+
+waited_enough_arrival:
+
 	lda	INPT4			; check if joystick button pressed
-	bpl	arrival_clicked
+	bmi	done_check_arrival_input
+
+	; button was pressed
+
+	lda	POINTER_TYPE
+	cmp	#POINTER_TYPE_POINT
+	beq	done_arrival
 
 arrival_keep_going:
+
+done_check_arrival_input:
 	sta	WSYNC
 	jmp	arrival_frame
 
-arrival_clicked:
-	lda	POINTER_TYPE
-	cmp	#POINTER_TYPE_GRAB
-	bne	arrival_keep_going
 
-; otherwise, exit...
+done_arrival:
 
-	; start linking noise
-	ldy	#SFX_LINK
-	sty	SFX_PTR
-
-
-
+; move on to rocket
