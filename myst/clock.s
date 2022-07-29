@@ -1,6 +1,9 @@
 	;=====================
 	; the clock
 	;=====================
+do_clock:
+	lda	#30
+	sta	INPUT_COUNTDOWN
 
 	jmp	clock_frame
 .align	$100
@@ -439,54 +442,59 @@ done_playfield:
 	;===========================
 	;===========================
 
-	ldx	#24
+	ldx	#26
 	jsr	common_overscan
 
+
 	;==================================
-	; overscan 26, trigger sound
+	; overscan 28, update sound
 
-;	ldy	SOUND_TO_PLAY
-;	beq	no_sound_to_play
+	jsr	update_sound
 
-;	jsr	trigger_sound		; 6+40
-
-;	ldy	#0
-;	sty	SOUND_TO_PLAY
-;no_sound_to_play:
 	sta	WSYNC
 
 	;==================================
-	; overscan 27+28, update sound
-
-;	jsr	update_sound
-
-	sta	WSYNC
-	sta	WSYNC
-
-	;==================================
-	; overscan 29, collision detection
+	; overscan 29, update pointer
 
 	lda     #POINTER_TYPE_POINT					; 2
-	sta     POINTER_TYPE						; 3
 
-	lda	POINTER_X						; 3
-	cmp	#32
+	ldy	POINTER_X						; 3
+	cpy	#32
 	bcs	clock_not_left
 	lda	#POINTER_TYPE_LEFT
-	sta	POINTER_TYPE
 	jmp	clock_done_collision
 clock_not_left:
-	cmp	#128
+	cpy	#128
 	bcc	clock_done_collision
 	lda	#POINTER_TYPE_RIGHT
-	sta	POINTER_TYPE
 clock_done_collision:
+	sta	POINTER_TYPE
 
         sta     WSYNC
 
 	;==================================
 	; overscan 30, see if end of level
 
+	lda	INPUT_COUNTDOWN						; 3
+	beq	waited_enough_clock					; 2/3
+	dec	INPUT_COUNTDOWN						; 5
+	jmp	done_check_clock_input					; 3
+
+waited_enough_clock:
+
+	lda	INPT4			; check if joystick button pressed
+	bmi	done_check_clock_input
+
+	; button was pressed
+	lda	POINTER_TYPE
+	cmp	#POINTER_TYPE_POINT
+	beq	done_clock		; done level
+
+done_check_clock_input:
+
 	sta	WSYNC
 
 	jmp	clock_frame
+
+done_clock:
+	jmp	arrival
