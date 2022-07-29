@@ -163,28 +163,25 @@ zzarrivalpad_x:
 	lda	#$24		; middle orange				; 2
 	sta	COLUP0		; set hand color (sprite0)		; 3
 ; 19
-;	lda	#$0C		; off white				; 2
-;	sta	COLUP1		; set page color (sprite1)		; 3
-; 24
 	lda	#NUSIZ_DOUBLE_SIZE|NUSIZ_MISSILE_WIDTH_8		; 2
 	sta	NUSIZ0							; 3
 	lda	#NUSIZ_QUAD_SIZE|NUSIZ_MISSILE_WIDTH_4			; 2
 	sta	NUSIZ1							; 3
-; 34
+; 29
 	ldy	#0		; Y=current block (scanline/4)		; 2
-; 36
+; 31
 
 	lda	#0							; 2
-	sta	VBLANK			; turn on beam			; 3
 	sta	POINTER_ON						; 3
-; 44
+; 36
 	lda	#CTRLPF_REF		; reflect playfield		; 2
 	sta	CTRLPF							; 3
-; 49
+; 41
 
 	lda	#0			; bg color			; 2
 	sta	COLUBK							; 3
-; 54
+	sta	VBLANK			; turn on beam			; 3
+; 49
 	sta	WSYNC							; 3
 
 	;===========================================
@@ -246,8 +243,8 @@ done_arrival_activate_hand:
 								; 16 / 16
 
 ; 54
-	lda	#$0C		; off white				; 2
-	sta	COLUP1		; set page color (sprite1)		; 3
+	nop
+	lda	$80
 ; 59
 
 	lda	#$F8		; change color to tan			; 2
