@@ -8,7 +8,9 @@
 
 	lda	#0							; 2
 	sta	FRAME							; 3
+	sta	FALL_COUNT
 
+				; unmirrored playfield
 	lda	#CTRLPF_PFP	; playfield has priority over sprites	; 2
 	sta	CTRLPF							; 3
 
@@ -27,7 +29,7 @@ cleft_frame_loop:
 	; 37 lines of vertical blank
 	;=============================
 
-	ldx	#36							; 2
+	ldx	#33							; 2
 vcleft_loop:
 	sta	WSYNC							; 3
 	dex								; 2
@@ -35,34 +37,110 @@ vcleft_loop:
 
 ; 4
 	;==============================
-	; VBLANK scanline 37 -- config
+	; VBLANK scanline 34 -- frame
 	;==============================
 ; 4
 	inc	FRAME							; 5
+; 9
+	lda	FRAME							; 3
+	and	#$3f							; 2
+	bne	not_a_second						; 2/3
+; 16
+	inc	FALL_COUNT						; 5
+; 21
+	; set up scale
+	lda	#$0							; 2
+	ldx	FALL_COUNT						; 3
+	cpx	#4							; 2
+	bcs	scale3							; 2/3
+	cpx	#2							; 2
+	bcs	scale2							; 2/3
+scale1:
+	eor	#$5							; 2
+scale2:
+	eor	#$2							; 2
+scale3:
+	eor	#$7							; 2
+done_scale:
+	sta	NUSIZ0							; 3
+								; 22 worst case
+; 43
 
+	lda	FALL_COUNT
+	cmp	#3
+	bcs	copy_book
+
+	ldx	#0							; 2
+copy_falling_loop:
+	lda	falling_sprite,X					; 4
+	sta	HAND_SPRITE,X						; 4
+	inx								; 2
+	cpx	#8							; 2
+	bne	copy_falling_loop					; 2/3
+	; 2+(15*8)-1 = 121
+
+	jmp	done_second
+
+copy_book:
+
+	ldx	#7
+	lda	#$0F
+copy_book_loop:
+	sta	HAND_SPRITE,X
+	dex
+	bpl	copy_book_loop
+	bmi	two_a_second
+
+not_a_second:
+	sta	WSYNC
+two_a_second:
+	sta	WSYNC
+done_second:
+	sta	WSYNC
+
+
+
+	;==============================
+	; VBLANK scanline 37 -- config
+	;==============================
+; 0
+	nop
+	nop
+; 4
+	inc	TEMP1
+;	inc	FRAME							; 5
+; 9
 	ldy	#0							; 2
 	ldx	#0							; 2
 	stx	GRP0							; 3
 	stx	GRP1							; 3
 	stx	CTRLPF							; 3
 	stx	VBLANK			; re-enable beam		; 3
+; 25
+	lda	#$2			; enable ball (for stars)	; 2
+	sta	ENABL							; 3
+; 30
+	sta	RESBL			; set ball location		; 3
+	lda	#$70							; 2
+	sta	HMBL							; 3
+; 38
+	lda	$80		; nop3 CRITICAL TIMING			; 3
+	sta	RESP0							; 3
+; 44	(MUST BE 44)
 
-	lda	#$2
-	sta	ENABL
-
-	sta	RESBL
-	lda	#$70
-	sta	HMBL
+	lda	#$02		; sprite0 (falling) color		; 2
+	sta	COLUP0							; 3
+; 49
 
 	lda	#0							; 2
 	sta	PF1			; playfield 1 is always 0	; 3
-;
+; 54
 
-	jmp	skip
+;	jmp	skip
 
 	; bit of a hack, can store 32B here?
 
-.align $100
+;.align $100
 
 skip:
 	;=============================================
@@ -88,6 +166,11 @@ cleft_playfield_loop:
 	sta	PF2			;				; 3
 	; must write by CPU 38 [GPU 116]
 ; 22
+
+.if 0
+	;====================
+	; do the star effect
+
 	tya								; 2
 	and	#$f							; 2
 	bne	not8							; 2/3
@@ -95,7 +178,7 @@ cleft_playfield_loop:
 	jmp	done8							; 3
 not8:
 	lda	#0							; 2
-	nop
+	nop								; 2
 done8:
 	sta	ENABL							; 3
 								;===========
@@ -103,6 +186,35 @@ done8:
 
 ; 36
 	inc	TEMP1	; nop5						; 5
+.endif
+
+	;==================
+	; draw sprite
+	;==================
+; 22
+	cpy	#90							; 2
+	bcc	no_fall_delay_13					; 2/3
+	cpy	#99							; 2
+	bcs	no_fall_delay_9						; 2/3
+	lda	HAND_SPRITE-90,Y					; 4
+	sta	GRP0							; 3
+	jmp	no_fall
+no_fall_delay_13:
+	nop
+	nop
+no_fall_delay_9:
+	lda	$80
+	lda	$80
+	lda	$80
+no_fall:
+
+								;============
+								; 5 / 9 / 18
+; want 19
+
+
+
+
 
 ; 41
 	lda	cleft_playfield0_right,X	;			; 4+
@@ -155,8 +267,12 @@ done_cleft_playfield:
 	; check for button or RESET
         ;============================
 
-	 ;===============================
-        ; debounce reset/keypress check
+	;===============================
+	; debounce reset/keypress check
+
+	lda	FALL_COUNT
+	cmp	#5
+	beq	done_cleft
 
 	lda	INPUT_COUNTDOWN						; 3
 	beq	waited_enough_cleft					; 2/3
@@ -180,4 +296,5 @@ done_check_cleft_input:
 	jmp	cleft_frame_loop
 
 done_cleft:
-
+	lda	#0
+	sta	ENABL

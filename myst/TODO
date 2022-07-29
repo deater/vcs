@@ -5,16 +5,15 @@ Cleft:
 
 Book:
 	adjust top left of page to not be uneven
-	sprite animation of 
-	change sprite on location
-	click on sprite takes you to next
+	sprite animation of destination
 	add linking noise
-
-clock:
-	get it working
 
 arrival:
 	get it working
 
-spacehip:
-	get it working
+clock:
+	ability to click
+
+spaceship:
+	ability to click on marker
+	ability to move on

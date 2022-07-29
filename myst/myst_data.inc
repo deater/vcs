@@ -18,6 +18,10 @@ hand_sprite_right:
 	.byte	$FF,$FF,$60,$30,$18,$00,$00,$00
 
 
+falling_sprite:
+	.byte	$E0,$31,$1A,$1E,$FE,$1E,$0F,$05,$00
+;	.byte	$00,$05,$0F,$1E,$FE,$1E,$1A,$31,$E0
+
 ; values for adjusting sprite offsets
 fine_adjust_table:
         ; left
@@ -454,54 +458,12 @@ clock_overlay_sprite:
 
 
 cleft_colors:
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $02
-	.byte $02
-	.byte $02
-	.byte $02
-	.byte $02
-	.byte $02
-	.byte $04
-	.byte $A4
-	.byte $A4
-	.byte $A4
-	.byte $A4
-	.byte $A4
-	.byte $A6
-	.byte $A6
-	.byte $A8
-	.byte $A8
-	.byte $AC
-	.byte $AE
-	.byte $AE
-	.byte $AE
-	.byte $AC
-	.byte $AC
-	.byte $AA
-	.byte $A8
-	.byte $A6
-	.byte $A6
-	.byte $A4
-	.byte $A4
-	.byte $A4
-	.byte $A4
-	.byte $A4
-	.byte $04
-	.byte $04
-	.byte $02
-	.byte $02
-	.byte $02
-	.byte $02
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
+	.byte $00,$00,$00,$00,$00,$02,$02,$02
+	.byte $02,$02,$02,$04,$A4,$A4,$A4,$A4
+	.byte $A4,$A6,$A6,$A8,$A8,$AC,$AE,$AE
+	.byte $AE,$AC,$AC,$AA,$A8,$A6,$A6,$A4
+	.byte $A4,$A4,$A4,$A4,$04,$04,$02,$02
+	.byte $02,$02,$00,$00,$00,$00,$00,$00
 
 cleft_playfield2_left:
 	.byte $00
