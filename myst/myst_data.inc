@@ -699,20 +699,13 @@ book_edge_colors:
 	.byte $00
 	.byte $00
 
+	;============================
+	; rocket
+	;============================
+
 rocket_bg_colors:
-	.byte $0E
-	.byte $0E
-	.byte $0E
-	.byte $0E
-	.byte $0E
-	.byte $0E
-	.byte $0E
-	.byte $0E
-	.byte $0E
-	.byte $0E
-	.byte $0E
-	.byte $0E
-	.byte $0E
+	.byte $0E,$0E,$0E,$0E,$0E,$0E,$0E,$0E
+	.byte $0E,$0E,$0E,$0E,$0E
 	.byte $0E
 	.byte $0E
 	.byte $0E
@@ -733,140 +726,25 @@ rocket_bg_colors:
 	.byte $0E
 	.byte $0A
 	.byte $08
+	.byte $C8
+	.byte $C8
+	.byte $C8
+	.byte $C8
+	.byte $C8
 	.byte $C6
 	.byte $C6
 	.byte $C6
 	.byte $C6
 	.byte $C6
-	.byte $C6
-	.byte $C6
-	.byte $C6
-	.byte $C6
-	.byte $C6
-	.byte $C6
-	.byte $C6
-	.byte $C6
-	.byte $C6
-	.byte $C6
-
-.if 0
-rocket_colors:
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $F4
-	.byte $F4
-	.byte $F4
-	.byte $F4
-	.byte $F4
-	.byte $F4
-	.byte $F4
-	.byte $F4
-	.byte $F4
-	.byte $F4
-	.byte $F4
-	.byte $F4
-	.byte $F4
-	.byte $F4
-	.byte $F4
-	.byte $F4
-	.byte $F4
-	.byte $F4
-	.byte $F4
-	.byte $F4
-	.byte $F4
-	.byte $F4
-	.byte $F4
-	.byte $F4
-	.byte $F4
-	.byte $F4
-	.byte $F4
-	.byte $F4
-	.byte $F4
-	.byte $F4
-	.byte $F4
-	.byte $F4
-	.byte $F4
-	.byte $F4
-	.byte $F4
-.endif
-
-.if 0
-rocket_playfield0_left:
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-.endif
+	.byte $C4
+	.byte $C4
+	.byte $C4
+	.byte $C4
+	.byte $C4
 
 rocket_playfield1_left:
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
+	.byte $00,$00,$00,$00,$00,$00,$00,$00
+	.byte $00,$00,$00,$00,$00
 	.byte $00
 	.byte $00
 	.byte $00
@@ -906,19 +784,8 @@ rocket_playfield1_left:
 .align $100
 
 rocket_playfield2_left:
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
+	.byte $00,$00,$00,$00,$00,$00,$00,$00
+	.byte $00,$00,$00,$00,$00
 	.byte $00
 	.byte $00
 	.byte $00
@@ -956,19 +823,8 @@ rocket_playfield2_left:
 	.byte $0F
 
 rocket_playfield0_right:
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
+	.byte $00,$00,$00,$00,$00,$00,$00,$00
+	.byte $00,$00,$00,$00,$00
 	.byte $00
 	.byte $00
 	.byte $00
@@ -1006,19 +862,8 @@ rocket_playfield0_right:
 	.byte $00
 
 rocket_playfield1_right:
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
+	.byte $00,$00,$00,$00,$00,$00,$00,$00
+	.byte $00,$00,$00,$00,$00
 	.byte $01
 	.byte $07
 	.byte $1F
@@ -1056,69 +901,17 @@ rocket_playfield1_right:
 	.byte $F0
 
 rocket_playfield2_right:
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $80
-	.byte $1F
-	.byte $3F
-	.byte $01
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $01
-	.byte $03
-	.byte $03	;
-	.byte $03
-	.byte $01
-	.byte $03
-	.byte $0F
-	.byte $FF
-	.byte $1F
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $41
-	.byte $63
-	.byte $F3
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
+	.byte $00,$00,$00,$00,$00,$00,$00,$00
+	.byte $00,$00,$00,$00,$00
+	.byte $80,$1F,$3F
+	.byte $01,$00,$00,$00,$00,$01,$03,$03	;
+	.byte $03,$01,$03,$0F,$FF,$1F,$00,$00
+	.byte $00,$00,$00,$00,$00,$00,$00,$00
+	.byte $41,$63,$F3,$FF,$FF,$FF,$FF,$FF
 
 rocket_overlay_colors:
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
+	.byte $00,$00,$00,$00,$00,$00,$00,$00
+	.byte $00,$00,$00,$00,$00
 	.byte $00
 	.byte $00
 	.byte $00
@@ -1158,19 +951,8 @@ rocket_overlay_colors:
 .align $100
 
 rocket_overlay_sprite:
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
+	.byte $00,$00,$00,$00,$00,$00,$00,$00
+	.byte $00,$00,$00,$00,$00
 	.byte $00
 	.byte $00
 	.byte $00

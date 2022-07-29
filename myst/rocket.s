@@ -216,7 +216,7 @@ rocket_draw_playfield:
 	; draw playfield 0/4
 	;======================
 ; 0
-;	lda	rocket_bg_colors,Y					; 4+
+;	lda	rocket_bg_colors,Y					; -
 	sta	COLUBK							; 3
 	lda	rocket_overlay_sprite,Y					; 4
 	sta	GRP1							; 3
@@ -262,28 +262,28 @@ done_rocket_activate_hand:
 
 	nop
 	nop
-	nop
+; 70
+
+;	lda	rocket_playfield0_left,Y	;			; -
+	lda	#0							; 2
 
 ; 72
 
 	;===================
 	; draw playfield 1/4
 	;===================
-;	lda	rocket_playfield0_left,Y	;			; -
-	lda	#0							; 2
-	nop								; 2
-; 0
+; -4
 	sta	PF0			;				; 3
 	;   has to happen by 22 (GPU 68)
-; 3
+; -1
 	lda	rocket_playfield1_left,Y	;			; 4
         sta	PF1			;				; 3
 	;  has to happen by 28 (GPU 84)
-; 10
+; 6
 	lda	rocket_playfield2_left,Y	;			; 4
         sta	PF2							; 3
 	;  has to happen by 38 (GPU 116)	;
-; 17
+; 13
 
 	;==================
 	; draw pointer
@@ -304,22 +304,28 @@ rocket_done_pointer:
 								;===========
 								; 20 / 6
 
-; 37
+; 33
 	lda	rocket_playfield0_right,Y	;			; 4+
 	sta	PF0				;			; 3
 	; has to happen 28-49 (GPU 84-148)
-; 44
+; 40
 	lda	rocket_playfield1_right,Y	;			; 4+
 	sta	PF1				;			; 3
 	; has to happen 39-56 (GPU 116-170)
-; 51
+; 47
+	lda	#0							; 2
+	sta	COLUPF							; 3
+; 52
 	lda	rocket_playfield2_right,Y	;			; 4+
 	sta	PF2				;			; 3
 	; has to happen 50-67 (GPU148-202)
-; 68
+; 59
 
 	inc	CURRENT_SCANLINE					; 5
-; 63
+; 64
+	lda	#$F4							; 2
+	sta	COLUPF							; 3
+; 69
 	sta	WSYNC
 
 	;===================
@@ -344,25 +350,36 @@ rocket_done_pointer:
 	inc	TEMP1		; nop5
 	nop			; 2
 	nop			; 2
-	nop			; 2
+;	nop			; 2
 
-; 35
+; 33
 	lda	rocket_playfield0_right,Y	;			; 4+
 	sta	PF0				;			; 3
 	; has to happen 28-49 (GPU 84-148)
-; 42
+; 40
 	lda	rocket_playfield1_right,Y	;			; 4+
 	sta	PF1				;			; 3
 	; has to happen 39-56 (GPU 116-170)
-; 49
+; 47
 	lda	rocket_playfield2_right,Y	;			; 4+
 	sta	PF2				;			; 3
 	; has to happen 50-67 (GPU148-202)
-; 56
-;	lda	rocket_playfield0_left,Y	;			; -
-	lda	#0
+; 54
+	lda	#0							; 2
+	sta	COLUPF							; 3
+; 59
+	nop								; 2
 	nop
-	sta	WSYNC
+	nop
+	nop
+	nop
+; 69
+	lda	#$F4							; 2
+	sta	COLUPF							; 3
+; 74
+	lda	#0		; rocket_playfield0_left,Y		; 2
+; 76
+;	sta	WSYNC
 
 
 
