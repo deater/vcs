@@ -18,6 +18,11 @@ update_sound:
 	sta	AUDC1							; 3
 ; 37
 	beq	skipleftdec	; skip ahead if control=0		; 2/3
+
+	lda	FRAME
+	and	#$7
+	bne	skipleftdec
+
 	dec	SFX_PTR		; update pointer			; 5
 skipleftdec:							;==========
 								; 44 / 40

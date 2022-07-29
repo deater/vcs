@@ -2,8 +2,8 @@
 	; Linking Book
 	;=====================
 
-	jmp	book_frame
-.align	$100
+;	jmp	book_frame
+;.align	$100
 book_frame:
 
 	;============================

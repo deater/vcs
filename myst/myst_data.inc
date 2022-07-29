@@ -969,17 +969,21 @@ rocket_overlay_sprite:
 sfx_f:
 sfx_start:
 	.byte	0, 8, 8, 8, 8, 8, 8, 8
-	.byte	8, 8, 8, 8, 8, 8, 8, 8		; click
+;	.byte	8, 8, 8, 8, 8, 8, 8, 8		; click
 sfx_click:
-	.byte   0 ,26,26,26,26,26,26,26
-	.byte	29,29,29,29,29,29,29		; link
+	.byte   0 ,25,25,25,25
+	.byte   25 ,25,25,25,25,25,25,25
+	.byte   25,25,25,25,25 ,04,04,04
+	.byte	04,04,04,22,22,22,22,22		; link
 sfx_link:
 
 sfx_cv:
 	.byte   $00,$41,$42,$43,$44,$45,$46,$47
-	.byte	$48,$49,$4a,$4b,$4c,$4d,$4e,$4f	; click
-        .byte   $00,$7f,$7f,$7f,$7f,$7f,$7f,$7f
-        .byte   $1f,$1f,$1f,$1f,$1f,$1f,$1f	; link
+;	.byte	$48,$49,$4a,$4b,$4c,$4d,$4e,$4f	; click
+	.byte   $00,$32,$34,$36,$38
+	.byte   $3A,$38,$36,$38,$3A,$3C,$3A,$38
+	.byte   $3A,$3C,$3E,$3C,$3A, $E4,$E6,$EA
+	.byte   $E8,$E6,$E4,$3A,$3c,$3d,$3e,$3e	; link
 
 SFX_CLICK	=       sfx_click-sfx_start-1
 SFX_LINK	=       sfx_link-sfx_start-1
