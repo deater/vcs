@@ -87,6 +87,15 @@ bzpad_x:
 	stx	COLUBK			; set background color to black	; 3
 	stx	CURRENT_SCANLINE	; reset scanline counter	; 3
 ; 8
+	lda	FRAME
+	and	#$20
+	lsr
+	lsr
+	lsr
+	lsr
+	adc	#$A0
+	sta	ROOT_LINK_COLOR
+
 	sta	WSYNC
 
 	;======================
@@ -281,6 +290,9 @@ pbook_x:
 	lda	#$FF							; 2
         sta	PF2							; 3
 ; 49
+
+
+
 	sta	WSYNC
 
 
@@ -336,18 +348,34 @@ done_activate_hand:
 								; 16 / 16
 
 ; 38
-	lda	#$0C		; off white				; 2
+	lda	LINK_COLOR	; off white				; 3
 	sta	COLUP1		; set page color (sprite1)		; 3
-; 43
+; 44
 
-	nop
 	lda	#$F8		; change color to tan			; 2
 	sta	COLUPF		; store playfield color			; 3
 	; want this to happen around 49..50
-; 50
+; 49
 
+	;=============================
+	; update the link book window
+	;=============================
+
+	lda	#$0C				; off white		; 2
+	cpy	#14							; 2
+	bcc	done_link_animation					; 2/3
+	cpy	#20							; 2
+	bcs	done_link_animation					; 2/3
+
+	lda	ROOT_LINK_COLOR						; 3
+done_link_animation:
+	sta	LINK_COLOR						; 3
+
+								;===========
+								; 16 worst
+; 65
 	inc	CURRENT_SCANLINE					; 5
-; 55
+; 70
 
 	sta	WSYNC
 
@@ -386,9 +414,9 @@ done_pointer:
 								; 20 / 6
 ; 32
 	inc	TEMP1	; nop5						; 5
-	lda	$80	; nop3						; 3
-; 40
-	lda	#$0C		; off white				; 2
+	nop								; 2
+; 39
+	lda	LINK_COLOR	; off white				; 3
 	sta	COLUP1		; set page color (sprite1)		; 3
 ; 45
 

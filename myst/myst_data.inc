@@ -576,6 +576,7 @@ page_sprite:
 	.byte $1F
 	.byte $1D
 	.byte $1B
+	.byte $00	;
 	.byte $FF
 	.byte $FF
 	.byte $FF
@@ -587,8 +588,7 @@ page_sprite:
 	.byte $FF
 	.byte $FF
 	.byte $FF
-	.byte $FF
-	.byte $FF
+	.byte $00	;
 	.byte $7E
 	.byte $3F
 	.byte $5F
@@ -612,6 +612,7 @@ page_sprite:
 	.byte $4D
 	.byte $3F
 	.byte $3E
+
 
 .align $100
 
