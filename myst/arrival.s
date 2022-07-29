@@ -101,6 +101,14 @@ zarrivalpad_x:
 	lda	#$60		; fine tune sprite1 (book page)		; 2
 	sta	HMP1							; 3
 ; 40
+	lda	#$00							; 2
+	sta	HMM0							; 3
+; 45
+	inc	TEMP1		; nop5
+	nop
+; 52
+	sta	RESM0
+
 	sta	WSYNC
 
 	;======================================
@@ -163,7 +171,7 @@ zzarrivalpad_x:
 	lda	#$24		; middle orange				; 2
 	sta	COLUP0		; set hand color (sprite0)		; 3
 ; 19
-	lda	#NUSIZ_DOUBLE_SIZE|NUSIZ_MISSILE_WIDTH_8		; 2
+	lda	#NUSIZ_DOUBLE_SIZE|NUSIZ_MISSILE_WIDTH_2		; 2
 	sta	NUSIZ0							; 3
 	lda	#NUSIZ_QUAD_SIZE|NUSIZ_MISSILE_WIDTH_4			; 2
 	sta	NUSIZ1							; 3
@@ -177,9 +185,12 @@ zzarrivalpad_x:
 	lda	#CTRLPF_REF		; reflect playfield		; 2
 	sta	CTRLPF							; 3
 ; 41
+	lda	#$0E
+	sta	COLUPF
 
 	lda	#0			; bg color			; 2
 	sta	COLUBK							; 3
+	sta	ENAM0			; turn off missile		; 3
 	sta	VBLANK			; turn on beam			; 3
 ; 49
 	sta	WSYNC							; 3
@@ -192,6 +203,9 @@ zzarrivalpad_x:
 	;===========================================
 	;===========================================
 
+
+	jmp	arrival_draw_playfield					; 3
+
 arrival_draw_playfield:
 
 	;================================
@@ -203,20 +217,30 @@ arrival_draw_playfield:
 
 arrival_draw_playfield_even:
 
-; 0
+; 3
+	lda	#$0		; reset	bg color			; 2
+	sta	COLUBK							; 3
+; 8
 	lda	#$0E		; reset sky color (lgrey)		; 2
-	sta	COLUPF		; store playfield color			; 3
-; 5
-;	lda	arrival_playfield0_left,Y				; -
-	lda	#0		; always 0				; 2
-	sta	PF0							; 3
-; 10
-	lda	arrival_playfield1_left,Y				; 4
+	cpy	#24							; 2
+	bcc	draw_sky_d4						; 2/3
+	lda	#$F2		; low color (brown)			; 2
+	jmp	draw_sky						; 3
+draw_sky_d4:
+	nop								; 2
+	nop								; 2
+draw_sky:
+	sta	COLUPF							; 3
+								;==========
+								; 14 / 10
+
+; 22
+	lda	arrival_playfield1_left,Y				; 4+
 	sta	PF1							; 3
-; 17
-	lda	arrival_playfield2_left,Y				; 4
+; 29
+	lda	arrival_playfield2_left,Y				; 4+
 	sta	PF2							; 3
-; 24
+; 36
 
 
 	;==============================
@@ -224,14 +248,21 @@ arrival_draw_playfield_even:
 
 	lda	arrival_overlay,Y		; load sprite1 data	; 4+
 	sta	GRP1		;					; 3
-; 31
-	lda	arrival_overlay_colors,Y				; 4
+
+; 43
+	lda	arrival_overlay_colors,Y				; 4+
 	sta	COLUP1		; set page color (sprite1)		; 3
 
-; 38
+; 50
+	lda	#$0E							; 2
+; 52
 	; activate hand sprite if necessary
-	lda	#$f							; 2
+
 	ldx	CURRENT_SCANLINE					; 3
+; 55
+	sta	COLUBK							; 3
+; 58
+	lda	#$f							; 2
 	cpx	POINTER_Y						; 3
 	bne	no_arrival_activate_hand				; 2/3
 	sta	POINTER_ON						; 3
@@ -242,20 +273,15 @@ done_arrival_activate_hand:
 								;===========
 								; 16 / 16
 
-; 54
-	nop
-	lda	$80
-; 59
 
-	lda	#$F8		; change color to tan			; 2
-	sta	COLUPF		; store playfield color			; 3
-	; want this to happen around 49..50
-; 64
 
-	inc	CURRENT_SCANLINE					; 5
-; 69
+; 71
+
+;	inc	CURRENT_SCANLINE					; 5
+; 76
 
 	sta	WSYNC
+;	sta	HMOVE
 
 	;====================
 	;====================
@@ -263,14 +289,9 @@ done_arrival_activate_hand:
 	;====================
 	;====================
 ; 0
-	lda	#$0E		; reset book color (lgrey)		; 2
-	sta	COLUPF		; store playfield color			; 3
+	lda	#$0		; reset	bg color			; 2
+	sta	COLUBK							; 3
 ; 5
-	nop
-	nop
-	lda	$80
-
-; 12
 
 	;==================
 	; draw pointer
@@ -291,19 +312,40 @@ no_arrival_pointer:
 done_arrival_pointer:
 								;===========
 								; 20 / 6
-; 32
-	inc	TEMP1	; nop5						; 5
-	lda	$80	; nop3						; 3
-; 40
+; 25
+	inc	CURRENT_SCANLINE					; 5
+
+; 30
+	lda	#$00
+	cpy	#28
+	bcc	mast_delay4
+	lda	#$02
+	jmp	done_mast
+mast_delay4:
 	nop
-	lda	$80
-; 45
+	nop
+done_mast:
+	sta	ENAM0
+								; 14 / 14
+; 44
+	; get rid of right reflection/ocean
 
-	lda	#$F8		; change color to tan			; 2
-	sta	COLUPF		; store playfield color			; 3
-	; want this to happen around 49..50
-; 50
+	lda	#$0E							; 2
+	cpy	#24							; 2
+	bcc	not_ocean_delay4					; 2/3
+	lda	#$C8	; sea green					; 2
+	jmp	done_ocean						; 3
+not_ocean_delay4:
+	nop								; 2
+	nop								; 2
+done_ocean:
+	sta	COLUBK							; 3
+								;===========
+								; 14 / 14
 
+; 58
+
+; 58
 	lda	CURRENT_SCANLINE					; 3
 	and	#$1							; 2
 	beq	arrival_yes_inc4					; 2/3
@@ -314,13 +356,14 @@ done_arrival_inc_block:
                                                                 ;===========
                                                                 ; 10/10
 
-; 60
+; 68
 	cpy	#48		; see if hit end			; 2
-; 62
-	sta	WSYNC
-; 0
-	bne	arrival_draw_playfield					; 2/3
-
+; 70
+	beq	arrival_done_playfield					; 2/3
+; 72
+	nop
+	nop
+	jmp	arrival_draw_playfield					; 3
 
 arrival_done_playfield:
 
