@@ -53,17 +53,9 @@ rocket_vblank_loop:
 ; 6
 	inc	FRAME							; 5
 ; 11
-	ldx	#4							; 2
-; 13
-mrocket_pad:
-	dex								; 2
-	bne	mrocket_pad	; (X*5)-1 = 14				; 2/3
-; 27
-	sta	RESM0							; 3
-; 30
-	lda	#$2							; 2
-	sta	ENAM0	; enable missile 0				; 3
-; 35
+	lda	#$0							; 2
+	sta	ENAM0	; disable missile 0				; 3
+; 16
 	sta	WSYNC							; 3
 
 
@@ -71,6 +63,7 @@ mrocket_pad:
 	; now VBLANK scanline 33
 	;=============================
 	; do some init
+	; FIXME: merge with previous?
 
 	ldx	#$00							; 2
 	stx	COLUBK			; set background color to black	; 3
@@ -93,21 +86,22 @@ mrocket_pad:
 ; 3
 	ldx	#0		; sprite 0 display nothing		2
 	stx	GRP1		; (FIXME: this already set?)		3
+
+	lda	$80
+
 ; 8
-	ldx	#5		;					3
-	inx			;					2
-	inx			;					2
+	ldx	#6		;					3
 qrocketpad_x:
 	dex			;					2
 	bne	qrocketpad_x	;					2/3
 				;===========================================
-				;	5*(6+2)-1 = 39
+				;	5*(4+2)-1 = 29
 
 
 	; beam is at proper place
 	sta	RESP1							; 3
 
-	lda	#$F0		; fine adjust overlay			; 2
+	lda	#$00		; fine adjust overlay			; 2
 	sta	HMP1							; 3
 
 
@@ -178,34 +172,33 @@ rocket_pad_x:
 	lda	#$22		; medium brown				; 2
 	sta	COLUP0		; set pointer color (sprite0)		; 3
 
-	lda	clock_overlay_colors					; 4+
-	sta	COLUP1		; set secret color (sprite1)		; 3
+	lda	rocket_overlay_colors					; 4+
+	sta	COLUP1		; set overlay color (sprite1)		; 3
 
 	lda	#NUSIZ_DOUBLE_SIZE|NUSIZ_MISSILE_WIDTH_8		; 2
 	sta	NUSIZ0							; 3
 	lda	#NUSIZ_QUAD_SIZE|NUSIZ_MISSILE_WIDTH_4			; 2
 	sta	NUSIZ1							; 3
 
-	lda	#0							; 2
-	tay			; current block 			; 2
+	ldy	#0		; current block				; 2
 	sty	CTRLPF		; no_reflect				; 3
 
-	lda	#$E0		; sort of a dark brown			; 2
-	sta	COLUBK							; 3
+	lda	#$F4		; sort of a medium brown		; 2
+	sta	COLUPF							; 3
 
-	lda	#$FF
-	sta	GRP1
+;	lda	#$FF		; initial sprite size (needed?)		; 2
+;	sta	GRP1							; 3
 
-	lda	rocket_colors
+	lda	rocket_bg_colors	; initial color in A		; 3
 
-	ldx	#0
+	ldx	#0			; setup X?			; 2
 
 	stx	VBLANK			; turn on beam			; 3
 
 	sta	WSYNC							; 3
 								;============
 								;============
-								;	60
+								;	??
 
 	;===========================================
 	;===========================================
@@ -223,36 +216,36 @@ rocket_draw_playfield:
 	; draw playfield 0/4
 	;======================
 ; 0
-;	lda	rocket_colors,Y						; 4+
-	sta	COLUPF							; 3
-	lda	clock_overlay_sprite,Y					; 4
+;	lda	rocket_bg_colors,Y					; 4+
+	sta	COLUBK							; 3
+	lda	rocket_overlay_sprite,Y					; 4
 	sta	GRP1							; 3
 ; 10
-	lda	rocket_playfield0_left,Y	;				; 4
+;	lda	rocket_playfield0_left,Y	;			; -
+	lda	#0							; 2
 	sta	PF0			;				; 3
 	;   has to happen by 22 (GPU 68)
-; 17
-	lda	rocket_playfield1_left,Y	;				; 4
+; 15
+	lda	rocket_playfield1_left,Y	;			; 4
 	sta	PF1			;				; 3
 	;  has to happen by 28 (GPU 84)
-; 24
-	lda	rocket_playfield2_left,Y	;				; 4
+; 22
+	lda	rocket_playfield2_left,Y	;			; 4
         sta	PF2							; 3
 	;  has to happen by 38 (GPU 116)	;
-; 31
+; 29
 	lda	rocket_playfield0_right,Y	;			; 4
         sta	PF0				;			; 3
 	; has to happen 28-49 (GPU 84-148)
-; 38
+; 36
         lda	rocket_playfield1_right,Y	;			; 4
         sta	PF1				;			; 3
 	; has to happen 38-56 (GPU 116-170)
-; 45
-        lda	#$FF				;			; 2
-	nop					;			; 2
+; 43
+        lda	rocket_playfield2_right,Y	;			; 4
         sta	PF2				;			; 3
 	; has to happen 49-67 (GPU148-202)
-; 52
+; 50
 	; activate hand sprite if necessary
 	lda	#$f							; 2
 	ldx	CURRENT_SCANLINE					; 3
@@ -265,8 +258,9 @@ no_rocket_activate_hand:
 done_rocket_activate_hand:
 								;===========
 								; 16 / 16
-; 68
+; 66
 
+	nop
 	nop
 	nop
 
@@ -275,16 +269,18 @@ done_rocket_activate_hand:
 	;===================
 	; draw playfield 1/4
 	;===================
-	lda	rocket_playfield0_left,Y	;				; 4
+;	lda	rocket_playfield0_left,Y	;			; -
+	lda	#0							; 2
+	nop								; 2
 ; 0
 	sta	PF0			;				; 3
 	;   has to happen by 22 (GPU 68)
 ; 3
-	lda	rocket_playfield1_left,Y	;				; 4
+	lda	rocket_playfield1_left,Y	;			; 4
         sta	PF1			;				; 3
 	;  has to happen by 28 (GPU 84)
 ; 10
-	lda	rocket_playfield2_left,Y	;				; 4
+	lda	rocket_playfield2_left,Y	;			; 4
         sta	PF2							; 3
 	;  has to happen by 38 (GPU 116)	;
 ; 17
@@ -317,8 +313,7 @@ rocket_done_pointer:
 	sta	PF1				;			; 3
 	; has to happen 39-56 (GPU 116-170)
 ; 51
-	lda	#$FF				;			; 2
-	nop								; 2
+	lda	rocket_playfield2_right,Y	;			; 4+
 	sta	PF2				;			; 3
 	; has to happen 50-67 (GPU148-202)
 ; 68
@@ -331,40 +326,42 @@ rocket_done_pointer:
 	; draw playfield 2/4
 	;===================
 ; 0
-	lda	rocket_playfield0_left,Y	;				; 4
+;	lda	rocket_playfield0_left,Y	;			; -
+	lda	#$0							; 2
 	sta	PF0			;				; 3
 	;   has to happen by 22 (GPU 68)
-; 7
-	lda	rocket_playfield1_left,Y	;				; 4
+; 5
+	lda	rocket_playfield1_left,Y	;			; 4
         sta	PF1			;				; 3
 	;  has to happen by 28 (GPU 84)
-; 14
-	lda	rocket_playfield2_left,Y	;				; 4
+; 12
+	lda	rocket_playfield2_left,Y	;			; 4
         sta	PF2							; 3
 	;  has to happen by 38 (GPU 116)	;
-; 21
+; 19
 
-	inc	TEMP1
-	inc	TEMP1
-	nop
-	nop
-	nop
+	inc	TEMP1		; nop5
+	inc	TEMP1		; nop5
+	nop			; 2
+	nop			; 2
+	nop			; 2
 
-; 37
+; 35
 	lda	rocket_playfield0_right,Y	;			; 4+
 	sta	PF0				;			; 3
 	; has to happen 28-49 (GPU 84-148)
-; 44
+; 42
 	lda	rocket_playfield1_right,Y	;			; 4+
 	sta	PF1				;			; 3
 	; has to happen 39-56 (GPU 116-170)
-; 51
-	lda	#$FF				;			; 2
-	nop
+; 49
+	lda	rocket_playfield2_right,Y	;			; 4+
 	sta	PF2				;			; 3
 	; has to happen 50-67 (GPU148-202)
-; 58
-	lda	rocket_playfield0_left,Y	;				; 4
+; 56
+;	lda	rocket_playfield0_left,Y	;			; -
+	lda	#0
+	nop
 	sta	WSYNC
 
 
@@ -377,11 +374,11 @@ rocket_done_pointer:
 	sta	PF0			;				; 3
 	;   has to happen by 22 (GPU 68)
 ; 3
-	lda	rocket_playfield1_left,Y	;				; 4
+	lda	rocket_playfield1_left,Y	;			; 4
         sta	PF1			;				; 3
 	;  has to happen by 28 (GPU 84)
 ; 10
-	lda	rocket_playfield2_left,Y	;				; 4
+	lda	rocket_playfield2_left,Y	;			; 4
         sta	PF2							; 3
 	;  has to happen by 38 (GPU 116)	;
 ; 17
@@ -413,20 +410,20 @@ rocket_done_pointer2:
 	sta	PF1				;			; 3
 	; has to happen 39-56 (GPU 116-170)
 ; 51
-	lda	#$FF				;			; 2
+	lda	rocket_playfield2_right,Y	;			; 4+
 	sta	PF2				;			; 3
 	; has to happen 50-67 (GPU148-202)
-; 56
+; 58
 	iny								; 2
-	lda	clock_overlay_colors,Y					; 4
+	lda	rocket_overlay_colors,Y					; 4
 	sta	COLUP1							; 3
-	lda	rocket_colors,Y						; 4+
-; 69
-	cpy	#48		; see if hit end			; 2
+	lda	rocket_bg_colors,Y					; 4+
 ; 71
-	beq	done_rocket_playfield
+	cpy	#48		; see if hit end			; 2
 ; 73
-	jmp	rocket_draw_playfield						; 2/3
+	beq	done_rocket_playfield
+; 75
+	jmp	rocket_draw_playfield					; 2/3
 
 
 done_rocket_playfield:
