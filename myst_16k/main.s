@@ -44,6 +44,17 @@ PF0R_CACHE	=	$A3
 PF1R_CACHE	=	$A4
 PF2R_CACHE	=	$A5
 
+offset		=	$B0
+offset_h	=	$B1
+ZX0_src		=	$B2
+ZX0_src_h	=	$B3
+ZX0_dst		=	$B4
+ZX0_dst_h	=	$B5
+bitr		=	$B6
+pntr		=	$B7
+pntr_h		=	$B8
+
+
 HAND_SPRITE	=	HAND_SPRITE_LINE0
 HAND_SPRITE_LINE0=	$E0
 HAND_SPRITE_LINE1=	$E1
@@ -87,6 +98,20 @@ clear_loop:
 	sta	VBLANK	; disable beam
 
 
+	; swap in RAM
+
+	lda	$1FE7
+
+
+	; decompress
+
+	lda	#<clock_data_zx02
+	sta	ZX0_src
+	lda	#>clock_data_zx02
+	sta	ZX0_src_h
+
+	lda	#>$1000
+	jsr	zx02_full_decomp
 
 	;===========================
 	;===========================
@@ -106,11 +131,25 @@ clear_loop:
 	.include "hand_motion.s"
 	.include "hand_copy.s"
 	.include "sound_update.s"
-
+	.include "zx02_optim.s"
 
 	.include "sfx_data.inc"
 	.include "sprite_data.inc"
-	.include "locations/clock_data.inc"
+;	.include "locations/clock_data.inc"
+
+clock_data_zx02:
+	.incbin "locations/clock_data.zx02"
+
+	clock_colors		= $1400
+	clock_playfield0_left	= $1430
+	clock_playfield1_left	= $1460
+	clock_playfield2_left	= $1490
+	clock_playfield0_right	= $14C0
+	clock_playfield1_right	= $1500
+	clock_playfield2_right	= $1530
+	clock_overlay_colors	= $1560
+	clock_overlay_sprite	= $1590
+
 
 ;.include "myst_data.inc"
 
