@@ -1,3 +1,5 @@
+/* Code for generating 48-pixel wide sprites on Atari 2600 */
+
 #include <stdio.h>
 #include <stdlib.h>
 

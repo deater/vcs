@@ -1,12 +1,15 @@
-PNG2RLE = ../../../utils/gr-utils/png2rle
-PNG2GR = ../../../utils/gr-utils/png2gr
-PNG2HGR = ../../../utils/hgr-utils/png2hgr
-#LZSA = ~/research/lzsa/lzsa/lzsa
-B2D = ../../../utils/bmp2dhr/b2d
 ZX02 = ~/research/6502_compression/zx02.git/build/zx02
 LINKER_SCRIPT = ../../linker_script/
+PNG2PF = ../../utils/png2pf
+PNG2OVERLAY = ../../utils/png2overlay
 
 all:	clock_data.zx02 data1.bin
+
+###
+
+clock_data.inc:	clock_bg.png clock_overlay.png
+	$(PNG2PF) -4 -n clock -b 0xe0 clock_bg.png - > clock_data.inc
+	$(PNG2OVERLAY) -4 -n clock clock_overlay.png - >> clock_data.inc
 
 ###
 

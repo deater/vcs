@@ -24,9 +24,10 @@ zero2.bin:
 main.bin:	main.o
 	ld65 -o main.bin main.o -C $(LINKER_SCRIPT)/atari2600_1a00.inc
 
+#	title.s cleft.s book.s arrival.s level_engine.s rocket.s
+
 main.o:	main.s \
-	title.s cleft.s book.s arrival.s clock.s rocket.s \
-	hand_motion.s hand_copy.s adjust_sprite.s common_routines.s \
+	level_engine.s hand_motion.s hand_copy.s adjust_sprite.s common_routines.s \
 	sound_update.s zx02_optim.s
 	ca65 -o main.o main.s -l main.lst
 

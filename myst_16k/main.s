@@ -120,7 +120,7 @@ clear_loop:
 	;===========================
 
 
-	.include "clock.s"
+	.include "level_engine.s"
 
 	;===========================
 	; common routines

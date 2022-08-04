@@ -1,7 +1,7 @@
 CC = gcc
 CFLAGS = -g -Wall -O2
 
-all:	png2pf png2sprite
+all:	png2pf png2overlay png2sprite
 
 ###
 
@@ -18,6 +18,14 @@ png2pf.o:		png2pf.c loadpng.h
 
 ###
 
+png2overlay:		png2overlay.o loadpng.o
+	$(CC) $(LFLAGS) -o png2overlay png2overlay.o loadpng.o -lpng
+
+png2overlay.o:		png2overlay.c loadpng.h
+	$(CC) $(CFLAGS) -c png2overlay.c
+
+###
+
 png2sprite:		png2sprite.o loadpng.o
 	$(CC) $(LFLAGS) -o png2sprite png2sprite.o loadpng.o -lpng
 
@@ -28,6 +36,6 @@ png2sprite.o:		png2sprite.c loadpng.h
 ###
 
 clean:		
-		rm -f *~ *.o png2pf png2sprite
+		rm -f *~ *.o png2pf png2overlay png2sprite
 
 
