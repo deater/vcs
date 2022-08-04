@@ -71,6 +71,17 @@ arrival_vblank_loop:
 	stx	COLUBK			; set background color to black	; 3
 	stx	CURRENT_SCANLINE	; reset scanline counter	; 3
 ; 8
+	inc	TEMP1
+	inc	TEMP1
+	inc	TEMP1
+	inc	TEMP1
+	nop
+	nop
+	nop
+
+; 30
+	sta	RESM0
+
 	sta	WSYNC
 
 	;======================
@@ -97,17 +108,15 @@ zarrivalpad_x:
 ; 32
 	; beam is at proper place
 	sta	RESP1							; 3
+
 ; 35
 	lda	#$60		; fine tune sprite1 (book page)		; 2
 	sta	HMP1							; 3
 ; 40
-	lda	#$00							; 2
+	lda	#$F0							; 2
 	sta	HMM0							; 3
 ; 45
-	inc	TEMP1		; nop5
-	nop
-; 52
-	sta	RESM0
+;	sta	RESM0
 
 	sta	WSYNC
 
@@ -188,11 +197,16 @@ zzarrivalpad_x:
 	lda	#$0E
 	sta	COLUPF
 
+	lda	#$00		; fine tune sprite1 (overlay)		; 2
+	sta	HMP1							; 3
+	sta	HMP0
+
 	lda	#0			; bg color			; 2
 	sta	COLUBK							; 3
 	sta	ENAM0			; turn off missile		; 3
 	sta	VBLANK			; turn on beam			; 3
 ; 49
+
 	sta	WSYNC							; 3
 
 	;===========================================
@@ -274,24 +288,19 @@ done_arrival_activate_hand:
 								; 16 / 16
 
 
-
 ; 71
-
-;	inc	CURRENT_SCANLINE					; 5
-; 76
-
 	sta	WSYNC
-;	sta	HMOVE
+	sta	HMOVE
 
 	;====================
 	;====================
 	; draw playfield ODD
 	;====================
 	;====================
-; 0
+; 3
 	lda	#$0		; reset	bg color			; 2
 	sta	COLUBK							; 3
-; 5
+; 8
 
 	;==================
 	; draw pointer
@@ -312,10 +321,10 @@ no_arrival_pointer:
 done_arrival_pointer:
 								;===========
 								; 20 / 6
-; 25
+; 28
 	inc	CURRENT_SCANLINE					; 5
 
-; 30
+; 33
 	lda	#$00
 	cpy	#28
 	bcc	mast_delay4
@@ -327,7 +336,7 @@ mast_delay4:
 done_mast:
 	sta	ENAM0
 								; 14 / 14
-; 44
+; 47
 	; get rid of right reflection/ocean
 
 	lda	#$0E							; 2
@@ -343,9 +352,7 @@ done_ocean:
 								;===========
 								; 14 / 14
 
-; 58
-
-; 58
+; 61
 	lda	CURRENT_SCANLINE					; 3
 	and	#$1							; 2
 	beq	arrival_yes_inc4					; 2/3
@@ -356,13 +363,11 @@ done_arrival_inc_block:
                                                                 ;===========
                                                                 ; 10/10
 
-; 68
+; 71
 	cpy	#48		; see if hit end			; 2
-; 70
+; 73
 	beq	arrival_done_playfield					; 2/3
-; 72
-	nop
-	nop
+; 75
 	jmp	arrival_draw_playfield					; 3
 
 arrival_done_playfield:
@@ -389,17 +394,17 @@ arrival_done_playfield:
 
 	lda	#POINTER_TYPE_POINT					; 2
 
-;	ldy	POINTER_X						; 3
-;	cpy	#88
-;	bcc	arrival_not_in_window
-;	cpy	#128
-;	bcs	arrival_not_in_window
-;	ldy	POINTER_Y
-;	cpy	#35
-;	bcs	arrival_not_in_window
-;	cpy	#8
-;	bcc	arrival_not_in_window
-;	lda	#POINTER_TYPE_GRAB
+	ldy	POINTER_X						; 3
+	cpy	#80
+	bcc	arrival_not_in_window
+	cpy	#88
+	bcs	arrival_not_in_window
+	ldy	POINTER_Y
+	cpy	#53
+	bcs	arrival_not_in_window
+	cpy	#42
+	bcc	arrival_not_in_window
+	lda	#POINTER_TYPE_GRAB
 
 arrival_not_in_window:
 arrival_check_side:
@@ -433,6 +438,14 @@ waited_enough_arrival:
 	; button was pressed
 
 	lda	POINTER_TYPE
+	cmp	#POINTER_TYPE_GRAB
+	bne	arrival_not_grabbing
+arrival_was_grabbing:
+	ldy	#SFX_CLICK
+	sty	SFX_PTR
+	jmp	done_check_arrival_input
+
+arrival_not_grabbing:
 	cmp	#POINTER_TYPE_POINT
 	beq	done_arrival
 
