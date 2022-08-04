@@ -1,0 +1,22 @@
+Title:
+
+Cleft:
+	The book sprite could use more work on size
+	Fix the stars
+
+Book:
+	adjust top left of page to not be uneven
+	better sprite animation of destination
+	better linking noise
+	pause when in the process of linking, maybe black screen
+
+arrival:
+	add overlay
+	add water color
+	add marker click
+
+clock:
+
+spaceship:
+	better sound for marker click
+
