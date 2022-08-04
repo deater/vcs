@@ -135,21 +135,9 @@ clear_loop:
 
 	.include "sfx_data.inc"
 	.include "sprite_data.inc"
-;	.include "locations/clock_data.inc"
 
 clock_data_zx02:
 	.incbin "locations/clock_data.zx02"
-
-	clock_colors		= $1400
-	clock_playfield0_left	= $1430
-	clock_playfield1_left	= $1460
-	clock_playfield2_left	= $1490
-	clock_playfield0_right	= $14C0
-	clock_playfield1_right	= $1500
-	clock_playfield2_right	= $1530
-	clock_overlay_colors	= $1560
-	clock_overlay_sprite	= $1590
-
 
 ;.include "myst_data.inc"
 

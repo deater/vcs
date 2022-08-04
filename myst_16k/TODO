@@ -9,14 +9,15 @@ Book:
 	better sprite animation of destination
 	better linking noise
 	pause when in the process of linking, maybe black screen
+	make generic so can use for other books?
 
-arrival:
-	add overlay
-	add water color
-	add marker click
+Levels:
+	adapt to shared engine
 
-clock:
+Marker switches:
+	have code to show flipped switches.  In theory overlay is in
+		RAM so this should be fairly straightfoward
+		to modify at load/click
 
-spaceship:
-	better sound for marker click
+
 

@@ -1,0 +1,15 @@
+File format for level data
+
+16 bytes
++ 0 = color of sprite 0 (hand)
++ 1 = background color
++ 2 = background color 2 (if mid-screen switch)
++ 3 = coarse location of overlay sprite
++ 4 = fine location of overlay sprite
++ 5 = coarse location of overlay missile0 (vertical line)
++ 6 = fine location of overlay missile0
++ 7 = XMIN of grab area
++ 8 = XMAX of grab area
++ 9 = YMIN of grab area
++ 10= YMAX of grab area
+

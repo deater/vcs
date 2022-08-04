@@ -1,13 +1,26 @@
-	;=====================
-	; the clock
-	;=====================
-do_clock:
+	level_data		= $1400
+        level_colors            = $1410
+        level_playfield0_left   = $1440
+        level_playfield1_left   = $1470
+        level_playfield2_left   = $14A0
+        level_playfield0_right  = $14D0
+        level_playfield1_right  = $1500
+        level_playfield2_right  = $1530
+        level_overlay_colors    = $1560
+        level_overlay_sprite    = $1590
+
+
+
+	;==========================
+	; the generic level engine
+	;==========================
+do_level:
 	lda	#30
 	sta	INPUT_COUNTDOWN
 
-	jmp	clock_frame
+	jmp	level_frame
 .align	$100
-clock_frame:
+level_frame:
 
 	;============================
 	; start VBLANK
@@ -58,9 +71,9 @@ le_vblank_loop:
 ; 11
 	ldx	#4							; 2
 ; 13
-mclock_pad:
+mlevel_pad:
 	dex								; 2
-	bne	mclock_pad	; (X*5)-1 = 14				; 2/3
+	bne	mlevel_pad	; (X*5)-1 = 14				; 2/3
 ; 27
 	sta	RESM0							; 3
 ; 30
@@ -181,7 +194,7 @@ pad_x:
 	lda	#$22		; medium brown				; 2
 	sta	COLUP0		; set pointer color (sprite0)		; 3
 
-	lda	clock_overlay_colors					; 4+
+	lda	level_overlay_colors					; 4+
 	sta	COLUP1		; set secret color (sprite1)		; 3
 
 	lda	#NUSIZ_DOUBLE_SIZE|NUSIZ_MISSILE_WIDTH_8		; 2
@@ -199,7 +212,7 @@ pad_x:
 	lda	#$FF
 	sta	GRP1
 
-	lda	clock_colors
+	lda	level_colors
 
 	ldx	#0
 
@@ -220,34 +233,34 @@ pad_x:
 
 draw_playfield:
 
-	; A has clock colors
+	; A has level colors
 
 	;======================
 	; draw playfield 0/4
 	;======================
 ; 0
-;	lda	clock_colors,Y						; 4+
+;	lda	level_colors,Y						; 4+
 	sta	COLUPF							; 3
-	lda	clock_overlay_sprite,Y					; 4
+	lda	level_overlay_sprite,Y					; 4
 	sta	GRP1							; 3
 ; 10
-	lda	clock_playfield0_left,Y	;				; 4
+	lda	level_playfield0_left,Y	;				; 4
 	sta	PF0			;				; 3
 	;   has to happen by 22 (GPU 68)
 ; 17
-	lda	clock_playfield1_left,Y	;				; 4
+	lda	level_playfield1_left,Y	;				; 4
 	sta	PF1			;				; 3
 	;  has to happen by 28 (GPU 84)
 ; 24
-	lda	clock_playfield2_left,Y	;				; 4
+	lda	level_playfield2_left,Y	;				; 4
         sta	PF2							; 3
 	;  has to happen by 38 (GPU 116)	;
 ; 31
-	lda	clock_playfield0_right,Y	;			; 4
+	lda	level_playfield0_right,Y	;			; 4
         sta	PF0				;			; 3
 	; has to happen 28-49 (GPU 84-148)
 ; 38
-        lda	clock_playfield1_right,Y	;			; 4
+        lda	level_playfield1_right,Y	;			; 4
         sta	PF1				;			; 3
 	; has to happen 38-56 (GPU 116-170)
 ; 45
@@ -260,12 +273,12 @@ draw_playfield:
 	lda	#$f							; 2
 	ldx	CURRENT_SCANLINE					; 3
 	cpx	POINTER_Y						; 3
-	bne	no_clock_activate_hand					; 2/3
+	bne	no_level_activate_hand					; 2/3
 	sta	POINTER_ON						; 3
-	jmp	done_clock_activate_hand				; 3
-no_clock_activate_hand:
+	jmp	done_level_activate_hand				; 3
+no_level_activate_hand:
 	inc	TEMP1				; nop5			; 5
-done_clock_activate_hand:
+done_level_activate_hand:
 								;===========
 								; 16 / 16
 ; 68
@@ -278,16 +291,16 @@ done_clock_activate_hand:
 	;===================
 	; draw playfield 1/4
 	;===================
-	lda	clock_playfield0_left,Y	;				; 4
+	lda	level_playfield0_left,Y	;				; 4
 ; 0
 	sta	PF0			;				; 3
 	;   has to happen by 22 (GPU 68)
 ; 3
-	lda	clock_playfield1_left,Y	;				; 4
+	lda	level_playfield1_left,Y	;				; 4
         sta	PF1			;				; 3
 	;  has to happen by 28 (GPU 84)
 ; 10
-	lda	clock_playfield2_left,Y	;				; 4
+	lda	level_playfield2_left,Y	;				; 4
         sta	PF2							; 3
 	;  has to happen by 38 (GPU 116)	;
 ; 17
@@ -297,26 +310,26 @@ done_clock_activate_hand:
 	;==================
 
 	ldx	POINTER_ON						; 3
-	beq	clock_no_pointer					; 2/3
+	beq	level_no_pointer					; 2/3
 	lda	HAND_SPRITE,X						; 4
 	sta	GRP0							; 3
 	dec	POINTER_ON						; 5
-	jmp	clock_done_pointer					; 3
-clock_no_pointer:
+	jmp	level_done_pointer					; 3
+level_no_pointer:
 	inc	TEMP1		; nop5					; 5
 	inc	TEMP1		; nop5					; 5
 	nop			;					; 2
 	nop								; 2
-clock_done_pointer:
+level_done_pointer:
 								;===========
 								; 20 / 6
 
 ; 37
-	lda	clock_playfield0_right,Y	;			; 4+
+	lda	level_playfield0_right,Y	;			; 4+
 	sta	PF0				;			; 3
 	; has to happen 28-49 (GPU 84-148)
 ; 44
-	lda	clock_playfield1_right,Y	;			; 4+
+	lda	level_playfield1_right,Y	;			; 4+
 	sta	PF1				;			; 3
 	; has to happen 39-56 (GPU 116-170)
 ; 51
@@ -334,15 +347,15 @@ clock_done_pointer:
 	; draw playfield 2/4
 	;===================
 ; 0
-	lda	clock_playfield0_left,Y	;				; 4
+	lda	level_playfield0_left,Y	;				; 4
 	sta	PF0			;				; 3
 	;   has to happen by 22 (GPU 68)
 ; 7
-	lda	clock_playfield1_left,Y	;				; 4
+	lda	level_playfield1_left,Y	;				; 4
         sta	PF1			;				; 3
 	;  has to happen by 28 (GPU 84)
 ; 14
-	lda	clock_playfield2_left,Y	;				; 4
+	lda	level_playfield2_left,Y	;				; 4
         sta	PF2							; 3
 	;  has to happen by 38 (GPU 116)	;
 ; 21
@@ -354,11 +367,11 @@ clock_done_pointer:
 	nop
 
 ; 37
-	lda	clock_playfield0_right,Y	;			; 4+
+	lda	level_playfield0_right,Y	;			; 4+
 	sta	PF0				;			; 3
 	; has to happen 28-49 (GPU 84-148)
 ; 44
-	lda	clock_playfield1_right,Y	;			; 4+
+	lda	level_playfield1_right,Y	;			; 4+
 	sta	PF1				;			; 3
 	; has to happen 39-56 (GPU 116-170)
 ; 51
@@ -367,7 +380,7 @@ clock_done_pointer:
 	sta	PF2				;			; 3
 	; has to happen 50-67 (GPU148-202)
 ; 58
-	lda	clock_playfield0_left,Y	;				; 4
+	lda	level_playfield0_left,Y	;				; 4
 	sta	WSYNC
 
 
@@ -380,11 +393,11 @@ clock_done_pointer:
 	sta	PF0			;				; 3
 	;   has to happen by 22 (GPU 68)
 ; 3
-	lda	clock_playfield1_left,Y	;				; 4
+	lda	level_playfield1_left,Y	;				; 4
         sta	PF1			;				; 3
 	;  has to happen by 28 (GPU 84)
 ; 10
-	lda	clock_playfield2_left,Y	;				; 4
+	lda	level_playfield2_left,Y	;				; 4
         sta	PF2							; 3
 	;  has to happen by 38 (GPU 116)	;
 ; 17
@@ -393,26 +406,26 @@ clock_done_pointer:
 	; draw pointer
 	;==================
 	ldx	POINTER_ON						; 3
-	beq	clock_no_pointer2					; 2/3
+	beq	level_no_pointer2					; 2/3
 	lda	HAND_SPRITE,X						; 4
 	sta	GRP0							; 3
 	dec	POINTER_ON						; 5
-	jmp	clock_done_pointer2					; 3
-clock_no_pointer2:
+	jmp	level_done_pointer2					; 3
+level_no_pointer2:
 	inc	TEMP1		; nop5					; 5
 	inc	TEMP1		; nop5					; 5
 	nop			;					; 2
 	nop								; 2
-clock_done_pointer2:
+level_done_pointer2:
 								;===========
 								; 20 / 6
 
 ; 37
-	lda	clock_playfield0_right,Y	;			; 4+
+	lda	level_playfield0_right,Y	;			; 4+
 	sta	PF0				;			; 3
 	; has to happen 28-49 (GPU 84-148)
 ; 44
-	lda	clock_playfield1_right,Y	;			; 4+
+	lda	level_playfield1_right,Y	;			; 4+
 	sta	PF1				;			; 3
 	; has to happen 39-56 (GPU 116-170)
 ; 51
@@ -421,9 +434,9 @@ clock_done_pointer2:
 	; has to happen 50-67 (GPU148-202)
 ; 56
 	iny								; 2
-	lda	clock_overlay_colors,Y					; 4
+	lda	level_overlay_colors,Y					; 4
 	sta	COLUP1							; 3
-	lda	clock_colors,Y						; 4+
+	lda	level_colors,Y						; 4+
 ; 69
 	cpy	#48		; see if hit end			; 2
 ; 71
@@ -460,14 +473,14 @@ done_playfield:
 
 	ldy	POINTER_X						; 3
 	cpy	#32
-	bcs	clock_not_left
+	bcs	level_not_left
 	lda	#POINTER_TYPE_LEFT
-	jmp	clock_done_collision
-clock_not_left:
+	jmp	level_done_collision
+level_not_left:
 	cpy	#128
-	bcc	clock_done_collision
+	bcc	level_done_collision
 	lda	#POINTER_TYPE_RIGHT
-clock_done_collision:
+level_done_collision:
 	sta	POINTER_TYPE
 
         sta     WSYNC
@@ -476,26 +489,26 @@ clock_done_collision:
 	; overscan 30, see if end of level
 
 	lda	INPUT_COUNTDOWN						; 3
-	beq	waited_enough_clock					; 2/3
+	beq	waited_enough_level					; 2/3
 	dec	INPUT_COUNTDOWN						; 5
-	jmp	done_check_clock_input					; 3
+	jmp	done_check_level_input					; 3
 
-waited_enough_clock:
+waited_enough_level:
 
 	lda	INPT4			; check if joystick button pressed
-	bmi	done_check_clock_input
+	bmi	done_check_level_input
 
 	; button was pressed
 	lda	POINTER_TYPE
 	cmp	#POINTER_TYPE_POINT
-	beq	done_clock		; done level
+	beq	done_level		; done level
 
-done_check_clock_input:
+done_check_level_input:
 
 	sta	WSYNC
 
-	jmp	clock_frame
+	jmp	level_frame
 
 arrival:
-done_clock:
+done_level:
 	jmp	arrival

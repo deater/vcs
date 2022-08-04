@@ -7,7 +7,7 @@ all:	myst.e7
 myst.e7:	myst.o
 	ld65 -o myst.e7 myst.o -C $(LINKER_SCRIPT)/atari2600_e7.inc
 
-myst.o:	main.bin zero.bin zero2.bin
+myst.o:	myst.s main.bin locations/rom_bank0.bin zero.bin zero2.bin
 	ca65 -o myst.o myst.s
 
 

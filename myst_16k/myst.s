@@ -10,7 +10,7 @@
 ; by Vince `deater` Weaver <vince@deater.net>
 
 
-.incbin	"locations/data1.bin"
+.incbin	"locations/rom_bank0.bin"
 .incbin	"zero.bin"
 .incbin	"zero.bin"
 .incbin	"zero.bin"
