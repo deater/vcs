@@ -18,8 +18,8 @@ do_level:
 	lda	#30
 	sta	INPUT_COUNTDOWN
 
-	jmp	level_frame
-.align	$100
+;	jmp	level_frame
+
 level_frame:
 
 	;============================
@@ -65,21 +65,25 @@ le_vblank_loop:
 	; now scanline 32
 	;========================
 	; increment frame
-	; setup missile
+	; setup missile0 location
 ; 6
 	inc	FRAME							; 5
 ; 11
-	ldx	#4							; 2
-; 13
+	ldx	LEVEL_MISSILE0_COARSE					; 3
+; 14
 mlevel_pad:
 	dex								; 2
 	bne	mlevel_pad	; (X*5)-1 = 14				; 2/3
-; 27
+; 28
 	sta	RESM0							; 3
-; 30
+; 31
+
+	lda	LEVEL_MISSILE0_COARSE					; 3
+	beq	no_missile0						; 2/3
 	lda	#$2							; 2
 	sta	ENAM0	; enable missile 0				; 3
-; 35
+no_missile0:
+; ??
 	sta	WSYNC							; 3
 
 
@@ -89,7 +93,7 @@ mlevel_pad:
 	; do some init
 
 	ldx	#$00							; 2
-	stx	COLUBK			; set background color to black	; 3
+;	stx	COLUBK			; set background color to black	; 3
 	stx	CURRENT_SCANLINE	; reset scanline counter	; 3
 
 	sta	WSYNC
@@ -98,32 +102,29 @@ mlevel_pad:
 	; now VBLANK scanline 34
 	;=======================
 
-	;==========================================
-	; set up sprite1 to be at proper X position
-	;==========================================
+	;====================================================
+	; set up sprite1 (overlay) to be at proper X position
+	;====================================================
 	; now in setup scanline 0
 
-	; we can do this here and the sprite will be drawn as a long
-	; vertical column
-	; later we only enable it for the lines we want
-; 3
-	ldx	#0		; sprite 0 display nothing		2
-	stx	GRP1		; (FIXME: this already set?)		3
-; 8
-	ldx	#5		;					3
-	inx			;					2
-	inx			;					2
+; 0
+	nop								; 2
+	nop								; 2
+; 4
+	ldx	LEVEL_OVERLAY_COARSE					; 3
+	inx			;					; 2
+	inx			;					; 2
+; 11
 qpad_x:
-	dex			;					2
-	bne	qpad_x		;					2/3
+	dex			;					; 2
+	bne	qpad_x		;					; 2/3
 				;===========================================
-				;	5*(6+2)-1 = 39
-
+				;	(5*COASRE+2)-1
 
 	; beam is at proper place
 	sta	RESP1							; 3
 
-	lda	#$F0		; fine adjust overlay			; 2
+	lda	LEVEL_OVERLAY_FINE	; fine adjust overlay		; 3
 	sta	HMP1							; 3
 
 
@@ -152,17 +153,17 @@ qpad_x:
 	; vertical column
 	; later we only enable it for the lines we want
 
-	ldx	#0		; sprite 0 display nothing		2
-	stx	GRP0		; (FIXME: this already set?)		3
+	ldx	#0		; sprite 0 display nothing		; 2
+	stx	GRP0		; (FIXME: this already set?)		; 3
 
-	ldx	POINTER_X_COARSE	;				3
-	inx			;					2
-	inx			;					2
+	ldx	POINTER_X_COARSE	;				; 3
+	inx			;					; 2
+	inx			;					; 2
 ; 12
 
 pad_x:
-	dex			;					2
-	bne	pad_x		;					2/3
+	dex			;					; 2
+	bne	pad_x		;					; 2/3
 				;===========================================
 				;	12-1+5*(coarse_x+2)
 ;
@@ -181,47 +182,43 @@ pad_x:
 	; Final setup before going
 	;==========================================
 
-; 3 (from HMOVE)
+; 3 (from HMOVE)			; NEEDED?
 	ldx	#0			; current scanline?		; 2
 	stx	PF0			; disable playfield		; 3
 	stx	PF1							; 3
 	stx	PF2							; 3
 
-								;===========
-								;        23
-; 26
+; 14
 
-	lda	#$22		; medium brown				; 2
+	lda	LEVEL_HAND_COLOR	;				; 3
 	sta	COLUP0		; set pointer color (sprite0)		; 3
-
+; 20
 	lda	level_overlay_colors					; 4+
 	sta	COLUP1		; set secret color (sprite1)		; 3
-
+; 27
 	lda	#NUSIZ_DOUBLE_SIZE|NUSIZ_MISSILE_WIDTH_8		; 2
 	sta	NUSIZ0							; 3
 	lda	#NUSIZ_QUAD_SIZE|NUSIZ_MISSILE_WIDTH_4			; 2
 	sta	NUSIZ1							; 3
-
+; 37
 	lda	#0							; 2
 	tay			; current block 			; 2
 	sty	CTRLPF		; no_reflect				; 3
-
-	lda	#$E0		; sort of a dark brown			; 2
-	sta	COLUBK							; 3
-
-	lda	#$FF
-	sta	GRP1
-
-	lda	level_colors
-
-	ldx	#0
-
-	stx	VBLANK			; turn on beam			; 3
-
+; 44
+	lda	LEVEL_BACKGROUND_COLOR		;			; 3
+	sta	COLUBK		; set background color			; 3
+; 50
+	lda	#$FF							; 2
+	sta	GRP1							; 3
+; 55
+	lda	level_colors	; load level color in advance		; 4
+; 59
+	ldx	#0		; init scanline				; 2
+; 61
+	stx	VBLANK		; turn on beam				; 3
+; 64
 	sta	WSYNC							; 3
-								;============
-								;============
-								;	60
+
 
 	;===========================================
 	;===========================================
@@ -239,7 +236,7 @@ draw_playfield:
 	; draw playfield 0/4
 	;======================
 ; 0
-;	lda	level_colors,Y						; 4+
+;	lda	level_colors,Y						; --
 	sta	COLUPF							; 3
 	lda	level_overlay_sprite,Y					; 4
 	sta	GRP1							; 3
@@ -264,8 +261,7 @@ draw_playfield:
         sta	PF1				;			; 3
 	; has to happen 38-56 (GPU 116-170)
 ; 45
-        lda	#$FF				;			; 2
-	nop					;			; 2
+        lda	level_playfield2_right,Y	;			; 4
         sta	PF2				;			; 3
 	; has to happen 49-67 (GPU148-202)
 ; 52
@@ -333,8 +329,7 @@ level_done_pointer:
 	sta	PF1				;			; 3
 	; has to happen 39-56 (GPU 116-170)
 ; 51
-	lda	#$FF				;			; 2
-	nop								; 2
+	lda	level_playfield2_right,Y	;			; 4+
 	sta	PF2				;			; 3
 	; has to happen 50-67 (GPU148-202)
 ; 68
@@ -375,8 +370,7 @@ level_done_pointer:
 	sta	PF1				;			; 3
 	; has to happen 39-56 (GPU 116-170)
 ; 51
-	lda	#$FF				;			; 2
-	nop
+	lda	level_playfield2_right,Y	;			; 4+
 	sta	PF2				;			; 3
 	; has to happen 50-67 (GPU148-202)
 ; 58
@@ -429,20 +423,21 @@ level_done_pointer2:
 	sta	PF1				;			; 3
 	; has to happen 39-56 (GPU 116-170)
 ; 51
-	lda	#$FF				;			; 2
+	lda	level_playfield2_right,Y	;			; 4
 	sta	PF2				;			; 3
 	; has to happen 50-67 (GPU148-202)
-; 56
+; 58
 	iny								; 2
 	lda	level_overlay_colors,Y					; 4
 	sta	COLUP1							; 3
 	lda	level_colors,Y						; 4+
-; 69
-	cpy	#48		; see if hit end			; 2
 ; 71
-	beq	done_playfield
+	cpy	#48		; see if hit end			; 2
 ; 73
-	jmp	draw_playfield						; 2/3
+	beq	done_playfield						; 2/3
+; 75
+	jmp	draw_playfield						; 3
+; 78??
 
 
 done_playfield:

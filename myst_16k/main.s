@@ -21,6 +21,7 @@ SFX_PTR		=	$87
 FALL_COUNT	=	$88
 LINK_COLOR	=	$89
 ROOT_LINK_COLOR	=	$8A
+CURRENT_LEVEL	=	$8B
 
 TEMP1		=	$90
 TEMP2		=	$91
@@ -37,12 +38,30 @@ POINTER_TYPE	=	$96
 INL		=	$9E
 INH		=	$9F
 
-PF0L_CACHE	=	$A0
-PF1L_CACHE	=	$A1
-PF2L_CACHE	=	$A2
-PF0R_CACHE	=	$A3
-PF1R_CACHE	=	$A4
-PF2R_CACHE	=	$A5
+
+; hold the current level data
+
+LEVEL_DATA	=	LEVEL_HAND_COLOR
+
+LEVEL_HAND_COLOR	=	$A0	; color of sprite 0 (hand)
+LEVEL_BACKGROUND_COLOR	=	$A1	; background color
+LEVEL_BACKGROUND_COLOR2	=	$A2	; background color 2 (if mid-screen switch)
+LEVEL_OVERLAY_COARSE	=	$A3	; coarse location of overlay sprite
+LEVEL_OVERLAY_FINE	=	$A4	; fine location of overlay sprite
+LEVEL_MISSILE0_COARSE	=	$A5	; coarse location of overlay missile0 (vertical line)
+LEVEL_MISSILE0_FINE	=	$A6	; fine location of overlay missile0
+LEVEL_GRAB_MINX		=	$A7	; XMIN of grab area
+LEVEL_GRAB_MAXX		=	$A8	; XMAX of grab area
+LEVEL_GRAB_YMIN		=	$A9	; YMIN of grab area
+LEVEL_GRAB_YMAX		=	$AA	; YMAX of grab area
+LEVEL_RESERVED0		=	$AB
+LEVEL_RESERVED1		=	$AC
+LEVEL_RESERVED2		=	$AD
+LEVEL_RESERVED3		=	$AE
+LEVEL_RESERVED4		=	$AF
+
+
+; for the zx02 decompression
 
 offset		=	$B0
 offset_h	=	$B1
@@ -98,24 +117,16 @@ clear_loop:
 	sta	VBLANK	; disable beam
 
 
-	; swap in RAM
+	;==============================
+	; load in current level
+	;==============================
 
-	lda	$1FE7
+	jsr	load_level
 
-
-	; decompress
-
-	lda	#<clock_data_zx02
-	sta	ZX0_src
-	lda	#>clock_data_zx02
-	sta	ZX0_src_h
-
-	lda	#>$1000
-	jsr	zx02_full_decomp
 
 	;===========================
 	;===========================
-	; clock
+	; main engine
 	;===========================
 	;===========================
 
@@ -126,6 +137,7 @@ clear_loop:
 	; common routines
 	;===========================
 
+	.include "load_level.s"
 	.include "adjust_sprite.s"
 	.include "common_routines.s"
 	.include "hand_motion.s"
@@ -137,7 +149,7 @@ clear_loop:
 	.include "sprite_data.inc"
 
 clock_data_zx02:
-	.incbin "locations/clock_data.zx02"
+;	.incbin "locations/clock_data.zx02"
 
 ;.include "myst_data.inc"
 

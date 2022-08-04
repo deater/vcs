@@ -24,10 +24,12 @@ rom_bank0.o:	rom_bank0.s \
 # 1 = background color
 # 2 = background color 2 (if mid-screen switch)
 # 3 = coarse location of overlay sprite
+
 # 4 = fine location of overlay sprite
 # 5 = coarse location of overlay missile0 (vertical line)
 # 6 = fine location of overlay missile0
 # 7 = XMIN of grab area
+
 # 8 = XMAX of grab area
 # 9 = YMIN of grab area
 # 10= YMAX of grab area
@@ -40,10 +42,10 @@ rom_bank0.o:	rom_bank0.s \
 
 clock_data.inc:	clock_bg.png clock_overlay.png
 	echo "; Clock data" > clock_data.inc
-	echo ".byte $00,$00,$00,$00" >> clock_data.inc
-	echo ".byte $00,$00,$00,$00" >> clock_data.inc
-	echo ".byte $00,$00,$00,$00" >> clock_data.inc
-	echo ".byte $00,$00,$00,$00" >> clock_data.inc
+	echo ".byte \$$22,\$$E0,\$$E0,    5" >> clock_data.inc
+	echo ".byte \$$F0,    4,\$$00,\$$00" >> clock_data.inc
+	echo ".byte \$$00,\$$00,\$$00,\$$00" >> clock_data.inc
+	echo ".byte \$$00,\$$00,\$$00,\$$00" >> clock_data.inc
 	$(PNG2PF) -4 -n clock -b 0xe0 clock_bg.png - >> clock_data.inc
 	$(PNG2OVERLAY) -4 -n clock clock_overlay.png - >> clock_data.inc
 

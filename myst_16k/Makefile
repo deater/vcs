@@ -27,7 +27,8 @@ main.bin:	main.o
 #	title.s cleft.s book.s arrival.s level_engine.s rocket.s
 
 main.o:	main.s \
-	level_engine.s hand_motion.s hand_copy.s adjust_sprite.s common_routines.s \
+	load_level.s level_engine.s \
+	hand_motion.s hand_copy.s adjust_sprite.s common_routines.s \
 	sound_update.s zx02_optim.s
 	ca65 -o main.o main.s -l main.lst
 
