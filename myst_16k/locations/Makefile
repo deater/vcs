@@ -54,10 +54,10 @@ clock_data.inc:	clock_bg.png clock_overlay.png
 
 rocket_data.inc:	rocket_bg.png rocket_overlay.png
 	echo "; Rocket data" > rocket_data.inc
-	echo ".byte $00,$00,$00,$00" >> rocket_data.inc
-	echo ".byte $00,$00,$00,$00" >> rocket_data.inc
-	echo ".byte $00,$00,$00,$00" >> rocket_data.inc
-	echo ".byte $00,$00,$00,$00" >> rocket_data.inc
+	echo ".byte \$$22,\$$F4,\$$F4,\$$04" >> rocket_data.inc
+	echo ".byte \$$30,\$$00,\$$00,\$$00" >> rocket_data.inc
+	echo ".byte \$$00,\$$00,\$$00,\$$00" >> rocket_data.inc
+	echo ".byte \$$00,\$$00,\$$00,\$$00" >> rocket_data.inc
 	$(PNG2PF) -4 -n rocket -b 0xf4 rocket_bg.png - >> rocket_data.inc
 	$(PNG2OVERLAY) -4 -n rocket rocket_overlay.png - >> rocket_data.inc
 

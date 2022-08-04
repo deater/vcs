@@ -11,6 +11,11 @@ Book:
 	pause when in the process of linking, maybe black screen
 	make generic so can use for other books?
 
+level_engine:
+	fix cycle count
+	add code for mid-screen BG change?
+	add GRAB code
+
 Levels:
 	adapt to shared engine
 
@@ -18,6 +23,3 @@ Marker switches:
 	have code to show flipped switches.  In theory overlay is in
 		RAM so this should be fairly straightfoward
 		to modify at load/click
-
-
-

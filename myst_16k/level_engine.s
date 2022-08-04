@@ -67,9 +67,9 @@ le_vblank_loop:
 	; increment frame
 	; setup missile0 location
 ; 6
-	inc	FRAME							; 5
-; 11
+	lda	$80				; nop3			; 3
 	ldx	LEVEL_MISSILE0_COARSE					; 3
+	beq	no_missile0						; 2/3
 ; 14
 mlevel_pad:
 	dex								; 2
@@ -78,12 +78,10 @@ mlevel_pad:
 	sta	RESM0							; 3
 ; 31
 
-	lda	LEVEL_MISSILE0_COARSE					; 3
-	beq	no_missile0						; 2/3
 	lda	#$2							; 2
 	sta	ENAM0	; enable missile 0				; 3
-no_missile0:
 ; ??
+no_missile0:
 	sta	WSYNC							; 3
 
 
@@ -91,6 +89,8 @@ no_missile0:
 	; now VBLANK scanline 33
 	;=============================
 	; do some init
+
+	inc	FRAME							; 5
 
 	ldx	#$00							; 2
 ;	stx	COLUBK			; set background color to black	; 3

@@ -9,7 +9,9 @@ load_level:
 
 	; load in level number
 
-	ldy	CURRENT_LEVEL
+	ldy	#1
+
+;	ldy	CURRENT_LEVEL
 
 	; swap in ROM bank
 
@@ -66,12 +68,12 @@ level_bank_lookup:
 
 level_compress_data_low:
 	.byte	<$1000
-	.byte	<$1000
+	.byte	<$10cf
 	.byte	<$1000
 
 level_compress_data_high:
 	.byte	>$1000
-	.byte	>$1000
+	.byte	>$10cf
 	.byte	>$1000
 
 
