@@ -986,55 +986,6 @@ sfx_cv:
 SFX_CLICK	=       sfx_click-sfx_start-1
 SFX_LINK	=       sfx_link-sfx_start-1
 
-arrival_playfield0_left:
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
 
 arrival_playfield1_left:
 	.byte $0F
@@ -1086,6 +1037,8 @@ arrival_playfield1_left:
 	.byte $01
 	.byte $03
 
+.align $100
+
 arrival_playfield2_left:
 	.byte $FF
 	.byte $FF
@@ -1136,3 +1089,102 @@ arrival_playfield2_left:
 	.byte $FF
 	.byte $FF
 
+arrival_overlay_colors:
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $04
+	.byte $04
+	.byte $04
+	.byte $C2
+	.byte $04
+	.byte $04
+	.byte $04
+	.byte $04
+	.byte $04
+	.byte $04
+	.byte $04
+	.byte $04
+	.byte $04
+	.byte $04
+	.byte $04
+	.byte $A4
+	.byte $18
+	.byte $06
+	.byte $18
+	.byte $06
+	.byte $06
+	.byte $00
+	.byte $02
+	.byte $F4
+	.byte $F4
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+
+arrival_overlay:
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $28
+	.byte $42
+	.byte $5A
+	.byte $F8
+	.byte $0A
+	.byte $12
+	.byte $E6
+	.byte $06
+	.byte $0E
+	.byte $7E
+	.byte $78
+	.byte $70
+	.byte $90
+	.byte $88
+	.byte $48
+	.byte $3A
+	.byte $02
+	.byte $3C
+	.byte $02
+	.byte $3E
+	.byte $3E
+	.byte $00
+	.byte $01
+	.byte $01
+	.byte $01
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
+	.byte $00
