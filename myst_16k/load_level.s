@@ -9,7 +9,7 @@ load_level:
 
 	; load in level number
 
-	ldy	#1
+	ldy	#5
 
 ;	ldy	CURRENT_LEVEL
 
@@ -65,15 +65,24 @@ level_bank_lookup:
 	.byte	0			; 0 = clock
 	.byte	0			; 1 = rocket
 	.byte	0			; 2 = arrival
+	.byte	0			; 3 = hilltop_w
+	.byte	0			; 4 = pool
+	.byte	0			; 5 = hilltop_s
 
 level_compress_data_low:
 	.byte	<$1000
 	.byte	<$10cf
-	.byte	<$1000
+	.byte	<$1164
+	.byte	<$121d
+	.byte	<$1305
+	.byte	<$1405
 
 level_compress_data_high:
 	.byte	>$1000
 	.byte	>$10cf
-	.byte	>$1000
+	.byte	>$1164
+	.byte	>$121d
+	.byte	>$1305
+	.byte	>$1405
 
 
