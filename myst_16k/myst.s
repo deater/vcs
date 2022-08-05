@@ -16,6 +16,6 @@
 .incbin	"zero.bin"
 .incbin	"zero.bin"
 .incbin	"zero.bin"
-.incbin	"zero.bin"
+.incbin	"intro/rom_bank6.bin"
 .incbin	"zero2.bin"
 .incbin	"main.bin"
