@@ -7,6 +7,7 @@
 .include "../vcs.inc"
 
 .include "zp.inc"
+.include "locations.inc"
 
 	;==============================
 	;==============================
@@ -42,10 +43,13 @@ clear_loop:
 
 	jsr	$1000
 
+	ldy	#LOCATION_ARRIVAL
+	sty	CURRENT_LOCATION
+
 	;==============================
 	; load in current level
 	;==============================
-
+load_new_level:
 	jsr	load_level
 
 

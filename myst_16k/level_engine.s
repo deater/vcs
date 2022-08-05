@@ -506,4 +506,8 @@ done_check_level_input:
 
 arrival:
 done_level:
-	jmp	arrival
+
+	lda	LEVEL_CENTER_DEST
+	sta	CURRENT_LOCATION
+
+	jmp	load_new_level
