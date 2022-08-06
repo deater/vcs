@@ -43,7 +43,7 @@ clear_loop:
 
 	jsr	$1000
 
-	ldy	#LOCATION_ARRIVAL
+	ldy	#LOCATION_ARRIVAL_N
 	sty	CURRENT_LOCATION
 
 	;==============================

@@ -450,9 +450,15 @@ done_playfield:
 	;===========================
 	;===========================
 
-	ldx	#26
+	ldx	#25
 	jsr	common_overscan
 
+	;==================================
+	; overscan 27, general stuff
+
+	lda	#$0							; 2
+	sta	ENAM0		; disable missile 0			; 3
+	sta	WSYNC
 
 	;==================================
 	; overscan 28, update sound

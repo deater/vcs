@@ -14,7 +14,8 @@ rom_bank0.bin:	rom_bank0.o
 
 
 rom_bank0.o:	rom_bank0.s \
-	clock_data.zx02 rocket_data.zx02 arrival_data.zx02 \
+	clock_data.zx02 rocket_data.zx02 \
+	arrival_e_data.zx02 arrival_n_data.zx02 \
 	hilltop_n_data.zx02 hilltop_s_data.zx02 \
 	hilltop_e_data.zx02 hilltop_w_data.zx02 pool_data.zx02
 	ca65 -o rom_bank0.o rom_bank0.s -l rom_bank0.lst
@@ -33,9 +34,16 @@ rocket_data.inc:	rocket_bg.png rocket_overlay.png
 
 ###
 
-arrival_data.inc:	arrival_bg.png arrival_overlay.png
-	$(PNG2PF) -4 -n arrival -b 0x00 arrival_bg.png - > arrival_data.inc
-	$(PNG2OVERLAY) -4 -n arrival arrival_overlay.png - >> arrival_data.inc
+arrival_n_data.inc:	arrival_n_bg.png arrival_n_overlay.png
+	$(PNG2PF) -4 -n arrival -b 0x00 arrival_n_bg.png - > arrival_n_data.inc
+	$(PNG2OVERLAY) -4 -n arrival arrival_n_overlay.png - >> arrival_n_data.inc
+
+###
+
+arrival_e_data.inc:	arrival_e_bg.png arrival_e_overlay.png
+	$(PNG2PF) -4 -n arrival -b 0x00 arrival_e_bg.png - > arrival_e_data.inc
+	$(PNG2OVERLAY) -4 -n arrival arrival_e_overlay.png - >> arrival_e_data.inc
+
 
 ###
 
@@ -97,14 +105,26 @@ rocket_data.o:	rocket_data.s rocket_data.inc
 
 ###
 
-arrival_data.zx02:	arrival_data.bin
-	$(ZX02) -f arrival_data.bin arrival_data.zx02
+arrival_n_data.zx02:	arrival_n_data.bin
+	$(ZX02) -f arrival_n_data.bin arrival_n_data.zx02
 
-arrival_data.bin:	arrival_data.o
-	ld65 -o arrival_data.bin arrival_data.o -C $(LINKER_SCRIPT)/atari2600_f000.inc
+arrival_n_data.bin:	arrival_n_data.o
+	ld65 -o arrival_n_data.bin arrival_n_data.o -C $(LINKER_SCRIPT)/atari2600_f000.inc
 
-arrival_data.o:	arrival_data.s arrival_data.inc
-	ca65 -o arrival_data.o arrival_data.s -l arrival_data.lst
+arrival_n_data.o:	arrival_n_data.s arrival_n_data.inc
+	ca65 -o arrival_n_data.o arrival_n_data.s -l arrival_n_data.lst
+
+###
+
+arrival_e_data.zx02:	arrival_e_data.bin
+	$(ZX02) -f arrival_e_data.bin arrival_e_data.zx02
+
+arrival_e_data.bin:	arrival_e_data.o
+	ld65 -o arrival_e_data.bin arrival_e_data.o -C $(LINKER_SCRIPT)/atari2600_f000.inc
+
+arrival_e_data.o:	arrival_e_data.s arrival_e_data.inc
+	ca65 -o arrival_e_data.o arrival_e_data.s -l arrival_e_data.lst
+
 
 ###
 
