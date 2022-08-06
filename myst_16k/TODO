@@ -1,4 +1,16 @@
 
+End, if room:
+	Have all three pages.  Change hand color to match (Even though
+		messes up the tree)
+	Have book be configurable, edge be red/blue/green as appropriate.
+	brother/atrus overlay?  decompress to 256 byte RAM?
+
+	glitch out if you give wronge page?
+	Atrus screen have picture of page and question mark?
+
+
+Only display right/left if can go that way
+
 Intro: call into common routines instead of incuding them
 
 Title:

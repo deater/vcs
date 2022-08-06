@@ -496,7 +496,13 @@ waited_enough_level:
 	; button was pressed
 	lda	POINTER_TYPE
 	cmp	#POINTER_TYPE_POINT
-	beq	done_level		; done level
+	beq	clicked_forward
+
+	cmp	#POINTER_TYPE_LEFT
+	beq	clicked_left
+
+	cmp	#POINTER_TYPE_RIGHT
+	beq	clicked_right
 
 done_check_level_input:
 
@@ -504,10 +510,21 @@ done_check_level_input:
 
 	jmp	level_frame
 
-arrival:
-done_level:
+
+clicked_forward:
 
 	lda	LEVEL_CENTER_DEST
-	sta	CURRENT_LOCATION
+	jmp	start_new_level
 
+clicked_left:
+	lda	LEVEL_LEFT_DEST
+	jmp	start_new_level
+
+clicked_right:
+	lda	LEVEL_RIGHT_DEST
+;	jmp	start_new_level
+
+
+start_new_level:
+	sta	CURRENT_LOCATION
 	jmp	load_new_level
