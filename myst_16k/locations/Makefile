@@ -15,7 +15,8 @@ rom_bank0.bin:	rom_bank0.o
 
 rom_bank0.o:	rom_bank0.s \
 	clock_data.zx02 rocket_data.zx02 arrival_data.zx02 \
-	hilltop_s_data.zx02 hilltop_w_data.zx02 pool_data.zx02
+	hilltop_n_data.zx02 hilltop_s_data.zx02 \
+	hilltop_e_data.zx02 hilltop_w_data.zx02 pool_data.zx02
 	ca65 -o rom_bank0.o rom_bank0.s -l rom_bank0.lst
 
 ###
@@ -44,9 +45,23 @@ hilltop_w_data.inc:	hilltop_w_bg.png hilltop_w_overlay.png
 
 ###
 
+hilltop_e_data.inc:	hilltop_e_bg.png hilltop_e_overlay.png
+	$(PNG2PF) -4 -n hilltop_e -b 0xe0 hilltop_e_bg.png - > hilltop_e_data.inc
+	$(PNG2OVERLAY) -4 -n hilltop_e hilltop_e_overlay.png - >> hilltop_e_data.inc
+
+
+###
+
 hilltop_s_data.inc:	hilltop_s_bg.png hilltop_s_overlay.png
 	$(PNG2PF) -4 -n hilltop_s -b 0xE0 hilltop_s_bg.png - > hilltop_s_data.inc
 	$(PNG2OVERLAY) -4 -n hilltop_s hilltop_s_overlay.png - >> hilltop_s_data.inc
+
+###
+
+hilltop_n_data.inc:	hilltop_n_bg.png hilltop_n_overlay.png
+	$(PNG2PF) -4 -n hilltop_n -b 0x02 hilltop_n_bg.png - > hilltop_n_data.inc
+	$(PNG2OVERLAY) -4 -n hilltop_n hilltop_n_overlay.png - >> hilltop_n_data.inc
+
 
 
 ###
@@ -104,6 +119,18 @@ hilltop_w_data.o:	hilltop_w_data.s hilltop_w_data.inc
 
 ###
 
+hilltop_e_data.zx02:	hilltop_e_data.bin
+	$(ZX02) -f hilltop_e_data.bin hilltop_e_data.zx02
+
+hilltop_e_data.bin:	hilltop_e_data.o
+	ld65 -o hilltop_e_data.bin hilltop_e_data.o -C $(LINKER_SCRIPT)/atari2600_f000.inc
+
+hilltop_e_data.o:	hilltop_e_data.s hilltop_e_data.inc
+	ca65 -o hilltop_e_data.o hilltop_e_data.s -l hilltop_e_data.lst
+
+
+###
+
 hilltop_s_data.zx02:	hilltop_s_data.bin
 	$(ZX02) -f hilltop_s_data.bin hilltop_s_data.zx02
 
@@ -112,6 +139,18 @@ hilltop_s_data.bin:	hilltop_s_data.o
 
 hilltop_s_data.o:	hilltop_s_data.s hilltop_s_data.inc
 	ca65 -o hilltop_s_data.o hilltop_s_data.s -l hilltop_s_data.lst
+
+###
+
+hilltop_n_data.zx02:	hilltop_n_data.bin
+	$(ZX02) -f hilltop_n_data.bin hilltop_n_data.zx02
+
+hilltop_n_data.bin:	hilltop_n_data.o
+	ld65 -o hilltop_n_data.bin hilltop_n_data.o -C $(LINKER_SCRIPT)/atari2600_f000.inc
+
+hilltop_n_data.o:	hilltop_n_data.s hilltop_n_data.inc
+	ca65 -o hilltop_n_data.o hilltop_n_data.s -l hilltop_n_data.lst
+
 
 ###
 
