@@ -33,7 +33,7 @@ main.o:	main.s zp.inc \
 	load_level.s level_engine.s \
 	hand_motion.s hand_copy.s adjust_sprite.s common_routines.s \
 	sound_update.s zx02_optim.s \
-	level_locations.inc
+	locations/level_locations.inc
 	ca65 -o main.o main.s -l main.lst
 
 ###

@@ -77,10 +77,6 @@ load_new_level:
 	.include "sfx_data.inc"
 	.include "sprite_data.inc"
 
-clock_data_zx02:
-;	.incbin "locations/clock_data.zx02"
-
-;.include "myst_data.inc"
 
 .segment "IRQ_VECTORS"
 	.word myst	; NMI

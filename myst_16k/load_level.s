@@ -1,4 +1,4 @@
-.include "level_locations.inc"
+
 
 	;=========================
 	; load level
@@ -62,6 +62,41 @@ copy_zp_loop:
 
 	rts
 
+.include "locations/level_locations.inc"
 
+level_bank_lookup:
+	.byte	0			; 0 = clock_s
+	.byte	0			; 1 = rocket_n
+	.byte	0			; 2 = arrival_n
+	.byte	0			; 3 = hilltop_w
+	.byte	0			; 4 = pool
+	.byte	0			; 5 = hilltop_s
+	.byte	0			; 6 = hilltop_n
+	.byte	0			; 7 = hilltop_e
+	.byte	0			; 8 = arrival_e
+	.byte	0			; 9 = clock_n
 
+level_compress_data_low:
+	.byte	<clock_s_data_zx02
+	.byte	<rocket_n_data_zx02
+	.byte	<arrival_n_data_zx02
+	.byte	<hilltop_w_data_zx02
+	.byte	<pool_w_data_zx02
+	.byte	<hilltop_s_data_zx02
+	.byte	<hilltop_n_data_zx02
+	.byte	<hilltop_e_data_zx02
+	.byte	<arrival_e_data_zx02
+	.byte	<clock_n_data_zx02
+
+level_compress_data_high:
+	.byte	>clock_s_data_zx02
+	.byte	>rocket_n_data_zx02
+	.byte	>arrival_n_data_zx02
+	.byte	>hilltop_w_data_zx02
+	.byte	>pool_w_data_zx02
+	.byte	>hilltop_s_data_zx02
+	.byte	>hilltop_n_data_zx02
+	.byte	>hilltop_e_data_zx02
+	.byte	>arrival_e_data_zx02
+	.byte	>clock_n_data_zx02
 
