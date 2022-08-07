@@ -14,7 +14,8 @@ rom_bank0.bin:	rom_bank0.o
 
 
 rom_bank0.o:	rom_bank0.s \
-	clock_data.zx02 rocket_data.zx02 \
+	clock_s_data.zx02 clock_n_data.zx02 \
+	rocket_data.zx02 \
 	arrival_e_data.zx02 arrival_n_data.zx02 \
 	hilltop_n_data.zx02 hilltop_s_data.zx02 \
 	hilltop_e_data.zx02 hilltop_w_data.zx02 pool_data.zx02
@@ -22,9 +23,15 @@ rom_bank0.o:	rom_bank0.s \
 
 ###
 
-clock_data.inc:	clock_bg.png clock_overlay.png
-	$(PNG2PF) -4 -n clock -b 0xe0 clock_bg.png - > clock_data.inc
-	$(PNG2OVERLAY) -4 -n clock clock_overlay.png - >> clock_data.inc
+clock_s_data.inc:	clock_s_bg.png clock_s_overlay.png
+	$(PNG2PF) -4 -n clock -b 0xe0 clock_s_bg.png - > clock_s_data.inc
+	$(PNG2OVERLAY) -4 -n clock clock_s_overlay.png - >> clock_s_data.inc
+
+###
+
+clock_n_data.inc:	clock_n_bg.png clock_n_overlay.png
+	$(PNG2PF) -4 -n clock -b 0x00 clock_n_bg.png - > clock_n_data.inc
+	$(PNG2OVERLAY) -4 -n clock clock_n_overlay.png - >> clock_n_data.inc
 
 ###
 
@@ -83,14 +90,26 @@ pool_data.inc:	pool_bg.png pool_overlay.png
 
 ###
 
-clock_data.zx02:	clock_data.bin
-	$(ZX02) -f clock_data.bin clock_data.zx02
+clock_s_data.zx02:	clock_s_data.bin
+	$(ZX02) -f clock_s_data.bin clock_s_data.zx02
 
-clock_data.bin:	clock_data.o
-	ld65 -o clock_data.bin clock_data.o -C $(LINKER_SCRIPT)/atari2600_f000.inc
+clock_s_data.bin:	clock_s_data.o
+	ld65 -o clock_s_data.bin clock_s_data.o -C $(LINKER_SCRIPT)/atari2600_f000.inc
 
-clock_data.o:	clock_data.s clock_data.inc
-	ca65 -o clock_data.o clock_data.s -l clock_data.lst
+clock_s_data.o:	clock_s_data.s clock_s_data.inc
+	ca65 -o clock_s_data.o clock_s_data.s -l clock_s_data.lst
+
+###
+
+clock_n_data.zx02:	clock_n_data.bin
+	$(ZX02) -f clock_n_data.bin clock_n_data.zx02
+
+clock_n_data.bin:	clock_n_data.o
+	ld65 -o clock_n_data.bin clock_n_data.o -C $(LINKER_SCRIPT)/atari2600_f000.inc
+
+clock_n_data.o:	clock_n_data.s clock_n_data.inc
+	ca65 -o clock_n_data.o clock_n_data.s -l clock_n_data.lst
+
 
 ###
 

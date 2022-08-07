@@ -1,5 +1,5 @@
 
-; LOCATION_CLOCK data
+; LOCATION_CLOCK_S data
 
 .include "../locations.inc"
 
@@ -9,9 +9,9 @@
 .byte 4,$00			; coarse/fine of missile0 (vertical line)
 .byte $00,$00			; XMAX/XMIN of grab area
 .byte $00,$00			; YMAX/YMIN of grab area
-.byte $00			; left destination
+.byte LOCATION_CLOCK_N		; left destination
 .byte LOCATION_HILLTOP_S	; center destination
-.byte $00			; right destination
+.byte LOCATION_CLOCK_N		; right destination
 .byte $00,$00			; unused
 
-.include "clock_data.inc"
+.include "clock_s_data.inc"

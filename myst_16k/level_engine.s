@@ -77,6 +77,8 @@ mlevel_pad:
 ; 28
 	sta	RESM0							; 3
 ; 31
+	lda	LEVEL_MISSILE0_FINE	; fine adjust overlay		; 3
+	sta	HMM0							; 3
 
 	lda	#$2							; 2
 	sta	ENAM0	; enable missile 0				; 3
