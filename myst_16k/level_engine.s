@@ -489,7 +489,10 @@ level_done_collision:
         sta     WSYNC
 
 	;==================================
-	; overscan 30, see if end of level
+	;==================================
+	; overscan 30, handle button press
+	;==================================
+	;==================================
 
 	lda	INPUT_COUNTDOWN						; 3
 	beq	waited_enough_level					; 2/3
@@ -522,14 +525,17 @@ done_check_level_input:
 clicked_forward:
 
 	lda	LEVEL_CENTER_DEST
+	bmi	done_check_level_input
 	jmp	start_new_level
 
 clicked_left:
 	lda	LEVEL_LEFT_DEST
+	bmi	done_check_level_input
 	jmp	start_new_level
 
 clicked_right:
 	lda	LEVEL_RIGHT_DEST
+	bmi	done_check_level_input
 ;	jmp	start_new_level
 
 
