@@ -20,6 +20,8 @@ level_locations.inc:	rom_bank0.bin rom_bank1.bin generate_locations
 	./generate_locations -a 0x1000 -s pool_w_data_zx02 rom_bank0.lst >> level_locations.inc
 	./generate_locations -a 0x1000 -s rocket_n_data_zx02 rom_bank0.lst >> level_locations.inc
 	./generate_locations -a 0x1000 -s shortsteps_w_data_zx02 rom_bank1.lst >> level_locations.inc
+	./generate_locations -a 0x1000 -s dock_n_data_zx02 rom_bank1.lst >> level_locations.inc
+
 
 ###
 
@@ -49,7 +51,8 @@ rom_bank1.bin:	rom_bank1.o
 
 
 rom_bank1.o:	rom_bank1.s \
-	shortsteps_w_data.zx02
+	shortsteps_w_data.zx02 \
+	dock_n_data.zx02
 	ca65 -o rom_bank1.o rom_bank1.s -l rom_bank1.lst
 
 ###
@@ -121,6 +124,12 @@ pool_w_data.inc:	pool_w_bg.png pool_w_overlay.png
 shortsteps_w_data.inc:	shortsteps_w_bg.png shortsteps_w_overlay.png
 	$(PNG2PF) -4 -n pool -b 0x00 shortsteps_w_bg.png - > shortsteps_w_data.inc
 	$(PNG2OVERLAY) -4 -n pool shortsteps_w_overlay.png - >> shortsteps_w_data.inc
+
+###
+
+dock_n_data.inc:	dock_n_bg.png dock_n_overlay.png
+	$(PNG2PF) -4 -n pool -b 0x00 dock_n_bg.png - > dock_n_data.inc
+	$(PNG2OVERLAY) -4 -n pool dock_n_overlay.png - >> dock_n_data.inc
 
 
 
@@ -250,6 +259,18 @@ shortsteps_w_data.bin:	shortsteps_w_data.o
 
 shortsteps_w_data.o:	shortsteps_w_data.s shortsteps_w_data.inc
 	ca65 -o shortsteps_w_data.o shortsteps_w_data.s -l shortsteps_w_data.lst
+
+###
+
+dock_n_data.zx02:	dock_n_data.bin
+	$(ZX02) -f dock_n_data.bin dock_n_data.zx02
+
+dock_n_data.bin:	dock_n_data.o
+	ld65 -o dock_n_data.bin dock_n_data.o -C $(LINKER_SCRIPT)/atari2600_f000.inc
+
+dock_n_data.o:	dock_n_data.s dock_n_data.inc
+	ca65 -o dock_n_data.o dock_n_data.s -l dock_n_data.lst
+
 
 
 

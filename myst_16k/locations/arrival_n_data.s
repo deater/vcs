@@ -9,7 +9,7 @@
 .byte $00,$00			; XMAX/XMIN of grab area
 .byte $00,$00			; YMAX/YMIN of grab area
 .byte $FF			; left destination
-.byte LOCATION_SHORTSTEPS_W	; center destination
+.byte LOCATION_DOCK_N		; center destination
 .byte LOCATION_ARRIVAL_E	; right destination
 .byte $00,$00			; unused
 

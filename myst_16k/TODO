@@ -1,4 +1,13 @@
 
+copy overlay to RAM
+	have way to load alternate overlay (for path opening, books)
+	
+for switch pressed:
+	search overlay for 4-wide blue and 2 wide yellow
+	switch to upper 4-wide grey and 4 wide blue
+	switch box always start at far left of location
+
+
 End, if room:
 	Have all three pages.  Change hand color to match (Even though
 		messes up the tree)
