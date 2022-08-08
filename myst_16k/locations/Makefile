@@ -8,7 +8,7 @@ LFLAGS =
 
 all:	level_locations.inc
 
-level_locations.inc:	rom_bank0.bin generate_locations
+level_locations.inc:	rom_bank0.bin rom_bank1.bin generate_locations
 	./generate_locations -a 0x1000 -s arrival_n_data_zx02 rom_bank0.lst > level_locations.inc
 	./generate_locations -a 0x1000 -s arrival_e_data_zx02 rom_bank0.lst >> level_locations.inc
 	./generate_locations -a 0x1000 -s clock_s_data_zx02 rom_bank0.lst >> level_locations.inc
@@ -19,6 +19,7 @@ level_locations.inc:	rom_bank0.bin generate_locations
 	./generate_locations -a 0x1000 -s hilltop_w_data_zx02 rom_bank0.lst >> level_locations.inc
 	./generate_locations -a 0x1000 -s pool_w_data_zx02 rom_bank0.lst >> level_locations.inc
 	./generate_locations -a 0x1000 -s rocket_n_data_zx02 rom_bank0.lst >> level_locations.inc
+	./generate_locations -a 0x1000 -s shortsteps_w_data_zx02 rom_bank1.lst >> level_locations.inc
 
 ###
 
@@ -33,9 +34,6 @@ generate_locations.o:	generate_locations.c
 rom_bank0.bin:	rom_bank0.o
 	ld65 -o rom_bank0.bin rom_bank0.o -C $(LINKER_SCRIPT)/atari2600_1000.inc
 
-###
-
-
 rom_bank0.o:	rom_bank0.s \
 	clock_s_data.zx02 clock_n_data.zx02 \
 	rocket_n_data.zx02 \
@@ -43,6 +41,16 @@ rom_bank0.o:	rom_bank0.s \
 	hilltop_n_data.zx02 hilltop_s_data.zx02 \
 	hilltop_e_data.zx02 hilltop_w_data.zx02 pool_w_data.zx02
 	ca65 -o rom_bank0.o rom_bank0.s -l rom_bank0.lst
+###
+
+rom_bank1.bin:	rom_bank1.o
+	ld65 -o rom_bank1.bin rom_bank1.o -C $(LINKER_SCRIPT)/atari2600_1000.inc
+
+
+
+rom_bank1.o:	rom_bank1.s \
+	shortsteps_w_data.zx02
+	ca65 -o rom_bank1.o rom_bank1.s -l rom_bank1.lst
 
 ###
 
@@ -107,6 +115,12 @@ hilltop_n_data.inc:	hilltop_n_bg.png hilltop_n_overlay.png
 pool_w_data.inc:	pool_w_bg.png pool_w_overlay.png
 	$(PNG2PF) -4 -n pool -b 0x00 pool_w_bg.png - > pool_w_data.inc
 	$(PNG2OVERLAY) -4 -n pool pool_w_overlay.png - >> pool_w_data.inc
+
+###
+
+shortsteps_w_data.inc:	shortsteps_w_bg.png shortsteps_w_overlay.png
+	$(PNG2PF) -4 -n pool -b 0x00 shortsteps_w_bg.png - > shortsteps_w_data.inc
+	$(PNG2OVERLAY) -4 -n pool shortsteps_w_overlay.png - >> shortsteps_w_data.inc
 
 
 
@@ -226,8 +240,21 @@ pool_w_data.o:	pool_w_data.s pool_w_data.inc
 	ca65 -o pool_w_data.o pool_w_data.s -l pool_w_data.lst
 
 
+###
+
+shortsteps_w_data.zx02:	shortsteps_w_data.bin
+	$(ZX02) -f shortsteps_w_data.bin shortsteps_w_data.zx02
+
+shortsteps_w_data.bin:	shortsteps_w_data.o
+	ld65 -o shortsteps_w_data.bin shortsteps_w_data.o -C $(LINKER_SCRIPT)/atari2600_f000.inc
+
+shortsteps_w_data.o:	shortsteps_w_data.s shortsteps_w_data.inc
+	ca65 -o shortsteps_w_data.o shortsteps_w_data.s -l shortsteps_w_data.lst
+
+
+
 ####
 
 clean:	
-	rm -f *~ *.zx02 *.lst *.inc *.o *.bin
+	rm -f *~ *.zx02 *.lst *.inc *.o *.bin generate_locations
 

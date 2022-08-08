@@ -11,7 +11,7 @@
 
 
 .incbin	"locations/rom_bank0.bin"
-.incbin	"zero.bin"
+.incbin	"locations/rom_bank1.bin"
 .incbin	"zero.bin"
 .incbin	"zero.bin"
 .incbin	"zero.bin"

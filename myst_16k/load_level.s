@@ -75,6 +75,7 @@ level_bank_lookup:
 	.byte	0			; 7 = hilltop_e
 	.byte	0			; 8 = arrival_e
 	.byte	0			; 9 = clock_n
+	.byte	1			; 10 = shortsteps_w
 
 level_compress_data_low:
 	.byte	<clock_s_data_zx02
@@ -87,6 +88,7 @@ level_compress_data_low:
 	.byte	<hilltop_e_data_zx02
 	.byte	<arrival_e_data_zx02
 	.byte	<clock_n_data_zx02
+	.byte	<shortsteps_w_data_zx02
 
 level_compress_data_high:
 	.byte	>clock_s_data_zx02
@@ -99,4 +101,5 @@ level_compress_data_high:
 	.byte	>hilltop_e_data_zx02
 	.byte	>arrival_e_data_zx02
 	.byte	>clock_n_data_zx02
+	.byte	>shortsteps_w_data_zx02
 
