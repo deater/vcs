@@ -163,8 +163,11 @@ int main(int argc, char **argv) {
 	else {
 		fprintf(outfile,"overlay_colors:\n");
 	}
+
+	color=0;
 	for(row=0;row<ysize;row+=skip) {
-		color=0;
+		/* keep last line color if no active pixels on line */
+		/* hopefully this compresses better? */
 		for(col=0;col<xsize;col++) {
 			if (image[row*xsize+col]!=background[row]) color=image[row*xsize+col];
 		}

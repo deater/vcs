@@ -75,6 +75,7 @@ load_new_level:
 	.include "zx02_optim.s"
 
 	.include "sfx_data.inc"
+.align $100 ; temporary
 	.include "sprite_data.inc"
 
 
