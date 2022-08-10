@@ -8,3 +8,5 @@ gear_n_data_zx02:
 .incbin "gear_n_data.zx02"
 gear_s_data_zx02:
 .incbin "gear_s_data.zx02"
+library_s_data_zx02:
+.incbin "library_s_data.zx02"
