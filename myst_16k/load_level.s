@@ -79,6 +79,7 @@ level_bank_lookup:
 	.byte	1			; 11 = dock_n
 	.byte	1			; 12 = library_n
 	.byte	1			; 13 = gear_n
+	.byte	1			; 14 = gear_s
 
 level_compress_data_low:
 	.byte	<clock_s_data_zx02
@@ -95,6 +96,8 @@ level_compress_data_low:
 	.byte	<dock_n_data_zx02
 	.byte	<library_n_data_zx02
 	.byte	<gear_n_data_zx02
+	.byte	<gear_s_data_zx02
+
 
 level_compress_data_high:
 	.byte	>clock_s_data_zx02
@@ -111,4 +114,5 @@ level_compress_data_high:
 	.byte	>dock_n_data_zx02
 	.byte	>library_n_data_zx02
 	.byte	>gear_n_data_zx02
+	.byte	>gear_s_data_zx02
 

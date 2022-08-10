@@ -23,6 +23,7 @@ level_locations.inc:	rom_bank0.bin rom_bank1.bin generate_locations
 	./generate_locations -a 0x1000 -s dock_n_data_zx02 rom_bank1.lst >> level_locations.inc
 	./generate_locations -a 0x1000 -s library_n_data_zx02 rom_bank1.lst >> level_locations.inc
 	./generate_locations -a 0x1000 -s gear_n_data_zx02 rom_bank1.lst >> level_locations.inc
+	./generate_locations -a 0x1000 -s gear_s_data_zx02 rom_bank1.lst >> level_locations.inc
 
 
 
@@ -57,7 +58,7 @@ rom_bank1.o:	rom_bank1.s \
 	shortsteps_w_data.zx02 \
 	dock_n_data.zx02 \
 	library_n_data.zx02 \
-	gear_n_data.zx02
+	gear_n_data.zx02 gear_s_data.zx02
 	ca65 -o rom_bank1.o rom_bank1.s -l rom_bank1.lst
 
 ###
@@ -147,6 +148,12 @@ library_n_data.inc:	library_n_bg.png library_n_overlay.png
 gear_n_data.inc:	gear_n_bg.png gear_n_overlay.png
 	$(PNG2PF) -4 -n gear_n -b 0x02 gear_n_bg.png - > gear_n_data.inc
 	$(PNG2OVERLAY) -4 -n gear_n gear_n_overlay.png - >> gear_n_data.inc
+
+###
+
+gear_s_data.inc:	gear_s_bg.png gear_s_overlay.png
+	$(PNG2PF) -4 -n gear_s -b 0x02 gear_s_bg.png - > gear_s_data.inc
+	$(PNG2OVERLAY) -4 -n gear_s gear_s_overlay.png - >> gear_s_data.inc
 
 
 
@@ -310,6 +317,18 @@ gear_n_data.bin:	gear_n_data.o
 
 gear_n_data.o:	gear_n_data.s gear_n_data.inc
 	ca65 -o gear_n_data.o gear_n_data.s -l gear_n_data.lst
+
+###
+
+gear_s_data.zx02:	gear_s_data.bin
+	$(ZX02) -f gear_s_data.bin gear_s_data.zx02
+
+gear_s_data.bin:	gear_s_data.o
+	ld65 -o gear_s_data.bin gear_s_data.o -C $(LINKER_SCRIPT)/atari2600_f000.inc
+
+gear_s_data.o:	gear_s_data.s gear_s_data.inc
+	ca65 -o gear_s_data.o gear_s_data.s -l gear_s_data.lst
+
 
 
 
