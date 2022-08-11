@@ -10,3 +10,9 @@ gear_s_data_zx02:
 .incbin "gear_s_data.zx02"
 library_s_data_zx02:
 .incbin "library_s_data.zx02"
+arrival_s_data_zx02:
+.incbin "arrival_s_data.zx02"
+arrival_w_data_zx02:
+.incbin "arrival_w_data.zx02"
+hill_w_data_zx02:
+.incbin "hill_w_data.zx02"

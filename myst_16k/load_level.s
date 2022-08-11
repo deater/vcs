@@ -81,6 +81,9 @@ level_bank_lookup:
 	.byte	1			; 13 = gear_n
 	.byte	1			; 14 = gear_s
 	.byte	1			; 15 = library_s
+	.byte	1			; 16 = arrival_s
+	.byte	1			; 17 = arrival_w
+	.byte	1			; 18 = hill_w
 
 level_compress_data_low:
 	.byte	<clock_s_data_zx02
@@ -99,6 +102,9 @@ level_compress_data_low:
 	.byte	<gear_n_data_zx02
 	.byte	<gear_s_data_zx02
 	.byte	<library_s_data_zx02
+	.byte	<arrival_s_data_zx02
+	.byte	<arrival_w_data_zx02
+	.byte	<hill_w_data_zx02
 
 
 level_compress_data_high:
@@ -118,4 +124,7 @@ level_compress_data_high:
 	.byte	>gear_n_data_zx02
 	.byte	>gear_s_data_zx02
 	.byte	>library_s_data_zx02
+	.byte	>arrival_s_data_zx02
+	.byte	>arrival_w_data_zx02
+	.byte	>hill_w_data_zx02
 

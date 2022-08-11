@@ -8,9 +8,9 @@
 .byte 0,$00			; coarse/fine of missile0 (vertical line)
 .byte $00,$00			; XMAX/XMIN of grab area
 .byte $00,$00			; YMAX/YMIN of grab area
-.byte $00			; left destination
+.byte $FF			; left destination
 .byte LOCATION_ARRIVAL_E	; center destination
-.byte $00			; right destination
+.byte $FF			; right destination
 .byte $00,$00			; unused
 
 .include "pool_w_data.inc"
