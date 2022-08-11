@@ -6,8 +6,8 @@
 .byte $00,$00			; background color, background color2
 .byte 6,$10			; overlay (sprite1) coarse/fine
 .byte 0,$00			; coarse/fine of missile0 (vertical line)
-.byte $00,$00			; XMAX/XMIN of grab area
-.byte $00,$00			; YMAX/YMIN of grab area
+.byte 90,114			; XMAX/XMIN of grab area
+.byte 24,32			; YMAX/YMIN of grab area
 .byte $FF			; left destination
 .byte LOCATION_SHORTSTEPS_W	; center destination
 .byte $FF			; right destination

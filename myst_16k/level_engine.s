@@ -472,18 +472,35 @@ done_playfield:
 	;==================================
 	; overscan 29, update pointer
 
-	lda     #POINTER_TYPE_POINT					; 2
+	lda     #POINTER_TYPE_POINT		; set default		; 2
 
-	ldy	POINTER_X						; 3
+	ldx	POINTER_X
+	ldy	POINTER_Y
+
+	; first see if grabbing
+
+	cpx	LEVEL_GRAB_MINX
+	bcc	not_grabbing
+	cpx	LEVEL_GRAB_MAXX
+	bcs	not_grabbing
+	cpy	LEVEL_GRAB_MINY
+	bcc	not_grabbing
+	cpy	LEVEL_GRAB_MAXY
+	bcs	not_grabbing
+	lda	#POINTER_TYPE_GRAB
+	jmp	level_done_update_pointer	; bra
+not_grabbing:
+
+	ldy	POINTER_X			; get current pointer	; 3
 	cpy	#32
 	bcs	level_not_left
 	lda	#POINTER_TYPE_LEFT
-	jmp	level_done_collision
+	jmp	level_done_update_pointer
 level_not_left:
 	cpy	#128
-	bcc	level_done_collision
+	bcc	level_done_update_pointer
 	lda	#POINTER_TYPE_RIGHT
-level_done_collision:
+level_done_update_pointer:
 	sta	POINTER_TYPE
 
         sta     WSYNC
