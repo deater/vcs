@@ -471,35 +471,51 @@ done_playfield:
 
 	;==================================
 	; overscan 29, update pointer
-
+;0
 	lda     #POINTER_TYPE_POINT		; set default		; 2
-
-	ldx	POINTER_X
-	ldy	POINTER_Y
-
+; 2
+	ldx	POINTER_X						; 3
+	ldy	POINTER_Y						; 3
+; 8
 	; first see if grabbing
 
-	cpx	LEVEL_GRAB_MINX
-	bcc	not_grabbing
-	cpx	LEVEL_GRAB_MAXX
-	bcs	not_grabbing
-	cpy	LEVEL_GRAB_MINY
-	bcc	not_grabbing
-	cpy	LEVEL_GRAB_MAXY
-	bcs	not_grabbing
-	lda	#POINTER_TYPE_GRAB
-	jmp	level_done_update_pointer	; bra
+	cpx	LEVEL_GRAB_MINX						; 3
+	bcc	not_grabbing						; 2/3
+	cpx	LEVEL_GRAB_MAXX						; 3
+	bcs	not_grabbing						; 2/3
+	cpy	LEVEL_GRAB_MINY						; 3
+	bcc	not_grabbing						; 2/3
+	cpy	LEVEL_GRAB_MAXY						; 3
+	bcs	not_grabbing						; 2/3
+	lda	#POINTER_TYPE_GRAB					; 3
+	bne	level_done_update_pointer	; bra			; 3
+								; 21 worst case
+; 29
+
 not_grabbing:
 
-	ldy	POINTER_X			; get current pointer	; 3
-	cpy	#32
+; 29
+	;==================================
+	; check if want left/right pointer
+
+	ldy	LEVEL_LEFT_DEST
+	bmi	level_not_left
+
+	; POINTER_X is in X from way before
+
+	cpx	#32
 	bcs	level_not_left
 	lda	#POINTER_TYPE_LEFT
 	jmp	level_done_update_pointer
 level_not_left:
-	cpy	#128
+
+	ldy	LEVEL_RIGHT_DEST
+	bmi	level_done_update_pointer
+
+	cpx	#128
 	bcc	level_done_update_pointer
 	lda	#POINTER_TYPE_RIGHT
+
 level_done_update_pointer:
 	sta	POINTER_TYPE
 
