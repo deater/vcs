@@ -498,26 +498,26 @@ not_grabbing:
 	;==================================
 	; check if want left/right pointer
 
-	ldy	LEVEL_LEFT_DEST
-	bmi	level_not_left
+	ldy	LEVEL_LEFT_DEST						; 3
+	bmi	level_not_left						; 2/3
 
 	; POINTER_X is in X from way before
 
-	cpx	#32
-	bcs	level_not_left
-	lda	#POINTER_TYPE_LEFT
-	jmp	level_done_update_pointer
+	cpx	#32							; 2
+	bcs	level_not_left						; 2/3
+	lda	#POINTER_TYPE_LEFT					; 2
+	jmp	level_done_update_pointer				; 3
 level_not_left:
 
-	ldy	LEVEL_RIGHT_DEST
-	bmi	level_done_update_pointer
+	ldy	LEVEL_RIGHT_DEST					; 3
+	bmi	level_done_update_pointer				; 2/3
 
-	cpx	#128
-	bcc	level_done_update_pointer
-	lda	#POINTER_TYPE_RIGHT
+	cpx	#128							; 2
+	bcc	level_done_update_pointer				; 2/3
+	lda	#POINTER_TYPE_RIGHT					; 2
 
 level_done_update_pointer:
-	sta	POINTER_TYPE
+	sta	POINTER_TYPE						; 3
 
         sta     WSYNC
 
@@ -548,6 +548,11 @@ waited_enough_level:
 	cmp	#POINTER_TYPE_RIGHT
 	beq	clicked_right
 
+clicked_grab:			; process of elimination
+	ldy	#SFX_CLICK
+	sty	SFX_PTR
+
+
 done_check_level_input:
 
 	sta	WSYNC
@@ -575,3 +580,5 @@ clicked_right:
 start_new_level:
 	sta	CURRENT_LOCATION
 	jmp	load_new_level
+
+

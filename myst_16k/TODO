@@ -1,4 +1,3 @@
-
 copy overlay to RAM
 	have way to load alternate overlay (for path opening, books)
 	
@@ -18,7 +17,6 @@ End, if room:
 	Atrus screen have picture of page and question mark?
 
 
-Only display right/left if can go that way
 
 Intro: call into common routines instead of incuding them
 
@@ -41,7 +39,6 @@ level_engine:
 	add GRAB code
 
 Levels:
-	adapt to shared engine
 
 Marker switches:
 	have code to show flipped switches.  In theory overlay is in

@@ -1,4 +1,4 @@
-; LOCATION_POOL_W data
+; LOCATION_IMAGER_W data
 
 .include "../locations.inc"
 
@@ -13,4 +13,4 @@
 .byte $FF			; right destination
 .byte $00,$00			; unused
 
-.include "pool_w_data.inc"
+.include "imager_w_data.inc"

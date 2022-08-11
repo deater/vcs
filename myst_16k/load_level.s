@@ -65,69 +65,90 @@ copy_zp_loop:
 .include "locations/level_locations.inc"
 
 level_bank_lookup:
-	.byte	0			; 0 = clock_s
-	.byte	0			; 1 = rocket_n
-	.byte	0			; 2 = arrival_n
-	.byte	0			; 3 = hilltop_w
-	.byte	0			; 4 = pool
-	.byte	0			; 5 = hilltop_s
-	.byte	0			; 6 = hilltop_n
-	.byte	0			; 7 = hilltop_e
-	.byte	0			; 8 = arrival_e
-	.byte	0			; 9 = clock_n
-	.byte	1			; 10 = shortsteps_w
-	.byte	1			; 11 = dock_n
-	.byte	1			; 12 = library_n
-	.byte	1			; 13 = gear_n
-	.byte	1			; 14 = gear_s
-	.byte	1			; 15 = library_s
-	.byte	1			; 16 = arrival_s
-	.byte	1			; 17 = arrival_w
-	.byte	1			; 18 = hill_w
-	.byte	1			; 19 = dentist_n
+	.byte	1			; 0 = gear_n
+	.byte	1			; 1 = dentist_n
+	.byte	$FF			; 2 = rocket_close_n
+	.byte	$FF			; 3 = pool_n
+	.byte	$FF			; 4 = shack_w
+	.byte	$FF			; 5 = cabin_e
+	.byte	$FF			; 6 = clock_close_s
+	.byte	1			; 7 = dock_n
+
+	.byte	0			; 8 = clock_s
+	.byte	0			; 9 = rocket_n
+	.byte	0			; 10 = arrival_n
+	.byte	0			; 11 = hilltop_w
+	.byte	0			; 12 = imager_w
+	.byte	0			; 13 = hilltop_s
+	.byte	0			; 14 = hilltop_n
+	.byte	0			; 15 = hilltop_e
+	.byte	0			; 16 = arrival_e
+	.byte	0			; 17 = clock_n
+	.byte	1			; 18 = shortsteps_w
+	.byte	1			; 19 = library_n
+	.byte	1			; 20 = gear_s
+	.byte	1			; 21 = library_s
+	.byte	1			; 22 = arrival_s
+	.byte	1			; 23 = arrival_w
+	.byte	1			; 24 = hill_w
+
 
 level_compress_data_low:
+	.byte	<gear_n_data_zx02			; 0
+	.byte	<dentist_n_data_zx02			; 1
+	.byte	$FF					; 2
+	.byte	$FF					; 3
+	.byte	$FF					; 4
+	.byte	$FF					; 5
+	.byte	$FF					; 6
+	.byte	<dock_n_data_zx02			; 7
+
 	.byte	<clock_s_data_zx02
 	.byte	<rocket_n_data_zx02
 	.byte	<arrival_n_data_zx02
 	.byte	<hilltop_w_data_zx02
-	.byte	<pool_w_data_zx02
+	.byte	<imager_w_data_zx02
 	.byte	<hilltop_s_data_zx02
 	.byte	<hilltop_n_data_zx02
 	.byte	<hilltop_e_data_zx02
 	.byte	<arrival_e_data_zx02
 	.byte	<clock_n_data_zx02
 	.byte	<shortsteps_w_data_zx02
-	.byte	<dock_n_data_zx02
 	.byte	<library_n_data_zx02
-	.byte	<gear_n_data_zx02
 	.byte	<gear_s_data_zx02
 	.byte	<library_s_data_zx02
 	.byte	<arrival_s_data_zx02
 	.byte	<arrival_w_data_zx02
 	.byte	<hill_w_data_zx02
-	.byte	<dentist_n_data_zx02
+
 
 
 level_compress_data_high:
+	.byte	>gear_n_data_zx02			; 0
+	.byte	>dentist_n_data_zx02			; 1
+	.byte	$FF					; 2
+	.byte	$FF					; 3
+	.byte	$FF					; 4
+	.byte	$FF					; 5
+	.byte	$FF					; 6
+	.byte	>dock_n_data_zx02			; 7
+
 	.byte	>clock_s_data_zx02
 	.byte	>rocket_n_data_zx02
 	.byte	>arrival_n_data_zx02
 	.byte	>hilltop_w_data_zx02
-	.byte	>pool_w_data_zx02
+	.byte	>imager_w_data_zx02
 	.byte	>hilltop_s_data_zx02
 	.byte	>hilltop_n_data_zx02
 	.byte	>hilltop_e_data_zx02
 	.byte	>arrival_e_data_zx02
 	.byte	>clock_n_data_zx02
 	.byte	>shortsteps_w_data_zx02
-	.byte	>dock_n_data_zx02
 	.byte	>library_n_data_zx02
-	.byte	>gear_n_data_zx02
 	.byte	>gear_s_data_zx02
 	.byte	>library_s_data_zx02
 	.byte	>arrival_s_data_zx02
 	.byte	>arrival_w_data_zx02
 	.byte	>hill_w_data_zx02
-	.byte	>dentist_n_data_zx02
+
 
