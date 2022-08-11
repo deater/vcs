@@ -9,6 +9,9 @@
         level_overlay_colors    = $1560
         level_overlay_sprite    = $1590
 
+        level_overlay_colors_write    = $1160
+        level_overlay_sprite_write    = $1190
+
 
 
 	;==========================
@@ -95,9 +98,42 @@ no_missile0:
 	inc	FRAME							; 5
 
 	ldx	#$00							; 2
-;	stx	COLUBK			; set background color to black	; 3
 	stx	CURRENT_SCANLINE	; reset scanline counter	; 3
 
+	; flip switch if necessary
+	lda	CURRENT_LOCATION
+	cmp	#8
+	bcs	done_flip_switch
+
+	tax
+	lda	powers_of_two,X
+	and	SWITCH_STATUS
+	beq	switch_off
+switch_on:
+	lda	#$A2		; blue
+	sta	level_overlay_colors_write+30
+	lda	#$18		; yellow
+	sta	level_overlay_colors_write+31
+
+	lda	#$78
+	sta	level_overlay_sprite_write+30
+	lda	#$30
+	sta	level_overlay_sprite_write+31
+
+	jmp	done_flip_switch		; bra
+
+switch_off:
+	lda	#$18		; yellow
+	sta	level_overlay_colors_write+30
+	lda	#$A2		; blue
+	sta	level_overlay_colors_write+31
+
+	lda	#$30
+	sta	level_overlay_sprite_write+30
+	lda	#$78
+	sta	level_overlay_sprite_write+31
+
+done_flip_switch:
 	sta	WSYNC
 
 	;=======================
@@ -537,6 +573,10 @@ waited_enough_level:
 	lda	INPT4			; check if joystick button pressed
 	bmi	done_check_level_input
 
+	; reset input countdown for debounce
+	lda	#20
+	sta	INPUT_COUNTDOWN
+
 	; button was pressed
 	lda	POINTER_TYPE
 	cmp	#POINTER_TYPE_POINT
@@ -549,9 +589,21 @@ waited_enough_level:
 	beq	clicked_right
 
 clicked_grab:			; process of elimination
-	ldy	#SFX_CLICK
+	;==========================
+	; clicked grab
+	ldx	CURRENT_LOCATION
+	cpx	#8
+	bcs	done_check_level_input	; if level >8 not switch
+
+	ldy	#SFX_CLICK		; play sound
 	sty	SFX_PTR
 
+	; toggle switch
+	lda	powers_of_two,X
+	eor	SWITCH_STATUS
+	sta	SWITCH_STATUS
+
+	; TODO: switch to white page if switch from $FF to $7F
 
 done_check_level_input:
 
@@ -581,4 +633,7 @@ start_new_level:
 	sta	CURRENT_LOCATION
 	jmp	load_new_level
 
+
+powers_of_two:
+.byte	$01,$02,$04,$08, $10,$20,$40,$80
 
