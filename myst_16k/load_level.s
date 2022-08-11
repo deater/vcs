@@ -84,6 +84,7 @@ level_bank_lookup:
 	.byte	1			; 16 = arrival_s
 	.byte	1			; 17 = arrival_w
 	.byte	1			; 18 = hill_w
+	.byte	1			; 19 = dentist_n
 
 level_compress_data_low:
 	.byte	<clock_s_data_zx02
@@ -105,6 +106,7 @@ level_compress_data_low:
 	.byte	<arrival_s_data_zx02
 	.byte	<arrival_w_data_zx02
 	.byte	<hill_w_data_zx02
+	.byte	<dentist_n_data_zx02
 
 
 level_compress_data_high:
@@ -127,4 +129,5 @@ level_compress_data_high:
 	.byte	>arrival_s_data_zx02
 	.byte	>arrival_w_data_zx02
 	.byte	>hill_w_data_zx02
+	.byte	>dentist_n_data_zx02
 

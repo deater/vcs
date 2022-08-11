@@ -14,5 +14,11 @@ arrival_s_data_zx02:
 .incbin "arrival_s_data.zx02"
 arrival_w_data_zx02:
 .incbin "arrival_w_data.zx02"
+dentist_n_data_zx02:
+.incbin "dentist_n_data.zx02"
 hill_w_data_zx02:
 .incbin "hill_w_data.zx02"
+
+; note, intentionnaly lined up so no level starts greater than
+; $700 as otherwise our 256 byte copy loop (?) goes off the end of
+; the ROM area and messes things up somehow

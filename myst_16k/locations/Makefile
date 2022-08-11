@@ -28,7 +28,7 @@ level_locations.inc:	rom_bank0.bin rom_bank1.bin generate_locations
 	./generate_locations -a 0x1000 -s arrival_s_data_zx02 rom_bank1.lst >> level_locations.inc
 	./generate_locations -a 0x1000 -s arrival_w_data_zx02 rom_bank1.lst >> level_locations.inc
 	./generate_locations -a 0x1000 -s hill_w_data_zx02 rom_bank1.lst >> level_locations.inc
-
+	./generate_locations -a 0x1000 -s dentist_n_data_zx02 rom_bank1.lst >> level_locations.inc
 
 ###
 
@@ -63,7 +63,7 @@ rom_bank1.o:	rom_bank1.s \
 	library_n_data.zx02 library_s_data.zx02 \
 	gear_n_data.zx02 gear_s_data.zx02 \
 	arrival_s_data.zx02 arrival_w_data.zx02 \
-	hill_w_data.zx02
+	hill_w_data.zx02 dentist_n_data.zx02
 	ca65 -o rom_bank1.o rom_bank1.s -l rom_bank1.lst
 
 ###
@@ -100,13 +100,19 @@ arrival_s_data.inc:	arrival_s_bg.png arrival_s_overlay.png
 
 arrival_e_data.inc:	arrival_e_bg.png arrival_e_overlay.png
 	$(PNG2PF) -4 -n arrival -b 0x00 arrival_e_bg.png - > arrival_e_data.inc
-	$(PNG2OVERLAY) -4 -n arrival arrival_e_overlay.png - >> arrival_e_data.inc
+	$(PNG2OVERLAY) -4 -n arrival_e arrival_e_overlay.png - >> arrival_e_data.inc
 
 ###
 
 arrival_w_data.inc:	arrival_w_bg.png arrival_w_overlay.png
 	$(PNG2PF) -4 -n arrival -b 0x02 arrival_w_bg.png - > arrival_w_data.inc
-	$(PNG2OVERLAY) -4 -n arrival arrival_w_overlay.png - >> arrival_w_data.inc
+	$(PNG2OVERLAY) -4 -n arrival_w arrival_w_overlay.png - >> arrival_w_data.inc
+
+###
+
+dentist_n_data.inc:	dentist_n_bg.png dentist_n_overlay.png
+	$(PNG2PF) -4 -n arrival -b 0x02 dentist_n_bg.png - > dentist_n_data.inc
+	$(PNG2OVERLAY) -4 -n dentist_n dentist_n_overlay.png - >> dentist_n_data.inc
 
 
 
@@ -267,6 +273,18 @@ arrival_w_data.bin:	arrival_w_data.o
 
 arrival_w_data.o:	arrival_w_data.s arrival_w_data.inc
 	ca65 -o arrival_w_data.o arrival_w_data.s -l arrival_w_data.lst
+
+###
+
+dentist_n_data.zx02:	dentist_n_data.bin
+	$(ZX02) -f dentist_n_data.bin dentist_n_data.zx02
+
+dentist_n_data.bin:	dentist_n_data.o
+	ld65 -o dentist_n_data.bin dentist_n_data.o -C $(LINKER_SCRIPT)/atari2600_f000.inc
+
+dentist_n_data.o:	dentist_n_data.s dentist_n_data.inc
+	ca65 -o dentist_n_data.o dentist_n_data.s -l dentist_n_data.lst
+
 
 
 

@@ -10,7 +10,7 @@
 .byte $00,$00			; YMAX/YMIN of grab area
 .byte $FF			; left destination
 .byte LOCATION_HILLTOP_W	; center destination
-.byte $FF			; right destination
+.byte LOCATION_DENTIST_N	; right destination
 .byte $00,$00			; unused
 
 .include "hill_w_data.inc"
