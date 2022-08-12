@@ -6,3 +6,5 @@ red_book_close_data_zx02:
 .incbin "red_book_close_data.zx02"
 blue_book_close_data_zx02:
 .incbin "blue_book_close_data.zx02"
+steps_s_data_zx02:
+.incbin "steps_s_data.zx02"
