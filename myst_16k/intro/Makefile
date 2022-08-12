@@ -41,8 +41,13 @@ myst_book_data.bin:	myst_book_data.o
 myst_book_data.o:	myst_book_data.inc
 	ca65 -o myst_book_data.o myst_book_data.inc
 
-myst_book_data.inc:	myst_book_edge.png
+myst_book_data.inc:	myst_book_edge.png \
+		myst_book_overlay1.png \
+		myst_book_overlay2.png
 	$(PNG2OVERLAY) -4 -c -n myst myst_book_edge.png - > myst_book_data.inc
+	$(PNG2OVERLAY) -4 -n myst_overlay1 myst_book_overlay1.png - >> myst_book_data.inc
+	$(PNG2OVERLAY) -4 -n myst_overlay2 myst_book_overlay2.png - >> myst_book_data.inc
+
 
 ###
 

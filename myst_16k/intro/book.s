@@ -1,5 +1,8 @@
-	book_edge_colors = $1900
-
+	book_edge_colors 	= $1900
+	page1_colors		= $1900+48
+	page1_sprite		= $1900+96
+	page2_colors		= $1900+144
+	page2_sprite		= $1900+192
 
 	;=====================
 	; Linking Book
@@ -117,16 +120,29 @@ bzpad_x:
 	stx	CURRENT_SCANLINE	; reset scanline counter	; 3
 ; 8
 
-	; code to change background
+	; code to change page animation
+
+	; always in same page
+	lda	#>page1_colors
+	sta	INH
+	sta	OUTH
 
 	lda	FRAME							; 3
 	and	#$20							; 2
-	lsr								; 2
-	lsr								; 2
-	lsr								; 2
-	lsr								; 2
-	adc	#$A0							; 3
-	sta	ROOT_LINK_COLOR
+	beq	frame_odd
+frame_even:
+	lda	#<page1_sprite+2
+	sta	INL
+	lda	#<page1_colors+2
+	jmp	done_update_animation
+
+frame_odd:
+	lda	#<page2_sprite+2
+	sta	INL
+	lda	#<page2_colors+2
+
+done_update_animation:
+	sta	OUTL
 
 	sta	WSYNC
 
@@ -356,16 +372,13 @@ book_draw_playfield_plus_3:
 	sta	COLUP1		; set edge colors (missile1)		; 3
 ; 15
 
-;	lda	$80		; nop3					; 3
-; 15
-
 
 	;==============================
 	; update sprite1
 
-	lda	page_sprite,Y		; load sprite1 data		4+
-	sta	GRP1		;					3
-; 22
+	lda	(INL),Y	; load sprite1 data				; 5+
+	sta	GRP1		;					; 3
+; 23
 
 	; activate hand sprite if necessary
 	lda	#$f							; 2
@@ -380,35 +393,19 @@ done_activate_hand:
 								;===========
 								; 16 / 16
 
-; 38
-	lda	LINK_COLOR	; off white				; 3
-	sta	COLUP1		; set page color (sprite1)		; 3
+; 39
+	lda	(OUTL),Y						; 5+
 ; 44
 
-	lda	#$F8		; change color to tan			; 2
-	sta	COLUPF		; store playfield color			; 3
+	ldx	#$F8		; change color to tan			; 2
+	stx	COLUPF		; store playfield color			; 3
 	; want this to happen around 49..50
 ; 49
+	sta	COLUP1		; set page color (sprite1)		; 3
+; 52
 
-	;=============================
-	; update the link book window
-	;=============================
-
-	lda	#$0C				; off white		; 2
-	cpy	#14							; 2
-	bcc	done_link_animation					; 2/3
-	cpy	#20							; 2
-	bcs	done_link_animation					; 2/3
-
-	lda	ROOT_LINK_COLOR						; 3
-done_link_animation:
-	sta	LINK_COLOR						; 3
-
-								;===========
-								; 16 worst
-; 65
 	inc	CURRENT_SCANLINE					; 5
-; 70
+; 57
 
 	sta	WSYNC
 
@@ -447,9 +444,8 @@ done_pointer:
 								; 20 / 6
 ; 32
 	inc	TEMP1	; nop5						; 5
-	nop								; 2
-; 39
-	lda	LINK_COLOR	; off white				; 3
+; 37
+	lda	(OUTL),Y						; 5
 	sta	COLUP1		; set page color (sprite1)		; 3
 ; 45
 

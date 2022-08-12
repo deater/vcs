@@ -22,4 +22,4 @@ do_intro:
 .align $100
 
 .include "intro_data.inc"
-.include "book_data.inc"
+
