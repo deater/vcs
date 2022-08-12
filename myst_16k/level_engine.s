@@ -592,9 +592,18 @@ clicked_grab:			; process of elimination
 	;==========================
 	; clicked grab
 	ldx	CURRENT_LOCATION
-	cpx	#8
-	bcs	done_check_level_input	; if level >8 not switch
+	cpx	#8			; if level >8 not switch
+	bcc	handle_switch
+	cpx	#11
+	bcs	done_check_level_input	; if level>11 not book
 
+handle_book:
+
+
+
+	jmp	done_check_level_input
+
+handle_switch:
 	ldy	#SFX_CLICK		; play sound
 	sty	SFX_PTR
 
