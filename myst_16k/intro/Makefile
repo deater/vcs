@@ -60,8 +60,12 @@ red_book_data.bin:	red_book_data.o
 red_book_data.o:	red_book_data.inc
 	ca65 -o red_book_data.o red_book_data.inc
 
-red_book_data.inc:	red_book_edge.png
+red_book_data.inc:	red_book_edge.png \
+	red_book_overlay1.png \
+	red_book_overlay2.png
 	$(PNG2OVERLAY) -4 -c -n red red_book_edge.png - > red_book_data.inc
+	$(PNG2OVERLAY) -4 -n red_overlay1 red_book_overlay1.png - >> red_book_data.inc
+	$(PNG2OVERLAY) -4 -n red_overlay2 red_book_overlay2.png - >> red_book_data.inc
 
 ###
 
@@ -88,8 +92,12 @@ blue_book_data.bin:	blue_book_data.o
 blue_book_data.o:	blue_book_data.inc
 	ca65 -o blue_book_data.o blue_book_data.inc
 
-blue_book_data.inc:	blue_book_edge.png
+blue_book_data.inc:	blue_book_edge.png \
+	blue_book_overlay1.png \
+	blue_book_overlay2.png
 	$(PNG2OVERLAY) -4 -c -n blue blue_book_edge.png - > blue_book_data.inc
+	$(PNG2OVERLAY) -4 -n blue_overlay1 blue_book_overlay1.png - >> blue_book_data.inc
+	$(PNG2OVERLAY) -4 -n blue_overlay2 blue_book_overlay2.png - >> blue_book_data.inc
 
 
 ###
