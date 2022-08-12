@@ -9,6 +9,8 @@
 .include "zp.inc"
 .include "locations.inc"
 
+.include "intro/rom_bank6_routines.inc"
+
 	;==============================
 	;==============================
 
@@ -41,7 +43,7 @@ clear_loop:
 
 	lda	$FFE6
 
-	jsr	$1000
+	jsr	do_intro
 
 	ldy	#LOCATION_ARRIVAL_N
 	sty	CURRENT_LOCATION

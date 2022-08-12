@@ -1,4 +1,5 @@
 LINKER_SCRIPT = ../linker_script
+CALC_ADDRESS = ./utils/calc_address
 
 all:	myst.e7
 
@@ -29,9 +30,8 @@ zero2.bin:
 main.bin:	main.o
 	ld65 -o main.bin main.o -C $(LINKER_SCRIPT)/atari2600_1a00.inc
 
-#	title.s cleft.s book.s arrival.s level_engine.s rocket.s
-
 main.o:	main.s zp.inc \
+	intro/rom_bank6_routines.inc \
 	load_level.s level_engine.s \
 	hand_motion.s hand_copy.s adjust_sprite.s common_routines.s \
 	sound_update.s zx02_optim.s \
@@ -40,13 +40,29 @@ main.o:	main.s zp.inc \
 
 ###
 
-
-intro/rom_bank6.bin:
+intro/rom_bank6_routines.inc:
 	cd intro && make
+
+intro/rom_bank6.bin:	common_routines.inc
+	cd intro && make
+
+
+####
+
+common_routines.inc:	main.lst
+	$(CALC_ADDRESS) -a 0x1A00 -s common_overscan main.lst > common_routines.inc
+	$(CALC_ADDRESS) -a 0x1A00 -s common_delay_scanlines main.lst >> common_routines.inc
+	$(CALC_ADDRESS) -a 0x1A00 -s common_vblank main.lst >> common_routines.inc
+	$(CALC_ADDRESS) -a 0x1A00 -s hand_copy main.lst >> common_routines.inc
+	$(CALC_ADDRESS) -a 0x1A00 -s hand_motion main.lst >> common_routines.inc
+	$(CALC_ADDRESS) -a 0x1A00 -s pointer_moved_horizontally main.lst >> common_routines.inc
+
+
+
 
 ####
 
 clean:	
-	rm -f *~ *.o *.lst myst.rom
+	rm -f *~ *.o *.lst myst.rom common_routines.inc
 
 

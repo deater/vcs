@@ -2,7 +2,7 @@
 
 .include "../../vcs.inc"
 .include "../zp.inc"
-
+.include "../common_routines.inc"
 
 do_intro:
 
@@ -10,18 +10,21 @@ do_intro:
 
 .include "cleft.s"
 
-.include "book.s"
+	jsr	do_book
 
 	rts
 
 
-.include "../common_routines.s"
-.include "../hand_copy.s"
-.include "../hand_motion.s"
-.include "../adjust_sprite.s"
+do_book:
+.include "book.s"
+	rts
+
+;.include "../hand_copy.s"
+;.include "../hand_motion.s"
+;.include "../adjust_sprite.s"
 
 
 .align $100
 
 .include "intro_data.inc"
-.include "../sprite_data.inc"
+;.include "../sprite_data.inc"
