@@ -9,7 +9,7 @@
 .include "zp.inc"
 .include "locations.inc"
 
-.include "intro/rom_bank6_routines.inc"
+.include "rom_bank6_routines.inc"
 
 	;==============================
 	;==============================

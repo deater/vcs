@@ -31,25 +31,32 @@ main.bin:	main.o
 	ld65 -o main.bin main.o -C $(LINKER_SCRIPT)/atari2600_1a00.inc
 
 main.o:	main.s zp.inc \
-	intro/rom_bank6_routines.inc \
+	rom_bank6_routines.inc \
 	load_level.s level_engine.s \
 	hand_motion.s hand_copy.s adjust_sprite.s common_routines.s \
 	sound_update.s zx02_optim.s \
 	locations/level_locations.inc
 	ca65 -o main.o main.s -l main.lst
+	cd intro && make
+	$(CALC_ADDRESS) -a 0x1000 -s book_common intro/rom_bank6.lst > rom_bank6_routines.inc
+	$(CALC_ADDRESS) -a 0x1000 -s do_intro intro/rom_bank6.lst >> rom_bank6_routines.inc
+	ca65 -o main.o main.s -l main.lst
 
 ###
 
-intro/rom_bank6_routines.inc:
-	cd intro && make
+rom_bank6_routines.inc:	intro/rom_bank6.bin
+	echo "book_common = 0 " > rom_bank6_routines.inc
+	echo "do_intro = 0 " >> rom_bank6_routines.inc
 
-intro/rom_bank6.bin:	common_routines.inc
+
+
+intro/rom_bank6.bin:
 	cd intro && make
 
 
 ####
 
-common_routines.inc:	main.lst
+common_routines.inc:	main.bin
 	$(CALC_ADDRESS) -a 0x1A00 -s common_overscan main.lst > common_routines.inc
 	$(CALC_ADDRESS) -a 0x1A00 -s common_delay_scanlines main.lst >> common_routines.inc
 	$(CALC_ADDRESS) -a 0x1A00 -s common_vblank main.lst >> common_routines.inc
