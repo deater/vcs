@@ -79,8 +79,9 @@ dzx0s_copy:
               lda   ZX0_dst+1
               sbc   offset+1
 ;======
+		; code to handle that read/write different addresses
 		clc
-		adc	#$4
+		adc	READ_WRITE_OFFSET
 ;======
               sta   pntr+1
 

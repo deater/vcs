@@ -82,49 +82,49 @@ rom_bank2.o:	rom_bank2.s \
 
 clock_s_data.inc:	clock_s_bg.png clock_s_overlay.png
 	$(PNG2PF) -4 -n clock_s -b 0xe0 clock_s_bg.png - > clock_s_data.inc
-	$(PNG2OVERLAY) -4 -n clock_s clock_s_overlay.png - >> clock_s_data.inc
+	$(PNG2OVERLAY) -4 -o -n clock_s clock_s_overlay.png - >> clock_s_data.inc
 
 ###
 
 clock_n_data.inc:	clock_n_bg.png clock_n_overlay.png
 	$(PNG2PF) -4 -n clock_n -b 0x00 clock_n_bg.png - > clock_n_data.inc
-	$(PNG2OVERLAY) -4 -n clock_n clock_n_overlay.png - >> clock_n_data.inc
+	$(PNG2OVERLAY) -4 -o -n clock_n clock_n_overlay.png - >> clock_n_data.inc
 
 ###
 
 rocket_n_data.inc:	rocket_n_bg.png rocket_n_overlay.png
 	$(PNG2PF) -4 -n rocket_n -b 0xf4 rocket_n_bg.png - > rocket_n_data.inc
-	$(PNG2OVERLAY) -4 -n rocket_n rocket_n_overlay.png - >> rocket_n_data.inc
+	$(PNG2OVERLAY) -4 -o -n rocket_n rocket_n_overlay.png - >> rocket_n_data.inc
 
 ###
 
 arrival_n_data.inc:	arrival_n_bg.png arrival_n_overlay.png
 	$(PNG2PF) -4 -n arrival_n -b 0x00 arrival_n_bg.png - > arrival_n_data.inc
-	$(PNG2OVERLAY) -4 -n arrival_n arrival_n_overlay.png - >> arrival_n_data.inc
+	$(PNG2OVERLAY) -4 -o -n arrival_n arrival_n_overlay.png - >> arrival_n_data.inc
 
 ###
 
 arrival_s_data.inc:	arrival_s_bg.png arrival_s_overlay.png
 	$(PNG2PF) -4 -n arrival_s -b 0x02 arrival_s_bg.png - > arrival_s_data.inc
-	$(PNG2OVERLAY) -4 -n arrival_s arrival_s_overlay.png - >> arrival_s_data.inc
+	$(PNG2OVERLAY) -4 -o -n arrival_s arrival_s_overlay.png - >> arrival_s_data.inc
 
 ###
 
 arrival_e_data.inc:	arrival_e_bg.png arrival_e_overlay.png
 	$(PNG2PF) -4 -n arrival -b 0x00 arrival_e_bg.png - > arrival_e_data.inc
-	$(PNG2OVERLAY) -4 -n arrival_e arrival_e_overlay.png - >> arrival_e_data.inc
+	$(PNG2OVERLAY) -4 -o -n arrival_e arrival_e_overlay.png - >> arrival_e_data.inc
 
 ###
 
 arrival_w_data.inc:	arrival_w_bg.png arrival_w_overlay.png
 	$(PNG2PF) -4 -n arrival -b 0x02 arrival_w_bg.png - > arrival_w_data.inc
-	$(PNG2OVERLAY) -4 -n arrival_w arrival_w_overlay.png - >> arrival_w_data.inc
+	$(PNG2OVERLAY) -4 -o -n arrival_w arrival_w_overlay.png - >> arrival_w_data.inc
 
 ###
 
 dentist_n_data.inc:	dentist_n_bg.png dentist_n_overlay.png
 	$(PNG2PF) -4 -n arrival -b 0x02 dentist_n_bg.png - > dentist_n_data.inc
-	$(PNG2OVERLAY) -4 -n dentist_n dentist_n_overlay.png - >> dentist_n_data.inc
+	$(PNG2OVERLAY) -4 -o -n dentist_n dentist_n_overlay.png - >> dentist_n_data.inc
 
 
 
@@ -132,88 +132,88 @@ dentist_n_data.inc:	dentist_n_bg.png dentist_n_overlay.png
 
 hilltop_w_data.inc:	hilltop_w_bg.png hilltop_w_overlay.png
 	$(PNG2PF) -4 -n hilltop_w -b 0x00 hilltop_w_bg.png - > hilltop_w_data.inc
-	$(PNG2OVERLAY) -4 -n hilltop_w hilltop_w_overlay.png - >> hilltop_w_data.inc
+	$(PNG2OVERLAY) -4 -o -n hilltop_w hilltop_w_overlay.png - >> hilltop_w_data.inc
 
 ###
 
 hilltop_e_data.inc:	hilltop_e_bg.png hilltop_e_overlay.png
 	$(PNG2PF) -4 -n hilltop_e -b 0xe0 hilltop_e_bg.png - > hilltop_e_data.inc
-	$(PNG2OVERLAY) -4 -n hilltop_e hilltop_e_overlay.png - >> hilltop_e_data.inc
+	$(PNG2OVERLAY) -4 -o -n hilltop_e hilltop_e_overlay.png - >> hilltop_e_data.inc
 
 
 ###
 
 hilltop_s_data.inc:	hilltop_s_bg.png hilltop_s_overlay.png
 	$(PNG2PF) -4 -n hilltop_s -b 0xE0 hilltop_s_bg.png - > hilltop_s_data.inc
-	$(PNG2OVERLAY) -4 -n hilltop_s hilltop_s_overlay.png - >> hilltop_s_data.inc
+	$(PNG2OVERLAY) -4 -o -n hilltop_s hilltop_s_overlay.png - >> hilltop_s_data.inc
 
 ###
 
 hilltop_n_data.inc:	hilltop_n_bg.png hilltop_n_overlay.png
 	$(PNG2PF) -4 -n hilltop_n -b 0x02 hilltop_n_bg.png - > hilltop_n_data.inc
-	$(PNG2OVERLAY) -4 -n hilltop_n hilltop_n_overlay.png - >> hilltop_n_data.inc
+	$(PNG2OVERLAY) -4 -o -n hilltop_n hilltop_n_overlay.png - >> hilltop_n_data.inc
 
 ###
 
 hill_w_data.inc:	hill_w_bg.png hill_w_overlay.png
 	$(PNG2PF) -4 -n hill_w -b 0x02 hill_w_bg.png - > hill_w_data.inc
-	$(PNG2OVERLAY) -4 -n hill_w hill_w_overlay.png - >> hill_w_data.inc
+	$(PNG2OVERLAY) -4 -o -n hill_w hill_w_overlay.png - >> hill_w_data.inc
 
 
 ###
 
 imager_w_data.inc:	imager_w_bg.png imager_w_overlay.png
 	$(PNG2PF) -4 -n imager_w -b 0x00 imager_w_bg.png - > imager_w_data.inc
-	$(PNG2OVERLAY) -4 -n imager_w imager_w_overlay.png - >> imager_w_data.inc
+	$(PNG2OVERLAY) -4 -o -n imager_w imager_w_overlay.png - >> imager_w_data.inc
 
 ###
 
 shortsteps_w_data.inc:	shortsteps_w_bg.png shortsteps_w_overlay.png
 	$(PNG2PF) -4 -n shortsteps_w -b 0x00 shortsteps_w_bg.png - > shortsteps_w_data.inc
-	$(PNG2OVERLAY) -4 -n shortsteps_w shortsteps_w_overlay.png - >> shortsteps_w_data.inc
+	$(PNG2OVERLAY) -4 -o -n shortsteps_w shortsteps_w_overlay.png - >> shortsteps_w_data.inc
 
 ###
 
 dock_n_data.inc:	dock_n_bg.png dock_n_overlay.png
 	$(PNG2PF) -4 -n dock_n -b 0x00 dock_n_bg.png - > dock_n_data.inc
-	$(PNG2OVERLAY) -4 -n dock_n dock_n_overlay.png - >> dock_n_data.inc
+	$(PNG2OVERLAY) -4 -o -n dock_n dock_n_overlay.png - >> dock_n_data.inc
 
 ###
 
 library_n_data.inc:	library_n_bg.png library_n_overlay.png
 	$(PNG2PF) -4 -n library_n -b 0x00 library_n_bg.png - > library_n_data.inc
-	$(PNG2OVERLAY) -4 -n library_n library_n_overlay.png - >> library_n_data.inc
+	$(PNG2OVERLAY) -4 -o -n library_n library_n_overlay.png - >> library_n_data.inc
 
 ###
 
 library_s_data.inc:	library_s_bg.png library_s_overlay.png
 	$(PNG2PF) -4 -n library_s -b 0x00 library_s_bg.png - > library_s_data.inc
-	$(PNG2OVERLAY) -4 -n library_s library_s_overlay.png - >> library_s_data.inc
+	$(PNG2OVERLAY) -4 -o -n library_s library_s_overlay.png - >> library_s_data.inc
 
 ###
 
 library_w_data.inc:	library_w_bg.png library_w_overlay.png
 	$(PNG2PF) -4 -n library_w -b 0x00 library_w_bg.png - > library_w_data.inc
-	$(PNG2OVERLAY) -4 -n library_w library_w_overlay.png - >> library_w_data.inc
+	$(PNG2OVERLAY) -4 -o -n library_w library_w_overlay.png - >> library_w_data.inc
 
 ###
 
 library_e_data.inc:	library_e_bg.png library_e_overlay.png
 	$(PNG2PF) -4 -n library_e -b 0x00 library_e_bg.png - > library_e_data.inc
-	$(PNG2OVERLAY) -4 -n library_e library_e_overlay.png - >> library_e_data.inc
+	$(PNG2OVERLAY) -4 -o -n library_e library_e_overlay.png - >> library_e_data.inc
 
 
 ###
 
 red_book_close_data.inc:	red_book_close_bg.png red_book_close_overlay.png
 	$(PNG2PF) -4 -n red_book_close -b 0x00 red_book_close_bg.png - > red_book_close_data.inc
-	$(PNG2OVERLAY) -4 -n red_book_close red_book_close_overlay.png - >> red_book_close_data.inc
+	$(PNG2OVERLAY) -4 -o -n red_book_close red_book_close_overlay.png - >> red_book_close_data.inc
 
 ###
 
 blue_book_close_data.inc:	blue_book_close_bg.png blue_book_close_overlay.png
 	$(PNG2PF) -4 -n blue_book_close -b 0x00 blue_book_close_bg.png - > blue_book_close_data.inc
-	$(PNG2OVERLAY) -4 -n blue_book_close blue_book_close_overlay.png - >> blue_book_close_data.inc
+	$(PNG2OVERLAY) -4 -o -n blue_book_close blue_book_close_overlay.png - >> blue_book_close_data.inc
 
 
 
@@ -224,13 +224,13 @@ blue_book_close_data.inc:	blue_book_close_bg.png blue_book_close_overlay.png
 
 gear_n_data.inc:	gear_n_bg.png gear_n_overlay.png
 	$(PNG2PF) -4 -n gear_n -b 0x02 gear_n_bg.png - > gear_n_data.inc
-	$(PNG2OVERLAY) -4 -n gear_n gear_n_overlay.png - >> gear_n_data.inc
+	$(PNG2OVERLAY) -4 -o -n gear_n gear_n_overlay.png - >> gear_n_data.inc
 
 ###
 
 gear_s_data.inc:	gear_s_bg.png gear_s_overlay.png
 	$(PNG2PF) -4 -n gear_s -b 0x02 gear_s_bg.png - > gear_s_data.inc
-	$(PNG2OVERLAY) -4 -n gear_s gear_s_overlay.png - >> gear_s_data.inc
+	$(PNG2OVERLAY) -4 -o -n gear_s gear_s_overlay.png - >> gear_s_data.inc
 
 
 

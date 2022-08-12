@@ -67,6 +67,7 @@ ZX0_dst_h	=	$B5
 bitr		=	$B6
 pntr		=	$B7
 pntr_h		=	$B8
+READ_WRITE_OFFSET=	$B9
 
 
 HAND_SPRITE	=	HAND_SPRITE_LINE0

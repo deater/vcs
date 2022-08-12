@@ -40,6 +40,9 @@ copy_compress_loop:
 
 	; decompress from temporary RAM
 
+	lda	#$4
+	sta	READ_WRITE_OFFSET
+
 	lda	#<$1900
 	sta	ZX0_src
 	lda	#>$1900

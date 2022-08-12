@@ -1,16 +1,37 @@
+	book_edge_colors = $1900
+
+
 	;=====================
 	; Linking Book
 	;=====================
 
 book_common:
 
-	lda	#20
-	sta	INPUT_COUNTDOWN
+	lda	#20			; debounce button press		; 2
+	sta	INPUT_COUNTDOWN						; 3
 
-	lda	CURRENT_LOCATION
-	sec
-	sbc	#8
-	sta	WHICH_BOOK
+	; get which book we are for lookup purposes
+
+	lda	CURRENT_LOCATION					; 3
+	sec								; 2
+	sbc	#8							; 2
+	sta	WHICH_BOOK						; 3
+
+	tax
+
+	; decompress book data into RAM at $1800 write/ $1900 read
+
+	lda	#$1
+	sta	READ_WRITE_OFFSET
+
+	lda     book_data_l,X
+	sta     ZX0_src
+	lda     book_data_h,X
+	sta     ZX0_src_h
+
+	lda	#>$1800
+	jsr     zx02_full_decomp
+
 
 book_frame:
 
@@ -27,7 +48,7 @@ book_frame:
 	;=================================
 	;=================================
 
-; in VBLANK scanline 0
+	; in VBLANK scanline 0
 
 	ldx	#24
 book_vblank_loop:
@@ -59,7 +80,7 @@ book_vblank_loop:
 	; now scanline 32
 	;========================
 	; increment frame
-	; setup missile
+	; setup missile (left edge of book)
 ; 6
 	inc	FRAME							; 5
 ; 11
@@ -95,13 +116,16 @@ bzpad_x:
 	stx	COLUBK			; set background color to black	; 3
 	stx	CURRENT_SCANLINE	; reset scanline counter	; 3
 ; 8
-	lda	FRAME
-	and	#$20
-	lsr
-	lsr
-	lsr
-	lsr
-	adc	#$A0
+
+	; code to change background
+
+	lda	FRAME							; 3
+	and	#$20							; 2
+	lsr								; 2
+	lsr								; 2
+	lsr								; 2
+	lsr								; 2
+	adc	#$A0							; 3
 	sta	ROOT_LINK_COLOR
 
 	sta	WSYNC
@@ -113,9 +137,10 @@ bzpad_x:
 	;==========================================
 	; set up sprite1 to be at proper X position
 	;==========================================
+	; this is the right hand part of book
 
 ; 0
-	ldx	#0		; sprite 0 display nothing		2
+	ldx	#0		; sprite 1 display nothing		2
 	stx	GRP1		; (FIXME: this already set?)		3
 ; 5
 	ldx	#6		;					3
@@ -327,7 +352,7 @@ book_draw_playfield_plus_3:
 	lda	#$0E		; reset book color (lgrey)		; 2
 	sta	COLUPF		; store playfield color			; 3
 ; 8
-	lda	book_edge_colors,Y					; 4
+	lda	book_edge_colors+2,Y					; 4
 	sta	COLUP1		; set edge colors (missile1)		; 3
 ; 15
 
@@ -396,7 +421,7 @@ done_link_animation:
 	lda	#$0E		; reset book color (lgrey)		; 2
 	sta	COLUPF		; store playfield color			; 3
 ; 5
-	lda	book_edge_colors,Y					; 4
+	lda	book_edge_colors+2,Y					; 4
 	sta	COLUP1							; 3
 
 ; 12
@@ -501,16 +526,8 @@ book_done_playfield:
 	jsr	common_overscan
 
 	;==================================
-	; overscan 26, trigger sound
+	; overscan 26, unused
 
-;	ldy	SOUND_TO_PLAY
-;	beq	no_sound_to_play
-
-;	jsr	trigger_sound		; 6+40
-
-;	ldy	#0
-;	sty	SOUND_TO_PLAY
-;no_sound_to_play:
 	sta	WSYNC
 
 	;==================================
@@ -522,7 +539,7 @@ book_done_playfield:
 	sta	WSYNC
 
 	;==================================
-	; overscan 29, collision detection
+	; overscan 29, update pointer
 
 	lda	#POINTER_TYPE_POINT					; 2
 	sta	POINTER_TYPE						; 3
@@ -592,3 +609,25 @@ exit_yes_link:
 
 exit_no_link_noise:
 	rts
+
+
+book_data_l:
+	.byte <red_book_data_zx02
+	.byte <blue_book_data_zx02
+	.byte <green_book_data_zx02
+	.byte <myst_book_data_zx02
+
+book_data_h:
+	.byte >red_book_data_zx02
+	.byte >blue_book_data_zx02
+	.byte >green_book_data_zx02
+	.byte >myst_book_data_zx02
+
+myst_book_data_zx02:
+.incbin "myst_book_data.zx02"
+red_book_data_zx02:
+.incbin "red_book_data.zx02"
+blue_book_data_zx02:
+.incbin "blue_book_data.zx02"
+green_book_data_zx02:
+.incbin "green_book_data.zx02"

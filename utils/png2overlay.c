@@ -20,13 +20,15 @@
 #include "loadpng.h"
 
 static void print_help(char *name) {
-	fprintf(stderr,"Usage:\t%s [-2] [-4] [-8] [-b col] [-n name] INFILE OUTFILE\n\n",name);
+	fprintf(stderr,"Usage:\t%s [-2] [-4] [-8] [-b col] [-c] [-n name] [-o] INFILE OUTFILE\n\n",name);
 	fprintf(stderr,"\t-g : generate background color data\n");
 	fprintf(stderr,"\t-2 : only draw every 2nd line\n");
 	fprintf(stderr,"\t-4 : only draw every 4th line\n");
 	fprintf(stderr,"\t-8 : only draw every 8th line\n");
 	fprintf(stderr,"\t-n : name to prepend to labels\n");
 	fprintf(stderr,"\t-b : color to use for background (default 0)\n");
+	fprintf(stderr,"\t-o : if no foreground color, leave as old rather than 0\n");
+	fprintf(stderr,"\t-c : only generate color table\n");
 	exit(-1);
 }
 
@@ -49,6 +51,7 @@ static void print_byte(FILE *outfile,int value,int which) {
 
 int main(int argc, char **argv) {
 
+	int compress=0,only_color=0;
 	int row=0;
 	int col=0;
 	int skip=1;
@@ -65,13 +68,19 @@ int main(int argc, char **argv) {
 
 
 	/* Check command line arguments */
-	while ((c = getopt (argc, argv,"248b:gdhvn:"))!=-1) {
+	while ((c = getopt (argc, argv,"248b:cgdhovn:"))!=-1) {
 		switch (c) {
 		case 'n':
 			name=strdup(optarg);
 			break;
 		case 'b':
 			background_color=strtod(optarg,NULL);
+			break;
+		case 'c':
+			only_color=1;
+			break;
+		case 'o':
+			compress=1;
 			break;
 		case 'g':
 			generate_bg=1;
@@ -168,12 +177,20 @@ int main(int argc, char **argv) {
 	for(row=0;row<ysize;row+=skip) {
 		/* keep last line color if no active pixels on line */
 		/* hopefully this compresses better? */
+		if (compress) {
+		}
+		else {
+			color=0;
+		}
+
 		for(col=0;col<xsize;col++) {
 			if (image[row*xsize+col]!=background[row]) color=image[row*xsize+col];
 		}
 		print_byte(outfile,color,row/skip);
 	}
 	fprintf(outfile,"\n");
+
+	if (!only_color) {
 
 	/* generate left playfield table */
 	for(row=0;row<ysize;row++) {
@@ -192,6 +209,7 @@ int main(int argc, char **argv) {
 	for(row=0;row<ysize;row+=skip) {
 		value=(playfield_left[row]>>8)&0xff;
 		print_byte(outfile,value,row/skip);
+	}
 	}
 
 	fclose(outfile);
