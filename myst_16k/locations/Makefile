@@ -2,37 +2,35 @@ ZX02 = ~/research/6502_compression/zx02.git/build/zx02
 LINKER_SCRIPT = ../../linker_script/
 PNG2PF = ../../utils/png2pf
 PNG2OVERLAY = ../../utils/png2overlay
-
-CFLAGS = -Wall -O2 -g
-LFLAGS =
+CALC_ADDRESS = ../utils/calc_address
 
 all:	level_locations.inc
 
-level_locations.inc:	rom_bank0.bin rom_bank1.bin rom_bank2.bin generate_locations
-	./generate_locations -a 0x1000 -s arrival_n_data_zx02 rom_bank0.lst > level_locations.inc
-	./generate_locations -a 0x1000 -s arrival_e_data_zx02 rom_bank0.lst >> level_locations.inc
-	./generate_locations -a 0x1000 -s clock_s_data_zx02 rom_bank0.lst >> level_locations.inc
-	./generate_locations -a 0x1000 -s clock_n_data_zx02 rom_bank0.lst >> level_locations.inc
-	./generate_locations -a 0x1000 -s hilltop_n_data_zx02 rom_bank0.lst >> level_locations.inc
-	./generate_locations -a 0x1000 -s hilltop_e_data_zx02 rom_bank0.lst >> level_locations.inc
-	./generate_locations -a 0x1000 -s hilltop_s_data_zx02 rom_bank0.lst >> level_locations.inc
-	./generate_locations -a 0x1000 -s hilltop_w_data_zx02 rom_bank0.lst >> level_locations.inc
-	./generate_locations -a 0x1000 -s imager_w_data_zx02 rom_bank0.lst >> level_locations.inc
-	./generate_locations -a 0x1000 -s rocket_n_data_zx02 rom_bank0.lst >> level_locations.inc
-	./generate_locations -a 0x1000 -s shortsteps_w_data_zx02 rom_bank1.lst >> level_locations.inc
-	./generate_locations -a 0x1000 -s dock_n_data_zx02 rom_bank1.lst >> level_locations.inc
-	./generate_locations -a 0x1000 -s library_n_data_zx02 rom_bank1.lst >> level_locations.inc
-	./generate_locations -a 0x1000 -s gear_n_data_zx02 rom_bank1.lst >> level_locations.inc
-	./generate_locations -a 0x1000 -s gear_s_data_zx02 rom_bank1.lst >> level_locations.inc
-	./generate_locations -a 0x1000 -s library_s_data_zx02 rom_bank1.lst >> level_locations.inc
-	./generate_locations -a 0x1000 -s arrival_s_data_zx02 rom_bank1.lst >> level_locations.inc
-	./generate_locations -a 0x1000 -s arrival_w_data_zx02 rom_bank1.lst >> level_locations.inc
-	./generate_locations -a 0x1000 -s hill_w_data_zx02 rom_bank1.lst >> level_locations.inc
-	./generate_locations -a 0x1000 -s dentist_n_data_zx02 rom_bank1.lst >> level_locations.inc
-	./generate_locations -a 0x1000 -s library_w_data_zx02 rom_bank2.lst >> level_locations.inc
-	./generate_locations -a 0x1000 -s library_e_data_zx02 rom_bank2.lst >> level_locations.inc
-	./generate_locations -a 0x1000 -s red_book_close_data_zx02 rom_bank2.lst >> level_locations.inc
-	./generate_locations -a 0x1000 -s blue_book_close_data_zx02 rom_bank2.lst >> level_locations.inc
+level_locations.inc:	rom_bank0.bin rom_bank1.bin rom_bank2.bin $(CALC_ADDRESS)
+	$(CALC_ADDRESS) -a 0x1000 -s arrival_n_data_zx02 rom_bank0.lst > level_locations.inc
+	$(CALC_ADDRESS) -a 0x1000 -s arrival_e_data_zx02 rom_bank0.lst >> level_locations.inc
+	$(CALC_ADDRESS) -a 0x1000 -s clock_s_data_zx02 rom_bank0.lst >> level_locations.inc
+	$(CALC_ADDRESS) -a 0x1000 -s clock_n_data_zx02 rom_bank0.lst >> level_locations.inc
+	$(CALC_ADDRESS) -a 0x1000 -s hilltop_n_data_zx02 rom_bank0.lst >> level_locations.inc
+	$(CALC_ADDRESS) -a 0x1000 -s hilltop_e_data_zx02 rom_bank0.lst >> level_locations.inc
+	$(CALC_ADDRESS) -a 0x1000 -s hilltop_s_data_zx02 rom_bank0.lst >> level_locations.inc
+	$(CALC_ADDRESS) -a 0x1000 -s hilltop_w_data_zx02 rom_bank0.lst >> level_locations.inc
+	$(CALC_ADDRESS) -a 0x1000 -s imager_w_data_zx02 rom_bank0.lst >> level_locations.inc
+	$(CALC_ADDRESS) -a 0x1000 -s rocket_n_data_zx02 rom_bank0.lst >> level_locations.inc
+	$(CALC_ADDRESS) -a 0x1000 -s shortsteps_w_data_zx02 rom_bank1.lst >> level_locations.inc
+	$(CALC_ADDRESS) -a 0x1000 -s dock_n_data_zx02 rom_bank1.lst >> level_locations.inc
+	$(CALC_ADDRESS) -a 0x1000 -s library_n_data_zx02 rom_bank1.lst >> level_locations.inc
+	$(CALC_ADDRESS) -a 0x1000 -s gear_n_data_zx02 rom_bank1.lst >> level_locations.inc
+	$(CALC_ADDRESS) -a 0x1000 -s gear_s_data_zx02 rom_bank1.lst >> level_locations.inc
+	$(CALC_ADDRESS) -a 0x1000 -s library_s_data_zx02 rom_bank1.lst >> level_locations.inc
+	$(CALC_ADDRESS) -a 0x1000 -s arrival_s_data_zx02 rom_bank1.lst >> level_locations.inc
+	$(CALC_ADDRESS) -a 0x1000 -s arrival_w_data_zx02 rom_bank1.lst >> level_locations.inc
+	$(CALC_ADDRESS) -a 0x1000 -s hill_w_data_zx02 rom_bank1.lst >> level_locations.inc
+	$(CALC_ADDRESS) -a 0x1000 -s dentist_n_data_zx02 rom_bank1.lst >> level_locations.inc
+	$(CALC_ADDRESS) -a 0x1000 -s library_w_data_zx02 rom_bank2.lst >> level_locations.inc
+	$(CALC_ADDRESS) -a 0x1000 -s library_e_data_zx02 rom_bank2.lst >> level_locations.inc
+	$(CALC_ADDRESS) -a 0x1000 -s red_book_close_data_zx02 rom_bank2.lst >> level_locations.inc
+	$(CALC_ADDRESS) -a 0x1000 -s blue_book_close_data_zx02 rom_bank2.lst >> level_locations.inc
 
 
 ###
@@ -521,5 +519,4 @@ gear_s_data.o:	gear_s_data.s gear_s_data.inc
 ####
 
 clean:	
-	rm -f *~ *.zx02 *.lst *.inc *.o *.bin generate_locations
-
+	rm -f *~ *.zx02 *.lst *.inc *.bin
