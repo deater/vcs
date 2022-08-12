@@ -31,6 +31,8 @@ level_locations.inc:	rom_bank0.bin rom_bank1.bin rom_bank2.bin generate_location
 	./generate_locations -a 0x1000 -s dentist_n_data_zx02 rom_bank1.lst >> level_locations.inc
 	./generate_locations -a 0x1000 -s library_w_data_zx02 rom_bank2.lst >> level_locations.inc
 	./generate_locations -a 0x1000 -s library_e_data_zx02 rom_bank2.lst >> level_locations.inc
+	./generate_locations -a 0x1000 -s red_book_close_data_zx02 rom_bank2.lst >> level_locations.inc
+	./generate_locations -a 0x1000 -s blue_book_close_data_zx02 rom_bank2.lst >> level_locations.inc
 
 
 ###
@@ -73,7 +75,8 @@ rom_bank2.bin:	rom_bank2.o
 	ld65 -o rom_bank2.bin rom_bank2.o -C $(LINKER_SCRIPT)/atari2600_1000.inc
 
 rom_bank2.o:	rom_bank2.s \
-	library_w_data.zx02 library_e_data.zx02
+	library_w_data.zx02 library_e_data.zx02 \
+	red_book_close_data.zx02 blue_book_close_data.zx02
 	ca65 -o rom_bank2.o rom_bank2.s -l rom_bank2.lst
 
 
@@ -200,6 +203,21 @@ library_w_data.inc:	library_w_bg.png library_w_overlay.png
 library_e_data.inc:	library_e_bg.png library_e_overlay.png
 	$(PNG2PF) -4 -n library_e -b 0x00 library_e_bg.png - > library_e_data.inc
 	$(PNG2OVERLAY) -4 -n library_e library_e_overlay.png - >> library_e_data.inc
+
+
+###
+
+red_book_close_data.inc:	red_book_close_bg.png red_book_close_overlay.png
+	$(PNG2PF) -4 -n red_book_close -b 0x00 red_book_close_bg.png - > red_book_close_data.inc
+	$(PNG2OVERLAY) -4 -n red_book_close red_book_close_overlay.png - >> red_book_close_data.inc
+
+###
+
+blue_book_close_data.inc:	blue_book_close_bg.png blue_book_close_overlay.png
+	$(PNG2PF) -4 -n blue_book_close -b 0x00 blue_book_close_bg.png - > blue_book_close_data.inc
+	$(PNG2OVERLAY) -4 -n blue_book_close blue_book_close_overlay.png - >> blue_book_close_data.inc
+
+
 
 
 
@@ -447,6 +465,30 @@ library_e_data.bin:	library_e_data.o
 
 library_e_data.o:	library_e_data.s library_e_data.inc
 	ca65 -o library_e_data.o library_e_data.s -l library_e_data.lst
+
+###
+
+red_book_close_data.zx02:	red_book_close_data.bin
+	$(ZX02) -f red_book_close_data.bin red_book_close_data.zx02
+
+red_book_close_data.bin:	red_book_close_data.o
+	ld65 -o red_book_close_data.bin red_book_close_data.o -C $(LINKER_SCRIPT)/atari2600_f000.inc
+
+red_book_close_data.o:	red_book_close_data.s red_book_close_data.inc
+	ca65 -o red_book_close_data.o red_book_close_data.s -l red_book_close_data.lst
+
+###
+
+blue_book_close_data.zx02:	blue_book_close_data.bin
+	$(ZX02) -f blue_book_close_data.bin blue_book_close_data.zx02
+
+blue_book_close_data.bin:	blue_book_close_data.o
+	ld65 -o blue_book_close_data.bin blue_book_close_data.o -C $(LINKER_SCRIPT)/atari2600_f000.inc
+
+blue_book_close_data.o:	blue_book_close_data.s blue_book_close_data.inc
+	ca65 -o blue_book_close_data.o blue_book_close_data.s -l blue_book_close_data.lst
+
+
 
 
 

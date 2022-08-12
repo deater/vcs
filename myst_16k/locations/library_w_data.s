@@ -9,7 +9,7 @@
 .byte $00,$00			; XMAX/XMIN of grab area
 .byte $00,$00			; YMAX/YMIN of grab area
 .byte LOCATION_LIBRARY_S	; left destination
-.byte $FF			; center destination
+.byte LOCATION_RED_BOOK_CLOSE	; center destination
 .byte LOCATION_LIBRARY_N	; right destination
 .byte $00,$00			; unused
 

@@ -74,25 +74,30 @@ level_bank_lookup:
 	.byte	$FF			; 6 = clock_close_s
 	.byte	1			; 7 = dock_n
 
-	.byte	0			; 8 = clock_s
-	.byte	0			; 9 = rocket_n
-	.byte	0			; 10 = arrival_n
-	.byte	0			; 11 = hilltop_w
-	.byte	0			; 12 = imager_w
-	.byte	0			; 13 = hilltop_s
-	.byte	0			; 14 = hilltop_n
-	.byte	0			; 15 = hilltop_e
-	.byte	0			; 16 = arrival_e
-	.byte	0			; 17 = clock_n
-	.byte	1			; 18 = shortsteps_w
-	.byte	1			; 19 = library_n
-	.byte	1			; 20 = gear_s
-	.byte	1			; 21 = library_s
-	.byte	1			; 22 = arrival_s
-	.byte	1			; 23 = arrival_w
-	.byte	1			; 24 = hill_w
-	.byte	2			; 25 = library_w
-	.byte	2			; 26 = library_e
+	.byte	2			; 8 = red_book_close
+	.byte	2			; 9 = blue_book_close
+	.byte	$FF			; 10 = green_book_close
+
+	.byte	0			; 11 = clock_s
+	.byte	0			; 12 = rocket_n
+	.byte	0			; 13 = arrival_n
+	.byte	0			; 14 = hilltop_w
+	.byte	0			; 15 = imager_w
+	.byte	0			; 16 = hilltop_s
+	.byte	0			; 17 = hilltop_n
+	.byte	0			; 18 = hilltop_e
+	.byte	0			; 19 = arrival_e
+	.byte	0			; 20 = clock_n
+	.byte	1			; 21 = shortsteps_w
+	.byte	1			; 22 = library_n
+	.byte	1			; 23 = gear_s
+	.byte	1			; 24 = library_s
+	.byte	1			; 25 = arrival_s
+	.byte	1			; 26 = arrival_w
+	.byte	1			; 27 = hill_w
+	.byte	2			; 28 = library_w
+	.byte	2			; 29 = library_e
+
 
 
 level_compress_data_low:
@@ -104,6 +109,10 @@ level_compress_data_low:
 	.byte	$FF					; 5
 	.byte	$FF					; 6
 	.byte	<dock_n_data_zx02			; 7
+
+	.byte	<red_book_close_data_zx02		; 8
+	.byte	<blue_book_close_data_zx02		; 9
+	.byte	$FF					; 10
 
 	.byte	<clock_s_data_zx02
 	.byte	<rocket_n_data_zx02
@@ -126,6 +135,7 @@ level_compress_data_low:
 	.byte	<library_e_data_zx02
 
 
+
 level_compress_data_high:
 	.byte	>gear_n_data_zx02			; 0
 	.byte	>dentist_n_data_zx02			; 1
@@ -135,6 +145,10 @@ level_compress_data_high:
 	.byte	$FF					; 5
 	.byte	$FF					; 6
 	.byte	>dock_n_data_zx02			; 7
+
+	.byte	>red_book_close_data_zx02		; 8
+	.byte	>blue_book_close_data_zx02		; 9
+	.byte	$FF					; 10
 
 	.byte	>clock_s_data_zx02
 	.byte	>rocket_n_data_zx02
@@ -155,3 +169,4 @@ level_compress_data_high:
 	.byte	>hill_w_data_zx02
 	.byte	>library_w_data_zx02
 	.byte	>library_e_data_zx02
+
