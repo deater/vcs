@@ -77,10 +77,10 @@ level_bank_lookup:
 	.byte	2			; 8 = red_book_close
 	.byte	2			; 9 = blue_book_close
 	.byte	$FF			; 10 = green_book_close
+	.byte	0			; 11 = arrival_n
 
-	.byte	0			; 11 = clock_s
-	.byte	0			; 12 = rocket_n
-	.byte	0			; 13 = arrival_n
+	.byte	0			; 12 = clock_s
+	.byte	0			; 13 = rocket_n
 	.byte	0			; 14 = hilltop_w
 	.byte	0			; 15 = imager_w
 	.byte	0			; 16 = hilltop_s
@@ -113,10 +113,10 @@ level_compress_data_low:
 	.byte	<red_book_close_data_zx02		; 8
 	.byte	<blue_book_close_data_zx02		; 9
 	.byte	$FF					; 10
+	.byte	<arrival_n_data_zx02			; 11
 
 	.byte	<clock_s_data_zx02
 	.byte	<rocket_n_data_zx02
-	.byte	<arrival_n_data_zx02
 	.byte	<hilltop_w_data_zx02
 	.byte	<imager_w_data_zx02
 	.byte	<hilltop_s_data_zx02
@@ -149,10 +149,10 @@ level_compress_data_high:
 	.byte	>red_book_close_data_zx02		; 8
 	.byte	>blue_book_close_data_zx02		; 9
 	.byte	$FF					; 10
+	.byte	>arrival_n_data_zx02			; 11
 
 	.byte	>clock_s_data_zx02
 	.byte	>rocket_n_data_zx02
-	.byte	>arrival_n_data_zx02
 	.byte	>hilltop_w_data_zx02
 	.byte	>imager_w_data_zx02
 	.byte	>hilltop_s_data_zx02

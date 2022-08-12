@@ -10,6 +10,7 @@ all:	rom_bank6.bin rom_bank6_routines.inc
 
 rom_bank6_routines.inc:	rom_bank6.bin
 	$(CALC_ADDRESS) -a 0x1000 -s do_intro rom_bank6.lst > rom_bank6_routines.inc
+	$(CALC_ADDRESS) -a 0x1000 -s book_common rom_bank6.lst >> rom_bank6_routines.inc
 
 ###
 

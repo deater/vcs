@@ -10,14 +10,9 @@ do_intro:
 
 .include "cleft.s"
 
-	jsr	do_book
-
 	rts
 
-
-do_book:
 .include "book.s"
-	rts
 
 ;.include "../hand_copy.s"
 ;.include "../hand_motion.s"

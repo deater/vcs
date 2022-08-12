@@ -47,6 +47,9 @@ clear_loop:
 
 	ldy	#LOCATION_ARRIVAL_N
 	sty	CURRENT_LOCATION
+	sty	LINK_DESTINATION
+
+	jsr	do_book
 
 	;==============================
 	; load in current level
@@ -61,7 +64,6 @@ load_new_level:
 	;===========================
 	;===========================
 
-
 	.include "level_engine.s"
 
 	;===========================
@@ -75,6 +77,14 @@ load_new_level:
 	.include "hand_copy.s"
 	.include "sound_update.s"
 	.include "zx02_optim.s"
+
+
+do_book:
+	; switch to bank 6
+	lda	$FFE6
+
+	jmp	book_common
+
 
 	.include "sfx_data.inc"
 .align $100 ; temporary

@@ -18,10 +18,8 @@
 	; the generic level engine
 	;==========================
 do_level:
-	lda	#30
+	lda	#20
 	sta	INPUT_COUNTDOWN
-
-;	jmp	level_frame
 
 level_frame:
 
@@ -599,9 +597,9 @@ clicked_grab:			; process of elimination
 
 handle_book:
 
+	jsr	do_book
 
-
-	jmp	done_check_level_input
+	jmp	load_new_level
 
 handle_switch:
 	ldy	#SFX_CLICK		; play sound

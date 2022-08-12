@@ -2,8 +2,16 @@
 	; Linking Book
 	;=====================
 
-;	jmp	book_frame
-;.align	$100
+book_common:
+
+	lda	#20
+	sta	INPUT_COUNTDOWN
+
+	lda	CURRENT_LOCATION
+	sec
+	sbc	#8
+	sta	WHICH_BOOK
+
 book_frame:
 
 	;============================
@@ -537,6 +545,14 @@ not_in_window:
 	;==================================
 	; overscan 30, see if at end
 
+	lda	INPUT_COUNTDOWN						; 3
+	beq	waited_enough_book					; 2/3
+	dec     INPUT_COUNTDOWN						; 5
+	jmp     book_keep_going						; 3
+
+waited_enough_book:
+
+
 	lda	INPT4			; check if joystick button pressed
 	bpl	book_clicked
 
@@ -545,15 +561,34 @@ book_keep_going:
 	jmp	book_frame
 
 book_clicked:
+	; if 0..1 any click stays same place
+	; if 2 grab links, click backs off
+	; if 3 grab links
+
+	lda	WHICH_BOOK
+	cmp	#3
+	beq	myst_book
+
+	cmp	#2
+	bcc	exit_no_link_noise	; brother book, just exit
+
+green_book:
+	; TODO
+
+
+myst_book:
 	lda	POINTER_TYPE
 	cmp	#POINTER_TYPE_GRAB
 	bne	book_keep_going
 
-; otherwise, exit...
 
+exit_yes_link:
 	; start linking noise
 	ldy	#SFX_LINK
 	sty	SFX_PTR
 
+	ldy	LINK_DESTINATION
+	sty	CURRENT_LOCATION
 
-
+exit_no_link_noise:
+	rts

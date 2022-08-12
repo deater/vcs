@@ -56,6 +56,8 @@ common_routines.inc:	main.lst
 	$(CALC_ADDRESS) -a 0x1A00 -s hand_copy main.lst >> common_routines.inc
 	$(CALC_ADDRESS) -a 0x1A00 -s hand_motion main.lst >> common_routines.inc
 	$(CALC_ADDRESS) -a 0x1A00 -s pointer_moved_horizontally main.lst >> common_routines.inc
+	$(CALC_ADDRESS) -a 0x1A00 -s do_book main.lst >> common_routines.inc
+
 
 
 
