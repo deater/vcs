@@ -1,3 +1,7 @@
+
+combine the library locations somehow
+	a lot of overlap
+
 copy overlay to RAM
 	have way to load alternate overlay (for path opening, books)
 	

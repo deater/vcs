@@ -10,7 +10,7 @@
 .byte $00,$00			; YMAX/YMIN of grab area
 .byte LOCATION_LIBRARY_W	; left destination
 .byte $FF			; center destination
-.byte LOCATION_LIBRARY_S	; right destination
+.byte LOCATION_LIBRARY_E	; right destination
 .byte $00,$00			; unused
 
 .include "library_n_data.inc"

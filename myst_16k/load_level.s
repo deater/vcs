@@ -92,6 +92,7 @@ level_bank_lookup:
 	.byte	1			; 23 = arrival_w
 	.byte	1			; 24 = hill_w
 	.byte	2			; 25 = library_w
+	.byte	2			; 26 = library_e
 
 
 level_compress_data_low:
@@ -122,7 +123,7 @@ level_compress_data_low:
 	.byte	<arrival_w_data_zx02
 	.byte	<hill_w_data_zx02
 	.byte	<library_w_data_zx02
-
+	.byte	<library_e_data_zx02
 
 
 level_compress_data_high:
@@ -153,5 +154,4 @@ level_compress_data_high:
 	.byte	>arrival_w_data_zx02
 	.byte	>hill_w_data_zx02
 	.byte	>library_w_data_zx02
-
-
+	.byte	>library_e_data_zx02
