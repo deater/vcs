@@ -8,7 +8,7 @@ LFLAGS =
 
 all:	level_locations.inc
 
-level_locations.inc:	rom_bank0.bin rom_bank1.bin generate_locations
+level_locations.inc:	rom_bank0.bin rom_bank1.bin rom_bank2.bin generate_locations
 	./generate_locations -a 0x1000 -s arrival_n_data_zx02 rom_bank0.lst > level_locations.inc
 	./generate_locations -a 0x1000 -s arrival_e_data_zx02 rom_bank0.lst >> level_locations.inc
 	./generate_locations -a 0x1000 -s clock_s_data_zx02 rom_bank0.lst >> level_locations.inc
@@ -29,6 +29,8 @@ level_locations.inc:	rom_bank0.bin rom_bank1.bin generate_locations
 	./generate_locations -a 0x1000 -s arrival_w_data_zx02 rom_bank1.lst >> level_locations.inc
 	./generate_locations -a 0x1000 -s hill_w_data_zx02 rom_bank1.lst >> level_locations.inc
 	./generate_locations -a 0x1000 -s dentist_n_data_zx02 rom_bank1.lst >> level_locations.inc
+	./generate_locations -a 0x1000 -s library_w_data_zx02 rom_bank2.lst >> level_locations.inc
+
 
 ###
 
@@ -55,8 +57,6 @@ rom_bank0.o:	rom_bank0.s \
 rom_bank1.bin:	rom_bank1.o
 	ld65 -o rom_bank1.bin rom_bank1.o -C $(LINKER_SCRIPT)/atari2600_1000.inc
 
-
-
 rom_bank1.o:	rom_bank1.s \
 	shortsteps_w_data.zx02 \
 	dock_n_data.zx02 \
@@ -65,6 +65,16 @@ rom_bank1.o:	rom_bank1.s \
 	arrival_s_data.zx02 arrival_w_data.zx02 \
 	hill_w_data.zx02 dentist_n_data.zx02
 	ca65 -o rom_bank1.o rom_bank1.s -l rom_bank1.lst
+
+###
+
+rom_bank2.bin:	rom_bank2.o
+	ld65 -o rom_bank2.bin rom_bank2.o -C $(LINKER_SCRIPT)/atari2600_1000.inc
+
+rom_bank2.o:	rom_bank2.s \
+	library_w_data.zx02
+	ca65 -o rom_bank2.o rom_bank2.s -l rom_bank2.lst
+
 
 ###
 
@@ -177,6 +187,13 @@ library_n_data.inc:	library_n_bg.png library_n_overlay.png
 library_s_data.inc:	library_s_bg.png library_s_overlay.png
 	$(PNG2PF) -4 -n library_s -b 0x00 library_s_bg.png - > library_s_data.inc
 	$(PNG2OVERLAY) -4 -n library_s library_s_overlay.png - >> library_s_data.inc
+
+###
+
+library_w_data.inc:	library_w_bg.png library_w_overlay.png
+	$(PNG2PF) -4 -n library_w -b 0x00 library_w_bg.png - > library_w_data.inc
+	$(PNG2OVERLAY) -4 -n library_w library_w_overlay.png - >> library_w_data.inc
+
 
 
 ###
@@ -400,6 +417,18 @@ library_s_data.bin:	library_s_data.o
 
 library_s_data.o:	library_s_data.s library_s_data.inc
 	ca65 -o library_s_data.o library_s_data.s -l library_s_data.lst
+
+###
+
+library_w_data.zx02:	library_w_data.bin
+	$(ZX02) -f library_w_data.bin library_w_data.zx02
+
+library_w_data.bin:	library_w_data.o
+	ld65 -o library_w_data.bin library_w_data.o -C $(LINKER_SCRIPT)/atari2600_f000.inc
+
+library_w_data.o:	library_w_data.s library_w_data.inc
+	ca65 -o library_w_data.o library_w_data.s -l library_w_data.lst
+
 
 
 ###

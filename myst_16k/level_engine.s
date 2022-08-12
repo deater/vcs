@@ -574,7 +574,7 @@ waited_enough_level:
 	bmi	done_check_level_input
 
 	; reset input countdown for debounce
-	lda	#20
+	lda	#10
 	sta	INPUT_COUNTDOWN
 
 	; button was pressed
