@@ -31,7 +31,6 @@ main.bin:	main.o
 	ld65 -o main.bin main.o -C $(LINKER_SCRIPT)/atari2600_1a00.inc
 
 main.o:	main.s zp.inc \
-	rom_bank6_routines.inc \
 	load_level.s level_engine.s \
 	hand_motion.s hand_copy.s adjust_sprite.s common_routines.s \
 	sound_update.s zx02_optim.s \

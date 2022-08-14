@@ -32,6 +32,8 @@ level_locations.inc:	rom_bank0.bin rom_bank1.bin rom_bank2.bin $(CALC_ADDRESS)
 	$(CALC_ADDRESS) -a 0x1000 -s red_book_close_data_zx02 rom_bank2.lst >> level_locations.inc
 	$(CALC_ADDRESS) -a 0x1000 -s blue_book_close_data_zx02 rom_bank2.lst >> level_locations.inc
 	$(CALC_ADDRESS) -a 0x1000 -s steps_s_data_zx02 rom_bank2.lst >> level_locations.inc
+	$(CALC_ADDRESS) -a 0x1000 -s clock_close_s_data_zx02 rom_bank2.lst >> level_locations.inc
+
 
 
 ###
@@ -76,7 +78,7 @@ rom_bank2.bin:	rom_bank2.o
 rom_bank2.o:	rom_bank2.s \
 	library_w_data.zx02 library_e_data.zx02 \
 	red_book_close_data.zx02 blue_book_close_data.zx02 \
-	steps_s_data.zx02
+	steps_s_data.zx02 clock_close_s_data.zx02
 	ca65 -o rom_bank2.o rom_bank2.s -l rom_bank2.lst
 
 
@@ -91,6 +93,12 @@ clock_s_data.inc:	clock_s_bg.png clock_s_overlay.png
 clock_n_data.inc:	clock_n_bg.png clock_n_overlay.png
 	$(PNG2PF) -4 -n clock_n -b 0x00 clock_n_bg.png - > clock_n_data.inc
 	$(PNG2OVERLAY) -4 -o -n clock_n clock_n_overlay.png - >> clock_n_data.inc
+
+###
+
+clock_close_s_data.inc:	clock_close_s_bg.png clock_close_s_overlay.png
+	$(PNG2PF) -4 -n clock_close_s -b 0x02 clock_close_s_bg.png - > clock_close_s_data.inc
+	$(PNG2OVERLAY) -4 -o -n clock_close_s clock_close_s_overlay.png - >> clock_close_s_data.inc
 
 ###
 
@@ -266,6 +274,18 @@ clock_n_data.bin:	clock_n_data.o
 
 clock_n_data.o:	clock_n_data.s clock_n_data.inc
 	ca65 -o clock_n_data.o clock_n_data.s -l clock_n_data.lst
+
+
+###
+
+clock_close_s_data.zx02:	clock_close_s_data.bin
+	$(ZX02) -f clock_close_s_data.bin clock_close_s_data.zx02
+
+clock_close_s_data.bin:	clock_close_s_data.o
+	ld65 -o clock_close_s_data.bin clock_close_s_data.o -C $(LINKER_SCRIPT)/atari2600_f000.inc
+
+clock_close_s_data.o:	clock_close_s_data.s clock_close_s_data.inc
+	ca65 -o clock_close_s_data.o clock_close_s_data.s -l clock_close_s_data.lst
 
 
 ###

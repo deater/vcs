@@ -74,7 +74,7 @@ level_bank_lookup:
 	.byte	$FF			; 3 = pool_n
 	.byte	$FF			; 4 = shack_w
 	.byte	$FF			; 5 = cabin_e
-	.byte	$FF			; 6 = clock_close_s
+	.byte	2			; 6 = clock_close_s
 	.byte	1			; 7 = dock_n
 
 	.byte	2			; 8 = red_book_close
@@ -111,7 +111,7 @@ level_compress_data_low:
 	.byte	$FF					; 3
 	.byte	$FF					; 4
 	.byte	$FF					; 5
-	.byte	$FF					; 6
+	.byte	<clock_close_s_data_zx02		; 6
 	.byte	<dock_n_data_zx02			; 7
 
 	.byte	<red_book_close_data_zx02		; 8
@@ -148,7 +148,7 @@ level_compress_data_high:
 	.byte	$FF					; 3
 	.byte	$FF					; 4
 	.byte	$FF					; 5
-	.byte	$FF					; 6
+	.byte	>clock_close_s_data_zx02		; 6
 	.byte	>dock_n_data_zx02			; 7
 
 	.byte	>red_book_close_data_zx02		; 8
