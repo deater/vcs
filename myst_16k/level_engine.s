@@ -273,50 +273,63 @@ draw_playfield:
 	;======================
 ; 0
 ;	lda	level_colors,Y						; --
-	sta	COLUPF							; 3
+	sta	COLUPF			; playfield color		; 3
 	lda	level_overlay_sprite,Y					; 4
-	sta	GRP1							; 3
+	sta	GRP1			; overlay color			; 3
 ; 10
-	lda	level_playfield0_left,Y	;				; 4
+	lda	level_playfield0_left,Y	; playfield pattern 0		; 4
 	sta	PF0			;				; 3
 	;   has to happen by 22 (GPU 68)
 ; 17
-	lda	level_playfield1_left,Y	;				; 4
+	lda	level_playfield1_left,Y	; playfield pattern 1		; 4
 	sta	PF1			;				; 3
 	;  has to happen by 28 (GPU 84)
 ; 24
-	lda	level_playfield2_left,Y	;				; 4
+	lda	level_playfield2_left,Y	; playfield pattern 2		; 4
         sta	PF2							; 3
 	;  has to happen by 38 (GPU 116)	;
 ; 31
-	lda	level_playfield0_right,Y	;			; 4
+	lda	level_playfield0_right,Y	; left pf pattern 0	; 4
         sta	PF0				;			; 3
 	; has to happen 28-49 (GPU 84-148)
 ; 38
-        lda	level_playfield1_right,Y	;			; 4
+        lda	level_playfield1_right,Y	; left pf pattern 1	; 4
         sta	PF1				;			; 3
 	; has to happen 38-56 (GPU 116-170)
 ; 45
-        lda	level_playfield2_right,Y	;			; 4
+        lda	level_playfield2_right,Y	; left pf pattern 2	; 4
         sta	PF2				;			; 3
 	; has to happen 49-67 (GPU148-202)
 ; 52
 	; activate hand sprite if necessary
-	lda	#$f							; 2
-	ldx	CURRENT_SCANLINE					; 3
-	cpx	POINTER_Y						; 3
-	bne	no_level_activate_hand					; 2/3
-	sta	POINTER_ON						; 3
-	jmp	done_level_activate_hand				; 3
-no_level_activate_hand:
-	inc	TEMP1				; nop5			; 5
-done_level_activate_hand:
+;	lda	#$f							; 2
+;	ldx	CURRENT_SCANLINE					; 3
+;	cpx	POINTER_Y						; 3
+;	bne	no_level_activate_hand					; 2/3
+;	sta	POINTER_ON						; 3
+;	jmp	done_level_activate_hand				; 3
+;no_level_activate_hand:
+;	inc	TEMP1				; nop5			; 5
+;done_level_activate_hand:
 								;===========
 								; 16 / 16
-; 68
+
+
+	lda	CURRENT_SCANLINE					; 3
+	cmp	POINTER_Y						; 3
+	beq	no_level_activate_hand					; 2/3
+	jmp	done_level_activate_hand				; 3
+no_level_activate_hand:
+	ldx	#$f							; 2
+done_level_activate_hand:
+								;===========
+								; 11 / 11
+
+; 63
 
 	nop
 	nop
+	inc	TEMP1
 
 ; 72
 
@@ -341,37 +354,36 @@ done_level_activate_hand:
 	; draw pointer
 	;==================
 
-	ldx	POINTER_ON						; 3
+	txa								; 2
 	beq	level_no_pointer					; 2/3
 	lda	HAND_SPRITE,X						; 4
 	sta	GRP0							; 3
-	dec	POINTER_ON						; 5
+	dex								; 2
 	jmp	level_done_pointer					; 3
 level_no_pointer:
 	inc	TEMP1		; nop5					; 5
-	inc	TEMP1		; nop5					; 5
-	nop			;					; 2
-	nop								; 2
+	lda	TEMP1		; nop3					; 3
+	lda	TEMP1		; nop3					; 3
 level_done_pointer:
 								;===========
-								; 20 / 6
+								; 16 / 6
 
-; 37
+; 33
 	lda	level_playfield0_right,Y	;			; 4+
 	sta	PF0				;			; 3
 	; has to happen 28-49 (GPU 84-148)
-; 44
+; 40
 	lda	level_playfield1_right,Y	;			; 4+
 	sta	PF1				;			; 3
 	; has to happen 39-56 (GPU 116-170)
-; 51
+; 47
 	lda	level_playfield2_right,Y	;			; 4+
 	sta	PF2				;			; 3
 	; has to happen 50-67 (GPU148-202)
-; 68
+; 54
 
 	inc	CURRENT_SCANLINE					; 5
-; 63
+; 59
 	sta	WSYNC
 
 	;===================
@@ -435,20 +447,24 @@ level_done_pointer:
 	;==================
 	; draw pointer
 	;==================
-	ldx	POINTER_ON						; 3
+	txa								; 2
 	beq	level_no_pointer2					; 2/3
 	lda	HAND_SPRITE,X						; 4
 	sta	GRP0							; 3
-	dec	POINTER_ON						; 5
+	dex								; 2
 	jmp	level_done_pointer2					; 3
 level_no_pointer2:
 	inc	TEMP1		; nop5					; 5
-	inc	TEMP1		; nop5					; 5
-	nop			;					; 2
-	nop								; 2
+	lda	TEMP1		; nop3					; 3
+	lda	TEMP1		; nop3					; 3
 level_done_pointer2:
 								;===========
-								; 20 / 6
+								; 16 / 6
+
+; 33
+
+	nop
+	nop
 
 ; 37
 	lda	level_playfield0_right,Y	;			; 4+
