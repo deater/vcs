@@ -10,3 +10,5 @@ steps_s_data_zx02:
 .incbin "steps_s_data.zx02"
 clock_close_s_data_zx02:
 .incbin "clock_close_s_data.zx02"
+rocket_close_n_data_zx02:
+.incbin "rocket_close_n_data.zx02"

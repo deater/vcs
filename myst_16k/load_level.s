@@ -70,7 +70,7 @@ copy_zp_loop:
 level_bank_lookup:
 	.byte	1			; 0 = gear_n
 	.byte	1			; 1 = dentist_n
-	.byte	$FF			; 2 = rocket_close_n
+	.byte	2			; 2 = rocket_close_n
 	.byte	$FF			; 3 = pool_n
 	.byte	$FF			; 4 = shack_w
 	.byte	$FF			; 5 = cabin_e
@@ -107,7 +107,7 @@ level_bank_lookup:
 level_compress_data_low:
 	.byte	<gear_n_data_zx02			; 0
 	.byte	<dentist_n_data_zx02			; 1
-	.byte	$FF					; 2
+	.byte	<rocket_close_n_data_zx02		; 2
 	.byte	$FF					; 3
 	.byte	$FF					; 4
 	.byte	$FF					; 5
@@ -144,7 +144,7 @@ level_compress_data_low:
 level_compress_data_high:
 	.byte	>gear_n_data_zx02			; 0
 	.byte	>dentist_n_data_zx02			; 1
-	.byte	$FF					; 2
+	.byte	>rocket_close_n_data_zx02		; 2
 	.byte	$FF					; 3
 	.byte	$FF					; 4
 	.byte	$FF					; 5

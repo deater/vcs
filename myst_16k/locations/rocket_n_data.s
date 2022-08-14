@@ -8,9 +8,9 @@
 .byte 0,$00			; coarse/fine of missile0 (vertical line)
 .byte $00,$00			; XMAX/XMIN of grab area
 .byte $00,$00			; YMAX/YMIN of grab area
-.byte $FF			; left destination
-.byte LOCATION_HILLTOP_E	; center destination
-.byte $FF			; right destination
+.byte LOCATION_HILLTOP_E	; left destination
+.byte LOCATION_ROCKET_CLOSE_N	; center destination
+.byte LOCATION_HILLTOP_E	; right destination
 .byte $00,$00			; unused
 
 .include "rocket_n_data.inc"

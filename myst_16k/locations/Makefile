@@ -33,6 +33,8 @@ level_locations.inc:	rom_bank0.bin rom_bank1.bin rom_bank2.bin $(CALC_ADDRESS)
 	$(CALC_ADDRESS) -a 0x1000 -s blue_book_close_data_zx02 rom_bank2.lst >> level_locations.inc
 	$(CALC_ADDRESS) -a 0x1000 -s steps_s_data_zx02 rom_bank2.lst >> level_locations.inc
 	$(CALC_ADDRESS) -a 0x1000 -s clock_close_s_data_zx02 rom_bank2.lst >> level_locations.inc
+	$(CALC_ADDRESS) -a 0x1000 -s rocket_close_n_data_zx02 rom_bank2.lst >> level_locations.inc
+
 
 
 
@@ -78,7 +80,8 @@ rom_bank2.bin:	rom_bank2.o
 rom_bank2.o:	rom_bank2.s \
 	library_w_data.zx02 library_e_data.zx02 \
 	red_book_close_data.zx02 blue_book_close_data.zx02 \
-	steps_s_data.zx02 clock_close_s_data.zx02
+	steps_s_data.zx02 clock_close_s_data.zx02 \
+	rocket_close_n_data.zx02
 	ca65 -o rom_bank2.o rom_bank2.s -l rom_bank2.lst
 
 
@@ -105,6 +108,13 @@ clock_close_s_data.inc:	clock_close_s_bg.png clock_close_s_overlay.png
 rocket_n_data.inc:	rocket_n_bg.png rocket_n_overlay.png
 	$(PNG2PF) -4 -n rocket_n -b 0xf4 rocket_n_bg.png - > rocket_n_data.inc
 	$(PNG2OVERLAY) -4 -o -n rocket_n rocket_n_overlay.png - >> rocket_n_data.inc
+
+###
+
+rocket_close_n_data.inc:	rocket_close_n_bg.png rocket_close_n_overlay.png
+	$(PNG2PF) -4 -n rocket_close_n -b 0x02 rocket_close_n_bg.png - > rocket_close_n_data.inc
+	$(PNG2OVERLAY) -4 -o -n rocket_close_n rocket_close_n_overlay.png - >> rocket_close_n_data.inc
+
 
 ###
 
@@ -298,6 +308,18 @@ rocket_n_data.bin:	rocket_n_data.o
 
 rocket_n_data.o:	rocket_n_data.s rocket_n_data.inc
 	ca65 -o rocket_n_data.o rocket_n_data.s -l rocket_n_data.lst
+
+###
+
+rocket_close_n_data.zx02:	rocket_close_n_data.bin
+	$(ZX02) -f rocket_close_n_data.bin rocket_close_n_data.zx02
+
+rocket_close_n_data.bin:	rocket_close_n_data.o
+	ld65 -o rocket_close_n_data.bin rocket_close_n_data.o -C $(LINKER_SCRIPT)/atari2600_f000.inc
+
+rocket_close_n_data.o:	rocket_close_n_data.s rocket_close_n_data.inc
+	ca65 -o rocket_close_n_data.o rocket_close_n_data.s -l rocket_close_n_data.lst
+
 
 ###
 
