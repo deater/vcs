@@ -1,7 +1,7 @@
 
-FIXME: vertical lines cause extra scanline if > 9
-	dentist_n and clock_n have this issue
-	cabin_e would like to be larger
+FIXME: vertical lines 
+	at clock_s not quite where original was
+	not sure about dentist n either
 
 allow picking up red/blue/white pages
 

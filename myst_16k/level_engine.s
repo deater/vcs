@@ -46,7 +46,7 @@ level_frame:
 
 ; in VBLANK scanline 0
 
-	ldx	#24
+	ldx	#23
 le_vblank_loop:
 	sta	WSYNC
 	dex
@@ -54,7 +54,7 @@ le_vblank_loop:
 
 
 	;=============================
-	; now at VBLANK scanline 24
+	; now at VBLANK scanline 23
 	;=============================
 	; copy in hand sprite
 	; takes 4 scanlines
@@ -63,7 +63,7 @@ le_vblank_loop:
 ; 6
 
 	;=============================
-	; now at VBLANK scanline 28
+	; now at VBLANK scanline 27
 	;=============================
 	; 4 scanlines of handling input
 
@@ -71,7 +71,7 @@ le_vblank_loop:
 ; 6
 
 	;=======================
-	; now scanline 32
+	; now scanline 31
 	;========================
 	; increment frame
 	; setup missile0 location
@@ -83,16 +83,36 @@ le_vblank_loop:
 mlevel_pad:
 	dex								; 2
 	bne	mlevel_pad	; (X*5)-1 = 14				; 2/3
-; 28
+
+		; 9 = (8*5)-1 = 39 + 14 = 53
+		; 10 = (9*5)-1 = 44 + 14 = 58
+		; 11 = (10*5)-1 = 49 + 14 =64
+
+; 64 max
 	sta	RESM0							; 3
-; 31
+; 67
+
+; max=73
+
+no_missile0:
+	sta	WSYNC							; 3
+
+	;=======================
+	; now scanline 32
+	;========================
+	; increment frame
+	; setup missile0 location
+; 0
+	ldx	LEVEL_MISSILE0_COARSE					; 3
+	beq	really_no_missile0					; 2/3
+
+	ldx	#2			; enable missile		; 2
+	stx	ENAM0							; 3
+
 	lda	LEVEL_MISSILE0_FINE	; fine adjust overlay		; 3
 	sta	HMM0							; 3
 
-	lda	#$2							; 2
-	sta	ENAM0	; enable missile 0				; 3
-; ??
-no_missile0:
+really_no_missile0:
 	sta	WSYNC							; 3
 
 
