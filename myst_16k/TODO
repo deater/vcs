@@ -1,4 +1,8 @@
 
+FIXME: vertical lines cause extra scanline if > 9
+	dentist_n and clock_n have this issue
+	cabin_e would like to be larger
+
 allow picking up red/blue/white pages
 
 modify red/blue books to have page plus ! symbol

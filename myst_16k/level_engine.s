@@ -276,9 +276,9 @@ draw_playfield:
 
 	; A has level colors
 
-	;======================
-	; draw playfield 0/4
-	;======================
+	;============================
+	; draw playfield line 0 (1/4)
+	;============================
 ; 0
 	lda	level_colors,Y						; 4
 	sta	COLUPF			; playfield color		; 3
@@ -333,9 +333,9 @@ done_level_activate_hand:
 
 ; 72
 
-	;===================
-	; draw playfield 1/4
-	;===================
+	;============================
+	; draw playfield line 1 (2/4)
+	;============================
 	lda	level_playfield0_left,Y	;				; 4
 ; 0
 	sta	PF0			;				; 3
@@ -362,8 +362,9 @@ done_level_activate_hand:
 	jmp	level_done_pointer					; 3
 level_no_pointer:
 	inc	TEMP1		; nop5					; 5
-	lda	TEMP1		; nop3					; 3
-	lda	TEMP1		; nop3					; 3
+	nop								; 2
+	nop								; 2
+	nop								; 2
 level_done_pointer:
 								;===========
 								; 16 / 6
@@ -390,9 +391,9 @@ level_done_pointer:
 ; 68
 	sta	WSYNC
 
-	;===================
-	; draw playfield 2/4
-	;===================
+	;============================
+	; draw playfield line 2 (3/4)
+	;============================
 ; 0
 	sta	COLUBK		; set background color			; 3
 ; 3

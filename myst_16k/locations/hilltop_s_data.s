@@ -9,7 +9,7 @@
 .byte $00,$00			; XMAX/XMIN of grab area
 .byte $00,$00			; YMAX/YMIN of grab area
 .byte LOCATION_HILLTOP_E	; left destination
-.byte LOCATION_CLOCK_S		; center destination
+.byte LOCATION_CABIN_E		; center destination
 .byte LOCATION_HILLTOP_W	; right destination
 .byte $00,$00			; unused
 

@@ -34,6 +34,8 @@ level_locations.inc:	rom_bank0.bin rom_bank1.bin rom_bank2.bin $(CALC_ADDRESS)
 	$(CALC_ADDRESS) -a 0x1000 -s steps_s_data_zx02 rom_bank2.lst >> level_locations.inc
 	$(CALC_ADDRESS) -a 0x1000 -s clock_close_s_data_zx02 rom_bank2.lst >> level_locations.inc
 	$(CALC_ADDRESS) -a 0x1000 -s rocket_close_n_data_zx02 rom_bank2.lst >> level_locations.inc
+	$(CALC_ADDRESS) -a 0x1000 -s cabin_e_data_zx02 rom_bank2.lst >> level_locations.inc
+
 
 
 
@@ -81,9 +83,15 @@ rom_bank2.o:	rom_bank2.s \
 	library_w_data.zx02 library_e_data.zx02 \
 	red_book_close_data.zx02 blue_book_close_data.zx02 \
 	steps_s_data.zx02 clock_close_s_data.zx02 \
-	rocket_close_n_data.zx02
+	rocket_close_n_data.zx02 cabin_e_data.zx02
 	ca65 -o rom_bank2.o rom_bank2.s -l rom_bank2.lst
 
+
+###
+
+cabin_e_data.inc:	cabin_e_bg.png cabin_e_overlay.png
+	$(PNG2PF) -4 -n cabin_e -b 0x0 cabin_e_bg.png - > cabin_e_data.inc
+	$(PNG2OVERLAY) -4 -o -n cabin_e cabin_e_overlay.png - >> cabin_e_data.inc
 
 ###
 
@@ -262,6 +270,16 @@ steps_s_data.inc:	steps_s_bg.png steps_s_overlay.png
 
 
 
+###
+
+cabin_e_data.zx02:	cabin_e_data.bin
+	$(ZX02) -f cabin_e_data.bin cabin_e_data.zx02
+
+cabin_e_data.bin:	cabin_e_data.o
+	ld65 -o cabin_e_data.bin cabin_e_data.o -C $(LINKER_SCRIPT)/atari2600_f000.inc
+
+cabin_e_data.o:	cabin_e_data.s cabin_e_data.inc
+	ca65 -o cabin_e_data.o cabin_e_data.s -l cabin_e_data.lst
 
 ###
 

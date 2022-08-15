@@ -12,3 +12,5 @@ clock_close_s_data_zx02:
 .incbin "clock_close_s_data.zx02"
 rocket_close_n_data_zx02:
 .incbin "rocket_close_n_data.zx02"
+cabin_e_data_zx02:
+.incbin "cabin_e_data.zx02"
