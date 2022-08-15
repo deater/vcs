@@ -1,3 +1,11 @@
+; Background colors: 2, on 2/4 of lines switches to bg color 2 at cycle 60
+; foreground colors, one per block (4 lines)
+; vertical bar, full height of screen, same color as pointer
+; block overlay (sprite1) one color per line (black harder to do)
+;	for best results at least 4 blocks from left of screen
+;	due to limitations of kernel
+
+
 	level_data		= $1400
         level_colors            = $1410
         level_playfield0_left   = $1440
@@ -244,12 +252,12 @@ pad_x:
 	lda	LEVEL_BACKGROUND_COLOR		;			; 3
 	sta	COLUBK		; set background color			; 3
 ; 50
-	lda	#$FF							; 2
+	lda	#$FF		; ??					; 2
 	sta	GRP1							; 3
 ; 55
-	lda	level_colors	; load level color in advance		; 4
+;	lda	level_colors	; load level color in advance		; 4
 ; 59
-	ldx	#0		; init scanline				; 2
+	ldx	#0		; init hand visibility			; 2
 ; 61
 	stx	VBLANK		; turn on beam				; 3
 ; 64
@@ -272,47 +280,39 @@ draw_playfield:
 	; draw playfield 0/4
 	;======================
 ; 0
-;	lda	level_colors,Y						; --
+	lda	level_colors,Y						; 4
 	sta	COLUPF			; playfield color		; 3
-	lda	level_overlay_sprite,Y					; 4
-	sta	GRP1			; overlay color			; 3
-; 10
+; 7
 	lda	level_playfield0_left,Y	; playfield pattern 0		; 4
 	sta	PF0			;				; 3
 	;   has to happen by 22 (GPU 68)
-; 17
+; 14
 	lda	level_playfield1_left,Y	; playfield pattern 1		; 4
 	sta	PF1			;				; 3
 	;  has to happen by 28 (GPU 84)
-; 24
+; 21
+	lda	level_overlay_sprite,Y					; 4
+	sta	GRP1			; overlay pattern		; 3
+	; really want this to happen by 22
+	; in practice we try not to be closer than 4 so 28 is fine?
+	; we're like one cycle too late
+; 28
 	lda	level_playfield2_left,Y	; playfield pattern 2		; 4
         sta	PF2							; 3
 	;  has to happen by 38 (GPU 116)	;
-; 31
+; 35
 	lda	level_playfield0_right,Y	; left pf pattern 0	; 4
         sta	PF0				;			; 3
 	; has to happen 28-49 (GPU 84-148)
-; 38
+; 42
         lda	level_playfield1_right,Y	; left pf pattern 1	; 4
         sta	PF1				;			; 3
 	; has to happen 38-56 (GPU 116-170)
-; 45
+; 49
         lda	level_playfield2_right,Y	; left pf pattern 2	; 4
         sta	PF2				;			; 3
 	; has to happen 49-67 (GPU148-202)
-; 52
-	; activate hand sprite if necessary
-;	lda	#$f							; 2
-;	ldx	CURRENT_SCANLINE					; 3
-;	cpx	POINTER_Y						; 3
-;	bne	no_level_activate_hand					; 2/3
-;	sta	POINTER_ON						; 3
-;	jmp	done_level_activate_hand				; 3
-;no_level_activate_hand:
-;	inc	TEMP1				; nop5			; 5
-;done_level_activate_hand:
-								;===========
-								; 16 / 16
+; 56
 
 
 	lda	CURRENT_SCANLINE					; 3
@@ -325,11 +325,11 @@ done_level_activate_hand:
 								;===========
 								; 11 / 11
 
-; 63
+; 67
 
-	nop
-	nop
-	inc	TEMP1
+;	nop
+;	nop
+	inc	TEMP1		; nop5
 
 ; 72
 
@@ -381,68 +381,78 @@ level_done_pointer:
 	sta	PF2				;			; 3
 	; has to happen 50-67 (GPU148-202)
 ; 54
-
+	lda	LEVEL_BACKGROUND_COLOR2		;			; 3
+	sta	COLUBK		; set background color			; 3
+; 60
 	inc	CURRENT_SCANLINE					; 5
-; 59
+; 65
+	lda	LEVEL_BACKGROUND_COLOR		;			; 3
+; 68
 	sta	WSYNC
 
 	;===================
 	; draw playfield 2/4
 	;===================
 ; 0
+	sta	COLUBK		; set background color			; 3
+; 3
 	lda	level_playfield0_left,Y	;				; 4
 	sta	PF0			;				; 3
 	;   has to happen by 22 (GPU 68)
-; 7
+; 10
 	lda	level_playfield1_left,Y	;				; 4
         sta	PF1			;				; 3
 	;  has to happen by 28 (GPU 84)
-; 14
+; 17
 	lda	level_playfield2_left,Y	;				; 4
         sta	PF2							; 3
 	;  has to happen by 38 (GPU 116)	;
-; 21
+; 24
 
-	inc	TEMP1
-	inc	TEMP1
-	nop
-	nop
-	nop
+	inc	TEMP1		; nop5					; 5
+	nop								; 2
+	nop								; 2
 
-; 37
+; 33
 	lda	level_playfield0_right,Y	;			; 4+
 	sta	PF0				;			; 3
 	; has to happen 28-49 (GPU 84-148)
-; 44
+; 40
 	lda	level_playfield1_right,Y	;			; 4+
 	sta	PF1				;			; 3
 	; has to happen 39-56 (GPU 116-170)
-; 51
+; 47
 	lda	level_playfield2_right,Y	;			; 4+
 	sta	PF2				;			; 3
 	; has to happen 50-67 (GPU148-202)
-; 58
+; 54
+	lda	LEVEL_BACKGROUND_COLOR2		;			; 3
+	sta	COLUBK		; set background color			; 3
+; 60
 	lda	level_playfield0_left,Y	;				; 4
 	sta	WSYNC
 
 
 
 
-	;===================
-	; draw playfield 3/4
-	;===================
+	;=============================
+	; draw playfield line 3 (4/4)
+	;=============================
 ; 0
 	sta	PF0			;				; 3
-	;   has to happen by 22 (GPU 68)
 ; 3
+	;   has to happen by 22 (GPU 68)
+	lda	LEVEL_BACKGROUND_COLOR		;			; 3
+	sta	COLUBK		; reset background color		; 3
+; 9
 	lda	level_playfield1_left,Y	;				; 4
         sta	PF1			;				; 3
 	;  has to happen by 28 (GPU 84)
-; 10
+; 16
 	lda	level_playfield2_left,Y	;				; 4
         sta	PF2							; 3
 	;  has to happen by 38 (GPU 116)	;
-; 17
+; 23
 
 	;==================
 	; draw pointer
@@ -461,39 +471,35 @@ level_done_pointer2:
 								;===========
 								; 16 / 6
 
-; 33
+; 39
 
-	nop
-	nop
-
-; 37
 	lda	level_playfield0_right,Y	;			; 4+
 	sta	PF0				;			; 3
 	; has to happen 28-49 (GPU 84-148)
-; 44
+; 46
 	lda	level_playfield1_right,Y	;			; 4+
 	sta	PF1				;			; 3
 	; has to happen 39-56 (GPU 116-170)
-; 51
+; 53
 	lda	level_playfield2_right,Y	;			; 4
 	sta	PF2				;			; 3
 	; has to happen 50-67 (GPU148-202)
-; 58
+; 60
 	iny								; 2
 	lda	level_overlay_colors,Y					; 4
 	sta	COLUP1							; 3
-	lda	level_colors,Y						; 4+
-; 71
+;	lda	level_colors,Y						; 4+
+; 69
 	cpy	#48		; see if hit end			; 2
-; 73
+; 71
 	beq	done_playfield						; 2/3
-; 75
+; 73
 	jmp	draw_playfield						; 3
-; 78??
+; 76
 
 
 done_playfield:
-
+; 74
 
 
 	;===========================
