@@ -16,3 +16,5 @@ cabin_e_data_zx02:
 .incbin "cabin_e_data.zx02"
 shack_w_data_zx02:
 .incbin "shack_w_data.zx02"
+pool_n_data_zx02:
+.incbin "pool_n_data.zx02"

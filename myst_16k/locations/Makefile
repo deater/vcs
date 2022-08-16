@@ -36,11 +36,7 @@ level_locations.inc:	rom_bank0.bin rom_bank1.bin rom_bank2.bin $(CALC_ADDRESS)
 	$(CALC_ADDRESS) -a 0x1000 -s rocket_close_n_data_zx02 rom_bank2.lst >> level_locations.inc
 	$(CALC_ADDRESS) -a 0x1000 -s cabin_e_data_zx02 rom_bank2.lst >> level_locations.inc
 	$(CALC_ADDRESS) -a 0x1000 -s shack_w_data_zx02 rom_bank2.lst >> level_locations.inc
-
-
-
-
-
+	$(CALC_ADDRESS) -a 0x1000 -s pool_n_data_zx02 rom_bank2.lst >> level_locations.inc
 
 ###
 
@@ -86,7 +82,7 @@ rom_bank2.o:	rom_bank2.s \
 	red_book_close_data.zx02 blue_book_close_data.zx02 \
 	steps_s_data.zx02 clock_close_s_data.zx02 \
 	rocket_close_n_data.zx02 cabin_e_data.zx02 \
-	shack_w_data.zx02
+	shack_w_data.zx02 pool_n_data.zx02
 	ca65 -o rom_bank2.o rom_bank2.s -l rom_bank2.lst
 
 
@@ -253,11 +249,6 @@ blue_book_close_data.inc:	blue_book_close_bg.png blue_book_close_overlay.png
 	$(PNG2PF) -4 -n blue_book_close -b 0x00 blue_book_close_bg.png - > blue_book_close_data.inc
 	$(PNG2OVERLAY) -4 -o -n blue_book_close blue_book_close_overlay.png - >> blue_book_close_data.inc
 
-
-
-
-
-
 ###
 
 gear_n_data.inc:	gear_n_bg.png gear_n_overlay.png
@@ -269,6 +260,13 @@ gear_n_data.inc:	gear_n_bg.png gear_n_overlay.png
 gear_s_data.inc:	gear_s_bg.png gear_s_overlay.png
 	$(PNG2PF) -4 -n gear_s -b 0x02 gear_s_bg.png - > gear_s_data.inc
 	$(PNG2OVERLAY) -4 -o -n gear_s gear_s_overlay.png - >> gear_s_data.inc
+
+###
+
+pool_n_data.inc:	pool_n_bg.png pool_n_overlay.png
+	$(PNG2PF) -4 -n pool_n -b 0x02 pool_n_bg.png - > pool_n_data.inc
+	$(PNG2OVERLAY) -4 -o -n pool_n pool_n_overlay.png - >> pool_n_data.inc
+
 
 ###
 
@@ -578,10 +576,6 @@ blue_book_close_data.o:	blue_book_close_data.s blue_book_close_data.inc
 	ca65 -o blue_book_close_data.o blue_book_close_data.s -l blue_book_close_data.lst
 
 
-
-
-
-
 ###
 
 gear_n_data.zx02:	gear_n_data.bin
@@ -603,6 +597,18 @@ gear_s_data.bin:	gear_s_data.o
 
 gear_s_data.o:	gear_s_data.s gear_s_data.inc
 	ca65 -o gear_s_data.o gear_s_data.s -l gear_s_data.lst
+
+###
+
+pool_n_data.zx02:	pool_n_data.bin
+	$(ZX02) -f pool_n_data.bin pool_n_data.zx02
+
+pool_n_data.bin:	pool_n_data.o
+	ld65 -o pool_n_data.bin pool_n_data.o -C $(LINKER_SCRIPT)/atari2600_f000.inc
+
+pool_n_data.o:	pool_n_data.s pool_n_data.inc
+	ca65 -o pool_n_data.o pool_n_data.s -l pool_n_data.lst
+
 
 ###
 
