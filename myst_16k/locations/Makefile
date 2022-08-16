@@ -35,6 +35,8 @@ level_locations.inc:	rom_bank0.bin rom_bank1.bin rom_bank2.bin $(CALC_ADDRESS)
 	$(CALC_ADDRESS) -a 0x1000 -s clock_close_s_data_zx02 rom_bank2.lst >> level_locations.inc
 	$(CALC_ADDRESS) -a 0x1000 -s rocket_close_n_data_zx02 rom_bank2.lst >> level_locations.inc
 	$(CALC_ADDRESS) -a 0x1000 -s cabin_e_data_zx02 rom_bank2.lst >> level_locations.inc
+	$(CALC_ADDRESS) -a 0x1000 -s shack_w_data_zx02 rom_bank2.lst >> level_locations.inc
+
 
 
 
@@ -83,7 +85,8 @@ rom_bank2.o:	rom_bank2.s \
 	library_w_data.zx02 library_e_data.zx02 \
 	red_book_close_data.zx02 blue_book_close_data.zx02 \
 	steps_s_data.zx02 clock_close_s_data.zx02 \
-	rocket_close_n_data.zx02 cabin_e_data.zx02
+	rocket_close_n_data.zx02 cabin_e_data.zx02 \
+	shack_w_data.zx02
 	ca65 -o rom_bank2.o rom_bank2.s -l rom_bank2.lst
 
 
@@ -205,6 +208,13 @@ shortsteps_w_data.inc:	shortsteps_w_bg.png shortsteps_w_overlay.png
 dock_n_data.inc:	dock_n_bg.png dock_n_overlay.png
 	$(PNG2PF) -4 -n dock_n -b 0x00 dock_n_bg.png - > dock_n_data.inc
 	$(PNG2OVERLAY) -4 -o -n dock_n dock_n_overlay.png - >> dock_n_data.inc
+
+###
+
+shack_w_data.inc:	shack_w_bg.png shack_w_overlay.png
+	$(PNG2PF) -4 -n shack_w -b 0xe0 shack_w_bg.png - > shack_w_data.inc
+	$(PNG2OVERLAY) -4 -o -n shack_w shack_w_overlay.png - >> shack_w_data.inc
+
 
 ###
 
@@ -488,6 +498,18 @@ dock_n_data.bin:	dock_n_data.o
 
 dock_n_data.o:	dock_n_data.s dock_n_data.inc
 	ca65 -o dock_n_data.o dock_n_data.s -l dock_n_data.lst
+
+###
+
+shack_w_data.zx02:	shack_w_data.bin
+	$(ZX02) -f shack_w_data.bin shack_w_data.zx02
+
+shack_w_data.bin:	shack_w_data.o
+	ld65 -o shack_w_data.bin shack_w_data.o -C $(LINKER_SCRIPT)/atari2600_f000.inc
+
+shack_w_data.o:	shack_w_data.s shack_w_data.inc
+	ca65 -o shack_w_data.o shack_w_data.s -l shack_w_data.lst
+
 
 ###
 

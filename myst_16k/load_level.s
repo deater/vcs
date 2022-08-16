@@ -72,7 +72,7 @@ level_bank_lookup:
 	.byte	1			; 1 = dentist_n
 	.byte	2			; 2 = rocket_close_n
 	.byte	$FF			; 3 = pool_n
-	.byte	$FF			; 4 = shack_w
+	.byte	2			; 4 = shack_w
 	.byte	2			; 5 = cabin_e
 	.byte	2			; 6 = clock_close_s
 	.byte	1			; 7 = dock_n
@@ -109,7 +109,7 @@ level_compress_data_low:
 	.byte	<dentist_n_data_zx02			; 1
 	.byte	<rocket_close_n_data_zx02		; 2
 	.byte	$FF					; 3
-	.byte	$FF					; 4
+	.byte	<shack_w_data_zx02			; 4
 	.byte	<cabin_e_data_zx02			; 5
 	.byte	<clock_close_s_data_zx02		; 6
 	.byte	<dock_n_data_zx02			; 7
@@ -146,7 +146,7 @@ level_compress_data_high:
 	.byte	>dentist_n_data_zx02			; 1
 	.byte	>rocket_close_n_data_zx02		; 2
 	.byte	$FF					; 3
-	.byte	$FF					; 4
+	.byte	>shack_w_data_zx02			; 4
 	.byte	>cabin_e_data_zx02			; 5
 	.byte	>clock_close_s_data_zx02		; 6
 	.byte	>dock_n_data_zx02			; 7
