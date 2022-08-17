@@ -41,6 +41,7 @@ level_locations.inc:	\
 	$(CALC_ADDRESS) -a 0x1000 -s pool_n_data_zx02 rom_bank2.lst >> level_locations.inc
 	$(CALC_ADDRESS) -a 0x1000 -s shack_s_data_zx02 rom_bank3.lst >> level_locations.inc
 	$(CALC_ADDRESS) -a 0x1000 -s cabin_path_s_data_zx02 rom_bank3.lst >> level_locations.inc
+	$(CALC_ADDRESS) -a 0x1000 -s cabin_path_n_data_zx02 rom_bank3.lst >> level_locations.inc
 
 ###
 
@@ -96,7 +97,7 @@ rom_bank3.bin:	rom_bank3.o
 
 rom_bank3.o:	rom_bank3.s \
 	shack_s_data.zx02 \
-	cabin_path_s_data.zx02
+	cabin_path_s_data.zx02 cabin_path_n_data.zx02
 	ca65 -o rom_bank3.o rom_bank3.s -l rom_bank3.lst
 
 ###
@@ -110,6 +111,13 @@ cabin_e_data.inc:	cabin_e_bg.png cabin_e_overlay.png
 cabin_path_s_data.inc:	cabin_path_s_bg.png cabin_path_s_overlay.png
 	$(PNG2PF) -4 -n cabin_path_s -b 0x0 cabin_path_s_bg.png - > cabin_path_s_data.inc
 	$(PNG2OVERLAY) -4 -o -n cabin_path_s cabin_path_s_overlay.png - >> cabin_path_s_data.inc
+
+###
+
+cabin_path_n_data.inc:	cabin_path_n_bg.png cabin_path_n_overlay.png
+	$(PNG2PF) -4 -n cabin_path_n -b 0xe2 cabin_path_n_bg.png - > cabin_path_n_data.inc
+	$(PNG2OVERLAY) -4 -o -n cabin_path_n cabin_path_n_overlay.png - >> cabin_path_n_data.inc
+
 
 
 ###
@@ -326,6 +334,18 @@ cabin_path_s_data.bin:	cabin_path_s_data.o
 
 cabin_path_s_data.o:	cabin_path_s_data.s cabin_path_s_data.inc
 	ca65 -o cabin_path_s_data.o cabin_path_s_data.s -l cabin_path_s_data.lst
+
+###
+
+cabin_path_n_data.zx02:	cabin_path_n_data.bin
+	$(ZX02) -f cabin_path_n_data.bin cabin_path_n_data.zx02
+
+cabin_path_n_data.bin:	cabin_path_n_data.o
+	ld65 -o cabin_path_n_data.bin cabin_path_n_data.o -C $(LINKER_SCRIPT)/atari2600_f000.inc
+
+cabin_path_n_data.o:	cabin_path_n_data.s cabin_path_n_data.inc
+	ca65 -o cabin_path_n_data.o cabin_path_n_data.s -l cabin_path_n_data.lst
+
 
 
 ###
