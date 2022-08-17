@@ -6,7 +6,9 @@ CALC_ADDRESS = ../utils/calc_address
 
 all:	level_locations.inc
 
-level_locations.inc:	rom_bank0.bin rom_bank1.bin rom_bank2.bin $(CALC_ADDRESS)
+level_locations.inc:	\
+	rom_bank0.bin rom_bank1.bin rom_bank2.bin \
+	rom_bank3.bin $(CALC_ADDRESS)
 	$(CALC_ADDRESS) -a 0x1000 -s arrival_n_data_zx02 rom_bank0.lst > level_locations.inc
 	$(CALC_ADDRESS) -a 0x1000 -s arrival_e_data_zx02 rom_bank0.lst >> level_locations.inc
 	$(CALC_ADDRESS) -a 0x1000 -s clock_s_data_zx02 rom_bank0.lst >> level_locations.inc
@@ -37,6 +39,8 @@ level_locations.inc:	rom_bank0.bin rom_bank1.bin rom_bank2.bin $(CALC_ADDRESS)
 	$(CALC_ADDRESS) -a 0x1000 -s cabin_e_data_zx02 rom_bank2.lst >> level_locations.inc
 	$(CALC_ADDRESS) -a 0x1000 -s shack_w_data_zx02 rom_bank2.lst >> level_locations.inc
 	$(CALC_ADDRESS) -a 0x1000 -s pool_n_data_zx02 rom_bank2.lst >> level_locations.inc
+	$(CALC_ADDRESS) -a 0x1000 -s shack_s_data_zx02 rom_bank3.lst >> level_locations.inc
+
 
 ###
 
@@ -85,6 +89,14 @@ rom_bank2.o:	rom_bank2.s \
 	shack_w_data.zx02 pool_n_data.zx02
 	ca65 -o rom_bank2.o rom_bank2.s -l rom_bank2.lst
 
+###
+
+rom_bank3.bin:	rom_bank3.o
+	ld65 -o rom_bank3.bin rom_bank3.o -C $(LINKER_SCRIPT)/atari2600_1000.inc
+
+rom_bank3.o:	rom_bank3.s \
+	shack_s_data.zx02
+	ca65 -o rom_bank3.o rom_bank3.s -l rom_bank3.lst
 
 ###
 
@@ -210,6 +222,13 @@ dock_n_data.inc:	dock_n_bg.png dock_n_overlay.png
 shack_w_data.inc:	shack_w_bg.png shack_w_overlay.png
 	$(PNG2PF) -4 -n shack_w -b 0xe0 shack_w_bg.png - > shack_w_data.inc
 	$(PNG2OVERLAY) -4 -o -n shack_w shack_w_overlay.png - >> shack_w_data.inc
+
+###
+
+shack_s_data.inc:	shack_s_bg.png shack_s_overlay.png
+	$(PNG2PF) -4 -n shack_s -b 0xd0 shack_s_bg.png - > shack_s_data.inc
+	$(PNG2OVERLAY) -4 -o -n shack_s shack_s_overlay.png - >> shack_s_data.inc
+
 
 
 ###
@@ -507,6 +526,18 @@ shack_w_data.bin:	shack_w_data.o
 
 shack_w_data.o:	shack_w_data.s shack_w_data.inc
 	ca65 -o shack_w_data.o shack_w_data.s -l shack_w_data.lst
+
+###
+
+shack_s_data.zx02:	shack_s_data.bin
+	$(ZX02) -f shack_s_data.bin shack_s_data.zx02
+
+shack_s_data.bin:	shack_s_data.o
+	ld65 -o shack_s_data.bin shack_s_data.o -C $(LINKER_SCRIPT)/atari2600_f000.inc
+
+shack_s_data.o:	shack_s_data.s shack_s_data.inc
+	ca65 -o shack_s_data.o shack_s_data.s -l shack_s_data.lst
+
 
 
 ###

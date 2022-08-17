@@ -101,6 +101,7 @@ level_bank_lookup:
 	.byte	2			; 28 = library_w
 	.byte	2			; 29 = library_e
 	.byte	2			; 30 = steps_s
+	.byte	3			; 31 = shack_s
 
 
 
@@ -138,6 +139,7 @@ level_compress_data_low:
 	.byte	<library_w_data_zx02
 	.byte	<library_e_data_zx02
 	.byte	<steps_s_data_zx02
+	.byte	<shack_s_data_zx02
 
 
 
@@ -175,4 +177,5 @@ level_compress_data_high:
 	.byte	>library_w_data_zx02
 	.byte	>library_e_data_zx02
 	.byte	>steps_s_data_zx02
+	.byte	>shack_s_data_zx02
 
