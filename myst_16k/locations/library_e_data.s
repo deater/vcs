@@ -10,7 +10,7 @@
 .byte $00,$00			; YMAX/YMIN of grab area
 .byte LOCATION_LIBRARY_N	; left destination
 .byte LOCATION_BLUE_BOOK_CLOSE	; center destination
-.byte LOCATION_LIBRARY_S	; right destination
+.byte LOCATION_LIBRARY_SE	; right destination
 .byte $00,$00			; unused
 
 .include "library_e_data.inc"

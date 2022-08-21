@@ -1,4 +1,4 @@
-; LOCATION LIBRARY_S data
+; LOCATION LIBRARY_SW data
 
 .include "../locations.inc"
 
@@ -8,9 +8,9 @@
 .byte 0,$00			; coarse/fine of missile0 (vertical line)
 .byte $00,$00			; XMAX/XMIN of grab area
 .byte $00,$00			; YMAX/YMIN of grab area
-.byte LOCATION_LIBRARY_SE	; left destination
-.byte LOCATION_HILLTOP_S	; center destination
-.byte LOCATION_LIBRARY_SW	; right destination
+.byte LOCATION_LIBRARY_S	; left destination
+.byte $FF			; center destination
+.byte LOCATION_LIBRARY_W	; right destination
 .byte $00,$00			; unused
 
-.include "library_s_data.inc"
+.include "library_sw_data.inc"

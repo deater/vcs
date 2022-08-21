@@ -42,6 +42,9 @@ level_locations.inc:	\
 	$(CALC_ADDRESS) -a 0x1000 -s shack_s_data_zx02 rom_bank3.lst >> level_locations.inc
 	$(CALC_ADDRESS) -a 0x1000 -s cabin_path_s_data_zx02 rom_bank3.lst >> level_locations.inc
 	$(CALC_ADDRESS) -a 0x1000 -s cabin_path_n_data_zx02 rom_bank3.lst >> level_locations.inc
+	$(CALC_ADDRESS) -a 0x1000 -s library_se_data_zx02 rom_bank3.lst >> level_locations.inc
+	$(CALC_ADDRESS) -a 0x1000 -s library_sw_data_zx02 rom_bank3.lst >> level_locations.inc
+
 
 ###
 
@@ -97,7 +100,8 @@ rom_bank3.bin:	rom_bank3.o
 
 rom_bank3.o:	rom_bank3.s \
 	shack_s_data.zx02 \
-	cabin_path_s_data.zx02 cabin_path_n_data.zx02
+	cabin_path_s_data.zx02 cabin_path_n_data.zx02 \
+	library_se_data.zx02 library_sw_data.zx02
 	ca65 -o rom_bank3.o rom_bank3.s -l rom_bank3.lst
 
 ###
@@ -258,6 +262,18 @@ library_n_data.inc:	library_n_bg.png library_n_overlay.png
 library_s_data.inc:	library_s_bg.png library_s_overlay.png
 	$(PNG2PF) -4 -n library_s -b 0x00 library_s_bg.png - > library_s_data.inc
 	$(PNG2OVERLAY) -4 -o -n library_s library_s_overlay.png - >> library_s_data.inc
+
+###
+
+library_sw_data.inc:	library_sw_bg.png library_sw_overlay.png
+	$(PNG2PF) -4 -n library_sw -b 0x00 library_sw_bg.png - > library_sw_data.inc
+	$(PNG2OVERLAY) -4 -o -n library_sw library_sw_overlay.png - >> library_sw_data.inc
+
+###
+
+library_se_data.inc:	library_se_bg.png library_se_overlay.png
+	$(PNG2PF) -4 -n library_se -b 0x00 library_se_bg.png - > library_se_data.inc
+	$(PNG2OVERLAY) -4 -o -n library_se library_se_overlay.png - >> library_se_data.inc
 
 ###
 
@@ -601,6 +617,29 @@ library_s_data.bin:	library_s_data.o
 
 library_s_data.o:	library_s_data.s library_s_data.inc
 	ca65 -o library_s_data.o library_s_data.s -l library_s_data.lst
+
+###
+
+library_se_data.zx02:	library_se_data.bin
+	$(ZX02) -f library_se_data.bin library_se_data.zx02
+
+library_se_data.bin:	library_se_data.o
+	ld65 -o library_se_data.bin library_se_data.o -C $(LINKER_SCRIPT)/atari2600_f000.inc
+
+library_se_data.o:	library_se_data.s library_se_data.inc
+	ca65 -o library_se_data.o library_se_data.s -l library_se_data.lst
+
+###
+
+library_sw_data.zx02:	library_sw_data.bin
+	$(ZX02) -f library_sw_data.bin library_sw_data.zx02
+
+library_sw_data.bin:	library_sw_data.o
+	ld65 -o library_sw_data.bin library_sw_data.o -C $(LINKER_SCRIPT)/atari2600_f000.inc
+
+library_sw_data.o:	library_sw_data.s library_sw_data.inc
+	ca65 -o library_sw_data.o library_sw_data.s -l library_sw_data.lst
+
 
 ###
 
