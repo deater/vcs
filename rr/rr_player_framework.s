@@ -92,9 +92,6 @@ player_time_max         = $AB
 ; Start of code
 ; =====================================================================
 
-;        SEG     Bank0
-;       ORG     $f000
-
 
 ; =====================================================================
 ; Initialize music.
@@ -147,27 +144,28 @@ waitForIntim:
 
 VBlank:
 
-        lda #%1110
+	lda	#%1110
 vsyncLoop:
-        sta WSYNC
-        sta VSYNC
-        lsr
-        bne vsyncLoop
-        lda #2
-        sta VBLANK
-        lda #TIM_VBLANK
-        sta TIM64T
+	sta	WSYNC
+	sta	VSYNC
+	lsr
+	bne vsyncLoop
+
+	lda	#2
+	sta	VBLANK
+	lda	#TIM_VBLANK
+	sta	TIM64T
 
         ; Do VBlank stuff
 .include "rr_player.s"
 
-        ; Measure player worst case timing
-        lda #TIM_VBLANK
-        sec
-        sbc INTIM
-        cmp player_time_max
-        bcc noNewMax
-        sta player_time_max
+	; Measure player worst case timing
+	lda	#TIM_VBLANK
+	sec
+	sbc	INTIM
+	cmp	player_time_max
+	bcc	noNewMax
+	sta	player_time_max
 noNewMax:
 
 
@@ -182,17 +180,17 @@ waitForVBlank:
 ; Kernel
 ; ---------------------------------------------------------------------
 
-Kernel: ;  SUBROUTINE
-        lda #TIM_KERNEL
-        sta T1024T
+Kernel:
+        lda	#TIM_KERNEL
+        sta	T1024T
 
         ; Do kernel stuff
 
 waitForIntim2:
-        lda INTIM
-        bne waitForIntim2
+        lda	INTIM
+	bne	waitForIntim2
 
-        jmp MainLoop
+	jmp	MainLoop
 
 
 ; =====================================================================
@@ -200,14 +198,3 @@ waitForIntim2:
 ; =====================================================================
 
 .include "rr_trackdata.s"
-
-
-; =====================================================================
-; Vectors
-; =====================================================================
-
- ;       echo "ROM left: ", ($fffc - *)
-
-  ;      ORG             $fffc
-   ;    .word   Start
-   ;     .word   Start
