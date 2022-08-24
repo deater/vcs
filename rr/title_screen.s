@@ -166,7 +166,7 @@ done_inx:
                                                                 ; 11/11
 
 ; 71
-	cpy	#(120)							; 2
+	cpy	#(100)							; 2
 	bne	title_loop						; 2/3
 
 ; 76
@@ -230,7 +230,7 @@ done_loop:
 	sta	VDELP1							; 3
 ; 47
 	; number of lines to draw
-	ldx	#48							; 2
+	ldx	#80							; 2
 	stx	TEMP2							; 3
 ; 52
 	sta	WSYNC							; 3
@@ -314,7 +314,7 @@ title_spriteloop:
 	sta	WSYNC
 
 	;===================================
-	; scanline 173?
+	; scanline 186?
 	;===================================
 	; check for button or RESET
 	;===================================
@@ -377,7 +377,7 @@ done_check_input:
 no_rotate_color:
 ; 42 / 71
 
-	ldx     #17
+	ldx     #5
 ; 45 / 73
 endtitle_loop:
         sta     WSYNC

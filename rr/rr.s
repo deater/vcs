@@ -41,6 +41,8 @@ clear_loop:
 
 .include "game_data.inc"
 
+.include "rr_trackdata.s"
+
 .segment "IRQ_VECTORS"
 	.word rr	; NMI
 	.word rr	; RESET
