@@ -4,14 +4,11 @@
 
 ; zero page addresses
 
-SCANLINE		=	$86
-FRAME_COUNTER		=	$87
-TEMP1			=	$90
-TEMP2			=	$91
+.include "zp.inc"
 
 
 
-start:
+rr:
 	cld		; clear decimal mode
 
 	ldx	#0
@@ -24,13 +21,29 @@ clear_loop:
 	txs	; point stack to $1FF (mirrored at top of zero page)
 
 
+	;=====================
+	; show title
+
+	jsr	do_title
+
+	;=====================
+	; show fake game
+
+	;=====================
+	; play music
+
+
 .include "rr_player_framework.s"
 
+.include "title_screen.s"
 
+.include "common_routines.s"
+
+.include "game_data.inc"
 
 .segment "IRQ_VECTORS"
-	.word start	; NMI
-	.word start	; RESET
-	.word start	; IRQ
+	.word rr	; NMI
+	.word rr	; RESET
+	.word rr	; IRQ
 
 

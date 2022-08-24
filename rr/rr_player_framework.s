@@ -62,32 +62,6 @@ TT_USE_FUNKTEMPO        = 0
 ; 0: +2 bytes
 TT_STARTS_WITH_NOTES    = 0
 
-
-; =====================================================================
-; Permanent variables. These are states needed by the player.
-; =====================================================================
-tt_timer                = $80    ; current music timer value
-tt_cur_pat_index_c0     = $81    ; current pattern index into tt_SequenceTable
-tt_cur_pat_index_c1     = $82
-tt_cur_note_index_c0    = $83    ; note index into current pattern
-tt_cur_note_index_c1    = $84
-tt_envelope_index_c0    = $85   ; index into ADSR envelope
-tt_envelope_index_c1    = $86
-tt_cur_ins_c0           = $87   ; current instrument
-tt_cur_ins_c1           = $88
-
-; =====================================================================
-; Temporary variables. These will be overwritten during a call to the
-; player routine, but can be used between calls for other things.
-; =====================================================================
-tt_ptr                  = $89
-tt_ptr2			= $8A
-
-
-; test
-player_time_max         = $AB
-
-
 ; =====================================================================
 ; Start of code
 ; =====================================================================
