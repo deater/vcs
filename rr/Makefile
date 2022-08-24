@@ -9,7 +9,8 @@ rr.bin:	rr.o
 
 rr.o:	rr.s \
 	game_data.inc \
-	title_screen.s common_routines.s rr_player_framework.s
+	title_screen.s common_routines.s rr_scene.s \
+	rr_player.s rr_trackdata.s
 	ca65 -o rr.o rr.s -l rr.lst
 
 ###

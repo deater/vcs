@@ -30,10 +30,13 @@ clear_loop:
 	; show fake game
 
 	;=====================
-	; play music
+	; end with rr scene
+
+.include "rr_scene.s"
 
 
-.include "rr_player_framework.s"
+	;=====================
+	; other includes
 
 .include "title_screen.s"
 
