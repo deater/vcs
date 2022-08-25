@@ -74,14 +74,78 @@ wait_for_vblank:
 
 	; in theory we are 10 scanlines in, need to delay 27 more
 
-	ldx	#27
+	;=======================
+	; wait the rest
+	;=======================
+
+	ldx	#26							; 2
 le_vblank_loop:
-	sta     WSYNC
+	sta     WSYNC							; 3
+	dex								; 2
+	bne	le_vblank_loop						; 2/3
+
+
+	;=========================
+	; VBLANK scanline 36
+	;=========================
+; 5
+	inc	FRAME							; 5
+; 10
+
+	;==========================================
+	; set up sprite0 to be at proper X position
+	;==========================================
+
+	ldx	#21
+p0_pos_loop:
 	dex
-	bne	le_vblank_loop
+	bne	p0_pos_loop
+
+	sta	RESP0
+	sta	RESP1
+
+	lda	#$0
+	sta	HMP0
+	lda	#$10
+	sta	HMP1
+
+	sta	WSYNC
+	sta	HMOVE
+
+	;=================================
+	; VBLANK scanline 37
+	;=================================
 
 
-	; one extra, for luck?  Not sure where my math is off
+
+;
+;	lda     #CTRLPF_REF		; reflect playfield		; 2
+;	sta     CTRLPF							; 3
+;
+
+	lda	#0
+	sta	VDELP0
+	sta	VDELP1		; turn off delay
+
+
+	lda	#NUSIZ_QUAD_SIZE|NUSIZ_MISSILE_WIDTH_8			; 2
+	sta	NUSIZ0							; 3
+	lda	#NUSIZ_QUAD_SIZE|NUSIZ_MISSILE_WIDTH_8			; 2
+	sta	NUSIZ1							; 3
+
+        lda	#6			; bg, light grey		; 2
+        sta	COLUBK							; 3
+
+	lda	#2							; 2
+	sta	COLUPF			; fg, dark grey			; 3
+
+;
+	lda	#0							; 2
+	sta	VBLANK                  ; turn on beam			; 3
+
+	sta	WSYNC							; 3
+
+
 	sta	WSYNC
 
 
@@ -92,14 +156,186 @@ le_vblank_loop:
 	;=========================
 	; 192 cycles
 
-	ldx	#192
+	ldy	#0
+
 kernel_loop:
+
+	;==========================
+	; scanline 0 (1/4)
+	;==========================
+
+	lda	#0		; always 0				; 2
+	sta	PF0							; 3
+	; has to happen by 22 (GPU 68)
+; 5
+	; also always 0
+	sta	PF1							; 3
+	; has to happen by 28 (GPU 84)
+; 8
+	lda	frame3_playfield2_left,Y				; 4
+	sta	PF2							; 3
+	; has to happen by 38 (GPU 116)
+; 15
+
+	lda	frame3_1_overlay_sprite,Y				; 4
+	sta	GRP0							; 3
+; 22
+	lda	frame3_1_overlay_colors,Y				; 4
+	sta	COLUP0							; 3
+; 29
+
+	lda	frame3_playfield0_right,Y				; 4
+	sta	PF0							; 3
+	; has to happen 28-49 (GPU 84-148)
+; 36
+	lda	frame3_playfield1_right,Y				; 4
+	sta	PF1							; 3
+	; has to happen 39-56 (GPU 116-170)
+; 43
+	lda	frame3_playfield2_right,Y				; 4
+	sta	PF2							; 3
+	; has to happen 50-67 (GPU 148-202)
+; 50
+
+	lda	frame3_2_overlay_sprite,Y				; 4
+	sta	GRP1							; 3
+; 57
+	lda	frame3_2_overlay_colors,Y				; 4
+	sta	COLUP1							; 3
+; 64
 	sta	WSYNC
-	dex
-	bne	kernel_loop
+
+	;==========================
+	; scanline 1 (2/4)
+	;==========================
+
+	lda	#0		; always 0				; 2
+	sta	PF0							; 3
+	; has to happen by 22 (GPU 68)
+; 5
+	; also always 0
+	sta	PF1							; 3
+	; has to happen by 28 (GPU 84)
+; 8
+	lda	frame3_playfield2_left,Y				; 4
+	sta	PF2							; 3
+	; has to happen by 38 (GPU 116)
+; 15
+
+	lda	frame3_1_overlay_sprite,Y				; 4
+	sta	GRP0							; 3
+; 22
+	lda	frame3_1_overlay_colors,Y				; 4
+	sta	COLUP0							; 3
+; 29
+
+	lda	frame3_playfield0_right,Y				; 4
+	sta	PF0							; 3
+	; has to happen 28-49 (GPU 84-148)
+; 36
+	lda	frame3_playfield1_right,Y				; 4
+	sta	PF1							; 3
+	; has to happen 39-56 (GPU 116-170)
+; 43
+	lda	frame3_playfield2_right,Y				; 4
+	sta	PF2							; 3
+	; has to happen 50-67 (GPU 148-202)
+; 50
 
 
+	sta	WSYNC
 
+	;==========================
+	; scanline 2 (3/4)
+	;==========================
+
+	lda	#0		; always 0				; 2
+	sta	PF0							; 3
+	; has to happen by 22 (GPU 68)
+; 5
+	; also always 0
+	sta	PF1							; 3
+	; has to happen by 28 (GPU 84)
+; 8
+	lda	frame3_playfield2_left,Y				; 4
+	sta	PF2							; 3
+	; has to happen by 38 (GPU 116)
+; 15
+
+	lda	frame3_1_overlay_sprite,Y				; 4
+	sta	GRP0							; 3
+; 22
+	lda	frame3_1_overlay_colors,Y				; 4
+	sta	COLUP0							; 3
+; 29
+
+	lda	frame3_playfield0_right,Y				; 4
+	sta	PF0							; 3
+	; has to happen 28-49 (GPU 84-148)
+; 36
+	lda	frame3_playfield1_right,Y				; 4
+	sta	PF1							; 3
+	; has to happen 39-56 (GPU 116-170)
+; 43
+	lda	frame3_playfield2_right,Y				; 4
+	sta	PF2							; 3
+	; has to happen 50-67 (GPU 148-202)
+; 50
+
+	sta	WSYNC
+
+
+	;==========================
+	; scanline 3 (4/4)
+	;==========================
+
+	lda	#0		; always 0				; 2
+	sta	PF0							; 3
+	; has to happen by 22 (GPU 68)
+; 5
+	; also always 0
+	sta	PF1							; 3
+	; has to happen by 28 (GPU 84)
+; 8
+	lda	frame3_playfield2_left,Y				; 4
+	sta	PF2							; 3
+	; has to happen by 38 (GPU 116)
+; 15
+
+	lda	frame3_1_overlay_sprite,Y				; 4
+	sta	GRP0							; 3
+; 22
+	lda	frame3_1_overlay_colors,Y				; 4
+	sta	COLUP0							; 3
+; 29
+
+	lda	frame3_playfield0_right,Y				; 4
+	sta	PF0							; 3
+	; has to happen 28-49 (GPU 84-148)
+; 36
+	lda	frame3_playfield1_right,Y				; 4
+	sta	PF1							; 3
+	; has to happen 39-56 (GPU 116-170)
+; 43
+	lda	frame3_playfield2_right,Y				; 4
+	sta	PF2							; 3
+	; has to happen 50-67 (GPU 148-202)
+; 50
+
+	inc	TEMP1
+	inc	TEMP1
+	inc	TEMP1
+	nop
+
+; 67
+	iny								; 2
+	cpy	#48							; 2
+	beq	done_kernel						; 2/3
+	jmp	kernel_loop						; 3
+
+; 76
+
+done_kernel:
 	;===========================
 	;===========================
 	; overscan (30 cycles)
@@ -111,3 +347,5 @@ kernel_loop:
 
 	jmp	rr_frame
 
+
+.include "rr3_graphics.inc"
