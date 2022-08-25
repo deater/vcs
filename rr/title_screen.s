@@ -230,7 +230,7 @@ done_loop:
 	sta	VDELP1							; 3
 ; 47
 	; number of lines to draw
-	ldx	#80							; 2
+	ldx	#79							; 2
 	stx	TEMP2							; 3
 ; 52
 	sta	WSYNC							; 3
@@ -393,7 +393,7 @@ endtitle_loop:
 	; overscan for 30 scanlines
 	;==========================
 
-	ldx	#30
+	ldx	#31
 	jsr	common_overscan
 
 ; 10

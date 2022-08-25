@@ -78,7 +78,7 @@ wait_for_vblank:
 	; wait the rest
 	;=======================
 
-	ldx	#26							; 2
+	ldx	#23							; 2
 le_vblank_loop:
 	sta     WSYNC							; 3
 	dex								; 2
@@ -86,17 +86,36 @@ le_vblank_loop:
 
 
 	;=========================
+	; VBLANK scanline 33+34+35
+	;=========================
+; 4
+	ldx	#15							; 2
+copy_scene_data_loop:
+	lda	scene_data,X						; 4+
+	sta	LPF2_L,X						; 4
+	dex								; 2
+	bpl	copy_scene_data_loop					; 2/3
+							;=====================
+							; 2+(16*13)-1=209
+; 213
+
+	sta	WSYNC
+
+	;=========================
 	; VBLANK scanline 36
 	;=========================
-; 5
+; 0
+	nop
+	nop
+; 4
 	inc	FRAME							; 5
-; 10
+; 9
 
 	;==========================================
 	; set up sprite0 to be at proper X position
 	;==========================================
 
-	ldx	#21
+	ldx	#6
 p0_pos_loop:
 	dex
 	bne	p0_pos_loop
@@ -104,9 +123,9 @@ p0_pos_loop:
 	sta	RESP0
 	sta	RESP1
 
-	lda	#$0
+	lda	#$30
 	sta	HMP0
-	lda	#$10
+	lda	#$40
 	sta	HMP1
 
 	sta	WSYNC
@@ -115,8 +134,6 @@ p0_pos_loop:
 	;=================================
 	; VBLANK scanline 37
 	;=================================
-
-
 
 ;
 ;	lda     #CTRLPF_REF		; reflect playfield		; 2
@@ -172,36 +189,31 @@ kernel_loop:
 	sta	PF1							; 3
 	; has to happen by 28 (GPU 84)
 ; 8
-	lda	frame3_playfield2_left,Y				; 4
+	lda	(LPF2_L),Y						; 5
 	sta	PF2							; 3
 	; has to happen by 38 (GPU 116)
-; 15
+; 16
 
-	lda	frame3_1_overlay_sprite,Y				; 4
+	lda	(OV1SP_L),Y						; 5
 	sta	GRP0							; 3
-; 22
-	lda	frame3_1_overlay_colors,Y				; 4
+; 24
+	lda	(OV1C_L),Y						; 5
 	sta	COLUP0							; 3
-; 29
-
-	lda	frame3_playfield0_right,Y				; 4
+; 32
+	lda	(RPF0_L),Y						; 5
 	sta	PF0							; 3
 	; has to happen 28-49 (GPU 84-148)
-; 36
-	lda	frame3_playfield1_right,Y				; 4
+; 40
+	lda	(RPF1_L),Y						; 5
 	sta	PF1							; 3
 	; has to happen 39-56 (GPU 116-170)
-; 43
-	lda	frame3_playfield2_right,Y				; 4
+; 48
+	lda	(RPF2_L),Y						; 5
 	sta	PF2							; 3
 	; has to happen 50-67 (GPU 148-202)
-; 50
+; 56
 
-	lda	frame3_2_overlay_sprite,Y				; 4
-	sta	GRP1							; 3
-; 57
-	lda	frame3_2_overlay_colors,Y				; 4
-	sta	COLUP1							; 3
+
 ; 64
 	sta	WSYNC
 
@@ -217,30 +229,30 @@ kernel_loop:
 	sta	PF1							; 3
 	; has to happen by 28 (GPU 84)
 ; 8
-	lda	frame3_playfield2_left,Y				; 4
+	lda	(LPF2_L),Y						; 5
 	sta	PF2							; 3
 	; has to happen by 38 (GPU 116)
-; 15
+; 16
 
-	lda	frame3_1_overlay_sprite,Y				; 4
+	lda	frame3_1_overlay_sprite,Y				; 5
 	sta	GRP0							; 3
-; 22
-	lda	frame3_1_overlay_colors,Y				; 4
+; 24
+	lda	frame3_1_overlay_colors,Y				; 5
 	sta	COLUP0							; 3
-; 29
+; 32
 
-	lda	frame3_playfield0_right,Y				; 4
+	lda	(RPF0_L),Y						; 5
 	sta	PF0							; 3
 	; has to happen 28-49 (GPU 84-148)
-; 36
-	lda	frame3_playfield1_right,Y				; 4
+; 40
+	lda	(RPF1_L),Y						; 5
 	sta	PF1							; 3
 	; has to happen 39-56 (GPU 116-170)
-; 43
-	lda	frame3_playfield2_right,Y				; 4
+; 48
+	lda	(RPF2_L),Y						; 5
 	sta	PF2							; 3
 	; has to happen 50-67 (GPU 148-202)
-; 50
+; 56
 
 
 	sta	WSYNC
@@ -257,30 +269,30 @@ kernel_loop:
 	sta	PF1							; 3
 	; has to happen by 28 (GPU 84)
 ; 8
-	lda	frame3_playfield2_left,Y				; 4
+	lda	(LPF2_L),Y						; 5
 	sta	PF2							; 3
 	; has to happen by 38 (GPU 116)
-; 15
+; 16
 
-	lda	frame3_1_overlay_sprite,Y				; 4
+	lda	frame3_1_overlay_sprite,Y				; 5
 	sta	GRP0							; 3
-; 22
-	lda	frame3_1_overlay_colors,Y				; 4
+; 24
+	lda	frame3_1_overlay_colors,Y				; 5
 	sta	COLUP0							; 3
-; 29
+; 32
 
-	lda	frame3_playfield0_right,Y				; 4
+	lda	(RPF0_L),Y						; 5
 	sta	PF0							; 3
 	; has to happen 28-49 (GPU 84-148)
-; 36
-	lda	frame3_playfield1_right,Y				; 4
+; 40
+	lda	(RPF1_L),Y						; 5
 	sta	PF1							; 3
 	; has to happen 39-56 (GPU 116-170)
-; 43
-	lda	frame3_playfield2_right,Y				; 4
+; 48
+	lda	(RPF2_L),Y						; 5
 	sta	PF2							; 3
 	; has to happen 50-67 (GPU 148-202)
-; 50
+; 56
 
 	sta	WSYNC
 
@@ -297,55 +309,99 @@ kernel_loop:
 	sta	PF1							; 3
 	; has to happen by 28 (GPU 84)
 ; 8
-	lda	frame3_playfield2_left,Y				; 4
+	lda	(LPF2_L),Y						; 5
 	sta	PF2							; 3
 	; has to happen by 38 (GPU 116)
-; 15
+; 16
 
-	lda	frame3_1_overlay_sprite,Y				; 4
+	lda	frame3_1_overlay_sprite,Y				; 5
 	sta	GRP0							; 3
-; 22
-	lda	frame3_1_overlay_colors,Y				; 4
+; 24
+	lda	frame3_1_overlay_colors,Y				; 5
 	sta	COLUP0							; 3
-; 29
+; 32
 
-	lda	frame3_playfield0_right,Y				; 4
+	lda	(RPF0_L),Y						; 5
 	sta	PF0							; 3
 	; has to happen 28-49 (GPU 84-148)
-; 36
-	lda	frame3_playfield1_right,Y				; 4
+; 40
+	lda	(RPF1_L),Y						; 5
 	sta	PF1							; 3
 	; has to happen 39-56 (GPU 116-170)
-; 43
-	lda	frame3_playfield2_right,Y				; 4
+; 48
+	lda	(RPF2_L),Y						; 5
 	sta	PF2							; 3
 	; has to happen 50-67 (GPU 148-202)
-; 50
+; 56
 
-	inc	TEMP1
-	inc	TEMP1
-	inc	TEMP1
-	nop
-
-; 67
 	iny								; 2
+; 58
+	lda	(OV2SP_L),Y						; 5
+	sta	GRP1							; 3
+; 64
+	lda	(OV2C_L),Y						; 5
+	sta	COLUP1							; 3
+; 72
+;!!!!!
+; 67
 	cpy	#48							; 2
 	beq	done_kernel						; 2/3
 	jmp	kernel_loop						; 3
-
 ; 76
 
 done_kernel:
+
+; 72
+
 	;===========================
 	;===========================
 	; overscan (30 cycles)
 	;===========================
 	;===========================
 
-	ldx     #30
-	jsr	common_overscan
+	; turn off everything
+	lda	#0							; 2
+	sta	GRP0							; 3
+; 1
+	lda	#2		; we do this in common
+	sta	VSYNC		; but want it to happen in hblank
+
+
+	lda	#0
+	sta	GRP1							; 3
+	sta	PF0							; 3
+	sta	PF1							; 3
+	sta	PF2							; 3
+; 13
+
+	ldx     #30							; 2
+	jsr	common_overscan						; 6
 
 	jmp	rr_frame
 
 
 .include "rr3_graphics.inc"
+
+
+scene_data:
+	.byte <frame3_playfield2_left
+	.byte >frame3_playfield2_left
+	.byte <frame3_playfield0_right
+	.byte >frame3_playfield0_right
+	.byte <frame3_playfield1_right
+	.byte >frame3_playfield1_right
+	.byte <frame3_playfield2_right
+	.byte >frame3_playfield2_right
+	.byte <frame3_1_overlay_sprite
+	.byte >frame3_1_overlay_sprite
+	.byte <frame3_1_overlay_colors
+	.byte >frame3_1_overlay_colors
+	.byte <frame3_2_overlay_sprite
+	.byte >frame3_2_overlay_sprite
+	.byte <frame3_2_overlay_colors
+	.byte >frame3_2_overlay_colors
+
+
+
+
+
