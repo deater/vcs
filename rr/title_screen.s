@@ -7,10 +7,6 @@
 do_title:
 	; the init code sets everything to 0
 
-;	lda	#0							; 2
-;	sta	FRAME							; 3
-;	sta	BACKGROUND_COLOR					; 3
-
 	lda	#$28							; 2
 	sta	BASE_TITLE_COLOR					; 3
 

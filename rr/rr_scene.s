@@ -475,8 +475,8 @@ scene_data6:
 	.byte >frame6_1_overlay_sprite
 	.byte <frame6_1_overlay_colors
 	.byte >frame6_1_overlay_colors
-	.byte <frame4_2_overlay_sprite
-	.byte >frame4_2_overlay_sprite
+	.byte <frame6_2_overlay_sprite
+	.byte >frame6_2_overlay_sprite
 	.byte <frame6_2_overlay_colors
 	.byte >frame6_2_overlay_colors
 
