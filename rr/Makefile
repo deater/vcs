@@ -11,7 +11,7 @@ rr.o:	rr.s \
 	game_data.inc zp.inc \
 	title_screen.s common_routines.s rr_scene.s \
 	rr3_graphics.inc rr4_graphics.inc \
-	rr5_graphics.inc \
+	rr5_graphics.inc rr6_graphics.inc \
 	rr_player.s rr_trackdata.s
 	ca65 -o rr.o rr.s -l rr.lst
 
