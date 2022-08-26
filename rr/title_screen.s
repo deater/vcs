@@ -405,4 +405,6 @@ endtitle_loop:
 
 done_title:
 ; 16
+
+delay_12_cycles:
 	rts

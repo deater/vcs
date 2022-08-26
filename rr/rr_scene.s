@@ -59,13 +59,13 @@ rr_frame:
 .include "rr_player.s"
 
 	; Measure player worst case timing
-	lda	#12		; TIM_VBLANK
-	sec
-	sbc	INTIM
-	cmp	player_time_max
-	bcc	no_new_max
-	sta	player_time_max
-no_new_max:
+;	lda	#12		; TIM_VBLANK
+;	sec
+;	sbc	INTIM
+;	cmp	player_time_max
+;	bcc	no_new_max
+;	sta	player_time_max
+;no_new_max:
 
 
 wait_for_vblank:
@@ -128,8 +128,6 @@ scene_data_smc:
 ; 4
 	inc	FRAME							; 5
 ; 9
-
-
 
 	ldx	#6
 p0_pos_loop:
@@ -219,7 +217,7 @@ kernel_loop:
 	sta	COLUP0							; 3
 ; 32
 	lda	(RPF0_L),Y						; 5
-	tax								; 2
+	tax				; save for later		; 2
 	sta	PF0							; 3
 	; has to happen 28-49 (GPU 84-148)
 ; 42
@@ -229,7 +227,7 @@ kernel_loop:
 ; 50
 	lda	(RPF2_L),Y						; 5
 	sta	PF2							; 3
-	sta	PF_TEMP							; 3
+	sta	PF_TEMP			; save for later		; 3
 	; has to happen 50-67 (GPU 148-202)
 ; 61
 
@@ -253,17 +251,15 @@ kernel_loop:
 	; has to happen by 38 (GPU 116)
 ; 16
 
-	inc	TEMP1
-	inc	TEMP1
-	nop
-	nop
-	nop
+;	inc	TEMP1
+;	inc	TEMP1
+;	nop
 
-;	lda	frame3_1_overlay_sprite,Y				; 5
-;	sta	GRP0							; 3
-; 24
-;	lda	frame3_1_overlay_colors,Y				; 5
-;	sta	COLUP0							; 3
+	jsr	delay_12_cycles						; 12
+	nop								; 2
+	nop								; 2
+
+
 ; 32
 
 ;	lda	(RPF0_L),Y						; -
@@ -300,18 +296,10 @@ kernel_loop:
 	; has to happen by 38 (GPU 116)
 ; 16
 
-	inc	TEMP1
-	inc	TEMP1
-	nop
-	nop
-	nop
+	jsr	delay_12_cycles						; 12
+	nop								; 2
+	nop								; 2
 
-
-;	lda	frame3_1_overlay_sprite,Y				; 5
-;	sta	GRP0							; 3
-; 24
-;	lda	frame3_1_overlay_colors,Y				; 5
-;	sta	COLUP0							; 3
 ; 32
 
 ;	lda	(RPF0_L),Y						; -
@@ -348,18 +336,10 @@ kernel_loop:
 	; has to happen by 38 (GPU 116)
 ; 16
 
-	inc	TEMP1
-	inc	TEMP1
-	nop
-	nop
-	nop
+	jsr	delay_12_cycles						; 12
+	nop								; 2
+	nop								; 2
 
-
-;	lda	frame3_1_overlay_sprite,Y				; 5
-;	sta	GRP0							; 3
-; 24
-;	lda	frame3_1_overlay_colors,Y				; 5
-;	sta	COLUP0							; 3
 ; 32
 
 ;	lda	(RPF0_L),Y						; -
