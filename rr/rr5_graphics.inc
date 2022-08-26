@@ -40,8 +40,6 @@ frame5_1_overlay_colors:
 	.byte $0A,$0A,$0A,$0A,$0A,$0A,$0A,$0A
 	.byte $0A,$0A,$0A,$48,$4A,$48,$48,$48
 
-.align $100
-
 frame5_1_overlay_sprite:
 	.byte $00,$00,$00,$00,$08,$18,$15,$19
 	.byte $0F,$11,$11,$11,$1B,$25,$39,$3D

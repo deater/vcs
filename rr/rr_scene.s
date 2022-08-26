@@ -423,7 +423,6 @@ done_kernel:
 scene_offsets:
 	.byte	15,31,47,63,63,47,31,15
 
-.align $100
 scene_data:
 
 scene_data3:
@@ -462,7 +461,7 @@ scene_data4:
 	.byte <frame4_2_overlay_colors
 	.byte >frame4_2_overlay_colors
 
-scene_data32:
+scene_data5:
 	.byte <frame3_playfield2_left
 	.byte >frame3_playfield2_left
 	.byte <frame3_playfield0_right
@@ -480,7 +479,7 @@ scene_data32:
 	.byte <frame3_2_overlay_colors
 	.byte >frame3_2_overlay_colors
 
-scene_data42:
+scene_data6:
 	.byte <frame4_playfield2_left
 	.byte >frame4_playfield2_left
 	.byte <frame4_playfield0_right
@@ -497,47 +496,6 @@ scene_data42:
 	.byte >frame4_2_overlay_sprite
 	.byte <frame4_2_overlay_colors
 	.byte >frame4_2_overlay_colors
-
-
-.if 0
-scene_data6:
-	.byte <frame6_playfield2_left
-	.byte >frame6_playfield2_left
-	.byte <frame6_playfield0_right
-	.byte >frame6_playfield0_right
-	.byte <frame6_playfield1_right
-	.byte >frame6_playfield1_right
-	.byte <frame6_playfield2_right
-	.byte >frame6_playfield2_right
-	.byte <frame6_1_overlay_sprite
-	.byte >frame6_1_overlay_sprite
-	.byte <frame6_1_overlay_colors
-	.byte >frame6_1_overlay_colors
-	.byte <frame6_2_overlay_sprite
-	.byte >frame6_2_overlay_sprite
-	.byte <frame6_2_overlay_colors
-	.byte >frame6_2_overlay_colors
-.endif
-
-.if 0
-scene_data5:
-	.byte <frame5_playfield2_left
-	.byte >frame5_playfield2_left
-	.byte <frame5_playfield0_right
-	.byte >frame5_playfield0_right
-	.byte <frame5_playfield1_right
-	.byte >frame5_playfield1_right
-	.byte <frame5_playfield2_right
-	.byte >frame5_playfield2_right
-	.byte <frame5_1_overlay_sprite
-	.byte >frame5_1_overlay_sprite
-	.byte <frame5_1_overlay_colors
-	.byte >frame5_1_overlay_colors
-	.byte <frame5_2_overlay_sprite
-	.byte >frame5_2_overlay_sprite
-	.byte <frame5_2_overlay_colors
-	.byte >frame5_2_overlay_colors
-.endif
 
 
 .include "rr3_graphics.inc"

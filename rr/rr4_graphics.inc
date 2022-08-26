@@ -17,9 +17,6 @@ frame4_playfield0_right:
 	.byte $F0,$F0,$F0,$F0,$F0,$F0,$F0,$F0
 	.byte $F0,$F0,$F0,$F0,$F0,$F0,$F0,$F0
 
-
-.align $100
-
 frame4_playfield1_right:
 	.byte $00,$00,$00,$00,$00,$00,$00,$00
 	.byte $00,$00,$00,$00,$00,$00,$00,$00
@@ -60,8 +57,6 @@ frame4_2_overlay_colors:
 	.byte $48,$48,$48,$48,$48,$48,$48,$48
 	.byte $48,$48,$48,$48,$48,$4A,$4A,$4A
 	.byte $4A,$E0,$E0,$E0,$E0,$E0,$E0,$E0
-
-.align $100
 
 frame4_2_overlay_sprite:
 	.byte $00,$00,$00,$00,$10,$18,$3C,$30

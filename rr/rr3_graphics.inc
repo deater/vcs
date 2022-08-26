@@ -1,4 +1,3 @@
-.align $100
 ; Using background color $06
 
 frame3_playfield2_left:
@@ -41,7 +40,6 @@ frame3_1_overlay_colors:
 	.byte $F0,$F0,$F0,$0A,$0A,$0A,$0A,$0A
 	.byte $0A,$0A,$0A,$0A,$0A,$0A,$0A,$0A
 
-.align $100
 
 frame3_1_overlay_sprite:
 	.byte $00,$00,$00,$00,$00,$00,$00,$00
