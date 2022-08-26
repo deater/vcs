@@ -1,4 +1,4 @@
-.align	$100
+;.align	$100
 
 title_playfield1_left:
 	.byte $00,$7A,$7A,$42,$42,$72,$72,$42
@@ -35,6 +35,7 @@ title_playfield1_right:
 ;	.byte $00,$00,$00,$00,$00,$00,$00,$00
 ;	.byte $00,$00,$00,$00,$00,$00,$00,$00
 
+.align $100
 
 title_playfield2_right:
 	.byte $00,$04,$04,$02,$02,$01,$01,$01
@@ -128,8 +129,6 @@ title_bitmap0:
 	.byte $00
 	.byte $00
 
-.align $100
-
 
 title_bitmap1:
 	.byte $00
@@ -212,6 +211,9 @@ title_bitmap1:
 	.byte $07
 	.byte $00
 	.byte $00
+
+.align $100
+
 
 title_bitmap2:
 	.byte $00
@@ -378,7 +380,7 @@ title_bitmap3:
 	.byte $00
 	.byte $00
 
-.align $100
+;.align $100
 
 
 title_bitmap4:
@@ -471,6 +473,8 @@ title_bitmap5:
 	.byte $92
 	.byte $E4
 	.byte $03
+frame5_playfield2_right:
+frame6_playfield2_right:
 	.byte $00
 	.byte $00
 	.byte $00

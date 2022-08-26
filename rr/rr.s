@@ -43,6 +43,11 @@ clear_loop:
 .include "common_routines.s"
 
 .include "game_data.inc"
+.include "rr3_graphics.inc"
+.include "rr4_graphics.inc"
+.include "rr5_graphics.inc"
+.include "rr6_graphics.inc"
+
 
 .include "rr_trackdata.s"
 

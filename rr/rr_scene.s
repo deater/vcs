@@ -465,43 +465,43 @@ scene_data4:
 	.byte >frame4_2_overlay_colors
 
 scene_data5:
-	.byte <frame3_playfield2_left
-	.byte >frame3_playfield2_left
-	.byte <frame3_playfield0_right
-	.byte >frame3_playfield0_right
-	.byte <frame3_playfield1_right
-	.byte >frame3_playfield1_right
-	.byte <frame3_playfield2_right
-	.byte >frame3_playfield2_right
-	.byte <frame3_1_overlay_sprite
-	.byte >frame3_1_overlay_sprite
-	.byte <frame3_1_overlay_colors
-	.byte >frame3_1_overlay_colors
-	.byte <frame3_2_overlay_sprite
-	.byte >frame3_2_overlay_sprite
-	.byte <frame3_2_overlay_colors
-	.byte >frame3_2_overlay_colors
+	.byte <frame5_playfield2_left
+	.byte >frame5_playfield2_left
+	.byte <frame5_playfield0_right
+	.byte >frame5_playfield0_right
+	.byte <frame5_playfield1_right
+	.byte >frame5_playfield1_right
+	.byte <frame5_playfield2_right
+	.byte >frame5_playfield2_right
+	.byte <frame5_1_overlay_sprite
+	.byte >frame5_1_overlay_sprite
+	.byte <frame5_1_overlay_colors
+	.byte >frame5_1_overlay_colors
+	.byte <frame5_2_overlay_sprite
+	.byte >frame5_2_overlay_sprite
+	.byte <frame5_2_overlay_colors
+	.byte >frame5_2_overlay_colors
 
 scene_data6:
-	.byte <frame4_playfield2_left
-	.byte >frame4_playfield2_left
-	.byte <frame4_playfield0_right
-	.byte >frame4_playfield0_right
-	.byte <frame4_playfield1_right
-	.byte >frame4_playfield1_right
-	.byte <frame4_playfield2_right
-	.byte >frame4_playfield2_right
-	.byte <frame4_1_overlay_sprite
-	.byte >frame4_1_overlay_sprite
-	.byte <frame4_1_overlay_colors
-	.byte >frame4_1_overlay_colors
+	.byte <frame6_playfield2_left
+	.byte >frame6_playfield2_left
+	.byte <frame6_playfield0_right
+	.byte >frame6_playfield0_right
+	.byte <frame6_playfield1_right
+	.byte >frame6_playfield1_right
+	.byte <frame6_playfield2_right
+	.byte >frame6_playfield2_right
+	.byte <frame6_1_overlay_sprite
+	.byte >frame6_1_overlay_sprite
+	.byte <frame6_1_overlay_colors
+	.byte >frame6_1_overlay_colors
 	.byte <frame4_2_overlay_sprite
 	.byte >frame4_2_overlay_sprite
 	.byte <frame4_2_overlay_colors
 	.byte >frame4_2_overlay_colors
 
 
-.include "rr3_graphics.inc"
-.include "rr4_graphics.inc"
+;.include "rr3_graphics.inc"
+;.include "rr4_graphics.inc"
 ;.include "rr5_graphics.inc"
 ;.include "rr6_graphics.inc"
