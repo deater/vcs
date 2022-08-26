@@ -88,11 +88,26 @@ le_vblank_loop:
 	;=========================
 	; VBLANK scanline 33+34+35
 	;=========================
+	; copy the image pointers
+
 ; 4
+	lda	FRAME
+	and	#$E0
+	lsr
+	lsr
+	lsr
+	lsr
+	lsr
+	tax
+	lda	scene_offsets,X
+	tay
+
 	ldx	#15							; 2
 copy_scene_data_loop:
-	lda	scene_data,X						; 4+
+scene_data_smc:
+	lda	scene_data,Y						; 4+
 	sta	LPF2_L,X						; 4
+	dey
 	dex								; 2
 	bpl	copy_scene_data_loop					; 2/3
 							;=====================
@@ -403,13 +418,88 @@ done_kernel:
 	jmp	rr_frame
 
 
-;.include "rr3_graphics.inc"
-;.include "rr4_graphics.inc"
-;.include "rr5_graphics.inc"
-.include "rr6_graphics.inc"
 
+
+scene_offsets:
+	.byte	15,31,47,63,63,47,31,15
+
+.align $100
 scene_data:
-.if 1
+
+scene_data3:
+	.byte <frame3_playfield2_left
+	.byte >frame3_playfield2_left
+	.byte <frame3_playfield0_right
+	.byte >frame3_playfield0_right
+	.byte <frame3_playfield1_right
+	.byte >frame3_playfield1_right
+	.byte <frame3_playfield2_right
+	.byte >frame3_playfield2_right
+	.byte <frame3_1_overlay_sprite
+	.byte >frame3_1_overlay_sprite
+	.byte <frame3_1_overlay_colors
+	.byte >frame3_1_overlay_colors
+	.byte <frame3_2_overlay_sprite
+	.byte >frame3_2_overlay_sprite
+	.byte <frame3_2_overlay_colors
+	.byte >frame3_2_overlay_colors
+
+scene_data4:
+	.byte <frame4_playfield2_left
+	.byte >frame4_playfield2_left
+	.byte <frame4_playfield0_right
+	.byte >frame4_playfield0_right
+	.byte <frame4_playfield1_right
+	.byte >frame4_playfield1_right
+	.byte <frame4_playfield2_right
+	.byte >frame4_playfield2_right
+	.byte <frame4_1_overlay_sprite
+	.byte >frame4_1_overlay_sprite
+	.byte <frame4_1_overlay_colors
+	.byte >frame4_1_overlay_colors
+	.byte <frame4_2_overlay_sprite
+	.byte >frame4_2_overlay_sprite
+	.byte <frame4_2_overlay_colors
+	.byte >frame4_2_overlay_colors
+
+scene_data32:
+	.byte <frame3_playfield2_left
+	.byte >frame3_playfield2_left
+	.byte <frame3_playfield0_right
+	.byte >frame3_playfield0_right
+	.byte <frame3_playfield1_right
+	.byte >frame3_playfield1_right
+	.byte <frame3_playfield2_right
+	.byte >frame3_playfield2_right
+	.byte <frame3_1_overlay_sprite
+	.byte >frame3_1_overlay_sprite
+	.byte <frame3_1_overlay_colors
+	.byte >frame3_1_overlay_colors
+	.byte <frame3_2_overlay_sprite
+	.byte >frame3_2_overlay_sprite
+	.byte <frame3_2_overlay_colors
+	.byte >frame3_2_overlay_colors
+
+scene_data42:
+	.byte <frame4_playfield2_left
+	.byte >frame4_playfield2_left
+	.byte <frame4_playfield0_right
+	.byte >frame4_playfield0_right
+	.byte <frame4_playfield1_right
+	.byte >frame4_playfield1_right
+	.byte <frame4_playfield2_right
+	.byte >frame4_playfield2_right
+	.byte <frame4_1_overlay_sprite
+	.byte >frame4_1_overlay_sprite
+	.byte <frame4_1_overlay_colors
+	.byte >frame4_1_overlay_colors
+	.byte <frame4_2_overlay_sprite
+	.byte >frame4_2_overlay_sprite
+	.byte <frame4_2_overlay_colors
+	.byte >frame4_2_overlay_colors
+
+
+.if 0
 scene_data6:
 	.byte <frame6_playfield2_left
 	.byte >frame6_playfield2_left
@@ -450,42 +540,7 @@ scene_data5:
 .endif
 
 
-.if 0
-scene_data3:
-	.byte <frame3_playfield2_left
-	.byte >frame3_playfield2_left
-	.byte <frame3_playfield0_right
-	.byte >frame3_playfield0_right
-	.byte <frame3_playfield1_right
-	.byte >frame3_playfield1_right
-	.byte <frame3_playfield2_right
-	.byte >frame3_playfield2_right
-	.byte <frame3_1_overlay_sprite
-	.byte >frame3_1_overlay_sprite
-	.byte <frame3_1_overlay_colors
-	.byte >frame3_1_overlay_colors
-	.byte <frame3_2_overlay_sprite
-	.byte >frame3_2_overlay_sprite
-	.byte <frame3_2_overlay_colors
-	.byte >frame3_2_overlay_colors
-.endif
-
-.if 0
-scene_data4:
-	.byte <frame4_playfield2_left
-	.byte >frame4_playfield2_left
-	.byte <frame4_playfield0_right
-	.byte >frame4_playfield0_right
-	.byte <frame4_playfield1_right
-	.byte >frame4_playfield1_right
-	.byte <frame4_playfield2_right
-	.byte >frame4_playfield2_right
-	.byte <frame4_1_overlay_sprite
-	.byte >frame4_1_overlay_sprite
-	.byte <frame4_1_overlay_colors
-	.byte >frame4_1_overlay_colors
-	.byte <frame4_2_overlay_sprite
-	.byte >frame4_2_overlay_sprite
-	.byte <frame4_2_overlay_colors
-	.byte >frame4_2_overlay_colors
-.endif
+.include "rr3_graphics.inc"
+.include "rr4_graphics.inc"
+;.include "rr5_graphics.inc"
+;.include "rr6_graphics.inc"
