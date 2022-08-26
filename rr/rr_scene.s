@@ -78,7 +78,7 @@ wait_for_vblank:
 	; wait the rest
 	;=======================
 
-	ldx	#21							; 2
+	ldx	#22							; 2
 le_vblank_loop:
 	sta     WSYNC							; 3
 	dex								; 2
@@ -394,7 +394,7 @@ done_kernel:
 	sta	GRP0							; 3
 ; 1
 	lda	#2		; we do this in common
-	sta	VSYNC		; but want it to happen in hblank
+	sta	VBLANK		; but want it to happen in hblank
 
 
 	lda	#0
@@ -404,7 +404,7 @@ done_kernel:
 	sta	PF2							; 3
 ; 13
 
-	ldx     #30							; 2
+	ldx     #29							; 2
 	jsr	common_overscan						; 6
 
 	jmp	rr_frame
