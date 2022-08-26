@@ -92,13 +92,22 @@ le_vblank_loop:
 
 ; 4
 	lda	FRAME							; 3
-	and	#$E0							; 2
+
+	and	#$70							; 2
 	lsr								; 2
 	lsr								; 2
 	lsr								; 2
 	lsr								; 2
-	lsr								; 2
+;	lsr								; 2
 	tax								; 2
+
+;	and	#$E0							; 2
+;	lsr								; 2
+;	lsr								; 2
+;	lsr								; 2
+;	lsr								; 2
+;	lsr								; 2
+;	tax								; 2
 ; 21
 	lda	scene_offsets,X						; 4+
 	tay								; 2
