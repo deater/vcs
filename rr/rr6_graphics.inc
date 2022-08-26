@@ -51,7 +51,6 @@ frame6_1_overlay_sprite:
 	.byte $00,$28,$00,$28,$00,$20,$00,$20
 	.byte $00,$20,$00,$20,$00,$20,$00,$20
 
-.if 0
 ; Using background color $00
 frame6_2_overlay_colors:
 	.byte $00,$00,$00,$00,$00,$00,$26,$22
@@ -61,6 +60,7 @@ frame6_2_overlay_colors:
 	.byte $06,$06,$06,$06,$06,$06,$06,$06
 	.byte $4A,$4A,$48,$4A,$48,$48,$4A,$48
 
+.if 0
 frame6_2_overlay_sprite:
 	.byte $00,$00,$00,$00,$00,$00,$10,$38
 	.byte $70,$60,$38,$70,$70,$B0,$A0,$E0
