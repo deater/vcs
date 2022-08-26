@@ -201,20 +201,21 @@ kernel_loop:
 	sta	COLUP0							; 3
 ; 32
 	lda	(RPF0_L),Y						; 5
+	tax								; 2
 	sta	PF0							; 3
 	; has to happen 28-49 (GPU 84-148)
-; 40
+; 42
 	lda	(RPF1_L),Y						; 5
 	sta	PF1							; 3
 	; has to happen 39-56 (GPU 116-170)
-; 48
+; 50
 	lda	(RPF2_L),Y						; 5
 	sta	PF2							; 3
+	sta	PF_TEMP							; 3
 	; has to happen 50-67 (GPU 148-202)
-; 56
+; 61
 
 
-; 64
 	sta	WSYNC
 
 	;==========================
@@ -234,25 +235,32 @@ kernel_loop:
 	; has to happen by 38 (GPU 116)
 ; 16
 
-	lda	frame3_1_overlay_sprite,Y				; 5
-	sta	GRP0							; 3
+	inc	TEMP1
+	inc	TEMP1
+	nop
+	nop
+	nop
+
+;	lda	frame3_1_overlay_sprite,Y				; 5
+;	sta	GRP0							; 3
 ; 24
-	lda	frame3_1_overlay_colors,Y				; 5
-	sta	COLUP0							; 3
+;	lda	frame3_1_overlay_colors,Y				; 5
+;	sta	COLUP0							; 3
 ; 32
 
-	lda	(RPF0_L),Y						; 5
-	sta	PF0							; 3
+;	lda	(RPF0_L),Y						; -
+	stx	PF0							; 3
 	; has to happen 28-49 (GPU 84-148)
-; 40
+; 35
 	lda	(RPF1_L),Y						; 5
 	sta	PF1							; 3
 	; has to happen 39-56 (GPU 116-170)
-; 48
-	lda	(RPF2_L),Y						; 5
+; 43
+;	lda	(RPF2_L),Y						; -
+	lda	PF_TEMP							; 3
 	sta	PF2							; 3
 	; has to happen 50-67 (GPU 148-202)
-; 56
+; 49
 
 
 	sta	WSYNC
@@ -274,25 +282,33 @@ kernel_loop:
 	; has to happen by 38 (GPU 116)
 ; 16
 
-	lda	frame3_1_overlay_sprite,Y				; 5
-	sta	GRP0							; 3
+	inc	TEMP1
+	inc	TEMP1
+	nop
+	nop
+	nop
+
+
+;	lda	frame3_1_overlay_sprite,Y				; 5
+;	sta	GRP0							; 3
 ; 24
-	lda	frame3_1_overlay_colors,Y				; 5
-	sta	COLUP0							; 3
+;	lda	frame3_1_overlay_colors,Y				; 5
+;	sta	COLUP0							; 3
 ; 32
 
-	lda	(RPF0_L),Y						; 5
-	sta	PF0							; 3
+;	lda	(RPF0_L),Y						; -
+	stx	PF0							; 3
 	; has to happen 28-49 (GPU 84-148)
-; 40
+; 35
 	lda	(RPF1_L),Y						; 5
 	sta	PF1							; 3
 	; has to happen 39-56 (GPU 116-170)
-; 48
-	lda	(RPF2_L),Y						; 5
+; 43
+;	lda	(RPF2_L),Y						; -
+	lda	PF_TEMP							; 3
 	sta	PF2							; 3
 	; has to happen 50-67 (GPU 148-202)
-; 56
+; 49
 
 	sta	WSYNC
 
@@ -314,35 +330,42 @@ kernel_loop:
 	; has to happen by 38 (GPU 116)
 ; 16
 
-	lda	frame3_1_overlay_sprite,Y				; 5
-	sta	GRP0							; 3
+	inc	TEMP1
+	inc	TEMP1
+	nop
+	nop
+	nop
+
+
+;	lda	frame3_1_overlay_sprite,Y				; 5
+;	sta	GRP0							; 3
 ; 24
-	lda	frame3_1_overlay_colors,Y				; 5
-	sta	COLUP0							; 3
+;	lda	frame3_1_overlay_colors,Y				; 5
+;	sta	COLUP0							; 3
 ; 32
 
-	lda	(RPF0_L),Y						; 5
-	sta	PF0							; 3
+;	lda	(RPF0_L),Y						; -
+	stx	PF0							; 3
 	; has to happen 28-49 (GPU 84-148)
-; 40
+; 35
 	lda	(RPF1_L),Y						; 5
 	sta	PF1							; 3
 	; has to happen 39-56 (GPU 116-170)
-; 48
-	lda	(RPF2_L),Y						; 5
+; 43
+;	lda	(RPF2_L),Y						; -
+	lda	PF_TEMP							; 3
 	sta	PF2							; 3
 	; has to happen 50-67 (GPU 148-202)
-; 56
+; 49
 
 	iny								; 2
-; 58
+; 51
 	lda	(OV2SP_L),Y						; 5
 	sta	GRP1							; 3
-; 64
+; 59
 	lda	(OV2C_L),Y						; 5
 	sta	COLUP1							; 3
-; 72
-;!!!!!
+
 ; 67
 	cpy	#48							; 2
 	beq	done_kernel						; 2/3
@@ -380,10 +403,34 @@ done_kernel:
 	jmp	rr_frame
 
 
-.include "rr3_graphics.inc"
-
+;.include "rr3_graphics.inc"
+;.include "rr4_graphics.inc"
+.include "rr5_graphics.inc"
 
 scene_data:
+.if 1
+scene_data4:
+	.byte <frame5_playfield2_left
+	.byte >frame5_playfield2_left
+	.byte <frame5_playfield0_right
+	.byte >frame5_playfield0_right
+	.byte <frame5_playfield1_right
+	.byte >frame5_playfield1_right
+	.byte <frame5_playfield2_right
+	.byte >frame5_playfield2_right
+	.byte <frame5_1_overlay_sprite
+	.byte >frame5_1_overlay_sprite
+	.byte <frame5_1_overlay_colors
+	.byte >frame5_1_overlay_colors
+	.byte <frame5_2_overlay_sprite
+	.byte >frame5_2_overlay_sprite
+	.byte <frame5_2_overlay_colors
+	.byte >frame5_2_overlay_colors
+.endif
+
+
+.if 0
+scene_data3:
 	.byte <frame3_playfield2_left
 	.byte >frame3_playfield2_left
 	.byte <frame3_playfield0_right
@@ -400,8 +447,24 @@ scene_data:
 	.byte >frame3_2_overlay_sprite
 	.byte <frame3_2_overlay_colors
 	.byte >frame3_2_overlay_colors
+.endif
 
-
-
-
-
+.if 0
+scene_data4:
+	.byte <frame4_playfield2_left
+	.byte >frame4_playfield2_left
+	.byte <frame4_playfield0_right
+	.byte >frame4_playfield0_right
+	.byte <frame4_playfield1_right
+	.byte >frame4_playfield1_right
+	.byte <frame4_playfield2_right
+	.byte >frame4_playfield2_right
+	.byte <frame4_1_overlay_sprite
+	.byte >frame4_1_overlay_sprite
+	.byte <frame4_1_overlay_colors
+	.byte >frame4_1_overlay_colors
+	.byte <frame4_2_overlay_sprite
+	.byte >frame4_2_overlay_sprite
+	.byte <frame4_2_overlay_colors
+	.byte >frame4_2_overlay_colors
+.endif
