@@ -78,47 +78,50 @@ wait_for_vblank:
 	; wait the rest
 	;=======================
 
-	ldx	#23							; 2
+	ldx	#21							; 2
 le_vblank_loop:
 	sta     WSYNC							; 3
 	dex								; 2
 	bne	le_vblank_loop						; 2/3
 
 
-	;=========================
-	; VBLANK scanline 33+34+35
-	;=========================
+	;=============================
+	; VBLANK scanline 31+32+33+34
+	;=============================
 	; copy the image pointers
 
 ; 4
-	lda	FRAME
-	and	#$E0
-	lsr
-	lsr
-	lsr
-	lsr
-	lsr
-	tax
-	lda	scene_offsets,X
-	tay
-
+	lda	FRAME							; 3
+	and	#$E0							; 2
+	lsr								; 2
+	lsr								; 2
+	lsr								; 2
+	lsr								; 2
+	lsr								; 2
+	tax								; 2
+; 21
+	lda	scene_offsets,X						; 4+
+	tay								; 2
+; 27
 	ldx	#15							; 2
 copy_scene_data_loop:
 scene_data_smc:
 	lda	scene_data,Y						; 4+
 	sta	LPF2_L,X						; 4
-	dey
+	dey								; 2
 	dex								; 2
 	bpl	copy_scene_data_loop					; 2/3
 							;=====================
-							; 2+(16*13)-1=209
-; 213
+							; 2+(16*15)-1=241
+; 268
 
 	sta	WSYNC
 
 	;=========================
-	; VBLANK scanline 36
-	;=========================
+	; VBLANK scanline 35
+	;==========================================
+	; set up sprites to be at proper X position
+	;==========================================
 ; 0
 	nop
 	nop
@@ -126,9 +129,7 @@ scene_data_smc:
 	inc	FRAME							; 5
 ; 9
 
-	;==========================================
-	; set up sprite0 to be at proper X position
-	;==========================================
+
 
 	ldx	#6
 p0_pos_loop:
@@ -147,38 +148,40 @@ p0_pos_loop:
 	sta	HMOVE
 
 	;=================================
-	; VBLANK scanline 37
+	; VBLANK scanline 36
 	;=================================
 
-;
-;	lda     #CTRLPF_REF		; reflect playfield		; 2
-;	sta     CTRLPF							; 3
-;
+	sta	WSYNC
 
-	lda	#0
-	sta	VDELP0
-	sta	VDELP1		; turn off delay
+	;=================================
+	; VBLANK scanline 37
+	;=================================
+; 3
+	lda	#0							; 2
+	sta	VBLANK                  ; turn on beam			; 3
+; 8
 
+        lda	#6			; bg, light grey		; 2
+        sta	COLUBK							; 3
+; 13
+	lda	#0							; 2
+	sta	VDELP0							; 3
+	sta	VDELP1		; turn off delay			; 3
+; 21
 
 	lda	#NUSIZ_QUAD_SIZE|NUSIZ_MISSILE_WIDTH_8			; 2
 	sta	NUSIZ0							; 3
 	lda	#NUSIZ_QUAD_SIZE|NUSIZ_MISSILE_WIDTH_8			; 2
 	sta	NUSIZ1							; 3
-
-        lda	#6			; bg, light grey		; 2
-        sta	COLUBK							; 3
+; 31
 
 	lda	#2							; 2
 	sta	COLUPF			; fg, dark grey			; 3
 
-;
-	lda	#0							; 2
-	sta	VBLANK                  ; turn on beam			; 3
+; 36
 
 	sta	WSYNC							; 3
 
-
-	sta	WSYNC
 
 
 	;=========================
