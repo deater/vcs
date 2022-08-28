@@ -107,6 +107,7 @@ level_bank_lookup:
 	.byte	3			; 34 = library_sw
 	.byte	3			; 35 = library_se
 	.byte	3			; 36 = burnt_book
+	.byte	3			; 37 = imager_e
 
 
 
@@ -150,6 +151,7 @@ level_compress_data_low:
 	.byte	<library_sw_data_zx02
 	.byte	<library_se_data_zx02
 	.byte	<burnt_book_data_zx02
+	.byte	<imager_e_data_zx02
 
 
 
@@ -193,3 +195,4 @@ level_compress_data_high:
 	.byte	>library_sw_data_zx02
 	.byte	>library_se_data_zx02
 	.byte	>burnt_book_data_zx02
+	.byte	>imager_e_data_zx02

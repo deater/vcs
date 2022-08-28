@@ -45,6 +45,8 @@ level_locations.inc:	\
 	$(CALC_ADDRESS) -a 0x1000 -s library_se_data_zx02 rom_bank3.lst >> level_locations.inc
 	$(CALC_ADDRESS) -a 0x1000 -s library_sw_data_zx02 rom_bank3.lst >> level_locations.inc
 	$(CALC_ADDRESS) -a 0x1000 -s burnt_book_data_zx02 rom_bank3.lst >> level_locations.inc
+	$(CALC_ADDRESS) -a 0x1000 -s imager_e_data_zx02 rom_bank3.lst >> level_locations.inc
+
 
 
 
@@ -104,7 +106,7 @@ rom_bank3.o:	rom_bank3.s \
 	shack_s_data.zx02 \
 	cabin_path_s_data.zx02 cabin_path_n_data.zx02 \
 	library_se_data.zx02 library_sw_data.zx02 \
-	burnt_book_data.zx02
+	burnt_book_data.zx02 imager_e_data.zx02
 	ca65 -o rom_bank3.o rom_bank3.s -l rom_bank3.lst
 
 ###
@@ -227,6 +229,12 @@ hill_w_data.inc:	hill_w_bg.png hill_w_overlay.png
 imager_w_data.inc:	imager_w_bg.png imager_w_overlay.png
 	$(PNG2PF) -4 -n imager_w -b 0x00 imager_w_bg.png - > imager_w_data.inc
 	$(PNG2OVERLAY) -4 -o -n imager_w imager_w_overlay.png - >> imager_w_data.inc
+
+###
+
+imager_e_data.inc:	imager_e_bg.png imager_e_overlay.png
+	$(PNG2PF) -n imager_e -b 0x00 imager_e_bg.png - > imager_e_data.inc
+	$(PNG2OVERLAY) -o -n imager_e imager_e_overlay.png - >> imager_e_data.inc
 
 ###
 
@@ -557,6 +565,18 @@ imager_w_data.bin:	imager_w_data.o
 
 imager_w_data.o:	imager_w_data.s imager_w_data.inc
 	ca65 -o imager_w_data.o imager_w_data.s -l imager_w_data.lst
+
+###
+
+imager_e_data.zx02:	imager_e_data.bin
+	$(ZX02) -f imager_e_data.bin imager_e_data.zx02
+
+imager_e_data.bin:	imager_e_data.o
+	ld65 -o imager_e_data.bin imager_e_data.o -C $(LINKER_SCRIPT)/atari2600_f000.inc
+
+imager_e_data.o:	imager_e_data.s imager_e_data.inc
+	ca65 -o imager_e_data.o imager_e_data.s -l imager_e_data.lst
+
 
 
 ###

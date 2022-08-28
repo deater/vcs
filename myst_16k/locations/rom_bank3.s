@@ -10,4 +10,6 @@ library_se_data_zx02:
 .incbin "library_se_data.zx02"
 burnt_book_data_zx02:
 .incbin "burnt_book_data.zx02"
+imager_e_data_zx02:
+.incbin "imager_e_data.zx02"
 

@@ -1,4 +1,4 @@
-; LOCATION_IMAGER_W data
+; LOCATION_IMAGER_E data
 
 .include "../locations.inc"
 
@@ -8,9 +8,9 @@
 .byte 0,$00			; coarse/fine of missile0 (vertical line)
 .byte $00,$00			; XMAX/XMIN of grab area
 .byte $00,$00			; YMAX/YMIN of grab area
-.byte LOCATION_IMAGER_E		; left destination
-.byte $FF			; center destination
-.byte LOCATION_IMAGER_E		; right destination
+.byte LOCATION_IMAGER_W		; left destination
+.byte LOCATION_ARRIVAL_E	; center destination
+.byte LOCATION_IMAGER_W		; right destination
 .byte $00,$00			; unused
 
-.include "imager_w_data.inc"
+.include "imager_e_data.inc"
