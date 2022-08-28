@@ -44,6 +44,8 @@ level_locations.inc:	\
 	$(CALC_ADDRESS) -a 0x1000 -s cabin_path_n_data_zx02 rom_bank3.lst >> level_locations.inc
 	$(CALC_ADDRESS) -a 0x1000 -s library_se_data_zx02 rom_bank3.lst >> level_locations.inc
 	$(CALC_ADDRESS) -a 0x1000 -s library_sw_data_zx02 rom_bank3.lst >> level_locations.inc
+	$(CALC_ADDRESS) -a 0x1000 -s burnt_book_data_zx02 rom_bank3.lst >> level_locations.inc
+
 
 
 ###
@@ -101,7 +103,8 @@ rom_bank3.bin:	rom_bank3.o
 rom_bank3.o:	rom_bank3.s \
 	shack_s_data.zx02 \
 	cabin_path_s_data.zx02 cabin_path_n_data.zx02 \
-	library_se_data.zx02 library_sw_data.zx02
+	library_se_data.zx02 library_sw_data.zx02 \
+	burnt_book_data.zx02
 	ca65 -o rom_bank3.o rom_bank3.s -l rom_bank3.lst
 
 ###
@@ -249,6 +252,12 @@ shack_s_data.inc:	shack_s_bg.png shack_s_overlay.png
 	$(PNG2PF) -4 -n shack_s -b 0xd0 shack_s_bg.png - > shack_s_data.inc
 	$(PNG2OVERLAY) -4 -o -n shack_s shack_s_overlay.png - >> shack_s_data.inc
 
+
+###
+
+burnt_book_data.inc:	burnt_book_bg.png burnt_book_overlay.png
+	$(PNG2PF) -n burnt_book -b 0x00 burnt_book_bg.png - > burnt_book_data.inc
+	$(PNG2OVERLAY) -o -n burnt_book burnt_book_overlay.png - >> burnt_book_data.inc
 
 
 ###
@@ -595,6 +604,16 @@ shack_s_data.o:	shack_s_data.s shack_s_data.inc
 	ca65 -o shack_s_data.o shack_s_data.s -l shack_s_data.lst
 
 
+###
+
+burnt_book_data.zx02:	burnt_book_data.bin
+	$(ZX02) -f burnt_book_data.bin burnt_book_data.zx02
+
+burnt_book_data.bin:	burnt_book_data.o
+	ld65 -o burnt_book_data.bin burnt_book_data.o -C $(LINKER_SCRIPT)/atari2600_f000.inc
+
+burnt_book_data.o:	burnt_book_data.s burnt_book_data.inc
+	ca65 -o burnt_book_data.o burnt_book_data.s -l burnt_book_data.lst
 
 ###
 
