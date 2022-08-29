@@ -14,4 +14,6 @@ imager_e_data_zx02:
 .incbin "imager_e_data.zx02"
 behind_fireplace_data_zx02:
 .incbin "behind_fireplace_data.zx02"
+inside_fireplace_data_zx02:
+.incbin "inside_fireplace_data.zx02"
 

@@ -47,9 +47,7 @@ level_locations.inc:	\
 	$(CALC_ADDRESS) -a 0x1000 -s burnt_book_data_zx02 rom_bank3.lst >> level_locations.inc
 	$(CALC_ADDRESS) -a 0x1000 -s imager_e_data_zx02 rom_bank3.lst >> level_locations.inc
 	$(CALC_ADDRESS) -a 0x1000 -s behind_fireplace_data_zx02 rom_bank3.lst >> level_locations.inc
-
-
-
+	$(CALC_ADDRESS) -a 0x1000 -s inside_fireplace_data_zx02 rom_bank3.lst >> level_locations.inc
 
 
 ###
@@ -109,7 +107,7 @@ rom_bank3.o:	rom_bank3.s \
 	cabin_path_s_data.zx02 cabin_path_n_data.zx02 \
 	library_se_data.zx02 library_sw_data.zx02 \
 	burnt_book_data.zx02 imager_e_data.zx02 \
-	behind_fireplace_data.zx02
+	behind_fireplace_data.zx02 inside_fireplace_data.zx02
 	ca65 -o rom_bank3.o rom_bank3.s -l rom_bank3.lst
 
 ###
@@ -312,6 +310,13 @@ library_e_data.inc:	library_e_bg.png library_e_overlay.png
 behind_fireplace_data.inc:	behind_fireplace_bg.png behind_fireplace_overlay.png
 	$(PNG2PF) -n behind_fireplace -b 0x00 behind_fireplace_bg.png - > behind_fireplace_data.inc
 	$(PNG2OVERLAY) -o -n behind_fireplace behind_fireplace_overlay.png - >> behind_fireplace_data.inc
+
+###
+
+inside_fireplace_data.inc:	inside_fireplace_bg.png inside_fireplace_overlay.png
+	$(PNG2PF) -n inside_fireplace -b 0x00 inside_fireplace_bg.png - > inside_fireplace_data.inc
+	$(PNG2OVERLAY) -o -n inside_fireplace inside_fireplace_overlay.png - >> inside_fireplace_data.inc
+
 
 
 
@@ -722,6 +727,18 @@ behind_fireplace_data.bin:	behind_fireplace_data.o
 
 behind_fireplace_data.o:	behind_fireplace_data.s behind_fireplace_data.inc
 	ca65 -o behind_fireplace_data.o behind_fireplace_data.s -l behind_fireplace_data.lst
+
+###
+
+inside_fireplace_data.zx02:	inside_fireplace_data.bin
+	$(ZX02) -f inside_fireplace_data.bin inside_fireplace_data.zx02
+
+inside_fireplace_data.bin:	inside_fireplace_data.o
+	ld65 -o inside_fireplace_data.bin inside_fireplace_data.o -C $(LINKER_SCRIPT)/atari2600_f000.inc
+
+inside_fireplace_data.o:	inside_fireplace_data.s inside_fireplace_data.inc
+	ca65 -o inside_fireplace_data.o inside_fireplace_data.s -l inside_fireplace_data.lst
+
 
 
 ###
