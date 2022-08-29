@@ -13,6 +13,7 @@ myst.o:	myst.s main.bin \
 	locations/rom_bank1.bin \
 	locations/rom_bank2.bin \
 	locations/rom_bank3.bin \
+	locations/rom_bank4.bin \
 	intro/rom_bank6.bin \
 	zero.bin zero2.bin
 	ca65 -o myst.o myst.s

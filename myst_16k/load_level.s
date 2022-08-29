@@ -110,6 +110,7 @@ level_bank_lookup:
 	.byte	3			; 37 = imager_e
 	.byte	3			; 38 = behind_fireplace
 	.byte	3			; 39 = inside_fireplace
+	.byte	4			; 40 = dni_n
 
 
 
@@ -156,6 +157,7 @@ level_compress_data_low:
 	.byte	<imager_e_data_zx02
 	.byte	<behind_fireplace_data_zx02
 	.byte	<inside_fireplace_data_zx02
+	.byte	<dni_n_data_zx02
 
 
 
@@ -202,3 +204,4 @@ level_compress_data_high:
 	.byte	>imager_e_data_zx02
 	.byte	>behind_fireplace_data_zx02
 	.byte	>inside_fireplace_data_zx02
+	.byte	>dni_n_data_zx02

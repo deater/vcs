@@ -8,7 +8,7 @@ all:	level_locations.inc
 
 level_locations.inc:	\
 	rom_bank0.bin rom_bank1.bin rom_bank2.bin \
-	rom_bank3.bin $(CALC_ADDRESS)
+	rom_bank3.bin rom_bank4.bin $(CALC_ADDRESS)
 	$(CALC_ADDRESS) -a 0x1000 -s arrival_n_data_zx02 rom_bank0.lst > level_locations.inc
 	$(CALC_ADDRESS) -a 0x1000 -s arrival_e_data_zx02 rom_bank0.lst >> level_locations.inc
 	$(CALC_ADDRESS) -a 0x1000 -s clock_s_data_zx02 rom_bank0.lst >> level_locations.inc
@@ -48,6 +48,8 @@ level_locations.inc:	\
 	$(CALC_ADDRESS) -a 0x1000 -s imager_e_data_zx02 rom_bank3.lst >> level_locations.inc
 	$(CALC_ADDRESS) -a 0x1000 -s behind_fireplace_data_zx02 rom_bank3.lst >> level_locations.inc
 	$(CALC_ADDRESS) -a 0x1000 -s inside_fireplace_data_zx02 rom_bank3.lst >> level_locations.inc
+	$(CALC_ADDRESS) -a 0x1000 -s dni_n_data_zx02 rom_bank4.lst >> level_locations.inc
+
 
 
 ###
@@ -109,6 +111,16 @@ rom_bank3.o:	rom_bank3.s \
 	burnt_book_data.zx02 imager_e_data.zx02 \
 	behind_fireplace_data.zx02 inside_fireplace_data.zx02
 	ca65 -o rom_bank3.o rom_bank3.s -l rom_bank3.lst
+
+###
+
+rom_bank4.bin:	rom_bank4.o
+	ld65 -o rom_bank4.bin rom_bank4.o -C $(LINKER_SCRIPT)/atari2600_1000.inc
+
+rom_bank4.o:	rom_bank4.s \
+	dni_n_data.zx02
+	ca65 -o rom_bank4.o rom_bank4.s -l rom_bank4.lst
+
 
 ###
 
@@ -310,6 +322,13 @@ library_e_data.inc:	library_e_bg.png library_e_overlay.png
 behind_fireplace_data.inc:	behind_fireplace_bg.png behind_fireplace_overlay.png
 	$(PNG2PF) -n behind_fireplace -b 0x00 behind_fireplace_bg.png - > behind_fireplace_data.inc
 	$(PNG2OVERLAY) -o -n behind_fireplace behind_fireplace_overlay.png - >> behind_fireplace_data.inc
+
+###
+
+dni_n_data.inc:	dni_n_bg.png dni_n_overlay.png
+	$(PNG2PF) -n dni_n -b 0x00 dni_n_bg.png - > dni_n_data.inc
+	$(PNG2OVERLAY) -o -n dni_n dni_n_overlay.png - >> dni_n_data.inc
+
 
 ###
 
@@ -727,6 +746,18 @@ behind_fireplace_data.bin:	behind_fireplace_data.o
 
 behind_fireplace_data.o:	behind_fireplace_data.s behind_fireplace_data.inc
 	ca65 -o behind_fireplace_data.o behind_fireplace_data.s -l behind_fireplace_data.lst
+
+###
+
+dni_n_data.zx02:	dni_n_data.bin
+	$(ZX02) -f dni_n_data.bin dni_n_data.zx02
+
+dni_n_data.bin:	dni_n_data.o
+	ld65 -o dni_n_data.bin dni_n_data.o -C $(LINKER_SCRIPT)/atari2600_f000.inc
+
+dni_n_data.o:	dni_n_data.s dni_n_data.inc
+	ca65 -o dni_n_data.o dni_n_data.s -l dni_n_data.lst
+
 
 ###
 
