@@ -1,4 +1,4 @@
-; LOCATION LIBRARY_SE data
+; LOCATION BEHIND_FIREPLACE data
 
 .include "../locations.inc"
 
@@ -8,9 +8,9 @@
 .byte 0,$00			; coarse/fine of missile0 (vertical line)
 .byte $00,$00			; XMAX/XMIN of grab area
 .byte $00,$00			; YMAX/YMIN of grab area
-.byte LOCATION_LIBRARY_E	; left destination
-.byte LOCATION_BEHIND_FIREPLACE	; center destination
-.byte LOCATION_LIBRARY_S	; right destination
+.byte $FF			; left destination
+.byte $FF			; center destination
+.byte $FF			; right destination
 .byte $00,$00			; unused
 
-.include "library_se_data.inc"
+.include "behind_fireplace_data.inc"
