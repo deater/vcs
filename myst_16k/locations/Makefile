@@ -49,6 +49,7 @@ level_locations.inc:	\
 	$(CALC_ADDRESS) -a 0x1000 -s behind_fireplace_data_zx02 rom_bank3.lst >> level_locations.inc
 	$(CALC_ADDRESS) -a 0x1000 -s inside_fireplace_data_zx02 rom_bank3.lst >> level_locations.inc
 	$(CALC_ADDRESS) -a 0x1000 -s dni_n_data_zx02 rom_bank4.lst >> level_locations.inc
+	$(CALC_ADDRESS) -a 0x1000 -s dni_e_data_zx02 rom_bank4.lst >> level_locations.inc
 
 
 
@@ -118,7 +119,7 @@ rom_bank4.bin:	rom_bank4.o
 	ld65 -o rom_bank4.bin rom_bank4.o -C $(LINKER_SCRIPT)/atari2600_1000.inc
 
 rom_bank4.o:	rom_bank4.s \
-	dni_n_data.zx02
+	dni_n_data.zx02 dni_e_data.zx02
 	ca65 -o rom_bank4.o rom_bank4.s -l rom_bank4.lst
 
 
@@ -328,6 +329,12 @@ behind_fireplace_data.inc:	behind_fireplace_bg.png behind_fireplace_overlay.png
 dni_n_data.inc:	dni_n_bg.png dni_n_overlay.png
 	$(PNG2PF) -n dni_n -b 0x00 dni_n_bg.png - > dni_n_data.inc
 	$(PNG2OVERLAY) -o -n dni_n dni_n_overlay.png - >> dni_n_data.inc
+
+###
+
+dni_e_data.inc:	dni_e_bg.png dni_e_overlay.png
+	$(PNG2PF) -n dni_e -b 0x00 dni_e_bg.png - > dni_e_data.inc
+	$(PNG2OVERLAY) -o -n dni_e dni_e_overlay.png - >> dni_e_data.inc
 
 
 ###
@@ -757,6 +764,18 @@ dni_n_data.bin:	dni_n_data.o
 
 dni_n_data.o:	dni_n_data.s dni_n_data.inc
 	ca65 -o dni_n_data.o dni_n_data.s -l dni_n_data.lst
+
+###
+
+dni_e_data.zx02:	dni_e_data.bin
+	$(ZX02) -f dni_e_data.bin dni_e_data.zx02
+
+dni_e_data.bin:	dni_e_data.o
+	ld65 -o dni_e_data.bin dni_e_data.o -C $(LINKER_SCRIPT)/atari2600_f000.inc
+
+dni_e_data.o:	dni_e_data.s dni_e_data.inc
+	ca65 -o dni_e_data.o dni_e_data.s -l dni_e_data.lst
+
 
 
 ###
