@@ -50,6 +50,9 @@ level_locations.inc:	\
 	$(CALC_ADDRESS) -a 0x1000 -s inside_fireplace_data_zx02 rom_bank3.lst >> level_locations.inc
 	$(CALC_ADDRESS) -a 0x1000 -s dni_n_data_zx02 rom_bank4.lst >> level_locations.inc
 	$(CALC_ADDRESS) -a 0x1000 -s dni_e_data_zx02 rom_bank4.lst >> level_locations.inc
+	$(CALC_ADDRESS) -a 0x1000 -s atrus_e_data_zx02 rom_bank4.lst >> level_locations.inc
+	$(CALC_ADDRESS) -a 0x1000 -s trapped_data_zx02 rom_bank4.lst >> level_locations.inc
+
 
 
 
@@ -119,7 +122,8 @@ rom_bank4.bin:	rom_bank4.o
 	ld65 -o rom_bank4.bin rom_bank4.o -C $(LINKER_SCRIPT)/atari2600_1000.inc
 
 rom_bank4.o:	rom_bank4.s \
-	dni_n_data.zx02 dni_e_data.zx02
+	dni_n_data.zx02 dni_e_data.zx02 atrus_e_data.zx02 \
+	trapped_data.zx02
 	ca65 -o rom_bank4.o rom_bank4.s -l rom_bank4.lst
 
 
@@ -277,9 +281,16 @@ shack_s_data.inc:	shack_s_bg.png shack_s_overlay.png
 
 ###
 
-burnt_book_data.inc:	burnt_book_bg.png burnt_book_overlay.png
+burnt_book_data.inc:	burnt_book_bg.png blank_overlay.png
 	$(PNG2PF) -n burnt_book -b 0x00 burnt_book_bg.png - > burnt_book_data.inc
-	$(PNG2OVERLAY) -o -n burnt_book burnt_book_overlay.png - >> burnt_book_data.inc
+	$(PNG2OVERLAY) -o -n burnt_book blank_overlay.png - >> burnt_book_data.inc
+
+###
+
+trapped_data.inc:	trapped_bg.png blank_overlay.png
+	$(PNG2PF) -n trapped -b 0x00 trapped_bg.png - > trapped_data.inc
+	$(PNG2OVERLAY) -o -n trapped blank_overlay.png - >> trapped_data.inc
+
 
 
 ###
@@ -335,6 +346,13 @@ dni_n_data.inc:	dni_n_bg.png dni_n_overlay.png
 dni_e_data.inc:	dni_e_bg.png dni_e_overlay.png
 	$(PNG2PF) -n dni_e -b 0x00 dni_e_bg.png - > dni_e_data.inc
 	$(PNG2OVERLAY) -o -n dni_e dni_e_overlay.png - >> dni_e_data.inc
+
+###
+
+atrus_e_data.inc:	atrus_e_bg.png atrus_e_overlay.png
+	$(PNG2PF) -n atrus_e -b 0x00 atrus_e_bg.png - > atrus_e_data.inc
+	$(PNG2OVERLAY) -o -n atrus_e atrus_e_overlay.png - >> atrus_e_data.inc
+
 
 
 ###
@@ -678,6 +696,18 @@ burnt_book_data.o:	burnt_book_data.s burnt_book_data.inc
 
 ###
 
+trapped_data.zx02:	trapped_data.bin
+	$(ZX02) -f trapped_data.bin trapped_data.zx02
+
+trapped_data.bin:	trapped_data.o
+	ld65 -o trapped_data.bin trapped_data.o -C $(LINKER_SCRIPT)/atari2600_f000.inc
+
+trapped_data.o:	trapped_data.s trapped_data.inc
+	ca65 -o trapped_data.o trapped_data.s -l trapped_data.lst
+
+
+###
+
 library_n_data.zx02:	library_n_data.bin
 	$(ZX02) -f library_n_data.bin library_n_data.zx02
 
@@ -775,6 +805,18 @@ dni_e_data.bin:	dni_e_data.o
 
 dni_e_data.o:	dni_e_data.s dni_e_data.inc
 	ca65 -o dni_e_data.o dni_e_data.s -l dni_e_data.lst
+
+###
+
+atrus_e_data.zx02:	atrus_e_data.bin
+	$(ZX02) -f atrus_e_data.bin atrus_e_data.zx02
+
+atrus_e_data.bin:	atrus_e_data.o
+	ld65 -o atrus_e_data.bin atrus_e_data.o -C $(LINKER_SCRIPT)/atari2600_f000.inc
+
+atrus_e_data.o:	atrus_e_data.s atrus_e_data.inc
+	ca65 -o atrus_e_data.o atrus_e_data.s -l atrus_e_data.lst
+
 
 
 

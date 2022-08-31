@@ -112,6 +112,8 @@ level_bank_lookup:
 	.byte	3			; 39 = inside_fireplace
 	.byte	4			; 40 = dni_n
 	.byte	4			; 41 = dni_e
+	.byte	4			; 42 = atrus_e
+	.byte	4			; 43 = trapped
 
 
 
@@ -160,6 +162,8 @@ level_compress_data_low:
 	.byte	<inside_fireplace_data_zx02
 	.byte	<dni_n_data_zx02
 	.byte	<dni_e_data_zx02
+	.byte	<atrus_e_data_zx02
+	.byte	<trapped_data_zx02
 
 
 
@@ -208,3 +212,5 @@ level_compress_data_high:
 	.byte	>inside_fireplace_data_zx02
 	.byte	>dni_n_data_zx02
 	.byte	>dni_e_data_zx02
+	.byte	>atrus_e_data_zx02
+	.byte	>trapped_data_zx02
