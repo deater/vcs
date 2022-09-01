@@ -41,7 +41,8 @@ clear_loop:
 	; Run intro (bank 6)
 	;==============================
 
-	lda	$FFE6
+	sta	E7_SET_BANK6		; intro is in rom bank6
+	sta	E7_SET_256_BANK0	; not necessary?
 
 	jsr	do_intro
 
@@ -81,7 +82,7 @@ load_new_level:
 
 do_book:
 	; switch to bank 6
-	lda	$FFE6
+	sta	E7_SET_BANK6
 
 	jmp	book_common
 
@@ -90,6 +91,9 @@ do_book:
 .align $100 ; temporary
 	.include "sprite_data.inc"
 
+; e7 signature for MAME */
+; this is LDA $FFE5
+;.byte $ad, $e5, $ff
 
 .segment "IRQ_VECTORS"
 	.word myst	; NMI

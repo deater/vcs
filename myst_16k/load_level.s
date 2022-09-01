@@ -18,7 +18,7 @@ load_level:
 	; swap in ROM bank
 
 	ldx	level_bank_lookup,Y
-	lda	$FFE0,X
+	lda	E7_SET_BANK0,X
 
 	; copy 256 bytes of data to temp RAM
 
@@ -30,25 +30,25 @@ load_level:
 	ldy	#0
 copy_compress_loop:
 	lda	(INL),Y
-	sta	$1800,Y			; copy to 256 byte RAM block
+	sta	E7_256B_WRITE_ADDR,Y	; copy to 256 byte RAM block
 	iny
 	bne	copy_compress_loop
 
 	; swap in RAM
 
-	lda	$1FE7
+	sta	E7_SET_BANK7_RAM	; also mame-recognized signature
 
 	; decompress from temporary RAM
 
 	lda	#$4
 	sta	READ_WRITE_OFFSET
 
-	lda	#<$1900
+	lda	#<E7_256B_READ_ADDR
 	sta	ZX0_src
-	lda	#>$1900
+	lda	#>E7_256B_READ_ADDR
 	sta	ZX0_src_h
 
-	lda	#>$1000
+	lda	#>E7_BANK_BASE
 	jsr	zx02_full_decomp
 
 
@@ -56,7 +56,7 @@ copy_compress_loop:
 
 	ldy	#15
 copy_zp_loop:
-	lda	$1400,Y
+	lda	E7_1K_READ_ADDR,Y
 	sta	LEVEL_DATA,Y
 
 	dey

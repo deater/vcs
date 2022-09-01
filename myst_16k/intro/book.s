@@ -1,8 +1,8 @@
-	book_edge_colors 	= $1900
-	page1_colors		= $1900+48
-	page1_sprite		= $1900+96
-	page2_colors		= $1900+144
-	page2_sprite		= $1900+192
+	book_edge_colors 	= E7_256B_READ_ADDR
+	page1_colors		= E7_256B_READ_ADDR+48
+	page1_sprite		= E7_256B_READ_ADDR+96
+	page2_colors		= E7_256B_READ_ADDR+144
+	page2_sprite		= E7_256B_READ_ADDR+192
 
 	;=====================
 	; Linking Book
@@ -32,7 +32,7 @@ book_common:
 	lda     book_data_h,X
 	sta     ZX0_src_h
 
-	lda	#>$1800
+	lda	#>E7_256B_WRITE_ADDR
 	jsr     zx02_full_decomp
 
 

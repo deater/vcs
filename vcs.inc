@@ -137,3 +137,31 @@ TIM1T	=	$294		; set 1 clock interval
 TIM8T	=	$295		; set 8 clock interval
 TIM64T	=	$296		; set 64 clock interval
 T1024T	=	$297		; set 1024 clock interval
+
+
+; E7 bank-switch
+; For E7 bank-switched cartridge (16k ROM, 2k RAM)
+
+;       1FE0 - 1FE6 activates that bank of ROM into $1000-$17FF
+;       1FE7 activates 1k of RAM instead (1000-13FF is write, 1400-17ff read)
+;       1FE8 - 1FEB activates which 256B RAM shows up at $1800 W/$1900 R
+;       1A00 - 1FDF ROM always visible
+
+
+
+; signatures MAME looks for
+;	$ad, $e5, $ff	lda $FFE5
+;	$8d, $e7, $ff	sta $FFE7
+
+E7_BANK_BASE		= $F000
+
+E7_1K_WRITE_ADDR	= $F000
+E7_1K_READ_ADDR		= $F400
+
+E7_256B_WRITE_ADDR	= $F800
+E7_256B_READ_ADDR	= $F900
+
+E7_SET_BANK0		= $FFE0
+E7_SET_BANK6		= $FFE6
+E7_SET_BANK7_RAM	= $FFE7
+E7_SET_256_BANK0	= $FFE8
