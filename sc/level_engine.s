@@ -3,17 +3,22 @@
 	;=====================
 	; ideally called with VBLANK disabled
 
-	; comes in with 3 cycles from loop
-level_frame:
+
+
 
        lda     #CTRLPF_REF|CTRLPF_BALL_SIZE4                           ; 2
                                         ; reflect playfield
        sta     CTRLPF                                                  ; 3
 
+level_frame:
+
+	; comes in with 3 cycles from loop
+
 
 	;============================
 	; Start Vertical Blank
 	;============================
+	; actually takes 4 scanlines, clears out current then three more
 
 	jsr	common_vblank
 
@@ -352,29 +357,13 @@ strongbad_moved_horizontally:
 
 ; 10
 
-	sta	WSYNC
-
-	;=============================================
-	; turn off beam
-	;=============================================
-beam_off:
-
-.if 0
-	lda	#$42		; enable INPT4/INPT5, turn off beam
-	sta	VBLANK
+;	sta	WSYNC
 
 	;===========================
 	;===========================
 	; overscan (30 cycles)
 	;===========================
 	;===========================
-
-	ldx	#24							; 2
-le_overscan_loop:
-	sta	WSYNC							; 3
-	dex								; 2
-	bne	le_overscan_loop					; 2/3
-.endif
 
 	ldx	#24
 	jsr	common_overscan

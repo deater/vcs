@@ -24,8 +24,8 @@ start_title:
 	;=================
 	; start VBLANK
 	;=================
-	; in scanline 0
-
+	; want to come in 1 scanline down
+	; as this finishes old then does 3 for VSYNC
 
 	jsr	common_vblank
 
@@ -393,7 +393,7 @@ endtitle_loop:
 	; overscan for 30 scanlines
 	;==========================
 
-	ldx	#30
+	ldx	#29
 	jsr	common_overscan
 
 ; 10

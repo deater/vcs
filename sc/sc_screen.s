@@ -11,7 +11,7 @@
 	sta	VDELP0		; turn off delay on sprite0		; 3
 	sta	FRAME		; reset frame count			; 3
 ; 22
-	sta	WSYNC
+;	sta	WSYNC
 
 secret_collect_frame:
 ; 0 / 8
@@ -220,17 +220,11 @@ sctext_loop:
 	; must write by CPU 54 [GPU 164]
 ; 51
 
-;	nop								; 2
-;	nop								; 2
-
-	lda	$80	; nop3
-	; this is a hack to account for branch below crossing page
-
 	lda	#0			;				; 2
 	sta	PF2			;				; 3
 	; must write by CPU 65 [GPU 196]
 
-; 60
+; 56
 
 	iny								; 2
 	tya								; 2
@@ -242,6 +236,11 @@ yes_inx2:
 done_inx2:
 								;===========
 								; 11/11
+; 67
+	; nop
+	; nop
+	lda	$80
+	; this is a hack to account for branch below crossing page
 
 ; 71
 	cpy	#36							; 2
@@ -251,7 +250,7 @@ done_inx2:
 ; 75
 done_sctext_loop:
 	sta	WSYNC
-	sta	WSYNC
+;	sta	WSYNC
 
 
 	;==========================
@@ -275,6 +274,10 @@ done_sctext_loop:
 	jmp	secret_collect_frame
 ; 8
 
+	;=================================
+	;=================================
+	;=================================
+
 done_sc:
 ; 6
 	; move to next level
@@ -283,8 +286,9 @@ done_sc:
 	; update score by adding in time
 	ldx	TIME							; 3
 	lda	time_bcd,X						; 4
-
-	jsr	add_to_score						; 6+?
+; 18
+	jsr	add_to_score						; 6+26
+; 50
 
 	; add in bonus
 	lda	DIDNT_TOUCH_WALL					; 3
@@ -311,5 +315,6 @@ add_to_score:
 	adc	SCORE_HIGH						; 3
 	sta	SCORE_HIGH						; 3
 	cld				; disable BCD mode		; 2
-
+; 20
 	rts
+; 26

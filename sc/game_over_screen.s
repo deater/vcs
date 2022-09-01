@@ -221,7 +221,7 @@ go_done_loop:
 	; overscan (30 scanlines)
 	;==========================
 
-	ldx	#27
+	ldx	#26
 	jsr	common_overscan
 
 ; 10
