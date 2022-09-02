@@ -81,6 +81,7 @@ TRIGGER_SOUND		=	$B7
 BALL_OUT		=	$B8
 DIDNT_TOUCH_WALL	=	$B9
 SPEED			=	$BA	; I pity the fool (0..3)
+NEED_TO_REINIT_LEVEL	=	$BB
 
 LEVEL_SPRITE0		=	$C0
 LEVEL_SPRITE1		=	$C1
@@ -177,11 +178,13 @@ init_game:
 	ldx	#3		; number of lives			; 2
 	stx	MANS							; 3
 
-	jsr	init_level
 
 title_screen:
 
 	.include "title_screen.s"
+
+;	jsr	init_level
+
 
 do_level:
 
@@ -197,7 +200,6 @@ game_over_animation:
 	.include "game_over_screen.s"
 
 
-;.include	"init_game.s"
 .include	"init_level.s"
 .include	"sound_trigger.s"
 .include	"sound_update.s"

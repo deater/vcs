@@ -105,6 +105,9 @@ too_many_balls:
 								; 14/13
 ; 246
 
+	dec	NEED_TO_REINIT_LEVEL
+; 251
+
 reinit_strongbad:
 	; adjust strong bad position
 	;	for now, fixed start
@@ -116,13 +119,15 @@ reinit_strongbad:
 	lda	#0							; 2
 	sta	STRONGBAD_X_LOW						; 3
 	sta	STRONGBAD_Y_LOW						; 3
-	sta	STRONGBAD_ON
+	sta	STRONGBAD_ON						; 3
+								;==========
+								;	21
 
-; 264
+; 272
 
 	rts								; 6
 
-; 270 = ~3.5 scanlines
+; 278 = ~3.5 scanlines
 
 ; could use some tuning?
 ; amount of time allowed for each wave

@@ -290,14 +290,18 @@ done_sc:
 	jsr	add_to_score						; 6+26
 ; 50
 
+	; FIXME: one scanline extra if we get the bonus
+
 	; add in bonus
 	lda	DIDNT_TOUCH_WALL					; 3
 	bne	did_touch_wall						; 2/3
 	lda	#$50							; 2
-	jsr	add_to_score						; 6+?
+	jsr	add_to_score						; 6+26
 did_touch_wall:
 
-	jsr	init_level						; 6+!!!
+	inc	NEED_TO_REINIT_LEVEL					; 5
+
+;	jsr	init_level						; 6+!!!
 
 	jmp	do_level
 

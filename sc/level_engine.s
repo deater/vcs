@@ -4,11 +4,11 @@
 	; ideally called with VBLANK disabled
 
 
+	inc	NEED_TO_REINIT_LEVEL
 
-
-       lda     #CTRLPF_REF|CTRLPF_BALL_SIZE4                           ; 2
-                                        ; reflect playfield
-       sta     CTRLPF                                                  ; 3
+	lda	#CTRLPF_REF|CTRLPF_BALL_SIZE4				; 2
+							; reflect playfield
+	sta	CTRLPF                                                  ; 3
 
 level_frame:
 
@@ -30,11 +30,29 @@ level_frame:
 	;=================================
 	;=================================
 
-	ldx	#15
+	ldx	#11
 le_vblank_loop:
 	sta	WSYNC							; 3
 	dex								; 2
 	bne	le_vblank_loop						; 2/3
+
+	;=============================
+	; now at VBLANK scanline 11
+	;=============================
+	; re-init level if necessary
+	lda	NEED_TO_REINIT_LEVEL
+	beq	no_we_dont
+
+	jsr	init_level		; take 3.5 scanlines
+	jmp	one_last_wsync
+
+no_we_dont:
+	sta	WSYNC
+	sta	WSYNC
+	sta	WSYNC
+one_last_wsync:
+	sta	WSYNC
+
 
 	;=============================
 	; now at VBLANK scanline 15
@@ -527,16 +545,18 @@ goto_zap:
 	; zapped by wall
 ; 12
 
-	jsr	reinit_strongbad	; reset position		; 6+24
+	jsr	reinit_strongbad	; reset position		; 6+27
 
-	lda	#0			; reset game over
-	sta	LEVEL_OVER
+; 45
 
-	inc	DIDNT_TOUCH_WALL	; note we touched the wall
-
-	lda	SPEED
-	beq	speed_already_slow
-	dec	SPEED			; reset speed
+	lda	#0			; reset game over		; 2
+	sta	LEVEL_OVER						; 3
+; 50
+	inc	DIDNT_TOUCH_WALL	; note we touched the wall	; 5
+; 55
+	lda	SPEED							; 3
+	beq	speed_already_slow					; 2/3
+	dec	SPEED			; reset speed			; 5
 speed_already_slow:
 	jmp	level_frame
 
@@ -546,6 +566,8 @@ goto_oot:
 	dec	MANS			; done one life
 	bmi	goto_go			; if negative, game over
 
-	jsr	init_level		; restart level			;6+!!!
+	inc	NEED_TO_REINIT_LEVEL
+
+;	jsr	init_level		; restart level			;6+!!!
 
 	jmp	level_frame
