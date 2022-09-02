@@ -151,13 +151,10 @@ start:
 	sei			; disable interrupts
 	cld			; clear decimal mode
 
-;	ldx	#$FF		; set stack to $1FF (mirrored at $FF)
-;	txs
-
-
-
-
 restart_game:
+
+	;=========================================
+	; init zero page and TIA registers to 0
 
 
 	ldx	#0
@@ -167,15 +164,18 @@ clear_loop:
 	inx
 	bne	clear_loop
 	dex
-	txs
+	txs			; init stack pointer to $FF
 
 	lda	#2
 	sta	VBLANK		; disable beam
 
-	; inline this?
+init_game:
 
+	lda	#$90		; init the zappy wall colors		; 2
+	sta	ZAP_BASE						; 3
 
-	.include "init_game.s"
+	ldx	#3		; number of lives			; 2
+	stx	MANS							; 3
 
 	jsr	init_level
 
