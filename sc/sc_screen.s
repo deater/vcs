@@ -320,5 +320,6 @@ add_to_score:
 	sta	SCORE_HIGH						; 3
 	cld				; disable BCD mode		; 2
 ; 20
+delay_12:
 	rts
 ; 26

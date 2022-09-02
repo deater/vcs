@@ -387,7 +387,7 @@ draw_playfield_bonus:
 	;=================================================
 	; draw 8 lines at bottom, where bonus appears
 
-; 3
+; 2
 	; enable secret if it's visible
 
 	lda	STRONGBAD_ON				; 3
@@ -397,10 +397,10 @@ draw_playfield_bonus:
 	lda	SECRET_ON				; 3
 	sta	GRP1					; 3
 
-; 21
+; 20
 	ldy	#$82		; blue ball		; 2
 	sty	COLUPF		;			; 3
-; 26
+; 25
 
 	; activate strongbad sprite if necessary
 	lda	#$F0			; load sprite data		; 2
@@ -423,17 +423,17 @@ after_sprite2:
 								; 13 / 18 / 18
 								; 18 / 18 / 18
 
-; 44
+; 43
 	inc	TEMP1			; nop5				; 5
 	lda	$80			; nop3				; 3
 
-; 52
+; 48
 	lda	#0							; 2
 	cpx	#172							; 2
 	bcc	all_good						; 2/3
 	sta	SECRET_ON						; 3
 	sta	BALL_ON							; 3
-	jmp	all_done						; 3
+	bcs	all_done	 ; bra					; 3
 all_good:
 	nop								; 2
 	nop								; 2
@@ -442,24 +442,27 @@ all_good:
 all_done:
 								;==========
 								; 15 / 7
-; 67
+; 63
 
 	; this needs to happen before cycle 70
 	lda	#$C2		; restore green wall			; 2
 	sta	COLUPF							; 3
-; 72
+; 68
+;	lda	TEMP1	; nop3
+
+; 71
 	inx								; 2
 	cpx	#176		; see if hit end			; 2
-; 76
+; 75
 	bne	draw_playfield_bonus					; 2/3
-; want +3
+; want +2
 
 	;=========================
 	; 176 - 180
 	;=========================
 	; draw bottom 4 lines
 	; FIXME: collision detection on bottom is weird
-; 2
+; 1
 draw_bottom:
 	lda	#$F0							; 2
 	sta	PF0							; 3
@@ -471,7 +474,7 @@ draw_bottom:
 	lda	#0							; 2
 	sta	ENABL							; 3
 
-; 23
+; 24
 
 	lda	#0							; 2
 	cpx	STRONGBAD_Y_END						; 3
@@ -484,7 +487,7 @@ let_be_strongbad3:
 turn_off_strongbad3_done:
 								;============
 								; 13 / 13
-; 36
+; 37
 
 
 	inx

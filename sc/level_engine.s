@@ -283,14 +283,19 @@ no_balls:
 	sta	PF0						; 3
 ; 5
 	; need to write after 28
-	inc	TEMP1						; 5
-	inc	TEMP1						; 5
-	inc	TEMP1						; 5
-	inc	TEMP1						; 5
-	inc	TEMP1						; 5
+
+	jsr	delay_12
+	jsr	delay_12
+;	inc	TEMP1						; 5
+;	inc	TEMP1						; 5
+;	inc	TEMP1						; 5
+;	inc	TEMP1						; 5
+;	inc	TEMP1						; 5
+
+; 29
 	lda	LEVEL_SPRITE8					; 3
 	sta	PF0						; 3
-; 36
+; 35
 	sta	WSYNC
 
 	; draw part of the playfield level #
@@ -299,21 +304,27 @@ no_balls:
 	sta	PF0						; 3
 ; 5
 	; need to write after 28
-	inc	TEMP1						; 5
-	inc	TEMP1						; 5
-	inc	TEMP1						; 5
-	inc	TEMP1						; 5
-	inc	TEMP1						; 5
+
+	jsr	delay_12
+	jsr	delay_12
+
+
+;	inc	TEMP1						; 5
+;	inc	TEMP1						; 5
+;	inc	TEMP1						; 5
+;	inc	TEMP1						; 5
+;	inc	TEMP1						; 5
+; 29
 	lda	LEVEL_SPRITE9					; 3
 	sta	PF0						; 3
-; 31
+; 35
 
 	;================================
 	; strongbad moved horizontally
 strongbad_moved_horizontally:
-; 31
+; 35
 	lda	STRONGBAD_X						; 3
-; 34
+; 38
 	; spritex DIV 16
 
 	lsr								; 2
@@ -321,14 +332,14 @@ strongbad_moved_horizontally:
 	lsr								; 2
 	lsr								; 2
 	sta	STRONGBAD_X_COARSE					; 3
-; 45
+; 49
 	; apply fine adjust
 	lda	STRONGBAD_X						; 3
 	and	#$0f							; 2
 	tax								; 2
 	lda	fine_adjust_table,X					; 4+
 	sta	HMP0							; 3
-; 59
+; 63
 
 	sta	WSYNC
 
