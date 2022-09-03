@@ -1,3 +1,8 @@
+GLITCHES: mostly an extra scanline
+	+ zapped by wall (could make inentional)
+	+ end of timer
+	+ going to game over
+
 TITLE SCREEN:
 	+ show red/yellow box animation?
 

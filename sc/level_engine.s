@@ -30,7 +30,7 @@ level_frame:
 	;=================================
 	;=================================
 
-	ldx	#10
+	ldx	#9
 le_vblank_loop:
 	sta	WSYNC							; 3
 	dex								; 2
@@ -38,16 +38,18 @@ le_vblank_loop:
 
 
 	;=============================
-	; now at VBLANK scanline 10
+	; now at VBLANK scanline 9
 	;=============================
-	lda	NEED_TO_UPDATE_SCORE
-	jsr	add_to_score
-	lda	NEED_TO_UPDATE_BONUS
-	jsr	add_to_score
-
-	lda	#0
-	sta	NEED_TO_UPDATE_SCORE
-	sta	NEED_TO_UPDATE_BONUS
+	lda	NEED_TO_UPDATE_SCORE					; 3
+	jsr	add_to_score						; 32
+; 35
+	lda	NEED_TO_UPDATE_BONUS					; 3
+	jsr	add_to_score						; 32
+; 70
+	lda	#0							; 2
+	sta	NEED_TO_UPDATE_SCORE					; 3
+	sta	NEED_TO_UPDATE_BONUS					; 3
+; 78
 	sta	WSYNC
 
 
@@ -594,8 +596,7 @@ goto_oot:
 	dec	MANS			; done one life
 	bmi	goto_go			; if negative, game over
 
+	; indicate we should reinit level
 	inc	NEED_TO_REINIT_LEVEL
-
-;	jsr	init_level		; restart level			;6+!!!
 
 	jmp	level_frame

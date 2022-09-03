@@ -12,10 +12,6 @@
 	; set up playfield (4 scanlines)
 	;===============================
 
-;	jmp	blurgh3							; 3
-;.align	$100
-
-;blurgh3:
 	lda	$80		; nop3					; 3
 
 	;====================================================
@@ -33,7 +29,6 @@
 	ldx	SECRET_X_COARSE	;					3
 	inx			;					2
 	nop			;					2
-;	inx			;					2
 ; 15
 qpad_x:
 	dex			;					2
@@ -424,38 +419,46 @@ after_sprite2:
 								; 18 / 18 / 18
 
 ; 43
-	inc	TEMP1			; nop5				; 5
-	lda	$80			; nop3				; 3
 
-; 48
+;	inc	TEMP1			; nop5				; 5
+;	lda	$80			; nop3				; 3
+
+	nop								; 2
+	nop								; 2
+	nop								; 2
+	ldy	#$C2							; 2
+
+; 51
 	lda	#0							; 2
 	cpx	#172							; 2
-	bcc	all_good						; 2/3
+	bcc	all_good						; 2/3+1
 	sta	SECRET_ON						; 3
+; PAGE CROSSING
 	sta	BALL_ON							; 3
 	bcs	all_done	 ; bra					; 3
 all_good:
 	nop								; 2
 	nop								; 2
-	nop								; 2
-	nop								; 2
+	lda	$80		; nop3					; 3
 all_done:
 								;==========
-								; 15 / 7
-; 63
+								; 15 / 8
+
+
+
+; 66
 
 	; this needs to happen before cycle 70
-	lda	#$C2		; restore green wall			; 2
-	sta	COLUPF							; 3
-; 68
-;	lda	TEMP1	; nop3
+;	lda	#$C2		; restore green wall			; 2
+	sty	a:COLUPF							; 3
+;	nop								; 2
 
 ; 71
 	inx								; 2
 	cpx	#176		; see if hit end			; 2
 ; 75
-	bne	draw_playfield_bonus					; 2/3
-; want +2
+	bne	draw_playfield_bonus					; 2/3+1
+; want 78 (+2)
 
 	;=========================
 	; 176 - 180
