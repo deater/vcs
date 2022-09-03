@@ -33,7 +33,7 @@ init_level:
 	lda	#0							; 2
 	sta	FRAME							; 3
 	sta	LEVEL_OVER						; 3
-	sta	DIDNT_TOUCH_WALL					; 3
+	sta	TOUCHED_WALL						; 3
 ; 48
 
 

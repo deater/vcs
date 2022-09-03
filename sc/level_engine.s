@@ -30,11 +30,26 @@ level_frame:
 	;=================================
 	;=================================
 
-	ldx	#11
+	ldx	#10
 le_vblank_loop:
 	sta	WSYNC							; 3
 	dex								; 2
 	bne	le_vblank_loop						; 2/3
+
+
+	;=============================
+	; now at VBLANK scanline 10
+	;=============================
+	lda	NEED_TO_UPDATE_SCORE
+	jsr	add_to_score
+	lda	NEED_TO_UPDATE_BONUS
+	jsr	add_to_score
+
+	lda	#0
+	sta	NEED_TO_UPDATE_SCORE
+	sta	NEED_TO_UPDATE_BONUS
+	sta	WSYNC
+
 
 	;=============================
 	; now at VBLANK scanline 11
@@ -442,6 +457,8 @@ collision_wall:
 	; if STRONGBAD_Y>ZAP_BEGIN && STRONGBAD_Y<ZAP_END
 	;	 and STRONGBAD_X>1 and STRONGBAD_X<150 we got zapped!
 
+	inc	TOUCHED_WALL
+
 	lda	STRONGBAD_X						; 3
 	cmp	#12							; 2
 ; 16
@@ -563,7 +580,7 @@ goto_zap:
 	lda	#0			; reset game over		; 2
 	sta	LEVEL_OVER						; 3
 ; 50
-	inc	DIDNT_TOUCH_WALL	; note we touched the wall	; 5
+;	inc	TOUCHED_WALL		; note we touched the wall	; 5
 ; 55
 	lda	SPEED							; 3
 	beq	speed_already_slow					; 2/3

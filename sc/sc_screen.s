@@ -286,22 +286,20 @@ done_sc:
 	; update score by adding in time
 	ldx	TIME							; 3
 	lda	time_bcd,X						; 4
-; 18
-	jsr	add_to_score						; 6+26
-; 50
-
-	; FIXME: one scanline extra if we get the bonus
+	sta	NEED_TO_UPDATE_SCORE					; 3
+; 21
 
 	; add in bonus
-	lda	DIDNT_TOUCH_WALL					; 3
-	bne	did_touch_wall						; 2/3
-	lda	#$50							; 2
-	jsr	add_to_score						; 6+26
-did_touch_wall:
+	ldx	#0							; 2
+	lda	TOUCHED_WALL						; 3
+	bne	touched_wall						; 2/3
+	ldx	#$50							; 2
+touched_wall:
+	stx	NEED_TO_UPDATE_BONUS					; 3
+
+	; make it reinit level
 
 	inc	NEED_TO_REINIT_LEVEL					; 5
-
-;	jsr	init_level						; 6+!!!
 
 	jmp	do_level
 
