@@ -11,7 +11,7 @@
 	sta	VDELP0		; turn off delay on sprite0		; 3
 	sta	FRAME		; reset frame count			; 3
 ; 22
-;	sta	WSYNC
+	sta	WSYNC
 
 secret_collect_frame:
 ; 0 / 8
@@ -296,11 +296,12 @@ done_sc:
 	ldx	#$50							; 2
 touched_wall:
 	stx	NEED_TO_UPDATE_BONUS					; 3
-
+; 32
 	; make it reinit level
 
-	inc	NEED_TO_REINIT_LEVEL					; 5
-
+;	inc	NEED_TO_REINIT_LEVEL					; 5
+; 37
+;	sta	WSYNC
 	jmp	do_level
 
 	;=====================
