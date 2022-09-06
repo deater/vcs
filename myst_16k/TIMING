@@ -1,0 +1,9 @@
+decompress times:
+
+; sceen = 40 + 192 + 30 = 262 
+
+arrival:	24386 cycles	= 321 scanlines
+dock_n:		25036 cycles	= 
+short_steps:	26188 cycles	= 344 scanlines
+gears_n:	22709 cycles
+gears_2:	22459 cycles
