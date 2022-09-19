@@ -402,6 +402,17 @@ done_kernel:
 	sta	PF0							; 3
 	sta	PF1							; 3
 	sta	PF2							; 3
+
+	lda	SWCHB			; check if reset pressed        ; 3
+	lsr				; put reset into carry          ; 2
+	bcs	no_reset						; 2/3
+
+	jmp	rr
+
+no_reset:
+
+
+
 ; 13
 
 	ldx     #29							; 2
