@@ -130,6 +130,11 @@ int loadpng(char *filename, unsigned char **image_ptr, int *xsize, int *ysize,
 			xadd=2;
 			yadd=1;
 		}
+		else if (skip==1) {
+			*xsize=320;
+			xadd=1;
+			yadd=1;
+		}
 		else {
 			fprintf(stderr,"Unsupported skip %d!\n",skip);
 			return -1;

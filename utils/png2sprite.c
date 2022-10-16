@@ -11,13 +11,34 @@
 
 #include "loadpng.h"
 
+
+static void dump_sprite(FILE *outfile,char *name, int which,
+	int ysize, int *sprite) {
+
+	int row,i;
+
+	fprintf(outfile,"\n%s%d:\n",name,which);
+	for(row=ysize-1;row>=0;row--) {
+		fprintf(outfile,"\t.byte $%02X\t",sprite[row]);
+
+		for(i=0;i<8;i++) {
+			fprintf(outfile,"%c",(sprite[row]&(1<<i))?'*':'.');
+		}
+		fprintf(outfile,"\n");
+	}
+}
+
+
 /* from http://graphics.stanford.edu/~seander/bithacks.html */
 //static unsigned char reverse_byte(unsigned char b) {
 //	return (b * 0x0202020202ULL & 0x010884422010ULL) % 1023;
 //}
 
 static void print_help(char *name) {
-	fprintf(stderr,"Usage:\t%s INFILE OUTFILE\n\n",name);
+	fprintf(stderr,"Usage:\t%s [-l lines] [-w width] INFILE OUTFILE\n\n",name);
+	fprintf(stderr,"\t-l lines : number of lines\n");
+	fprintf(stderr,"\t-w width : width of pixels\n");
+
 	exit(-1);
 }
 
@@ -25,7 +46,7 @@ static void print_help(char *name) {
 
 int main(int argc, char **argv) {
 
-	int row=0;
+	int row=0,max_lines=-1,pixel_width=1;
 	int col=0;
 	int sprite0[192],sprite1[192],sprite2[192];
 	int sprite3[192],sprite4[192],sprite5[192];
@@ -38,7 +59,7 @@ int main(int argc, char **argv) {
 
 
 	/* Check command line arguments */
-	while ((c = getopt (argc, argv,"248dhv"))!=-1) {
+	while ((c = getopt (argc, argv,"248dhl:w:v"))!=-1) {
 		switch (c) {
 		case 'd':
 			fprintf(stderr,"DEBUG enabled\n");
@@ -46,6 +67,12 @@ int main(int argc, char **argv) {
 			break;
 		case 'h':
 			print_help(argv[0]);
+			break;
+		case 'l':
+			max_lines=atoi(optarg);
+			break;
+		case 'w':
+			pixel_width=atoi(optarg);
 			break;
 		case 'v':
 			print_help(argv[0]);
@@ -78,7 +105,7 @@ int main(int argc, char **argv) {
 		exit(-1);
 	}
 
-	if (loadpng(input_filename,&image,&xsize,&ysize,PNG_WHOLETHING,2)<0) {
+	if (loadpng(input_filename,&image,&xsize,&ysize,PNG_WHOLETHING,pixel_width)<0) {
 		fprintf(stderr,"Error loading png!\n");
 		exit(-1);
 	}
@@ -91,6 +118,19 @@ int main(int argc, char **argv) {
 	}
 
 	/* Yes I know this is inefficient */
+
+	/* ======================================= */
+
+	if ((max_lines>0) && (max_lines<ysize)) {
+		ysize=max_lines;
+	}
+
+
+	fprintf(stderr,"Generating %d lines, reversed\n",ysize);
+
+	/* ======================================= */
+
+
 
 	/* generate sprite0 table */
 	for(row=0;row<ysize;row++) {
@@ -117,35 +157,12 @@ int main(int argc, char **argv) {
 	}
 
 
-	fprintf(outfile,"\nsprite0:\n");
-	for(row=ysize-1;row>=0;row--) {
-		fprintf(outfile,"\t.byte $%02X\n",sprite0[row]);
-	}
-
-	fprintf(outfile,"\nsprite1:\n");
-	for(row=ysize-1;row>=0;row--) {
-		fprintf(outfile,"\t.byte $%02X\n",sprite1[row]);
-	}
-
-	fprintf(outfile,"\nsprite2:\n");
-	for(row=ysize-1;row>=0;row--) {
-		fprintf(outfile,"\t.byte $%02X\n",sprite2[row]);
-	}
-
-	fprintf(outfile,"\nsprite3:\n");
-	for(row=ysize-1;row>=0;row--) {
-		fprintf(outfile,"\t.byte $%02X\n",sprite3[row]);
-	}
-
-	fprintf(outfile,"\nsprite4:\n");
-	for(row=ysize-1;row>=0;row--) {
-		fprintf(outfile,"\t.byte $%02X\n",sprite4[row]);
-	}
-
-	fprintf(outfile,"\nsprite5:\n");
-	for(row=ysize-1;row>=0;row--) {
-		fprintf(outfile,"\t.byte $%02X\n",sprite5[row]);
-	}
+	dump_sprite(outfile,"sprite",0,ysize,sprite0);
+	dump_sprite(outfile,"sprite",1,ysize,sprite1);
+	dump_sprite(outfile,"sprite",2,ysize,sprite2);
+	dump_sprite(outfile,"sprite",3,ysize,sprite3);
+	dump_sprite(outfile,"sprite",4,ysize,sprite4);
+	dump_sprite(outfile,"sprite",5,ysize,sprite5);
 
 	fclose(outfile);
 
