@@ -4,7 +4,10 @@
 	; potentially arrive here with an unknown number of cycles/scanlines
 	; ideally VBLANK=2 (beam off)
 
-do_cart:
+do_cart_message:
+	jmp	align_cart
+.align	$100
+align_cart:
 	; the init code sets everything to 0
 
 	lda	#$28							; 2
@@ -15,7 +18,7 @@ do_cart:
 	sta	TITLE_COUNTDOWN						; 3
 
 	; comes in at 14 cycles from bottom of loop
-start_title:
+start_cart:
 
 	;=================
 	; start VBLANK
@@ -30,19 +33,19 @@ start_title:
 	; 37 lines of vertical blank
 	;=============================
 
-        ldx     #33
-vbsc_loop:
+        ldx     #34
+cvbsc_loop:
         sta     WSYNC
         dex
-        bne     vbsc_loop
+        bne	cvbsc_loop
 
 	;====================
-	; now in scanline 34
+	; now in scanline 35
 	;====================
         sta     WSYNC
 
 	;===================
-	; now scanline 35
+	; now scanline 36
 	;===================
 	; center the sprite position
 	; needs to be right after a WSYNC
@@ -83,118 +86,49 @@ tpad_x:
 ; 3
 
 	;=======================
-	; scanline 36
-
-	sta	WSYNC
-
-	;=======================
 	; scanline 37 -- config
-; 0
+; 3
 	ldy	#0							; 2
 	ldx	#0							; 2
 	stx	VBLANK			; turn on beam			; 3
 	stx	GRP0							; 3
 	stx	GRP1							; 3
-; 13
+; 16
 	lda	BASE_TITLE_COLOR					; 3
 	sta	TITLE_COLOR						; 3
-; 19
+; 22
 	lda	BACKGROUND_COLOR					; 3
 	sta	COLUBK							; 3
-; 25
+; 28
 	sta	WSYNC
 
 
 	;=============================================
 	;=============================================
-	; draw title
+	; draw cart
 	;=============================================
 	;=============================================
 	; draw 192 lines
 	; need to race beam to draw other half of playfield
 
-title_loop:
-; 0
-	lda	TITLE_COLOR	;					; 3
-	sta	COLUPF		; set playfield color			; 3
-	inc	TITLE_COLOR	; increment for next line		; 5
-	nop			;					; 2
-; 13
-	nop								; 2
-	lda	#0	; always black					; 2
-	sta	PF0				;			; 3
-	; must write by CPU 22 [GPU 68]
-; 20
-	lda	title_playfield1_left,X		;			4+
-	sta	PF1				;			3
-	; must write by CPU 28 [GPU 84]
-; 27
-	lda	title_playfield2_left,X		;			4+
-	sta	PF2				;			3
-	; must write by CPU 38 [GPU 116]
-; 34
-
-	nop					;			2
-	lda	title_playfield0_right,X	;			4+
-	sta	PF0				;			3
-	; must write by CPU 49 [GPU 148]
-; 43
-	lda	title_playfield1_right,X	;			4+
-	sta	PF1				;			3
-	; must write by CPU 54 [GPU 164]
-; 50
-
-	lda	$80				; nop3			3
-	lda	title_playfield2_right,X	;			4+
-	sta	PF2				;			3
-	; must write by CPU 65 [GPU 196]
-; 60
-
-        iny                                                             ; 2
-        tya                                                             ; 2
-        and     #$3                                                     ; 2
-        beq     yes_inx                                                 ; 2/3
-        .byte   $A5     ; begin of LDA ZP                               ; 3
-yes_inx:
-        inx             ; $E8 should be harmless to load                ; 2
-done_inx:
-                                                                ;===========
-                                                                ; 11/11
-
-; 71
-	cpy	#(100)							; 2
-	bne	title_loop						; 2/3
-
-; 76
-
-done_loop:
-
-; 75
-	;================
-	; scanline 120
-
-	sta	WSYNC		; padding
-
-	;===============
-	; scanline 121
-
+	ldx	#80
+cart_loop:
 	sta	WSYNC
+	dex				; 2
+	bne	cart_loop		; 2/3
 
-	;===============
-	; scanline 122
-; 0
-	nop								; 2
-; 2
-	;=========================================
-	;=========================================
-	; draw Videlectrix Logo sprite (11 lines)
-	;=========================================
-	;=========================================
+done_cart_loop:
 
-	; assume coming in 2 cycles after WSYNC (why??)
+; 4
+
+	;=========================================
+	;=========================================
+	; draw cart message (30 lines)
+	;=========================================
+	;=========================================
 
 	;========================
-	; Still in scanline 122
+	; Still in scanline 81
 	;========================
 	; configure 48-pixel sprite code
 
@@ -204,8 +138,8 @@ done_loop:
 	sta	PF0		; turn off playfield so don't collide	; 3
 	sta	PF1		;					; 3
 	sta	PF2		;					; 3
-	sta	GRP0		; turn off sprites			; 3
-	sta	GRP1		;					; 3
+;	sta	GRP0		; turn off sprites			; 3
+;	sta	GRP1		;					; 3
 ; 22
 	; set color
 
@@ -226,48 +160,34 @@ done_loop:
 	sta	VDELP1							; 3
 ; 47
 	; number of lines to draw
-	ldx	#79							; 2
+	ldx	#29							; 2
 	stx	TEMP2							; 3
 ; 52
 	sta	WSYNC							; 3
 
 	;===================
-	; now scanline 123
-	;===================
-
-	sta	WSYNC
-
-	;===================
-	; now scanline 124
-	;===================
-
-	ldx	TEMP2		; restore length of sprite
-
-	sta	WSYNC
-
-	;===================
-	; now scanline 125
+	; now scanline 82
 	;===================
 
 title_spriteloop:
 ; 0
-	lda	title_bitmap0,X		; load sprite data		; 4+
+	lda	cart_message0,X		; load sprite data		; 4+
 	sta	GRP0			; 0->[GRP0] [GRP1 (?)]->GRP1	; 3
 ; 7
-	lda	title_bitmap1,X		; load sprite data		; 4+
+	lda	cart_message1,X		; load sprite data		; 4+
 	sta	GRP1			; 1->[GRP1], [GRP0 (0)]-->GRP0	; 3
 ; 14
-	lda	title_bitmap2,X		; load sprite data		; 4+
+	lda	cart_message2,X		; load sprite data		; 4+
 	sta	GRP0			; 2->[GRP0], [GRP1 (1)]-->GRP1	; 3
 ; 21
 
-	lda	title_bitmap5,X						; 4+
+	lda	cart_message5,X						; 4+
 	sta	TEMP1			; save for later		; 3
 ; 28
-	lda	title_bitmap4,X						; 4+
+	lda	cart_message4,X						; 4+
 	tay				; save in Y			; 2
 ; 34
-	lda	title_bitmap3,X	;					; 4+
+	lda	cart_message3,X	;					; 4+
 	ldx	TEMP1			; restore saved value		; 3
 ; 41
 
@@ -310,7 +230,18 @@ title_spriteloop:
 	sta	WSYNC
 
 	;===================================
-	; scanline 186?
+	; scanline 112
+	;===================================
+
+	ldx	#78
+cart2_loop:
+	sta	WSYNC
+	dex				; 2
+	bne	cart2_loop		; 2/3
+
+
+	;===================================
+	; scanline 190
 	;===================================
 	; check for button or RESET
 	;===================================
@@ -329,16 +260,16 @@ title_spriteloop:
 waited_enough:
 ; 11
 	lda	INPT4			; check joystick button pressed	; 3
-	bpl	set_done_title						; 2/3
+	bpl	set_done_cart						; 2/3
 
 ; 16
 	lda	SWCHB			; check if reset pressed	; 3
 	lsr				; put reset into carry		; 2
-	bcc	set_done_title						; 2/3
+	bcc	set_done_cart						; 2/3
 
 	jmp	done_check_input					; 3
 
-set_done_title:
+set_done_cart:
 ; 17 / 24
 	inc	DONE_TITLE		; we are done			; 5
 done_check_input:
@@ -373,15 +304,10 @@ done_check_input:
 no_rotate_color:
 ; 42 / 71
 
-	ldx     #5
-; 45 / 73
-endtitle_loop:
-        sta     WSYNC
-        dex
-        bne     endtitle_loop
+	sta	WSYNC
 
 	;========================================
-	; scanline 190?  shouldn't we be at 192?
+	; scanline 192
 	;========================================
 
 
@@ -394,13 +320,12 @@ endtitle_loop:
 
 ; 10
 	lda	DONE_TITLE						; 3
-	bne	done_title						; 2/3
+	bne	done_cart						; 2/3
 ; 15
-	jmp	start_title						; 3
+	jmp	start_cart						; 3
 ; 18
 
-done_title:
+done_cart:
 ; 16
 
-delay_12_cycles:
 	rts

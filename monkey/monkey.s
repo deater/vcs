@@ -30,7 +30,7 @@ clear_loop:
 	;=====================
 	; show opening
 
-	jsr	do_opening
+;	jsr	do_opening
 
 	;=====================
 	; show title
@@ -42,17 +42,29 @@ clear_loop:
 
 ;	jsr	do_game
 
+	;=====================
+	; Part 1
+;	jsr	part1
+
+	;=====================
+	; Cart message
+	jsr	do_cart_message
+
+
+
 
 	;=====================
 	; other includes
 
 .include "opening.s"
+.include "cart.s"
 
 .include "common_routines.s"
 
 .align	$100
 .include "lucas.inc"
-
+.align $100
+.include "cart_message.inc"
 
 
 ;.include "rr_trackdata.s"

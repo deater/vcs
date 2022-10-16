@@ -9,7 +9,8 @@ monkey.bin:	monkey.o
 
 monkey.o:	monkey.s \
 	zp.inc common_routines.s \
-	opening.s lucas.inc
+	opening.s lucas.inc \
+	cart.s cart_message.inc
 	ca65 -o monkey.o monkey.s -l monkey.lst
 
 ###
