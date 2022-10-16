@@ -19,7 +19,7 @@ static void dump_sprite(FILE *outfile,char *name, int which,
 
 	fprintf(outfile,"\n%s%d:\n",name,which);
 	for(row=ysize-1;row>=0;row--) {
-		fprintf(outfile,"\t.byte $%02X\t",sprite[row]);
+		fprintf(outfile,"\t.byte $%02X\t; ",sprite[row]);
 
 		for(i=0;i<8;i++) {
 			fprintf(outfile,"%c",(sprite[row]&(1<<i))?'*':'.');
