@@ -6,8 +6,12 @@
 
 do_opening:
 
+	lda	#$E
+	sta	DEBOUNCE_COUNTDOWN
+
 	; comes in at ?? cycles from bottom of loop
 start_opening:
+	sta	WSYNC
 
 	;=================
 	; start VBLANK
@@ -340,7 +344,7 @@ waited_enough:
 set_done_title:
 ; 17 / 24
 	inc	DONE_TITLE		; we are done			; 5
-done_check_input:
+;done_check_input:
 ; 25 / 22 / 29
 
 	;=========================
@@ -389,15 +393,13 @@ endtitle_loop:
 	; overscan for 30 scanlines
 	;==========================
 
-	ldx	#31
+	ldx	#29
 	jsr	common_overscan
 
-; 10
-	lda	DONE_TITLE						; 3
-	bne	done_opening						; 2/3
-; 15
+
+	jsr	check_button_or_reset
+	bcc	done_opening						; 2/3
 	jmp	start_opening						; 3
-; 18
 
 done_opening:
 ; 16

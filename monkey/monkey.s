@@ -30,7 +30,7 @@ clear_loop:
 	;=====================
 	; show opening
 
-;	jsr	do_opening
+	jsr	do_opening
 
 	;=====================
 	; show title
@@ -44,13 +44,16 @@ clear_loop:
 
 	;=====================
 	; Part 1
-;	jsr	part1
+	jsr	part1_trials
 
 	;=====================
 	; Cart message
 	jsr	do_cart_message
 
+	;=====================
+	; Recycle
 
+	jmp	monkey
 
 
 	;=====================
@@ -58,6 +61,8 @@ clear_loop:
 
 .include "opening.s"
 .include "cart.s"
+.align $100
+.include "trials.s"
 
 .include "common_routines.s"
 
@@ -65,7 +70,8 @@ clear_loop:
 .include "lucas.inc"
 .align $100
 .include "cart_message.inc"
-
+.align $100
+.include "trials.inc"
 
 ;.include "rr_trackdata.s"
 

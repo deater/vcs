@@ -15,10 +15,12 @@ align_cart:
 
 	lda	#$0E							; 2
 	sta	TEXT_COLOR						; 3
-	sta	TITLE_COUNTDOWN						; 3
+	sta	DEBOUNCE_COUNTDOWN					; 3
 
 	; comes in at 14 cycles from bottom of loop
 start_cart:
+	sta	WSYNC
+
 
 	;=================
 	; start VBLANK
@@ -240,40 +242,6 @@ cart2_loop:
 	bne	cart2_loop		; 2/3
 
 
-	;===================================
-	; scanline 190
-	;===================================
-	; check for button or RESET
-	;===================================
-; 0
-	lda	#0							; 2
-	sta	DONE_TITLE		; init as not done title	; 3
-; 5
-	;===============================
-	; debounce reset/keypress check
-
-	lda	TITLE_COUNTDOWN						; 3
-	beq	waited_enough						; 2/3
-	dec	TITLE_COUNTDOWN						; 5
-	jmp	done_check_input					; 3
-
-waited_enough:
-; 11
-	lda	INPT4			; check joystick button pressed	; 3
-	bpl	set_done_cart						; 2/3
-
-; 16
-	lda	SWCHB			; check if reset pressed	; 3
-	lsr				; put reset into carry		; 2
-	bcc	set_done_cart						; 2/3
-
-	jmp	done_check_input					; 3
-
-set_done_cart:
-; 17 / 24
-	inc	DONE_TITLE		; we are done			; 5
-done_check_input:
-; 25 / 22 / 29
 
 	;=========================
 	; screensaver
@@ -315,12 +283,12 @@ no_rotate_color:
 	; overscan for 30 scanlines
 	;==========================
 
-	ldx	#31
+	ldx	#30
 	jsr	common_overscan
 
-; 10
-	lda	DONE_TITLE						; 3
-	bne	done_cart						; 2/3
+
+	jsr	check_button_or_reset
+	bcc	done_cart						; 2/3
 ; 15
 	jmp	start_cart						; 3
 ; 18

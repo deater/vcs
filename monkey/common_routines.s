@@ -46,8 +46,37 @@ common_delay_scanlines:
 	bne	common_delay_scanlines					; 2/3
 	rts								; 6
 
-; 10
 
 
+	;======================================
+	; check if button/reset pressed
+	;======================================
+	; need to set DEBOUNCE_COUNTDOWN earlier
 
+check_button_or_reset:
 
+	;===============================
+	; debounce reset/keypress check
+
+	sec				; not pressed by default	; 2
+	lda	DEBOUNCE_COUNTDOWN					; 3
+	beq	waited_enough						; 2/3
+	dec	DEBOUNCE_COUNTDOWN					; 5
+	jmp	done_check_input					; 3
+
+waited_enough:
+
+; 8
+	lda	INPT4			; check joystick button pressed	; 3
+	rol				; put button press into C	; 2
+					; (0=pressed)
+	bcc	done_check_input					; 2/3
+
+; 15
+	lda	SWCHB			; check if reset pressed	; 3
+	lsr				; put reset into carry		; 2
+					; 0=switch pressed
+; 20
+done_check_input:
+	rts
+; 26 worst case?
