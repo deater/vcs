@@ -40,7 +40,7 @@ clear_loop:
 	;=====================
 	; play game
 
-;	jsr	do_game
+	jsr	do_level
 
 	;=====================
 	; Part 1
@@ -63,11 +63,14 @@ clear_loop:
 .include "cart.s"
 .align $100
 .include "trials.s"
+.include "level_engine.s"
 
 .include "common_routines.s"
 
 .align	$100
 .include "lucas.inc"
+.align $100
+.include "lookout.inc"
 .align $100
 .include "cart_message.inc"
 .align $100
