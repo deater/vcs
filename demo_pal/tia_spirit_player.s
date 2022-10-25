@@ -68,7 +68,6 @@ tt_cur_ins_c1           ds 1
 tt_ptr                  ds 2
 .endif
 
-
 ; =====================================================================
 ; TIATracker Player
 ; =====================================================================
@@ -140,31 +139,6 @@ notPrefetched:
 noEndOfPattern:
 .endmacro
 
-; ---------------------------------------------------------------------
-; Helper subroutine to minimize ROM footprint. Will be inlined if
-; TT_USE_OVERLAY is not used.
-; Interleaved here so player can be inlined.
-; ---------------------------------------------------------------------
-.if TT_USE_OVERLAY = 1
-tt_FetchNote:
-        TT_FETCH_CURRENT_NOTE
-        rts
-.endif
-
-; ---------------------------------------------------------------------
-; Helper subroutine to minimize ROM footprint.
-; Interleaved here so player routine can be inlined.
-; ---------------------------------------------------------------------
-tt_CalcInsIndex:
-        ; move upper 3 bits to lower 3
-        lsr
-        lsr
-        lsr
-        lsr
-        lsr
-        tay
-tt_Bit6Set:     ; This opcode has bit #6 set, for use with bit instruction
-        rts
 
 
 ; ---------------------------------------------------------------------
@@ -220,8 +194,16 @@ pause:
         adc #1
         bcc storeADIndex               ; unconditional
 
-
-
+; ---------------------------------------------------------------------
+; Helper subroutine to minimize ROM footprint. Will be inlined if
+; TT_USE_OVERLAY is not used.
+; Interleaved here so player can be inlined.
+; ---------------------------------------------------------------------
+.if TT_USE_OVERLAY = 1
+tt_FetchNote:
+        TT_FETCH_CURRENT_NOTE
+        rts
+.endif
 
         ; --- start instrument or percussion ---
 newNote:
@@ -351,6 +333,20 @@ endOfPercussion:
 .endif
 
     
+; ---------------------------------------------------------------------
+; Helper subroutine to minimize ROM footprint.
+; Interleaved here so player routine can be inlined.
+; ---------------------------------------------------------------------
+tt_CalcInsIndex:
+        ; move upper 3 bits to lower 3
+        lsr
+        lsr
+        lsr
+        lsr
+        lsr
+        tay
+tt_Bit6Set:     ; This opcode has bit #6 set, for use with bit instruction
+        rts
 
 
 instrument:

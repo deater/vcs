@@ -9,17 +9,30 @@
 
 
 tia:
-	cld		; clear decimal mode
+;	cld		; clear decimal mode
+;
+;	ldx	#0
+;	txa
+;clear_loop:
+;	sta	$0,X
+;	inx
+;	bne	clear_loop
+;	dex
+;	txs	; point stack to $1FF (mirrored at top of zero page)
 
+
+; faster?
+	sei
+	cld
 	ldx	#0
 	txa
 clear_loop:
-	sta	$0,X
-	inx
-	bne	clear_loop
 	dex
-	txs	; point stack to $1FF (mirrored at top of zero page)
+	txs
+	pha
+	bne	clear_loop
 
+	; S = $FF, A=$0, x=$0, Y=??
 
 
 	;=====================
