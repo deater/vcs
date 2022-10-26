@@ -40,6 +40,7 @@ clear_loop:
 
 .include "tia_kernel.s"
 
+.include "desire_logo.inc"
 
 	;=====================
 	; other includes

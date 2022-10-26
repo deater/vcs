@@ -22,6 +22,7 @@ static void print_help(char *name) {
 	fprintf(stderr,"\t-8 : only draw every 8th line\n");
 	fprintf(stderr,"\t-n : name to prepend to labels\n");
 	fprintf(stderr,"\t-b : color to use for background (default 0)\n");
+	fprintf(stderr,"\t-p : use PAL palette\n");
 	exit(-1);
 }
 
@@ -51,6 +52,7 @@ int main(int argc, char **argv) {
 	int playfield_left[192],playfield_right[192],background[192];
 	int c,debug=0;
 	int generate_bg=0;
+	int is_pal=0;
 
 	char input_filename[BUFSIZ],output_filename[BUFSIZ];
 	char *name=NULL;
@@ -60,7 +62,7 @@ int main(int argc, char **argv) {
 
 
 	/* Check command line arguments */
-	while ((c = getopt (argc, argv,"248b:gdhvn:"))!=-1) {
+	while ((c = getopt (argc, argv,"248b:gdhvn:p"))!=-1) {
 		switch (c) {
 		case 'n':
 			name=strdup(optarg);
@@ -70,6 +72,9 @@ int main(int argc, char **argv) {
 			break;
 		case 'g':
 			generate_bg=1;
+			break;
+		case 'p':
+			is_pal=1;
 			break;
 		case 'd':
 			fprintf(stderr,"DEBUG enabled\n");
@@ -163,6 +168,7 @@ int main(int argc, char **argv) {
 		for(col=0;col<xsize;col++) {
 			if (image[row*xsize+col]!=background[row]) color=image[row*xsize+col];
 		}
+		if (is_pal) color=color+16;
 		print_byte(outfile,color,row/skip);
 	}
 	fprintf(outfile,"\n");

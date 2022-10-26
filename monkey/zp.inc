@@ -31,8 +31,11 @@ ALL_DONE		=	$98
 BASE_TITLE_COLOR	=	$99
 TEXT_COLOR		=	$9A
 PF_TEMP			=	$9B	
+ALT_COLOR		=	$9C
+GUYBRUSH_Y		=	$9D
+CURRENT_SCANLINE	=	$9E
 
-
+GUYBRUSH_SPRITE		=	$A0
 
 ; tt music player
 tt_timer                = $E0    ; current music timer value

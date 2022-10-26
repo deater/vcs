@@ -1,5 +1,5 @@
 ; 56
-lookout_colors:
+lookout_sprite_colors:
 	.byte $2E,$2E,$2E,$2E,$0E,$0E,$0E,$0E
 	.byte $3A,$3A,$3A,$3A,$3A,$3A,$3A,$3A
 	.byte $3A,$3A,$3A,$3A,$3A,$3A,$3A,$3A

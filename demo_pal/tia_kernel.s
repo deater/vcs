@@ -9,7 +9,7 @@
 
 	lda	#0
 	sta	tt_cur_pat_index_c0
-	lda	#$4a
+	lda	#72
 	sta	tt_cur_pat_index_c1
 
 	; the rest should be 0 already from startup code. If not,
@@ -120,7 +120,8 @@ le_vblank_loop:
 	sta	COLUPF			; fg, dark grey			; 3
 
 ; 36
-
+	ldy	#0
+	ldx	#0
 	sta	WSYNC							; 3
 
 
@@ -132,7 +133,63 @@ le_vblank_loop:
 	;=========================
 	; 228 scanlines (192 on NTSC)
 
-	ldy	#228
+draw_playfield:
+; 0
+	lda	desire_colors,Y						; 4
+	sta	COLUPF							; 3
+; 7
+        lda     desire_playfield0_left,Y       ; playfield pattern 0   ; 4
+        sta     PF0                     ;                               ; 3
+        ;   has to happen by 22 (GPU 68)
+; 14
+        lda     desire_playfield1_left,Y       ; playfield pattern 1   ; 4
+        sta     PF1                     ;                               ; 3
+        ;  has to happen by 28 (GPU 84)
+
+; 21
+        lda     desire_playfield2_left,Y       ; playfield pattern 2   ; 4
+        sta     PF2                                                     ; 3
+        ;  has to happen by 38 (GPU 116)        ;
+; 28
+
+	nop
+	nop
+	lda	$80
+
+; 35
+        lda     desire_playfield0_right,Y      ; left pf pattern 0     ; 4
+        sta     PF0                             ;                       ; 3
+        ; has to happen 28-49 (GPU 84-148)
+; 42
+        lda     desire_playfield1_right,Y      ; left pf pattern 1     ; 4
+        sta     PF1                             ;                       ; 3
+        ; has to happen 38-56 (GPU 116-170)
+; 49
+        lda     desire_playfield2_right,Y      ; left pf pattern 2     ; 4
+        sta     PF2                             ;                       ; 3
+        ; has to happen 49-67 (GPU148-202)
+; 56
+
+        inx                                                             ; 2
+        txa                                                             ; 2
+        and     #$3                                                     ; 2
+        beq     yes_iny                                                 ; 2/3
+        .byte   $A5     ; begin of LDA ZP                               ; 3
+yes_iny:
+        iny             ; $E8 should be harmless to load                ; 2
+done_iny:
+                                                                ;===========
+                                                            ; 11/11
+; 67
+	nop
+	nop
+; 71
+	cpx	#192							; 2
+; 73
+	bne	draw_playfield						; 2/3
+
+
+	ldy	#35
 kernel_loop:
 	sta	WSYNC
 	dey

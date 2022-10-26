@@ -75,6 +75,7 @@ clear_loop:
 .include "cart_message.inc"
 .align $100
 .include "trials.inc"
+.include "lookout_over.inc"
 
 ;.include "rr_trackdata.s"
 

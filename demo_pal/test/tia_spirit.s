@@ -144,7 +144,8 @@ clear_loop:
 
 	lda	#0
 	sta	tt_cur_pat_index_c0
-	lda	#$4a
+;	lda	#$4a
+	lda	#72
 	sta	tt_cur_pat_index_c1
 
 	; the rest should be 0 already from startup code. If not,
@@ -571,9 +572,144 @@ tt_TrackDataStart:
 
 ;.align $100
 
+
+.repeat 2621
+	.byte $00
+.endrepeat
+
+; should be at fb55
+
+; Intro right
+tt_pattern19:
+        .byte $11, $08, $08, $08, $12, $08, $08, $08
+        .byte $11, $08, $08, $08, $12, $08, $08, $08
+        .byte $00
+
+; snnn
+tt_pattern18:
+        .byte $13, $08, $08, $08, $08, $08, $08, $08
+        .byte $08, $08, $08, $08, $08, $08, $08, $08
+        .byte $00
+
+; end left
+tt_pattern17:
+        .byte $11, $08, $08, $11, $08, $08, $11, $08
+        .byte $11, $08, $08, $08, $78, $08, $08, $08
+        .byte $00
+
+; bassline druma
+tt_pattern16:
+        .byte $11, $51, $28, $51, $12, $51, $28, $51
+        .byte $28, $08, $29, $08, $2b, $08, $2d, $08
+        .byte $00
+
+; bassline drumg
+tt_pattern15:
+        .byte $11, $54, $29, $54, $12, $54, $29, $54
+        .byte $11, $54, $29, $54, $12, $54, $29, $54
+        .byte $00
+
+; bassl.,drum,fill
+tt_pattern14:
+        .byte $11, $58, $2b, $58, $12, $58, $2b, $58
+        .byte $28, $58, $29, $58, $2b, $58, $2d, $58
+        .byte $00
+
+; fill in left
+tt_pattern13:
+        .byte $65, $66, $65, $08, $65, $08, $67, $68
+        .byte $69, $6d, $6b, $08, $6b, $08, $08, $08
+        .byte $00
+
+; break left 4
+tt_pattern12:
+        .byte $3b, $5b, $38, $58, $08, $08, $08, $08
+        .byte $65, $08, $08, $08, $08, $08, $08, $08
+        .byte $00
+
+; break left 3
+tt_pattern11:
+        .byte $35, $55, $38, $58, $08, $08, $08, $08
+        .byte $08, $08, $08, $08, $3b, $5b, $38, $58
+        .byte $00
+
+; break left 2
+tt_pattern10:
+        .byte $3b, $5b, $38, $58, $08, $08, $08, $08
+        .byte $08, $08, $08, $08, $3b, $5b, $38, $58
+        .byte $00
+
+; break left 1
+tt_pattern9:
+        .byte $08, $08, $38, $58, $08, $08, $08, $08
+        .byte $08, $08, $08, $08, $3b, $5b, $38, $58
+        .byte $00
+
+; leer snare fill
+tt_pattern8:
+        .byte $11, $08, $08, $08, $12, $08, $08, $08
+        .byte $08, $08, $08, $13, $08, $08, $13, $08
+        .byte $00
+
+; bassline drum g+
+tt_pattern7:
+        .byte $11, $54, $29, $54, $12, $54, $29, $54
+        .byte $11, $51, $28, $51, $12, $51, $28, $51
+        .byte $00
+
+
 ; Instrument master CTRL values
 tt_InsCtrlTable:
         .byte $06, $06, $07, $06, $04, $0c
+
+; bassline d
+tt_pattern5:
+        .byte $3b, $4d, $26, $4d, $3b, $4d, $26, $4d
+        .byte $3b, $4d, $26, $4d, $3b, $4d, $26, $4d
+        .byte $00
+
+; bassline
+tt_pattern4:
+        .byte $38, $4b, $25, $4b, $38, $4b, $25, $4b
+        .byte $38, $4b, $25, $4b, $38, $4b, $25, $4b
+        .byte $00
+
+; fill left 2
+tt_pattern3:
+        .byte $38, $08, $2b, $08, $08, $08, $2b, $08
+        .byte $2d, $08, $2e, $08, $2f, $08, $35, $08
+        .byte $00
+
+; intro double
+tt_pattern2:
+        .byte $38, $58, $2b, $45, $25, $2b, $2b, $4b
+        .byte $08, $08, $2b, $4b, $38, $58, $2b, $58
+        .byte $00
+
+; Intro left 2
+tt_pattern1:
+        .byte $38, $08, $2b, $08, $08, $08, $2b, $08
+        .byte $2d, $08, $2e, $08, $2f, $08, $35, $08
+        .byte $00
+
+; Intro left
+tt_pattern0:
+        .byte $38, $08, $2b, $08, $08, $08, $2b, $08
+        .byte $08, $08, $2b, $08, $08, $08, $38, $08
+        .byte $00
+
+
+
+
+
+
+
+
+
+
+
+;======================================================
+
 
 
 ; Instrument Attack/Decay start indexes into ADSR tables.
@@ -723,41 +859,7 @@ TT_INS_HOLD     = 8
 TT_INS_PAUSE    = 16
 TT_FIRST_PERC   = 17
 
-; Intro left
-tt_pattern0:
-        .byte $38, $08, $2b, $08, $08, $08, $2b, $08
-        .byte $08, $08, $2b, $08, $08, $08, $38, $08
-        .byte $00
 
-; Intro left 2
-tt_pattern1:
-        .byte $38, $08, $2b, $08, $08, $08, $2b, $08
-        .byte $2d, $08, $2e, $08, $2f, $08, $35, $08
-        .byte $00
-
-; intro double
-tt_pattern2:
-        .byte $38, $58, $2b, $45, $25, $2b, $2b, $4b
-        .byte $08, $08, $2b, $4b, $38, $58, $2b, $58
-        .byte $00
-
-; fill left 2
-tt_pattern3:
-        .byte $38, $08, $2b, $08, $08, $08, $2b, $08
-        .byte $2d, $08, $2e, $08, $2f, $08, $35, $08
-        .byte $00
-
-; bassline
-tt_pattern4:
-        .byte $38, $4b, $25, $4b, $38, $4b, $25, $4b
-        .byte $38, $4b, $25, $4b, $38, $4b, $25, $4b
-        .byte $00
-
-; bassline d
-tt_pattern5:
-        .byte $3b, $4d, $26, $4d, $3b, $4d, $26, $4d
-        .byte $3b, $4d, $26, $4d, $3b, $4d, $26, $4d
-        .byte $00
 
 ; bassline drum
 tt_pattern6:
@@ -765,149 +867,8 @@ tt_pattern6:
         .byte $11, $58, $2b, $58, $12, $58, $2b, $58
         .byte $00
 
-; bassline drum g+
-tt_pattern7:
-        .byte $11, $54, $29, $54, $12, $54, $29, $54
-        .byte $11, $51, $28, $51, $12, $51, $28, $51
-        .byte $00
 
-; leer snare fill
-tt_pattern8:
-        .byte $11, $08, $08, $08, $12, $08, $08, $08
-        .byte $08, $08, $08, $13, $08, $08, $13, $08
-        .byte $00
 
-; break left 1
-tt_pattern9:
-        .byte $08, $08, $38, $58, $08, $08, $08, $08
-        .byte $08, $08, $08, $08, $3b, $5b, $38, $58
-        .byte $00
-
-; break left 2
-tt_pattern10:
-        .byte $3b, $5b, $38, $58, $08, $08, $08, $08
-        .byte $08, $08, $08, $08, $3b, $5b, $38, $58
-        .byte $00
-
-; break left 3
-tt_pattern11:
-        .byte $35, $55, $38, $58, $08, $08, $08, $08
-        .byte $08, $08, $08, $08, $3b, $5b, $38, $58
-        .byte $00
-
-; break left 4
-tt_pattern12:
-        .byte $3b, $5b, $38, $58, $08, $08, $08, $08
-        .byte $65, $08, $08, $08, $08, $08, $08, $08
-        .byte $00
-
-; fill in left
-tt_pattern13:
-        .byte $65, $66, $65, $08, $65, $08, $67, $68
-        .byte $69, $6d, $6b, $08, $6b, $08, $08, $08
-        .byte $00
-
-; bassl.,drum,fill
-tt_pattern14:
-        .byte $11, $58, $2b, $58, $12, $58, $2b, $58
-        .byte $28, $58, $29, $58, $2b, $58, $2d, $58
-        .byte $00
-
-; bassline drumg
-tt_pattern15:
-        .byte $11, $54, $29, $54, $12, $54, $29, $54
-        .byte $11, $54, $29, $54, $12, $54, $29, $54
-        .byte $00
-
-; bassline druma
-tt_pattern16:
-        .byte $11, $51, $28, $51, $12, $51, $28, $51
-        .byte $28, $08, $29, $08, $2b, $08, $2d, $08
-        .byte $00
-
-; end left
-tt_pattern17:
-        .byte $11, $08, $08, $11, $08, $08, $11, $08
-        .byte $11, $08, $08, $08, $78, $08, $08, $08
-        .byte $00
-
-; snnn
-tt_pattern18:
-        .byte $13, $08, $08, $08, $08, $08, $08, $08
-        .byte $08, $08, $08, $08, $08, $08, $08, $08
-        .byte $00
-
-; Intro right
-tt_pattern19:
-        .byte $11, $08, $08, $08, $12, $08, $08, $08
-        .byte $11, $08, $08, $08, $12, $08, $08, $08
-        .byte $00
-
-; fill 2
-tt_pattern20:
-        .byte $11, $08, $08, $11, $08, $08, $11, $08
-        .byte $11, $08, $08, $08, $13, $08, $08, $08
-        .byte $00
-
-; intro 2 right
-tt_pattern21:
-        .byte $11, $08, $65, $08, $12, $08, $08, $08
-        .byte $11, $08, $66, $65, $12, $08, $65, $08
-        .byte $00
-
-; intro 2 right 2
-tt_pattern22:
-        .byte $11, $08, $6d, $6b, $12, $08, $64, $65
-        .byte $11, $08, $08, $08, $12, $08, $08, $08
-        .byte $00
-
-; intro 2 right 3
-tt_pattern23:
-        .byte $11, $08, $78, $08, $12, $08, $6b, $08
-        .byte $11, $08, $08, $08, $12, $08, $08, $08
-        .byte $00
-
-; New pattern
-tt_pattern24:
-        .byte $08, $08, $08, $08, $62, $08, $08, $62
-        .byte $08, $08, $63, $08, $62, $08, $08, $08
-        .byte $00
-
-; New pattern d
-tt_pattern25:
-        .byte $08, $08, $08, $08, $62, $08, $08, $62
-        .byte $08, $08, $61, $08, $62, $08, $08, $08
-        .byte $00
-
-; melody
-tt_pattern26:
-        .byte $26, $25, $22, $82, $12, $08, $08, $62
-        .byte $08, $08, $61, $08, $62, $08, $08, $08
-        .byte $00
-
-; fill
-tt_pattern27:
-        .byte $14, $08, $08, $14, $08, $08, $14, $08
-        .byte $14, $14, $14, $14, $13, $08, $80, $08
-        .byte $00
-
-; maguggn
-tt_pattern28:
-        .byte $cc, $08, $08, $08, $08, $08, $08, $08
-        .byte $08, $08, $08, $08, $08, $08, $80, $08
-        .byte $00
-
-; maguggn2
-tt_pattern29:
-        .byte $40, $08, $08, $69, $08, $08, $69, $08
-        .byte $08, $08, $68, $08, $08, $08, $68, $08
-        .byte $00
-
-; puremelo1
-tt_pattern30:
-        .byte $67, $08, $67, $67, $08, $08, $67, $08
-        .byte $67, $08, $08, $08, $6b, $08, $08, $08
-        .byte $00
 
 ; puremelo2
 tt_pattern31:
@@ -958,8 +919,6 @@ tt_pattern38:
         .byte $00
 
 
-
-
 ; Individual pattern speeds (needs TT_GLOBAL_SPEED = 0).
 ; Each byte encodes the speed of one pattern in the order
 ; of the tt_PatternPtr tables below.
@@ -975,6 +934,7 @@ tt_pattern38:
 ; Pattern pointers look-up table.
 ; ---------------------------------------------------------------------
 tt_PatternPtrLo:
+
         .byte <tt_pattern0, <tt_pattern1, <tt_pattern2, <tt_pattern3
         .byte <tt_pattern4, <tt_pattern5, <tt_pattern6, <tt_pattern7
         .byte <tt_pattern8, <tt_pattern9, <tt_pattern10, <tt_pattern11
@@ -985,6 +945,7 @@ tt_PatternPtrLo:
         .byte <tt_pattern28, <tt_pattern29, <tt_pattern30, <tt_pattern31
         .byte <tt_pattern32, <tt_pattern33, <tt_pattern34, <tt_pattern35
         .byte <tt_pattern36, <tt_pattern37, <tt_pattern38
+
 tt_PatternPtrHi:
         .byte >tt_pattern0, >tt_pattern1, >tt_pattern2, >tt_pattern3
         .byte >tt_pattern4, >tt_pattern5, >tt_pattern6, >tt_pattern7
@@ -995,7 +956,7 @@ tt_PatternPtrHi:
         .byte >tt_pattern24, >tt_pattern25, >tt_pattern26, >tt_pattern27
         .byte >tt_pattern28, >tt_pattern29, >tt_pattern30, >tt_pattern31
         .byte >tt_pattern32, >tt_pattern33, >tt_pattern34, >tt_pattern35
-        .byte >tt_pattern36, >tt_pattern37, >tt_pattern38        
+        .byte >tt_pattern36, >tt_pattern37, >tt_pattern38
 
 
 ; ---------------------------------------------------------------------
@@ -1020,7 +981,7 @@ tt_SequenceTable:
         .byte $0e, $06, $06, $06, $0e, $0f, $10, $06
         .byte $0e, $0f, $10, $06, $0e, $00, $11, $12
 
-        
+
         ; ---------- Channel 1 ----------
         .byte $13, $13, $13, $08, $13, $13, $13, $14
         .byte $15, $15, $15, $08, $15, $16, $17, $08
@@ -1032,6 +993,75 @@ tt_SequenceTable:
         .byte $14, $24, $23, $25, $23, $25, $23, $24
         .byte $23, $25, $23, $24, $23, $1a, $26, $12
 
+
+; puremelo1
+tt_pattern30:
+        .byte $67, $08, $67, $67, $08, $08, $67, $08
+        .byte $67, $08, $08, $08, $6b, $08, $08, $08
+        .byte $00
+
+; maguggn2
+tt_pattern29:
+        .byte $40, $08, $08, $69, $08, $08, $69, $08
+        .byte $08, $08, $68, $08, $08, $08, $68, $08
+        .byte $00
+
+; maguggn
+tt_pattern28:
+        .byte $cc, $08, $08, $08, $08, $08, $08, $08
+        .byte $08, $08, $08, $08, $08, $08, $80, $08
+        .byte $00
+
+; fill
+tt_pattern27:
+        .byte $14, $08, $08, $14, $08, $08, $14, $08
+        .byte $14, $14, $14, $14, $13, $08, $80, $08
+        .byte $00
+
+; melody
+tt_pattern26:
+        .byte $26, $25, $22, $82, $12, $08, $08, $62
+        .byte $08, $08, $61, $08, $62, $08, $08, $08
+        .byte $00
+
+; New pattern d
+tt_pattern25:
+        .byte $08, $08, $08, $08, $62, $08, $08, $62
+        .byte $08, $08, $61, $08, $62, $08, $08, $08
+        .byte $00
+
+
+; New pattern
+tt_pattern24:
+        .byte $08, $08, $08, $08, $62, $08, $08, $62
+        .byte $08, $08, $63, $08, $62, $08, $08, $08
+        .byte $00
+
+
+; intro 2 right 3
+tt_pattern23:
+        .byte $11, $08, $78, $08, $12, $08, $6b, $08
+        .byte $11, $08, $08, $08, $12, $08, $08, $08
+        .byte $00
+
+; intro 2 right 2
+tt_pattern22:
+        .byte $11, $08, $6d, $6b, $12, $08, $64, $65
+        .byte $11, $08, $08, $08, $12, $08, $08, $08
+        .byte $00
+
+
+; fill 2
+tt_pattern20:
+        .byte $11, $08, $08, $11, $08, $08, $11, $08
+        .byte $11, $08, $08, $08, $13, $08, $08, $08
+        .byte $00
+
+; intro 2 right
+tt_pattern21:
+        .byte $11, $08, $65, $08, $12, $08, $08, $08
+        .byte $11, $08, $66, $65, $12, $08, $65, $08
+        .byte $00
 
 ;        echo "Track size: ", *-tt_TrackDataStart
 
