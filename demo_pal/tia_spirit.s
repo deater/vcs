@@ -40,6 +40,8 @@ clear_loop:
 
 .include "tia_kernel.s"
 
+.align $100
+
 .include "desire_logo.inc"
 
 	;=====================

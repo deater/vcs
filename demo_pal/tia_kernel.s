@@ -101,25 +101,31 @@ le_vblank_loop:
 	lda	#0							; 2
 	sta	VBLANK                  ; turn on beam			; 3
 ; 8
-
-        lda	#6			; bg, light grey		; 2
+	inc	FRAME							; 5
+	lda	FRAME			; bg, light grey		; 3
+	lsr								; 2
+	lsr								; 2
+	lsr								; 2
+	and	#$7							; 2
+	tax								; 2
+	lda	bg_colors,X						; 4+
         sta	COLUBK							; 3
-; 13
+; 33
 	lda	#0							; 2
 	sta	VDELP0							; 3
 	sta	VDELP1		; turn off delay			; 3
-; 21
+; 41
 
 	lda	#NUSIZ_QUAD_SIZE|NUSIZ_MISSILE_WIDTH_8			; 2
 	sta	NUSIZ0							; 3
 	lda	#NUSIZ_QUAD_SIZE|NUSIZ_MISSILE_WIDTH_8			; 2
 	sta	NUSIZ1							; 3
-; 31
+; 51
 
 	lda	#2							; 2
 	sta	COLUPF			; fg, dark grey			; 3
 
-; 36
+; 56
 	ldy	#0
 	ldx	#0
 	sta	WSYNC							; 3
@@ -219,7 +225,11 @@ done_kernel:
 	sta	PF2							; 3
 ; 13
 
-	ldx     #36							; 2
+	ldx     #37							; 2
 	jsr	common_overscan						; 6
 
 	jmp	tia_frame
+
+
+bg_colors:
+	.byte $00,$04,$08,$0A, $0A,$08,$04,$00
