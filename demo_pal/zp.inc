@@ -12,6 +12,8 @@ tt_ptr                  = $89	; temporary
 tt_ptr2			= $8A
 player_time_max         = $8B
 FRAME			= $8C
+LOGO_Y			= $8D
+LOGO_LEFT		= $8E
 
 ; zero page addresses
 LPF2_L			=	$90

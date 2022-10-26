@@ -126,10 +126,13 @@ le_vblank_loop:
 	sta	COLUPF			; fg, dark grey			; 3
 
 ; 56
-	ldy	#0
-	ldx	#0
-	sta	WSYNC							; 3
+	inc	LOGO_Y							; 5
 
+; 61
+	ldy	#0							; 2
+	ldx	#0							; 2
+	sta	WSYNC							; 3
+; 68
 
 
 	;=========================
@@ -139,70 +142,70 @@ le_vblank_loop:
 	;=========================
 	; 228 scanlines (192 on NTSC)
 
+	; comes in at 3 cycles
+
+	jmp	start_ahead						; 3
+
 draw_playfield:
-; 0
+; 3
+
+draw_logo:
+; 3
 	lda	desire_colors,Y						; 4
 	sta	COLUPF							; 3
-; 7
-        lda     desire_playfield0_left,Y       ; playfield pattern 0   ; 4
-        sta     PF0                     ;                               ; 3
-        ;   has to happen by 22 (GPU 68)
-; 14
-        lda     desire_playfield1_left,Y       ; playfield pattern 1   ; 4
-        sta     PF1                     ;                               ; 3
+; 10
+	lda	desire_playfield0_left,Y	; playfield pattern 0	; 4
+	sta	PF0			;				; 3
+	;   has to happen by 22 (GPU 68)
+; 17
+	lda	desire_playfield1_left,Y	; playfield pattern 1	; 4
+	sta	PF1			;				; 3
         ;  has to happen by 28 (GPU 84)
+; 24
+	lda	desire_playfield2_left,Y	; playfield pattern 2	; 4
+	sta	PF2							; 3
+        ;  has to happen by 38 (GPU 116)	;
+; 31
+	lda	desire_playfield0_right,Y	; left pf pattern 0     ; 4
+	sta	PF0				;                       ; 3
+	; has to happen 28-49 (GPU 84-148)
+; 38
+	lda	desire_playfield1_right,Y	; left pf pattern 1	; 4
+	sta	PF1				;			; 3
+	; has to happen 38-56 (GPU 116-170)
+; 45
+	lda	desire_playfield2_right,Y	; left pf pattern 2	; 4
+	sta	PF2				;			; 3
+	; has to happen 49-67 (GPU148-202)
+; 52
+	dey								; 2
 
-; 21
-        lda     desire_playfield2_left,Y       ; playfield pattern 2   ; 4
-        sta     PF2                                                     ; 3
-        ;  has to happen by 38 (GPU 116)        ;
-; 28
+start_ahead:
+; 5 / 54
+	cpx	LOGO_Y							; 2
+	bne	blah							; 2/3
+	ldy	#29							; 2
+blah:
+	inx
+; ?? / ?? / 58
 
-	nop
-	nop
-	lda	$80
+	; finish 1 early so time to clear up
+	cpx	#227							; 2
+	beq	done_playfield						; 2/3
+; 62
 
-; 35
-        lda     desire_playfield0_right,Y      ; left pf pattern 0     ; 4
-        sta     PF0                             ;                       ; 3
-        ; has to happen 28-49 (GPU 84-148)
-; 42
-        lda     desire_playfield1_right,Y      ; left pf pattern 1     ; 4
-        sta     PF1                             ;                       ; 3
-        ; has to happen 38-56 (GPU 116-170)
-; 49
-        lda     desire_playfield2_right,Y      ; left pf pattern 2     ; 4
-        sta     PF2                             ;                       ; 3
-        ; has to happen 49-67 (GPU148-202)
-; 56
+	cpy	#0							; 2
 
-        inx                                                             ; 2
-        txa                                                             ; 2
-        and     #$3                                                     ; 2
-        beq     yes_iny                                                 ; 2/3
-        .byte   $A5     ; begin of LDA ZP                               ; 3
-yes_iny:
-        iny             ; $E8 should be harmless to load                ; 2
-done_iny:
-                                                                ;===========
-                                                            ; 11/11
-; 67
-	nop
-	nop
-; 71
-	cpx	#192							; 2
-; 73
-	bne	draw_playfield						; 2/3
+; 64
+	sta	WSYNC							; 3
+	bne	draw_logo						; 2/3
+	beq	start_ahead						; 2/3
 
-
-	ldy	#35
-kernel_loop:
-	sta	WSYNC
-	dey
-	bne	kernel_loop
+done_playfield:
 
 done_kernel:
 
+	sta	WSYNC
 
 	;===========================
 	;===========================
