@@ -77,13 +77,27 @@ le_vblank_loop:
 	;============================
 	; choose which effect to run
 	;============================
-	jsr	logo_effect
+
+	ldx	WHICH_EFFECT
+	lda	jmp_table_low,X
+	sta	INL
+	lda	jmp_table_high,X
+	sta	INH
+	jmp	(INL)
+
+
+jmp_table_low:
+;	.byte <logo_effect
+	.byte <bitmap_effect
+jmp_table_high:
+;	.byte >logo_effect
+	.byte >bitmap_effect
 
 
 	;============================
 	; handle overscan
 	;============================
-
+effect_done:
 	ldx     #37							; 2
 	jsr	common_overscan						; 6
 

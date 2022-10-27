@@ -60,7 +60,7 @@ clear_loop:
 .include "tia_kernel.s"
 
 .include "logo_kernel.s"
-
+.include "bitmap_kernel.s"
 
 .align $100
 

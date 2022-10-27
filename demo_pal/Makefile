@@ -11,6 +11,7 @@ tia_spirit.o:	tia_spirit.s \
 	zp.inc \
 	tia_kernel.s \
 	logo_kernel.s desire_logo.inc \
+	bitmap_kernel.s bitmap.inc \
 	tia_spirit_player.s tia_spirit_trackdata.s
 	ca65 -o tia_spirit.o tia_spirit.s -l tia_spirit.lst
 

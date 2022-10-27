@@ -149,7 +149,7 @@ done_kernel:
 	sta	PF2							; 3
 ; 13
 
-	rts
+	jmp	effect_done
 
 
 bg_colors:
