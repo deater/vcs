@@ -1,25 +1,4 @@
 
-; =====================================================================
-; Initialize music.
-; Set tt_cur_pat_index_c0/1 to the indexes of the first patterns from
-; tt_SequenceTable for each channel.
-; Set tt_timer and tt_cur_note_index_c0/1 to 0.
-; All other variables can start with any value.
-; =====================================================================
-
-	lda	#0
-	sta	tt_cur_pat_index_c0
-	lda	#72
-	sta	tt_cur_pat_index_c1
-
-	; the rest should be 0 already from startup code. If not,
-	; set the following variables to 0 manually:
-	; - tt_timer
-	; - tt_cur_pat_index_c0
-	; - tt_cur_pat_index_c1
-	; - tt_cur_note_index_c0
-	; - tt_cur_note_index_c1
-
 ;======================================================================
 ; MAIN LOOP
 ;======================================================================
@@ -32,7 +11,6 @@ tia_frame:
 	; in scanline 0
 
 	jsr	common_vblank
-
 
 	;================================
 	; 45 lines of VBLANK (37 on NTSC)
@@ -74,6 +52,18 @@ wait_for_vblank:
 
 	; in theory we are 10 scanlines in, need to delay 27 more
 
+	;=================================
+	; VBLANK scanline 11 -- handle frame
+	;=================================
+
+	inc	FRAMEL                                                  ; 5
+	bne	no_frame_oflo
+frame_oflo:
+        inc	FRAMEH                                                  ; 5
+no_frame_oflo:
+
+
+
 	;=======================
 	; wait the rest
 	;=======================
@@ -84,149 +74,15 @@ le_vblank_loop:
 	dex								; 2
 	bne	le_vblank_loop						; 2/3
 
-
-	sta	WSYNC
-	sta	WSYNC
-	sta	WSYNC
-	sta	WSYNC
-	sta	WSYNC
-	sta	WSYNC
-	sta	WSYNC
-	sta	WSYNC
-
-	;=================================
-	; VBLANK scanline 45
-	;=================================
-; 3
-	lda	#0							; 2
-	sta	VBLANK                  ; turn on beam			; 3
-; 8
-	inc	FRAME							; 5
-	lda	FRAME			; bg, light grey		; 3
-	lsr								; 2
-	lsr								; 2
-	lsr								; 2
-	and	#$7							; 2
-	tax								; 2
-	lda	bg_colors,X						; 4+
-        sta	COLUBK							; 3
-; 33
-	lda	#0							; 2
-	sta	VDELP0							; 3
-	sta	VDELP1		; turn off delay			; 3
-; 41
-
-	lda	#NUSIZ_QUAD_SIZE|NUSIZ_MISSILE_WIDTH_8			; 2
-	sta	NUSIZ0							; 3
-	lda	#NUSIZ_QUAD_SIZE|NUSIZ_MISSILE_WIDTH_8			; 2
-	sta	NUSIZ1							; 3
-; 51
-
-	lda	#2							; 2
-	sta	COLUPF			; fg, dark grey			; 3
-
-; 56
-	inc	LOGO_Y							; 5
-
-; 61
-	ldy	#0							; 2
-	ldx	#0							; 2
-	sta	WSYNC							; 3
-; 68
+	;============================
+	; choose which effect to run
+	;============================
+	jsr	logo_effect
 
 
-	;=========================
-	;=========================
-	; kernel
-	;=========================
-	;=========================
-	; 228 scanlines (192 on NTSC)
-
-	; comes in at 3 cycles
-
-	jmp	start_ahead						; 3
-
-draw_playfield:
-; 3
-
-draw_logo:
-; 3
-	lda	desire_colors,Y						; 4
-	sta	COLUPF							; 3
-; 10
-	lda	desire_playfield0_left,Y	; playfield pattern 0	; 4
-	sta	PF0			;				; 3
-	;   has to happen by 22 (GPU 68)
-; 17
-	lda	desire_playfield1_left,Y	; playfield pattern 1	; 4
-	sta	PF1			;				; 3
-        ;  has to happen by 28 (GPU 84)
-; 24
-	lda	desire_playfield2_left,Y	; playfield pattern 2	; 4
-	sta	PF2							; 3
-        ;  has to happen by 38 (GPU 116)	;
-; 31
-	lda	desire_playfield0_right,Y	; left pf pattern 0     ; 4
-	sta	PF0				;                       ; 3
-	; has to happen 28-49 (GPU 84-148)
-; 38
-	lda	desire_playfield1_right,Y	; left pf pattern 1	; 4
-	sta	PF1				;			; 3
-	; has to happen 38-56 (GPU 116-170)
-; 45
-	lda	desire_playfield2_right,Y	; left pf pattern 2	; 4
-	sta	PF2				;			; 3
-	; has to happen 49-67 (GPU148-202)
-; 52
-	dey								; 2
-
-start_ahead:
-; 5 / 54
-	cpx	LOGO_Y							; 2
-	bne	blah							; 2/3
-	ldy	#29							; 2
-blah:
-	inx
-; ?? / ?? / 58
-
-	; finish 1 early so time to clear up
-	cpx	#227							; 2
-	beq	done_playfield						; 2/3
-; 62
-
-	cpy	#0							; 2
-
-; 64
-	sta	WSYNC							; 3
-	bne	draw_logo						; 2/3
-	beq	start_ahead						; 2/3
-
-done_playfield:
-
-done_kernel:
-
-	sta	WSYNC
-
-	;===========================
-	;===========================
-	; overscan (36 cycles) (30 on NTSC)
-	;===========================
-	;===========================
-
-	; turn off everything
-	lda	#0							; 2
-	sta	GRP0							; 3
-; 1
-	lda	#2		; we do this in common
-	sta	VBLANK		; but want it to happen in hblank
-
-
-	lda	#0
-	sta	GRP1							; 3
-	sta	PF0							; 3
-	sta	PF1							; 3
-	sta	PF2							; 3
-; 13
+	;============================
+	; handle overscan
+	;============================
 
 	ldx     #37							; 2
 	jsr	common_overscan						; 6
@@ -234,5 +90,3 @@ done_kernel:
 	jmp	tia_frame
 
 
-bg_colors:
-	.byte $00,$04,$08,$0A, $0A,$08,$04,$00

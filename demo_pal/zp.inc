@@ -11,28 +11,13 @@ tt_cur_ins_c1           = $88
 tt_ptr                  = $89	; temporary
 tt_ptr2			= $8A
 player_time_max         = $8B
-FRAME			= $8C
-LOGO_Y			= $8D
-LOGO_LEFT		= $8E
+FRAMEL			= $8C
+FRAMEH			= $8D
+LOGO_Y			= $8E
+LOGO_LEFT		= $8F
 
 ; zero page addresses
-LPF2_L			=	$90
-LPF2_H			=	$91
-RPF0_L			=	$92
-RPF0_H			=	$93
-RPF1_L			=	$94
-RPF1_H			=	$95
-RPF2_L			=	$96
-RPF2_H			=	$97
-OV1SP_L			=	$98
-OV1SP_H			=	$99
-OV1C_L			=	$9A
-OV1C_H			=	$9B
-OV2SP_L			=	$9C
-OV2SP_H			=	$9D
-OV2C_L			=	$9E
-OV2C_H			=	$9F
-
+WHICH_EFFECT		= $90
 
 TEMP1			=	$A0
 TEMP2			=	$A1
