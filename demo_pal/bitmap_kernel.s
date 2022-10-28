@@ -10,6 +10,18 @@ bitmap_effect:
 	sta	WSYNC
 	sta	WSYNC
 	sta	WSYNC
+
+	lda	#CTRLPF_REF	; reflect
+	sta	CTRLPF
+
+	lda	TITLE_COLOR
+	sta	COLUPF
+	inc	TITLE_COLOR
+
+	lda	#$80
+	sta	PF0
+
+
 	sta	WSYNC
 jmp bbb
 .align $100
