@@ -16,9 +16,21 @@ bitmap_effect:
 
 	lda	TITLE_COLOR
 	sta	COLUPF
-	inc	TITLE_COLOR
 
-	lda	#$80
+	lda	FRAMEL
+	and	#$3
+	bne	no_color
+	inc	TITLE_COLOR
+no_color:
+
+	lda	FRAMEL
+	lsr
+	lsr
+	lsr
+	and	#$7
+	tax
+
+	lda	pattern,X
 	sta	PF0
 
 
@@ -222,6 +234,9 @@ done_bitmap_kernel:
 ; 13
 
 	jmp	effect_done
+
+pattern:
+	.byte $80,$40,$20,$10,$10,$20,$40,$80
 
 .align $100
 .include "bitmap.inc"
