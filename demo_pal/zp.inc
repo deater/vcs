@@ -18,6 +18,7 @@ LOGO_LEFT		= $8F
 
 ; zero page addresses
 WHICH_EFFECT		= $90
+YADD			= $91
 
 TEMP1			=	$A0
 TEMP2			=	$A1

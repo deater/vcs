@@ -1,9 +1,9 @@
 
 	;================================================
-	; draws logo effect
+	; draws raster effect
 	;================================================
 
-logo_effect:
+raster_effect:
 
 	sta	WSYNC
 	sta	WSYNC
@@ -12,40 +12,37 @@ logo_effect:
 	sta	WSYNC
 	sta	WSYNC
 	sta	WSYNC
+
 
 	;================================================
 	; VBLANK scanline 44 -- adjust Y
 	;================================================
 
 	lda	YADD
-	bne	logo_yadd_ok
+	bne	yadd_ok
 
 	; was zero, inc it
 	inc	YADD
 
-logo_yadd_ok:
+yadd_ok:
 	; YADD in A
 	clc
 	adc	LOGO_Y
-        sta	LOGO_Y
-        cmp	#227
-        bcs	logo_invert_y			; bge
-        cmp	#0
-        bcs	logo_done_y			; bge
-logo_invert_y:
+	sta	LOGO_Y
+	cmp	#227
+	bcs	invert_y		; bge
+	cmp	#0
+	bcs	done_y			; bge
+
+invert_y:
 	lda	YADD
 	eor	#$FF
 	clc
 	adc	#1
 	sta	YADD
 
-logo_done_y:
-        sta     WSYNC
-
-
-
+done_y:
 	sta	WSYNC
-
 
 	;=================================
 	; VBLANK scanline 45
@@ -55,31 +52,25 @@ logo_done_y:
 	sta	VBLANK                  ; turn on beam			; 3
 ; 8
 
-	lda	FRAMEL			; bg, light grey		; 3
-	lsr								; 2
-	lsr								; 2
-	lsr								; 2
-	and	#$7							; 2
-	tax								; 2
-	lda	bg_colors,X						; 4+
+	lda	#0			; bg, black			; 3
         sta	COLUBK							; 3
-; 33
+;
 	lda	#0							; 2
 	sta	VDELP0							; 3
 	sta	VDELP1		; turn off delay			; 3
-; 41
+;
 
 	lda	#NUSIZ_QUAD_SIZE|NUSIZ_MISSILE_WIDTH_8			; 2
 	sta	NUSIZ0							; 3
 	lda	#NUSIZ_QUAD_SIZE|NUSIZ_MISSILE_WIDTH_8			; 2
 	sta	NUSIZ1							; 3
-; 51
+;
 
-	lda	#2							; 2
-	sta	COLUPF			; fg, dark grey			; 3
+	lda	#0							; 2
+	sta	COLUPF			; fg, black			; 3
 
 ; 56
-	inc	LOGO_Y							; 5
+
 
 ; 61
 	ldy	#0							; 2
@@ -95,68 +86,42 @@ logo_done_y:
 	;=========================
 	; 228 scanlines (192 on NTSC)
 
+raster_playfield:
+
 	; comes in at 3 cycles
-
-	jmp	start_ahead						; 3
-
-draw_playfield:
+draw_raster:
 ; 3
-
-draw_logo:
-; 3
-	lda	desire_colors,Y						; 4
+	lda	#$00
+	cpy	#0
+	beq	raster_skip_color
+	lda	raster_color,Y						; 4
+	dey
+raster_skip_color:
 	sta	COLUPF							; 3
-; 10
-	lda	desire_playfield0_left,Y	; playfield pattern 0	; 4
+	lda	#$F0
 	sta	PF0			;				; 3
-	;   has to happen by 22 (GPU 68)
-; 17
-	lda	desire_playfield1_left,Y	; playfield pattern 1	; 4
+	lda	#$FF
 	sta	PF1			;				; 3
-        ;  has to happen by 28 (GPU 84)
-; 24
-	lda	desire_playfield2_left,Y	; playfield pattern 2	; 4
+	lda	#$FF
 	sta	PF2							; 3
-        ;  has to happen by 38 (GPU 116)	;
-; 31
-	lda	desire_playfield0_right,Y	; left pf pattern 0     ; 4
-	sta	PF0				;                       ; 3
-	; has to happen 28-49 (GPU 84-148)
-; 38
-	lda	desire_playfield1_right,Y	; left pf pattern 1	; 4
-	sta	PF1				;			; 3
-	; has to happen 38-56 (GPU 116-170)
-; 45
-	lda	desire_playfield2_right,Y	; left pf pattern 2	; 4
-	sta	PF2				;			; 3
-	; has to happen 49-67 (GPU148-202)
-; 52
-	dey								; 2
 
-start_ahead:
-; 5 / 54
-	cpx	LOGO_Y							; 2
-	bne	blah							; 2/3
-	ldy	#29							; 2
-blah:
+
+
 	inx
-; ?? / ?? / 58
+	cpx	#227
+	beq	done_raster
 
-	; finish 1 early so time to clear up
-	cpx	#227							; 2
-	beq	done_playfield						; 2/3
-; 62
+	cpx	LOGO_Y
+	bne	no_start_raster
+	ldy	#8
 
-	cpy	#0							; 2
+no_start_raster:
 
 ; 64
 	sta	WSYNC							; 3
-	bne	draw_logo						; 2/3
-	beq	start_ahead						; 2/3
+	bne	draw_raster						; 2/3
 
-done_playfield:
-
-done_kernel:
+done_raster:
 
 	sta	WSYNC
 
@@ -184,5 +149,5 @@ done_kernel:
 	jmp	effect_done
 
 
-bg_colors:
-	.byte $00,$04,$08,$0A, $0A,$08,$04,$00
+raster_color:
+	.byte $60,$62,$64,$66,$68,$6A,$6C,$6E
