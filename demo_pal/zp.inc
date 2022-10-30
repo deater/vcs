@@ -19,6 +19,9 @@ LOGO_LEFT		= $8F
 ; zero page addresses
 WHICH_EFFECT		= $90
 YADD			= $91
+RASTER_Y		= $92
+RASTER_LEFT		= $93
+RASTER_YADD		= $94
 
 TEMP1			=	$A0
 TEMP2			=	$A1
