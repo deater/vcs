@@ -5,12 +5,108 @@
 
 raster_effect:
 
+	;====================================
+	; scanline X
+	;====================================
+; 0
+	lda	SPRITE0_X						; 3
+; 3
+        ; spritex DIV 16
+
+	lsr								; 2
+	lsr								; 2
+	lsr								; 2
+	lsr								; 2
+
+        sta	SPRITE0_X_COARSE					; 3
+; 14
+	; apply fine adjust
+	lda	SPRITE0_X						; 3
+	and	#$0f							; 2
+	tax								; 2
+	lda	fine_adjust_table,X					; 4+
+	sta	HMP0							; 3
+; 28
+
+
+	sta	WSYNC
+
+	;=====================================
+	; move sprite0
+	;=====================================
+
+	lda	SPRITE0_XADD
+	bne	sprite0_xadd_ok
+
+	; was zero, dec it
+	ldy	#100
+	sty	SPRITE0_X
+	dec	SPRITE0_XADD
+
+sprite0_xadd_ok:
+	; XADD in A
+	clc
+	adc	SPRITE0_X
+	sta	SPRITE0_X
+	cmp	#160
+	bcs	sprite0_invert_x		; bge
+	cmp	#0
+	bcs	done_sprite0_x		; bge
+
+sprite0_invert_x:
+	lda	SPRITE0_XADD
+	eor	#$FF
+	clc
+	adc	#1
+	sta	SPRITE0_XADD
+
+done_sprite0_x:
+
+	sta	WSYNC
+
+	;==============================
+
+        ;=======================================================
+        ; set up sprite0 (strongbad)  to be at proper X position
+        ;=======================================================
+        ; now in setup scanline 1
+; 0
+        ; we can do this here and the sprite will be drawn as a long
+        ; vertical column
+        ; later we only enable it for the lines we want
+
+        ldx     a:SPRITE0_X_COARSE    ; force 4-cycle version         ; 4
+
+;        cpx     #$A                                                     ; 2
+;        bcs     far_right       ; bge                                   ; 2/3
+
+	nop
+	nop
+
+; 8
+	inx                     ;                                       ; 2
+	inx                     ;                                       ; 2
+; 12 (want to be 12 here)
+
+
+pad_x:
+        dex                     ;                                       2
+        bne     pad_x           ;                                       2/3
+                                ;===========================================
+                                ;       5*(coarse_x+2)-1
+                                ; MAX is 9, so up to 54
+; up to 66
+        ; beam is at proper place
+        sta     RESP0                                                   ; 3
+; up to 69
+
+
+
 	sta	WSYNC
 	sta	WSYNC
 	sta	WSYNC
 	sta	WSYNC
-	sta	WSYNC
-	sta	WSYNC
+	sta	HMOVE
 
 	;================================================
 	; VBLANK scanline 43 -- adjust Y2
@@ -93,9 +189,11 @@ done_y:
 	sta	VDELP1		; turn off delay			; 3
 ;
 
-	lda	#NUSIZ_QUAD_SIZE|NUSIZ_MISSILE_WIDTH_8			; 2
-	sta	NUSIZ0							; 3
-	lda	#NUSIZ_QUAD_SIZE|NUSIZ_MISSILE_WIDTH_8			; 2
+	lda	#NUSIZ_ONE_COPY
+;	lda	#NUSIZ_QUAD_SIZE|NUSIZ_MISSILE_WIDTH_8			; 2
+	sta	NUSIZ0
+	lda	#NUSIZ_ONE_COPY						; 3
+;	lda	#NUSIZ_QUAD_SIZE|NUSIZ_MISSILE_WIDTH_8			; 2
 	sta	NUSIZ1							; 3
 ;
 

@@ -66,6 +66,7 @@ clear_loop:
 .align $100
 
 .include "desire_logo.inc"
+.include "fine_adjust.inc"
 
 	;=====================
 	; other includes
@@ -80,7 +81,3 @@ clear_loop:
 	.word tia_spirit	; NMI
 	.word tia_spirit	; RESET
 	.word tia_spirit	; IRQ
-
-
-
-
