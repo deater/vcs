@@ -62,6 +62,19 @@ frame_oflo:
         inc	FRAMEH                                                  ; 5
 no_frame_oflo:
 
+	lda	FRAMEL
+	bne	same_effect
+	lda	FRAMEH
+check3:
+	cmp	#2
+	beq	next_effect
+	cmp	#4
+	beq	next_effect
+	cmp	#6
+	bne	same_effect
+next_effect:
+	inc	WHICH_EFFECT
+same_effect:
 
 
 	;=======================
@@ -87,13 +100,14 @@ le_vblank_loop:
 
 
 jmp_table_low:
-;	.byte <logo_effect
-	.byte <raster_effect
+	.byte <logo_effect
 	.byte <bitmap_effect
+	.byte <raster_effect
 jmp_table_high:
-;	.byte >logo_effect
-	.byte >raster_effect
+	.byte >logo_effect
 	.byte >bitmap_effect
+	.byte >raster_effect
+
 
 
 	;============================

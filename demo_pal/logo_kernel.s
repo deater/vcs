@@ -21,6 +21,8 @@ logo_effect:
 	bne	logo_yadd_ok
 
 	; was zero, inc it
+	ldy	#100
+	sty	LOGO_Y
 	inc	YADD
 
 logo_yadd_ok:
@@ -28,7 +30,7 @@ logo_yadd_ok:
 	clc
 	adc	LOGO_Y
         sta	LOGO_Y
-        cmp	#227
+        cmp	#200
         bcs	logo_invert_y			; bge
         cmp	#0
         bcs	logo_done_y			; bge
@@ -79,7 +81,10 @@ logo_done_y:
 	sta	COLUPF			; fg, dark grey			; 3
 
 ; 56
-	inc	LOGO_Y							; 5
+	clc
+	lda	LOGO_Y
+	adc	YADD							; 5
+	sta	LOGO_Y
 
 ; 61
 	ldy	#0							; 2
@@ -158,7 +163,7 @@ done_playfield:
 
 done_kernel:
 
-	sta	WSYNC
+;	sta	WSYNC
 
 	;===========================
 	;===========================
