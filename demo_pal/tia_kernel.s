@@ -91,7 +91,8 @@ le_vblank_loop:
 	; choose which effect to run
 	;============================
 
-	ldx	WHICH_EFFECT
+;	ldx	WHICH_EFFECT
+	ldx	#2
 	lda	jmp_table_low,X
 	sta	INL
 	lda	jmp_table_high,X

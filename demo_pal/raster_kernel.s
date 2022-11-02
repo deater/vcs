@@ -1,12 +1,11 @@
-
 	;================================================
 	; draws raster effect
 	;================================================
 
 raster_effect:
 
-	;====================================
-	; scanline X
+	;============]========================
+	; scanline ??: setup X for sprites
 	;====================================
 ; 0
 	lda	SPRITE0_X						; 3
@@ -28,57 +27,120 @@ raster_effect:
 	sta	HMP0							; 3
 ; 28
 
+	lda	SPRITE1_X						; 3
+; 31
+        ; spritex DIV 16
+
+	lsr								; 2
+	lsr								; 2
+	lsr								; 2
+	lsr								; 2
+
+        sta	SPRITE1_X_COARSE					; 3
+; 44
+	; apply fine adjust
+	lda	SPRITE1_X						; 3
+	and	#$0f							; 2
+	tax								; 2
+	lda	fine_adjust_table,X					; 4+
+	sta	HMP1							; 3
+; 58
 
 	sta	WSYNC
 
-	;=====================================
-	; move sprite0
-	;=====================================
+	;=========================================
+	; scanline ???: move sprite0
+	;=========================================
+; 0
+	lda	SPRITE0_XADD						; 3
+	bne	sprite0_xadd_ok						; 2/3
 
-	lda	SPRITE0_XADD
-	bne	sprite0_xadd_ok
-
+; 5
 	; was zero, dec it
-	ldy	#100
-	sty	SPRITE0_X
-	dec	SPRITE0_XADD
+	ldy	#100							; 2
+	sty	SPRITE0_X						; 3
+	dec	SPRITE0_XADD						; 5
 
 sprite0_xadd_ok:
+; 6 / 15
+
 	; XADD in A
-	clc
-	adc	SPRITE0_X
-	sta	SPRITE0_X
-	cmp	#160
-	bcs	sprite0_invert_x		; bge
-	cmp	#0
-	bcs	done_sprite0_x		; bge
+	clc								; 2
+	adc	SPRITE0_X						; 3
+	sta	SPRITE0_X						; 3
+	cmp	#160							; 2
+	bcs	sprite0_invert_x	; bge				; 2/3
+	cmp	#0							; 2
+	bcs	done_sprite0_x		; bge				; 2/3
+								;============
+								; 16 worst
 
 sprite0_invert_x:
-	lda	SPRITE0_XADD
-	eor	#$FF
-	clc
-	adc	#1
-	sta	SPRITE0_XADD
+; 33
+	lda	SPRITE0_XADD						; 3
+	eor	#$FF							; 2
+	clc								; 2
+	adc	#1							; 2
+	sta	SPRITE0_XADD						; 3
+; 45
+
 
 done_sprite0_x:
 
 	sta	WSYNC
 
-	;==============================
 
-        ;=======================================================
-        ; set up sprite0 (strongbad)  to be at proper X position
-        ;=======================================================
-        ; now in setup scanline 1
+	;=========================================
+	; scanline ???: move sprite1
+	;=========================================
 ; 0
-        ; we can do this here and the sprite will be drawn as a long
-        ; vertical column
-        ; later we only enable it for the lines we want
+	lda	SPRITE1_XADD						; 3
+	bne	sprite1_xadd_ok						; 2/3
 
-        ldx     a:SPRITE0_X_COARSE    ; force 4-cycle version         ; 4
+; 5
+	; was zero, dec it
+	ldy	#100							; 2
+	sty	SPRITE1_X						; 3
+	inc	SPRITE1_XADD						; 5
 
-;        cpx     #$A                                                     ; 2
-;        bcs     far_right       ; bge                                   ; 2/3
+sprite1_xadd_ok:
+; 6 / 15
+
+	; XADD in A
+	clc								; 2
+	adc	SPRITE1_X						; 3
+	sta	SPRITE1_X						; 3
+	cmp	#160							; 2
+	bcs	sprite1_invert_x	; bge				; 2/3
+	cmp	#0							; 2
+	bcs	done_sprite1_x		; bge				; 2/3
+								;============
+								; 16 worst
+
+sprite1_invert_x:
+; 33
+	lda	SPRITE1_XADD						; 3
+	eor	#$FF							; 2
+	clc								; 2
+	adc	#1							; 2
+	sta	SPRITE1_XADD						; 3
+; 45
+
+
+done_sprite1_x:
+
+	sta	WSYNC
+
+	;=======================================================
+	; scanline ??: set up sprite0 to be at proper X position
+	;=======================================================
+
+; 0
+
+	ldx	a:SPRITE0_X_COARSE	; force 4-cycle version		; 4
+
+;	cpx	#$A                                                     ; 2
+;	bcs	far_right	; bge                                   ; 2/3
 
 	nop
 	nop
@@ -90,8 +152,8 @@ done_sprite0_x:
 
 
 pad_x:
-        dex                     ;                                       2
-        bne     pad_x           ;                                       2/3
+	dex                     ;                                       2
+	bne	pad_x           ;                                       2/3
                                 ;===========================================
                                 ;       5*(coarse_x+2)-1
                                 ; MAX is 9, so up to 54
@@ -100,11 +162,42 @@ pad_x:
         sta     RESP0                                                   ; 3
 ; up to 69
 
+	sta	WSYNC
 
 
+	;=======================================================
+	; scanline ??: set up sprite1 to be at proper X position
+	;=======================================================
+
+; 0
+
+	ldx	a:SPRITE1_X_COARSE	; force 4-cycle version		; 4
+
+;	cpx	#$A                                                     ; 2
+;	bcs	far_right	; bge                                   ; 2/3
+
+	nop
+	nop
+
+; 8
+	inx                     ;                                       ; 2
+	inx                     ;                                       ; 2
+; 12 (want to be 12 here)
+
+
+pad_x1:
+	dex                     ;                                       2
+	bne	pad_x1           ;                                       2/3
+                                ;===========================================
+                                ;       5*(coarse_x+2)-1
+                                ; MAX is 9, so up to 54
+; up to 66
+        ; beam is at proper place
+	sta     RESP1                                                   ; 3
+; up to 69
+
 	sta	WSYNC
-	sta	WSYNC
-	sta	WSYNC
+
 	sta	WSYNC
 	sta	HMOVE
 
