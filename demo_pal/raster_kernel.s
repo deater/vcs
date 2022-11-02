@@ -325,10 +325,12 @@ done_y:
 	; 228 scanlines (192 on NTSC)
 
 raster_playfield:
-
 	; comes in at 3 cycles
-draw_raster_red:
+
 ; 3
+	sta	COLUPF							; 3
+
+draw_raster_red:
 	lda	#$00
 	ldy	LOGO_LEFT
 	cpy	#0
@@ -343,7 +345,7 @@ draw_raster_green:
 	dec	RASTER_LEFT
 
 raster_skip_color:
-	sta	COLUPF							; 3
+
 
 
 	inx
