@@ -57,6 +57,18 @@ clear_loop:
 ; MAIN LOOP
 ;======================================================================
 
+
+	; init rasterbars
+	ldy	#90
+	sty	RASTER_G_Y
+	ldy	#122
+	sty	RASTER_R_Y
+	ldy	#154
+	sty	RASTER_B_Y
+	inc	RASTER_R_YADD
+	inc	RASTER_B_YADD
+	inc	RASTER_G_YADD
+
 .include "tia_kernel.s"
 
 .include "logo_kernel.s"

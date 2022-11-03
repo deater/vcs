@@ -5,7 +5,7 @@
 raster_effect:
 
 	;============]========================
-	; scanline ??: setup X for sprites
+	; scanline 38: setup X for sprites
 	;====================================
 ; 0
 	lda	SPRITE0_X						; 3
@@ -49,7 +49,7 @@ raster_effect:
 	sta	WSYNC
 
 	;=========================================
-	; scanline ???: move sprite0
+	; scanline 39: move sprite0
 	;=========================================
 ; 0
 	lda	SPRITE0_XADD						; 3
@@ -91,7 +91,7 @@ done_sprite0_x:
 
 
 	;=========================================
-	; scanline ???: move sprite1
+	; scanline 40: move sprite1
 	;=========================================
 ; 0
 	lda	SPRITE1_XADD						; 3
@@ -132,7 +132,7 @@ done_sprite1_x:
 	sta	WSYNC
 
 	;=======================================================
-	; scanline ??: set up sprite0 to be at proper X position
+	; scanline 41: set up sprite0 to be at proper X position
 	;=======================================================
 
 ; 0
@@ -166,7 +166,7 @@ pad_x:
 
 
 	;=======================================================
-	; scanline ??: set up sprite1 to be at proper X position
+	; scanline 42: set up sprite1 to be at proper X position
 	;=======================================================
 
 ; 0
@@ -202,68 +202,97 @@ pad_x1:
 	sta	HMOVE
 
 	;================================================
-	; VBLANK scanline 43 -- adjust Y2
+	; VBLANK scanline 43 -- adjust green rasterbar
 	;================================================
-
-	lda	RASTER_YADD
-	bne	raster_yadd_ok
+; 3
+	lda	RASTER_G_YADD					; 3
+;	bne	raster_g_yadd_ok				; 2/3
 
 	; was zero, dec it
-	ldy	#114
-	sty	RASTER_Y
-	dec	RASTER_YADD
+;	ldy	#114						; 2
+;	sty	RASTER_G_Y					; 3
+;	dec	RASTER_G_YADD					; 5
 
-raster_yadd_ok:
+raster_g_yadd_ok:
+; 9/18
+
 	; YADD in A
-	clc
-	adc	RASTER_Y
-	sta	RASTER_Y
-	cmp	#220
-	bcs	raster_invert_y		; bge
-	cmp	#0
-	bcs	done_raster_y		; bge
+	clc								; 2
+	adc	RASTER_G_Y						; 2
+	sta	RASTER_G_Y						; 2
+	cmp	#220							; 2
+	bcs	raster_g_invert_y	; bge				; 2/3
+	cmp	#0							; 2
+	bcs	done_raster_g_y		; bge				; 2/3
 
-raster_invert_y:
-	lda	RASTER_YADD
-	eor	#$FF
-	clc
-	adc	#1
-	sta	RASTER_YADD
+raster_g_invert_y:
+; 32
+	lda	RASTER_G_YADD						; 3
+	eor	#$FF							; 2
+	clc								; 2
+	adc	#1							; 2
+	sta	RASTER_G_YADD						; 3
+; 44
 
-done_raster_y:
+done_raster_g_y:
+;	sta	WSYNC
+
+raster_b_yadd_ok:
+; 9/18
+	lda	RASTER_B_YADD
+	; YADD in A
+	clc								; 2
+	adc	RASTER_B_Y						; 2
+	sta	RASTER_B_Y						; 2
+	cmp	#220							; 2
+	bcs	raster_b_invert_y	; bge				; 2/3
+	cmp	#0							; 2
+	bcs	done_raster_b_y		; bge				; 2/3
+
+raster_b_invert_y:
+; 32
+	lda	RASTER_B_YADD						; 3
+	eor	#$FF							; 2
+	clc								; 2
+	adc	#1							; 2
+	sta	RASTER_B_YADD						; 3
+; 44
+
+done_raster_b_y:
 	sta	WSYNC
 
 
+
 	;================================================
-	; VBLANK scanline 44 -- adjust Y
+	; VBLANK scanline 44 -- adjust red rasterbar
 	;================================================
 
-	lda	YADD
-	bne	yadd_ok
+	lda	RASTER_R_YADD
+;	bne	raster_r_yadd_ok
 
-	ldy	#114
-	sty	LOGO_Y
+;	ldy	#114
+;	sty	RASTER_R_Y
 	; was zero, inc it
-	inc	YADD
+;	inc	RASTER_R_YADD
 
-yadd_ok:
+raster_r_yadd_ok:
 	; YADD in A
 	clc
-	adc	LOGO_Y
-	sta	LOGO_Y
+	adc	RASTER_R_Y
+	sta	RASTER_R_Y
 	cmp	#220
-	bcs	invert_y		; bge
+	bcs	raster_r_invert_y	; bge
 	cmp	#0
-	bcs	done_y			; bge
+	bcs	raster_r_done_y		; bge
 
-invert_y:
-	lda	YADD
+raster_r_invert_y:
+	lda	RASTER_R_YADD
 	eor	#$FF
 	clc
 	adc	#1
-	sta	YADD
+	sta	RASTER_R_YADD
 
-done_y:
+raster_r_done_y:
 	sta	WSYNC
 
 	;=================================
@@ -313,6 +342,7 @@ done_y:
 ; 61
 	ldy	#0							; 2
 	ldx	#0							; 2
+	txa			; needed so top line is black		; 2
 	sta	WSYNC							; 3
 ; 68
 
@@ -331,18 +361,26 @@ raster_playfield:
 	sta	COLUPF							; 3
 
 draw_raster_red:
-	lda	#$00
-	ldy	LOGO_LEFT
+	lda	#$00			; initial color black
+
+	ldy	RASTER_R_LEFT
 	cpy	#0
 	beq	draw_raster_green
 	lda	raster_color_red,Y					; 4
-	dec	LOGO_LEFT
+	dec	RASTER_R_LEFT
 
 draw_raster_green:
-	ldy	RASTER_LEFT
-	beq	raster_skip_color
+	ldy	RASTER_G_LEFT
+	beq	draw_raster_blue
 	lda	raster_color_green,Y					; 4
-	dec	RASTER_LEFT
+	dec	RASTER_G_LEFT
+
+draw_raster_blue:
+	ldy	RASTER_B_LEFT
+	beq	raster_skip_color
+	lda	raster_color_blue,Y					; 4
+	dec	RASTER_B_LEFT
+
 
 raster_skip_color:
 
@@ -354,15 +392,19 @@ raster_skip_color:
 
 	ldy	#8
 
-	cpx	LOGO_Y
+	cpx	RASTER_R_Y
 	bne	no_start_raster_red
-	sty	LOGO_LEFT
+	sty	RASTER_R_LEFT
 no_start_raster_red:
-	cpx	RASTER_Y
-	bne	no_start_raster
-	sty	RASTER_LEFT
+	cpx	RASTER_G_Y
+	bne	no_start_raster_green
+	sty	RASTER_G_LEFT
+no_start_raster_green:
+	cpx	RASTER_B_Y
+	bne	no_start_raster_blue
+	sty	RASTER_B_LEFT
 
-no_start_raster:
+no_start_raster_blue:
 
 ; 64
 	sta	WSYNC							; 3
@@ -401,3 +443,6 @@ raster_color_red:
 	.byte $60,$62,$64,$66,$68,$6A,$6C,$6E
 raster_color_green:
 	.byte $50,$52,$54,$56,$58,$5A,$5C,$5E
+raster_color_blue:
+	.byte $B0,$B2,$B4,$B6,$B8,$BA,$BC,$BE
+
