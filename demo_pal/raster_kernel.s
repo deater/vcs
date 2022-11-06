@@ -358,61 +358,65 @@ raster_playfield:
 	; comes in at 3 cycles
 
 ; 3
+	; color is already in A
 	sta	COLUPF							; 3
 
-draw_raster_red:
-	lda	#$00			; initial color black
+	;============================
+	; setup raster bars
+	;============================
+; 6
+	ldy	#0							; 2
+; 8
+	txa								; 2
+	sec								; 2
+	sbc	RASTER_R_Y						; 3
+	cmp	#8							; 2
+	bcs	no_raster_red						; 2/3
+	tay								; 2
+	iny								; 2
 
-	ldy	RASTER_R_LEFT
-	cpy	#0
-	beq	draw_raster_green
-	lda	raster_color_red,Y					; 4
-	dec	RASTER_R_LEFT
+no_raster_red:
+; 23
+	txa								; 2
+	sec								; 2
+	sbc	RASTER_G_Y						; 3
+	cmp	#8							; 2
+	bcs	no_raster_green						; 2/3
+	adc	#9							; 2
+	tay								; 2
 
-draw_raster_green:
-	ldy	RASTER_G_LEFT
-	beq	draw_raster_blue
-	lda	raster_color_green,Y					; 4
-	dec	RASTER_G_LEFT
+no_raster_green:
+; 38
+	txa								; 2
+	sec								; 2
+	sbc	RASTER_B_Y						; 3
+	cmp	#8							; 2
+	bcs	no_raster_blue						; 2/3
+	adc	#17							; 2
+	tay								; 2
 
-draw_raster_blue:
-	ldy	RASTER_B_LEFT
-	beq	raster_skip_color
-	lda	raster_color_blue,Y					; 4
-	dec	RASTER_B_LEFT
+no_raster_blue:
+; 53
+	lda	raster_color_red,Y					; 4+
+; 57
+
+; 57 worst case
+
+	inx								; 2
+	cpx	#226							; 2
+	beq	done_raster						; 2/3
+
+; 63	worst case
 
 
-raster_skip_color:
-
-
-
-	inx
-	cpx	#227
-	beq	done_raster
-
-	ldy	#8
-
-	cpx	RASTER_R_Y
-	bne	no_start_raster_red
-	sty	RASTER_R_LEFT
-no_start_raster_red:
-	cpx	RASTER_G_Y
-	bne	no_start_raster_green
-	sty	RASTER_G_LEFT
-no_start_raster_green:
-	cpx	RASTER_B_Y
-	bne	no_start_raster_blue
-	sty	RASTER_B_LEFT
-
-no_start_raster_blue:
-
-; 64
 	sta	WSYNC							; 3
-	jmp	raster_playfield						; 2/3
+; 66 / 0
+	jmp	raster_playfield					; 3
+
 
 done_raster:
 
-	sta	WSYNC
+;	sta	WSYNC
 
 	;===========================
 	;===========================
@@ -440,6 +444,7 @@ done_raster:
 
 raster_color:
 raster_color_red:
+	.byte $00
 	.byte $60,$62,$64,$66,$68,$6A,$6C,$6E
 raster_color_green:
 	.byte $50,$52,$54,$56,$58,$5A,$5C,$5E
