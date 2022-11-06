@@ -37,14 +37,14 @@ raster_effect:
 	lsr								; 2
 
         sta	SPRITE1_X_COARSE					; 3
-; 44
+; 42
 	; apply fine adjust
 	lda	SPRITE1_X						; 3
 	and	#$0f							; 2
 	tax								; 2
 	lda	fine_adjust_table,X					; 4+
 	sta	HMP1							; 3
-; 58
+; 56
 
 	sta	WSYNC
 
@@ -64,7 +64,6 @@ raster_effect:
 	bcs	done_sprite0_x		; bge				; 2/3
 								;============
 								; 16 worst
-
 sprite0_invert_x:
 ; 19
 	lda	SPRITE0_XADD						; 3
@@ -72,12 +71,12 @@ sprite0_invert_x:
 	tay								; 2
 	iny								; 2
 	sty	SPRITE0_XADD						; 3
-; 33
+; 31
 
 done_sprite0_x:
 
 	lda	SPRITE0_YADD						; 3
-; 36
+; 34
 	clc								; 2
 	adc	SPRITE0_Y						; 3
 	sta	SPRITE0_Y						; 3
@@ -89,7 +88,7 @@ done_sprite0_x:
 								; 16 worst
 
 sprite0_invert_y:
-; 19
+; 50
 	lda	SPRITE0_YADD						; 3
 	eor	#$FF							; 2
 	tay								; 2
@@ -104,7 +103,7 @@ sprite0_invert_y:
 ;	lda	#CTRLPF_PFP
 ;	sta	CTRLPF
 
-; 33
+; 62
 done_sprite0_y:
 	sta	WSYNC
 
@@ -114,18 +113,6 @@ done_sprite0_y:
 	;=========================================
 ; 0
 	lda	SPRITE1_XADD						; 3
-	bne	sprite1_xadd_ok						; 2/3
-
-; 5
-	; was zero, dec it
-	ldy	#100							; 2
-	sty	SPRITE1_X						; 3
-	inc	SPRITE1_XADD						; 5
-
-sprite1_xadd_ok:
-; 6 / 15
-
-	; XADD in A
 	clc								; 2
 	adc	SPRITE1_X						; 3
 	sta	SPRITE1_X						; 3
@@ -134,35 +121,38 @@ sprite1_xadd_ok:
 	cmp	#16							; 2
 	bcs	done_sprite1_x		; bge				; 2/3
 								;============
-								; 16 worst
+								; 18 worst
 
 sprite1_invert_x:
-; 33
+; 18
 	lda	SPRITE1_XADD						; 3
 	eor	#$FF							; 2
 	clc								; 2
 	adc	#1							; 2
 	sta	SPRITE1_XADD						; 3
-; 45
-
+; 30
 
 done_sprite1_x:
+
+	; TODO: change color?
 
 	sta	WSYNC
 
 	;=======================================================
 	; scanline 41: set up sprite0 to be at proper X position
 	;=======================================================
+	; value will be 0..9
 
 ; 0
 
 	ldx	a:SPRITE0_X_COARSE	; force 4-cycle version		; 4
+; 4
 
 ;	cpx	#$A                                                     ; 2
 ;	bcs	far_right	; bge                                   ; 2/3
 
-	nop
-	nop
+	nop								; 2
+	nop								; 2
 
 ; 8
 	inx                     ;                                       ; 2
@@ -170,12 +160,15 @@ done_sprite1_x:
 ; 12 (want to be 12 here)
 
 
+	; X is 2..12 here
 pad_x:
 	dex                     ;                                       2
 	bne	pad_x           ;                                       2/3
                                 ;===========================================
                                 ;       5*(coarse_x+2)-1
-                                ; MAX is 9, so up to 54
+                                ; COARSE_X is 0..9 so
+				;   9 .. 54 cycles
+
 ; up to 66
         ; beam is at proper place
         sta     RESP0                                                   ; 3
@@ -191,12 +184,13 @@ pad_x:
 ; 0
 
 	ldx	a:SPRITE1_X_COARSE	; force 4-cycle version		; 4
+; 4
 
 ;	cpx	#$A                                                     ; 2
 ;	bcs	far_right	; bge                                   ; 2/3
 
-	nop
-	nop
+	nop								; 2
+	nop								; 2
 
 ; 8
 	inx                     ;                                       ; 2
@@ -209,73 +203,64 @@ pad_x1:
 	bne	pad_x1           ;                                       2/3
                                 ;===========================================
                                 ;       5*(coarse_x+2)-1
-                                ; MAX is 9, so up to 54
+                                ; COARSE_X is 0..9 so
+				;   9 .. 54 cycles
 ; up to 66
         ; beam is at proper place
 	sta     RESP1                                                   ; 3
 ; up to 69
 
 	sta	WSYNC
-
-	sta	WSYNC
-	sta	HMOVE
+	sta	HMOVE		; finalize fine adjust
 
 	;================================================
-	; VBLANK scanline 43 -- adjust green rasterbar
+	; VBLANK scanline 43 -- adjust green and blue rasterbar
 	;================================================
 ; 3
-	lda	RASTER_G_YADD					; 3
-;	bne	raster_g_yadd_ok				; 2/3
-
-	; was zero, dec it
-;	ldy	#114						; 2
-;	sty	RASTER_G_Y					; 3
-;	dec	RASTER_G_YADD					; 5
-
-raster_g_yadd_ok:
-; 9/18
-
-	; YADD in A
+	lda	RASTER_G_YADD						; 3
+; 6
 	clc								; 2
-	adc	RASTER_G_Y						; 2
-	sta	RASTER_G_Y						; 2
+	adc	RASTER_G_Y						; 3
+	sta	RASTER_G_Y						; 3
 	cmp	#220							; 2
 	bcs	raster_g_invert_y	; bge				; 2/3
 	cmp	#0							; 2
 	bcs	done_raster_g_y		; bge				; 2/3
-
+								;============
+								; 16 worst
 raster_g_invert_y:
-; 32
+; 22
 	lda	RASTER_G_YADD						; 3
 	eor	#$FF							; 2
 	clc								; 2
 	adc	#1							; 2
 	sta	RASTER_G_YADD						; 3
-; 44
+; 34
 
 done_raster_g_y:
-;	sta	WSYNC
 
-raster_b_yadd_ok:
-; 9/18
-	lda	RASTER_B_YADD
-	; YADD in A
+	;=========================
+	; blue rasterbar
+; 34
+	lda	RASTER_B_YADD						; 3
+; 37
 	clc								; 2
-	adc	RASTER_B_Y						; 2
-	sta	RASTER_B_Y						; 2
+	adc	RASTER_B_Y						; 3
+	sta	RASTER_B_Y						; 3
 	cmp	#220							; 2
 	bcs	raster_b_invert_y	; bge				; 2/3
 	cmp	#0							; 2
 	bcs	done_raster_b_y		; bge				; 2/3
-
+								;============
+								; 16 worst case
 raster_b_invert_y:
-; 32
+; 53
 	lda	RASTER_B_YADD						; 3
 	eor	#$FF							; 2
 	clc								; 2
 	adc	#1							; 2
 	sta	RASTER_B_YADD						; 3
-; 44
+; 65
 
 done_raster_b_y:
 	sta	WSYNC
@@ -285,76 +270,71 @@ done_raster_b_y:
 	;================================================
 	; VBLANK scanline 44 -- adjust red rasterbar
 	;================================================
-
-	lda	RASTER_R_YADD
-;	bne	raster_r_yadd_ok
-
-;	ldy	#114
-;	sty	RASTER_R_Y
-	; was zero, inc it
-;	inc	RASTER_R_YADD
-
-raster_r_yadd_ok:
-	; YADD in A
-	clc
-	adc	RASTER_R_Y
-	sta	RASTER_R_Y
-	cmp	#220
-	bcs	raster_r_invert_y	; bge
-	cmp	#0
-	bcs	raster_r_done_y		; bge
-
+; 0
+	lda	RASTER_R_YADD						; 3
+; 3
+	clc								; 2
+	adc	RASTER_R_Y						; 3
+	sta	RASTER_R_Y						; 3
+	cmp	#220							; 2
+	bcs	raster_r_invert_y	; bge				; 2/3
+	cmp	#0							; 2
+	bcs	raster_r_done_y		; bge				; 2/3
+								;============
+								; 16
+; 19
 raster_r_invert_y:
-	lda	RASTER_R_YADD
-	eor	#$FF
-	clc
-	adc	#1
-	sta	RASTER_R_YADD
-
+	lda	RASTER_R_YADD						; 3
+	eor	#$FF							; 2
+	clc								; 2
+	adc	#1							; 2
+	sta	RASTER_R_YADD						; 3
+; 31
 raster_r_done_y:
 	sta	WSYNC
 
 	;=================================
 	; VBLANK scanline 45
 	;=================================
-; 3
+; 0
 	lda	#0							; 2
 	sta	VBLANK                  ; turn on beam			; 3
         sta	COLUBK							; 3
 	sta	VDELP0							; 3
 	sta	VDELP1		; turn off delay			; 3
-;
+; 14
 
-	lda	#NUSIZ_ONE_COPY
-;	lda	#NUSIZ_QUAD_SIZE|NUSIZ_MISSILE_WIDTH_8			; 2
-	sta	NUSIZ0
-	lda	#NUSIZ_ONE_COPY						; 3
-;	lda	#NUSIZ_QUAD_SIZE|NUSIZ_MISSILE_WIDTH_8			; 2
+	lda	#NUSIZ_ONE_COPY						; 2
+	sta	NUSIZ0							; 3
+; 19
+	lda	#NUSIZ_ONE_COPY						; 2
 	sta	NUSIZ1							; 3
-;
+; 24
 
 	lda	#0							; 2
 	sta	COLUPF			; fg, black			; 3
-	sta	GRP0			; sprite 1
+	sta	GRP0			; sprite 1			; 3
+; 32
 
-	lda	#$F0
+	lda	#$F0							; 2
 	sta	PF0			;				; 3
-	lda	#$FF
+	lda	#$FF							; 2
 	sta	PF1			;				; 3
 	sta	PF2							; 3
-	sta	GRP1			; sprite 2
-
-	lda	#$86
-	sta	COLUP0
-
-	lda	#$7E
-	sta	COLUP1
-; 61
+	sta	GRP1			; sprite 2			; 3
+; 48
+	lda	#$86							; 2
+	sta	COLUP0							; 3
+; 53
+	lda	#$7E							; 2
+	sta	COLUP1							; 3
+; 58
 	ldy	#0							; 2
 	ldx	#0							; 2
 	txa			; needed so top line is black		; 2
+; 64
 	sta	WSYNC							; 3
-; 68
+; 67
 
 
 	;=========================
@@ -435,7 +415,7 @@ no_raster_blue:
 ; 73 worst case
 
 	inx								; 2
-	cpx	#226							; 2
+	cpx	#227							; 2
 ; 77
 	sta	WSYNC							; 3
 ; 80/0
