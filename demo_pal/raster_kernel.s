@@ -53,40 +53,59 @@ raster_effect:
 	;=========================================
 ; 0
 	lda	SPRITE0_XADD						; 3
-	bne	sprite0_xadd_ok						; 2/3
-
-; 5
-	; was zero, dec it
-	ldy	#100							; 2
-	sty	SPRITE0_X						; 3
-	dec	SPRITE0_XADD						; 5
-
-sprite0_xadd_ok:
-; 6 / 15
-
+; 3
 	; XADD in A
 	clc								; 2
 	adc	SPRITE0_X						; 3
 	sta	SPRITE0_X						; 3
-	cmp	#160							; 2
+	cmp	#144							; 2
 	bcs	sprite0_invert_x	; bge				; 2/3
-	cmp	#0							; 2
+	cmp	#16							; 2
 	bcs	done_sprite0_x		; bge				; 2/3
 								;============
 								; 16 worst
 
 sprite0_invert_x:
-; 33
+; 19
 	lda	SPRITE0_XADD						; 3
 	eor	#$FF							; 2
-	clc								; 2
-	adc	#1							; 2
-	sta	SPRITE0_XADD						; 3
-; 45
-
+	tay								; 2
+	iny								; 2
+	sty	SPRITE0_XADD						; 3
+; 33
 
 done_sprite0_x:
 
+	lda	SPRITE0_YADD						; 3
+; 36
+	clc								; 2
+	adc	SPRITE0_Y						; 3
+	sta	SPRITE0_Y						; 3
+	cmp	#200							; 2
+	bcs	sprite0_invert_y	; bge				; 2/3
+	cmp	#8							; 2
+	bcs	done_sprite0_y		; bge				; 2/3
+								;============
+								; 16 worst
+
+sprite0_invert_y:
+; 19
+	lda	SPRITE0_YADD						; 3
+	eor	#$FF							; 2
+	tay								; 2
+	iny								; 2
+	sty	SPRITE0_YADD						; 3
+
+	; make so goes behind playfield?
+	; note it's not transparent color, but whether playfield drawn
+	; at all
+	; we'd have to reset PF0/PF1/PF2 in kernel, prob not possible :(
+
+;	lda	#CTRLPF_PFP
+;	sta	CTRLPF
+
+; 33
+done_sprite0_y:
 	sta	WSYNC
 
 
@@ -110,9 +129,9 @@ sprite1_xadd_ok:
 	clc								; 2
 	adc	SPRITE1_X						; 3
 	sta	SPRITE1_X						; 3
-	cmp	#160							; 2
+	cmp	#144							; 2
 	bcs	sprite1_invert_x	; bge				; 2/3
-	cmp	#0							; 2
+	cmp	#16							; 2
 	bcs	done_sprite1_x		; bge				; 2/3
 								;============
 								; 16 worst
@@ -301,12 +320,7 @@ raster_r_done_y:
 ; 3
 	lda	#0							; 2
 	sta	VBLANK                  ; turn on beam			; 3
-; 8
-
-	lda	#0			; bg, black			; 3
         sta	COLUBK							; 3
-;
-	lda	#0							; 2
 	sta	VDELP0							; 3
 	sta	VDELP1		; turn off delay			; 3
 ;
@@ -321,23 +335,19 @@ raster_r_done_y:
 
 	lda	#0							; 2
 	sta	COLUPF			; fg, black			; 3
+	sta	GRP0			; sprite 1
 
 	lda	#$F0
 	sta	PF0			;				; 3
 	lda	#$FF
 	sta	PF1			;				; 3
-	lda	#$FF
 	sta	PF2							; 3
-
-; 56
-	lda	#$FF
-	sta	GRP0			; sprite 1
 	sta	GRP1			; sprite 2
 
-	lda	#$80
+	lda	#$86
 	sta	COLUP0
 
-	lda	#$70
+	lda	#$7E
 	sta	COLUP1
 ; 61
 	ldy	#0							; 2
@@ -419,7 +429,7 @@ no_raster_green:
 								; 15 worst
 no_raster_blue:
 ; 69
-	lda	raster_color_red,Y					; 4+
+	lda	raster_color,Y						; 4+
 ; 73
 
 ; 73 worst case
@@ -466,8 +476,8 @@ done_raster:
 
 
 raster_color:
-raster_color_red:
 	.byte $00
+raster_color_red:
 	.byte $60,$62,$64,$66,$68,$6A,$6C,$6E
 raster_color_green:
 	.byte $50,$52,$54,$56,$58,$5A,$5C,$5E
