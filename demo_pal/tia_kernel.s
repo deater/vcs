@@ -52,19 +52,23 @@ wait_for_vblank:
 
 	; in theory we are 10 scanlines in, need to delay 27 more
 
+	sta	WSYNC
+
 	;=================================
-	; VBLANK scanline 11 -- handle frame
+	; VBLANK scanline 12 -- handle frame
 	;=================================
 
 	inc	FRAMEL                                                  ; 5
-	bne	no_frame_oflo
+	bne	no_frame_oflo						; 2/3
 frame_oflo:
         inc	FRAMEH                                                  ; 5
 no_frame_oflo:
 
-	lda	FRAMEL
-	bne	same_effect
-	lda	FRAMEH
+	; switch effects
+
+	lda	FRAMEL							; 3
+	bne	same_effect						; 2/3
+	lda	FRAMEH							; 3
 check3:
 	cmp	#2
 	beq	next_effect
@@ -81,7 +85,7 @@ same_effect:
 	; wait the rest
 	;=======================
 
-	ldx	#27							; 2
+	ldx	#26							; 2
 le_vblank_loop:
 	sta     WSYNC							; 3
 	dex								; 2

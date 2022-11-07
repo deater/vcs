@@ -38,7 +38,7 @@ SPRITE1_XADD		= $9F
 
 TEMP1			=	$A0
 TEMP2			=	$A1
-
+SPRITE0_YADD		=	$A2
 INL			=	$A3
 INH			=	$A4
 

@@ -68,6 +68,14 @@ clear_loop:
 	inc	RASTER_R_YADD
 	inc	RASTER_B_YADD
 	inc	RASTER_G_YADD
+	ldy	#100
+	sty	SPRITE0_X
+	sty	SPRITE0_Y
+	sty	SPRITE1_X
+	dec	SPRITE0_XADD
+	inc	SPRITE0_YADD
+	inc	SPRITE0_YADD
+	inc	SPRITE1_XADD
 
 .include "tia_kernel.s"
 
