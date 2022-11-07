@@ -143,22 +143,22 @@ tpad_x:
 
 spriteloop:
 ; 0
-	lda	lady_sprite0+13,X		; load sprite data		; 4+
+	lda	lady_sprite0+13,X	; load sprite data		; 4+
 	sta	GRP0			; 0->[GRP0] [GRP1 (?)]->GRP1	; 3
 ; 7
-	lda	lady_sprite1+13,X		; load sprite data		; 4+
+	lda	lady_sprite1+13,X	; load sprite data		; 4+
 	sta	GRP1			; 1->[GRP1], [GRP0 (0)]-->GRP0	; 3
 ; 14
-	lda	lady_sprite2+13,X		; load sprite data		; 4+
+	lda	lady_sprite2+13,X	; load sprite data		; 4+
 	sta	GRP0			; 2->[GRP0], [GRP1 (1)]-->GRP1	; 3
 ; 21
-	lda	lady_sprite5+13,X						; 4+
+	lda	lady_sprite5+13,X					; 4+
 	sta	TEMP1			; save for later		; 3
 ; 28
-        lda	lady_sprite4+13,X						; 4+
+        lda	lady_sprite4+13,X					; 4+
         tay				; save in Y			; 2
 ; 34
-	lda	lady_sprite3+13,X						; 4+
+	lda	lady_sprite3+13,X					; 4+
 	ldx	TEMP1                   ; restore saved value		; 3
 ; 41
 
@@ -179,12 +179,12 @@ spriteloop:
 	nop
 	lda	TEMP1
 
-; 65
+; 58
         dec     TEMP2                                                   ; 5
         lda     TEMP2                   ; decrement count               ; 3
 	lsr								; 2
-	tax								; 2
-	lda	TEMP2
+	tax				; reset X to TEMP2/2		; 2
+	lda	TEMP2							; 3
 ; 73
 	bne	spriteloop                                        ; 2/3
         ; 76  (goal is 76)
@@ -193,16 +193,6 @@ spriteloop:
 ; 75
         ;====================
 
-
-
-
-;	ldx	#0
-;draw_bitmap:
-
-;	sta	WSYNC							; 3
-;	inx
-;	cpx	#100
-;	bne	draw_bitmap
 
 
 done_bitmap_kernel:
