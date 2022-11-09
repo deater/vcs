@@ -13,51 +13,41 @@ logo_effect:
 	sta	WSYNC
 	sta	WSYNC
 
+
 	;================================================
 	; VBLANK scanline 44 -- adjust Y
 	;================================================
-
-	lda	YADD
-	bne	logo_yadd_ok
-
-	; was zero, inc it
-	ldy	#100
-	sty	LOGO_Y
-	inc	YADD
-
-logo_yadd_ok:
-	; YADD in A
-	clc
-	adc	LOGO_Y
-        sta	LOGO_Y
-        cmp	#200
-        bcs	logo_invert_y			; bge
-        cmp	#0
-        bcs	logo_done_y			; bge
+; 0
+	lda	LOGO_YADD					; 3
+	clc							; 2
+	adc	LOGO_Y						; 3
+        sta	LOGO_Y						; 3
+        cmp	#200						; 2
+; 13
+        bcs	logo_invert_y			; bge		; 2/3
+        cmp	#0						; 2
+        bcs	logo_done_y			; bge		; 2/3
 logo_invert_y:
-	lda	YADD
-	eor	#$FF
-	clc
-	adc	#1
-	sta	YADD
+	lda	LOGO_YADD					; 3
+	eor	#$FF						; 2
+	clc							; 2
+	adc	#1						; 2
+	sta	LOGO_YADD					; 3
 
 logo_done_y:
         sta     WSYNC
 
 
-
-	sta	WSYNC
-
-
 	;=================================
 	; VBLANK scanline 45
 	;=================================
-; 3
+; 0
 	lda	#0							; 2
 	sta	VBLANK                  ; turn on beam			; 3
-; 8
+; 5
 
-	lda	FRAMEL			; bg, light grey		; 3
+	; update bg color
+	lda	FRAMEL							; 3
 	lsr								; 2
 	lsr								; 2
 	lsr								; 2
@@ -65,32 +55,34 @@ logo_done_y:
 	tax								; 2
 	lda	bg_colors,X						; 4+
         sta	COLUBK							; 3
-; 33
+; 25
 	lda	#0							; 2
 	sta	VDELP0							; 3
 	sta	VDELP1		; turn off delay			; 3
-; 41
+; 33
 
 	lda	#NUSIZ_QUAD_SIZE|NUSIZ_MISSILE_WIDTH_8			; 2
 	sta	NUSIZ0							; 3
 	lda	#NUSIZ_QUAD_SIZE|NUSIZ_MISSILE_WIDTH_8			; 2
 	sta	NUSIZ1							; 3
-; 51
-
+; 43
+	; set playfield color?
 	lda	#2							; 2
 	sta	COLUPF			; fg, dark grey			; 3
 
-; 56
-	clc
-	lda	LOGO_Y
-	adc	YADD							; 5
-	sta	LOGO_Y
+; 48
+	; move the logo
 
-; 61
+	clc								; 2
+	lda	LOGO_Y							; 3
+	adc	LOGO_YADD						; 3
+	sta	LOGO_Y							; 3
+; 59
+
 	ldy	#0							; 2
 	ldx	#0							; 2
 	sta	WSYNC							; 3
-; 68
+; 66
 
 
 	;=========================
@@ -136,34 +128,38 @@ draw_logo:
 	sta	PF2				;			; 3
 	; has to happen 49-67 (GPU148-202)
 ; 52
-	dey								; 2
+	dey					; decrement logo count	; 2
 
 start_ahead:
 ; 5 / 54
+
+	; see if line eqyals Y location?
 	cpx	LOGO_Y							; 2
-	bne	blah							; 2/3
-	ldy	#29							; 2
-blah:
-	inx
-; ?? / ?? / 58
+	bne	not_logo_start						; 2/3
+	ldy	#29			; set logo height		; 2
+not_logo_start:
+
+	inx				; inc current scanline		; 2
+
+; ?? / ?? / 61	worst case?
 
 	; finish 1 early so time to clear up
 	cpx	#227							; 2
 	beq	done_playfield						; 2/3
-; 62
+; 65
 
-	cpy	#0							; 2
+	cpy	#0			; check if drawing logo		; 2
 
-; 64
+; 67
 	sta	WSYNC							; 3
-	bne	draw_logo						; 2/3
-	beq	start_ahead						; 2/3
+	bne	draw_logo		; if so, draw it		; 2/3
+	beq	start_ahead		; otherwise draw nothing	; 2/3
 
 done_playfield:
 
 done_kernel:
 
-;	sta	WSYNC
+	sta	WSYNC
 
 	;===========================
 	;===========================
