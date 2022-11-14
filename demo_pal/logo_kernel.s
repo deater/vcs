@@ -1,3 +1,4 @@
+LOGO_SIZE=29
 
 	;================================================
 	; draws logo effect
@@ -11,6 +12,18 @@ logo_effect:
 	sta	WSYNC
 	sta	WSYNC
 	sta	WSYNC
+
+	lda	FRAMEL
+	bne	no_start_logo
+	lda	FRAMEH
+	cmp	#1
+	bne	no_start_logo
+
+	sta	LOGO_YADD
+
+no_start_logo:
+	
+
 	sta	WSYNC
 
 
@@ -22,7 +35,7 @@ logo_effect:
 	clc							; 2
 	adc	LOGO_Y						; 3
         sta	LOGO_Y						; 3
-        cmp	#200						; 2
+        cmp	#(227-LOGO_SIZE-1)				; 2
 ; 13
         bcs	logo_invert_y			; bge		; 2/3
         cmp	#0						; 2
@@ -128,7 +141,17 @@ draw_logo:
 	sta	PF2				;			; 3
 	; has to happen 49-67 (GPU148-202)
 ; 52
+	inx								 ;2
 	dey					; decrement logo count	; 2
+; 56
+	sta	WSYNC
+	bne	draw_logo
+
+
+; 2/3
+draw_nothing:
+
+	inx				; inc current scanline		; 2
 
 start_ahead:
 ; 5 / 54
@@ -136,24 +159,23 @@ start_ahead:
 	; see if line eqyals Y location?
 	cpx	LOGO_Y							; 2
 	bne	not_logo_start						; 2/3
-	ldy	#29			; set logo height		; 2
+	ldy	#LOGO_SIZE		; set logo height		; 2
 not_logo_start:
-
-	inx				; inc current scanline		; 2
-
-; ?? / ?? / 61	worst case?
+; 5
 
 	; finish 1 early so time to clear up
-	cpx	#227							; 2
-	beq	done_playfield						; 2/3
-; 65
-
-	cpy	#0			; check if drawing logo		; 2
-
+	cpx	#226							; 2
+	bcs	done_playfield						; 2/3
+; 9
+	cpy	#0
 ; 67
 	sta	WSYNC							; 3
 	bne	draw_logo		; if so, draw it		; 2/3
-	beq	start_ahead		; otherwise draw nothing	; 2/3
+	beq	draw_nothing		; otherwise draw nothing	; 2/3
+
+
+
+
 
 done_playfield:
 

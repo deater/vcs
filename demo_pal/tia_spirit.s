@@ -77,7 +77,7 @@ clear_loop:
 	inc	SPRITE0_YADD
 	inc	SPRITE0_YADD
 	inc	SPRITE1_XADD
-	inc	LOGO_YADD
+;	inc	LOGO_YADD
 
 .include "tia_kernel.s"
 
