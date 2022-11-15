@@ -38,7 +38,7 @@ logo_effect:
 	cmp	#1
 	bne	no_start_logo
 
-	sta	LOGO_YADD
+	inc	LOGO_YADD
 
 no_start_logo:
 

@@ -564,7 +564,7 @@ raster_spriteloop:
 ; 53
 
         ; need 5 cycles of nops
-;	nop
+	nop
 	lda	TEMP1
 
 ; 58
@@ -572,7 +572,7 @@ raster_spriteloop:
         lda     TEMP2                   ; decrement count               ; 3
 	lsr								; 2
 	tax				; reset X to TEMP2/2		; 2
-	inx
+;	inx
 	lda	TEMP2							; 3
 ; 73
 	bpl	raster_spriteloop                                        ; 2/3
