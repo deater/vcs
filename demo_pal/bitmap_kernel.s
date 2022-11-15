@@ -2,6 +2,8 @@
 	; draws bitmap effect
 	;================================================
 
+BO = 14	; bitmap offset
+
 bitmap_effect:
 
 	; 37
@@ -158,7 +160,7 @@ tpad_x:
 
 ; 43
 	ldy	#0							; 2
-	ldx	#114							; 2
+	ldx	#113							; 2
 	sta	WSYNC							; 3
 ;
 
@@ -172,22 +174,22 @@ tpad_x:
 
 spriteloop:
 ; 0
-	lda	lady_sprite0+13,X	; load sprite data		; 4+
+	lda	lady_sprite0+BO,X	; load sprite data		; 4+
 	sta	GRP0			; 0->[GRP0] [GRP1 (?)]->GRP1	; 3
 ; 7
-	lda	lady_sprite1+13,X	; load sprite data		; 4+
+	lda	lady_sprite1+BO,X	; load sprite data		; 4+
 	sta	GRP1			; 1->[GRP1], [GRP0 (0)]-->GRP0	; 3
 ; 14
-	lda	lady_sprite2+13,X	; load sprite data		; 4+
+	lda	lady_sprite2+BO,X	; load sprite data		; 4+
 	sta	GRP0			; 2->[GRP0], [GRP1 (1)]-->GRP1	; 3
 ; 21
-	lda	lady_sprite5+13,X					; 4+
+	lda	lady_sprite5+BO,X					; 4+
 	sta	TEMP1			; save for later		; 3
 ; 28
-        lda	lady_sprite4+13,X					; 4+
+        lda	lady_sprite4+BO,X					; 4+
         tay				; save in Y			; 2
 ; 34
-	lda	lady_sprite3+13,X					; 4+
+	lda	lady_sprite3+BO,X					; 4+
 	ldx	TEMP1                   ; restore saved value		; 3
 ; 41
 
@@ -205,7 +207,7 @@ spriteloop:
 ; 53
 
         ; need 5 cycles of nops
-	nop
+;	nop
 	lda	TEMP1
 
 ; 58
@@ -214,6 +216,7 @@ spriteloop:
 	lsr								; 2
 	tax				; reset X to TEMP2/2		; 2
 	lda	TEMP2							; 3
+	cmp	#2
 ; 73
 	bne	spriteloop                                        ; 2/3
         ; 76  (goal is 76)
@@ -228,6 +231,13 @@ spriteloop:
         ;====================
 
 
+	lda	#0
+	sta	GRP1
+	sta	GRP0
+	sta	GRP1							; 3
+
+	sta	WSYNC
+	sta	WSYNC
 
 done_bitmap_kernel:
 

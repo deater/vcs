@@ -2,6 +2,8 @@
 	; draws raster effect
 	;================================================
 
+PLAYFIELD_MAX = 200
+
 raster_effect:
 
 	;============]========================
@@ -222,7 +224,7 @@ pad_x1:
 	clc								; 2
 	adc	RASTER_G_Y						; 3
 	sta	RASTER_G_Y						; 3
-	cmp	#220							; 2
+	cmp	#PLAYFIELD_MAX						; 2
 	bcs	raster_g_invert_y	; bge				; 2/3
 	cmp	#0							; 2
 	bcs	done_raster_g_y		; bge				; 2/3
@@ -247,7 +249,7 @@ done_raster_g_y:
 	clc								; 2
 	adc	RASTER_B_Y						; 3
 	sta	RASTER_B_Y						; 3
-	cmp	#220							; 2
+	cmp	#PLAYFIELD_MAX						; 2
 	bcs	raster_b_invert_y	; bge				; 2/3
 	cmp	#0							; 2
 	bcs	done_raster_b_y		; bge				; 2/3
@@ -276,7 +278,7 @@ done_raster_b_y:
 	clc								; 2
 	adc	RASTER_R_Y						; 3
 	sta	RASTER_R_Y						; 3
-	cmp	#220							; 2
+	cmp	#PLAYFIELD_MAX						; 2
 	bcs	raster_r_invert_y	; bge				; 2/3
 	cmp	#0							; 2
 	bcs	raster_r_done_y		; bge				; 2/3
@@ -291,6 +293,27 @@ raster_r_invert_y:
 	sta	RASTER_R_YADD						; 3
 ; 31
 raster_r_done_y:
+
+	; other init
+
+; 31
+	lda	#$86							; 2
+	sta	COLUP0							; 3
+; 38
+	lda	#$7E							; 2
+	sta	COLUP1							; 3
+; 43
+	lda	#$00							; 2
+        sta	COLUBK							; 3
+	sta	VDELP0							; 3
+	sta	VDELP1		; turn off delay			; 3
+; 54
+	lda	#NUSIZ_ONE_COPY						; 2
+	sta	NUSIZ0							; 3
+; 59
+	lda	#NUSIZ_ONE_COPY						; 2
+	sta	NUSIZ1							; 3
+; 64
 	sta	WSYNC
 
 	;=================================
@@ -299,22 +322,12 @@ raster_r_done_y:
 ; 0
 	lda	#0							; 2
 	sta	VBLANK                  ; turn on beam			; 3
-        sta	COLUBK							; 3
-	sta	VDELP0							; 3
-	sta	VDELP1		; turn off delay			; 3
-; 14
-
-	lda	#NUSIZ_ONE_COPY						; 2
-	sta	NUSIZ0							; 3
-; 19
-	lda	#NUSIZ_ONE_COPY						; 2
-	sta	NUSIZ1							; 3
-; 24
+; 5
 
 	lda	#0							; 2
 	sta	COLUPF			; fg, black			; 3
 	sta	GRP0			; sprite 1			; 3
-; 32
+; 13
 
 	lda	#$F0							; 2
 	sta	PF0			;				; 3
@@ -322,12 +335,7 @@ raster_r_done_y:
 	sta	PF1			;				; 3
 	sta	PF2							; 3
 	sta	GRP1			; sprite 2			; 3
-; 48
-	lda	#$86							; 2
-	sta	COLUP0							; 3
-; 53
-	lda	#$7E							; 2
-	sta	COLUP1							; 3
+
 ; 58
 	ldy	#0							; 2
 	ldx	#0							; 2
@@ -426,7 +434,7 @@ done_raster_color:
 ; 66 worst case
 
 	inx								; 2
-	cpx	#227							; 2
+	cpx	#214							; 2
 ; 70
 	sta	WSYNC							; 3
 ; 73/0
@@ -437,6 +445,151 @@ done_raster_color:
 
 
 
+credits_bitmap:
+
+	;=================================
+	; scaline 217
+	;=================================
+
+; 2
+	; to center exactly would want sprite0 at
+	;       CPU cycle 41.3
+	; and sprite1 at
+	;       GPU cycle 44
+
+	ldx	#0              ; sprite 0 display nothing              ; 2
+	stx	GRP0            ;                                       ; 3
+	stx	GRP1							; 3
+; 10
+	ldx	#5		;					; 2
+; 12
+
+stpad_x:
+	dex                     ;                                       ; 2
+	bne	stpad_x		;                                       ; 2/3
+	; for X delays (5*X)-1
+	; so in this case, 24
+; 36
+	; beam is at proper place
+	sta     RESP0                                                   ; 3
+	; 39 (GPU=??, want ??) +?
+; 39
+	sta     RESP1                                                   ; 3
+	; 42 (GPU=??, want ??) +?
+; 42
+
+	lda     #$F0            ; opposite what you'd think             ; 2
+	sta     HMP0                                                    ; 3
+	lda     #$00                                                    ; 2
+	sta     HMP1                                                    ; 3
+; 52
+	sta     WSYNC
+; 0
+	sta     HMOVE           ; adjust fine tune, must be after WSYNC
+; 3
+
+	;=================================
+	; scanline 218
+	;=================================
+; 3
+        ; turn on delay
+
+	lda	#1							; 2
+	sta	VDELP0							; 3
+	sta	VDELP1							; 3
+
+	lda	#0			; black bg			; 2
+        sta	COLUBK							; 3
+	sta	GRP0
+	sta	GRP1
+	sta	GRP0
+	sta	GRP1
+
+; 8
+	lda     #$E		; bright white                          ; 3
+        sta     COLUP0          ; set sprite color                      ; 3
+        sta     COLUP1          ; set sprite color                      ; 3
+; 17
+        ; set to be 48 adjacent pixels
+
+	lda	#NUSIZ_THREE_COPIES_CLOSE				; 2
+	sta	NUSIZ0							; 3
+	sta	NUSIZ1							; 3
+; 25
+
+; 33
+	; number of lines to draw
+	ldx	#9							; 2
+	stx	TEMP2							; 3
+
+; 38
+	ldy	#0							; 2
+	ldx	#4							; 2
+	sta	WSYNC							; 3
+;
+
+
+raster_spriteloop:
+; 0
+	lda	lady_sprite0+10,X	; load sprite data		; 4+
+	sta	GRP0			; 0->[GRP0] [GRP1 (?)]->GRP1	; 3
+; 7
+	lda	lady_sprite1+10,X	; load sprite data		; 4+
+	sta	GRP1			; 1->[GRP1], [GRP0 (0)]-->GRP0	; 3
+; 14
+	lda	lady_sprite2+10,X	; load sprite data		; 4+
+	sta	GRP0			; 2->[GRP0], [GRP1 (1)]-->GRP1	; 3
+; 21
+	lda	lady_sprite5+10,X					; 4+
+	sta	TEMP1			; save for later		; 3
+; 28
+        lda	lady_sprite4+10,X					; 4+
+        tay				; save in Y			; 2
+; 34
+	lda	lady_sprite3+10,X					; 4+
+	ldx	TEMP1                   ; restore saved value		; 3
+; 41
+
+        sta     GRP1                    ; 3->[GRP1], [GRP0 (2)]-->GRP0  ; 3
+        ; (need this to be 44 .. 46)
+; 44
+        sty     GRP0                    ; 4->[GRP0], [GRP1 (3)]-->GRP1  ; 3
+        ; (need this to be 47 .. 49)
+; 47
+        stx     GRP1                    ; 5->[GRP1], [GRP0 (4)]-->GRP0  ; 3
+        ; (need this to be 50 .. 51)
+; 50
+        sty     GRP0                    ; ?->[GRP0], [GRP1 (5)]-->GRP1  ; 3
+        ; (need this to be 52 .. 54)
+; 53
+
+        ; need 5 cycles of nops
+;	nop
+	lda	TEMP1
+
+; 58
+        dec     TEMP2                                                   ; 5
+        lda     TEMP2                   ; decrement count               ; 3
+	lsr								; 2
+	tax				; reset X to TEMP2/2		; 2
+	inx
+	lda	TEMP2							; 3
+; 73
+	bpl	raster_spriteloop                                        ; 2/3
+        ; 76  (goal is 76)
+
+; 75
+
+        ;====================
+
+	lda	#0
+	sta	GRP0
+	sta	GRP1
+	sta	GRP0
+	sta	GRP1
+
+	sta	WSYNC
+
 
 done_raster:
 
@@ -445,21 +598,20 @@ done_raster:
 	; overscan (36 cycles) (30 on NTSC)
 	;===========================
 	;===========================
-
+; 0
 	; turn off everything
 	lda	#0							; 2
 	sta	GRP0							; 3
-; 1
-	lda	#2		; we do this in common
-	sta	VBLANK		; but want it to happen in hblank
-
-
+; 5
+	lda	#2		; we do this in common			; 2
+	sta	VBLANK		; but want it to happen in hblank	; 3
+; 10
 	lda	#0
 	sta	GRP1							; 3
 	sta	PF0							; 3
 	sta	PF1							; 3
 	sta	PF2							; 3
-; 13
+; 22
 
 	jmp	effect_done
 
