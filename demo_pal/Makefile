@@ -1,20 +1,20 @@
 LINKER_SCRIPT = ../linker_script
 
-all:	tia_spirit.bin
+all:	vcs_desire.bin
 
 ###
 
-tia_spirit.bin:	tia_spirit.o
-	ld65 -o tia_spirit.bin tia_spirit.o -C $(LINKER_SCRIPT)/atari2600_f000.inc
+vcs_desire.bin:	vcs_desire.o
+	ld65 -o vcs_desire.bin vcs_desire.o -C $(LINKER_SCRIPT)/atari2600_f000.inc
 
-tia_spirit.o:	tia_spirit.s \
+vcs_desire.o:	vcs_desire.s \
 	zp.inc \
 	tia_kernel.s \
 	logo_kernel.s desire_logo.inc \
 	raster_kernel.s \
 	bitmap_kernel.s bitmap.inc \
 	tia_spirit_player.s tia_spirit_trackdata.s
-	ca65 -o tia_spirit.o tia_spirit.s -l tia_spirit.lst
+	ca65 -o vcs_desire.o vcs_desire.s -l vcs_desire.lst
 
 #	title_screen.s common_routines.s tia_spirit_scene.s \
 #	tia_spirit3_graphics.inc tia_spirit4_graphics.inc \
@@ -23,6 +23,6 @@ tia_spirit.o:	tia_spirit.s \
 ###
 
 clean:	
-	rm -f *~ *.o *.lst tia_spirit.bin
+	rm -f *~ *.o *.lst vcs_desire.bin
 
 
