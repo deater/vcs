@@ -35,7 +35,7 @@ no_start_logo:
 	clc							; 2
 	adc	LOGO_Y						; 3
         sta	LOGO_Y						; 3
-        cmp	#(227-LOGO_SIZE*2-2)				; 2
+        cmp	#(227-LOGO_SIZE-1)				; 2
 ; 13
         bcs	logo_invert_y			; bge		; 2/3
         cmp	#0						; 2
@@ -115,50 +115,41 @@ draw_playfield:
 
 draw_logo:
 ; 3
-	sta	COLUBK							; 3
-; 6
+	sta	COLUBK
+
 	lda	desire_colors,Y						; 4
 	sta	COLUPF							; 3
-; 13
+; 10
 	lda	desire_playfield0_left,Y	; playfield pattern 0	; 4
 	sta	PF0			;				; 3
 	;   has to happen by 22 (GPU 68)
-; 20
+; 17
 	lda	desire_playfield1_left,Y	; playfield pattern 1	; 4
 	sta	PF1			;				; 3
         ;  has to happen by 28 (GPU 84)
-; 27
+; 24
 	lda	desire_playfield2_left,Y	; playfield pattern 2	; 4
 	sta	PF2							; 3
         ;  has to happen by 38 (GPU 116)	;
-; 34
+; 31
 	lda	desire_playfield0_right,Y	; left pf pattern 0     ; 4
 	sta	PF0				;                       ; 3
 	; has to happen 28-49 (GPU 84-148)
-; 41
+; 38
 	lda	desire_playfield1_right,Y	; left pf pattern 1	; 4
 	sta	PF1				;			; 3
 	; has to happen 38-56 (GPU 116-170)
-; 48
+; 45
 	lda	desire_playfield2_right,Y	; left pf pattern 2	; 4
 	sta	PF2				;			; 3
 	; has to happen 49-67 (GPU148-202)
-; 55
-	inx								; 2
-	txa								; 2
-	lsr								; 2
-; 61
-	bcs	noc							; 2/3
+; 52
+	inx								 ;2
+; 56
+	lda	desire_bg_colors-1,Y
 	dey					; decrement logo count	; 2
-	beq	done_logo						; 2/3
-; 67
-noc:
-; 67 / 64
-	lda	desire_bg_colors,Y					; 4
-; 71
-done_logo:
 	sta	WSYNC
-	bne	draw_logo						; 3
+	bne	draw_logo
 
 
 ; 2/3
@@ -225,5 +216,4 @@ done_kernel:
 
 
 bg_colors:
-;	.byte $00,$04,$08,$0A, $0A,$08,$04,$00
-	.byte $D0,$C0,$B0,$A0, $A0,$B0,$C0,$D0
+	.byte $00,$04,$08,$0A, $0A,$08,$04,$00

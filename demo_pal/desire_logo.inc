@@ -1,9 +1,7 @@
-; png2pf -g -y 34 -p -n desire desire3_flipped.png out.inc
+; png2pf -g -y 34 -p -n desire desire3_flipped.png out.out
 
-
-; Using background color $00
 desire_bg_colors:
-	.byte $10,$10,$C0,$C0,$C0,$C2,$C2,$A0
+	.byte $D0,$D0,$C0,$C0,$C0,$C2,$C2,$A0
 	.byte $C2,$A0,$26,$66,$26,$26,$28,$26
 	.byte $28,$28,$28,$28,$26,$28,$26,$26
 	.byte $80,$A4,$A4,$C2,$A4,$C2,$C2,$C0
@@ -29,7 +27,7 @@ desire_playfield1_left:
 	.byte $FD,$DC
 desire_playfield2_left:
 	.byte $00,$00,$8F,$DF,$DF,$FF,$FF,$F9
-	.byte $FF,$F8,$AF,$AE,$FC,$F8,$F0,$60
+	.byte $F8,$F8,$AF,$AE,$FC,$F8,$F0,$60
 	.byte $40,$00,$01,$03,$07,$07,$07,$07
 	.byte $F8,$F8,$FD,$FF,$DF,$DF,$CF,$CF
 	.byte $8F,$87
@@ -39,6 +37,7 @@ desire_playfield0_right:
 	.byte $00,$00,$00,$80,$80,$E0,$F0,$F0
 	.byte $80,$80,$C0,$C0,$D0,$F0,$F0,$F0
 	.byte $F0,$70
+.align $100
 
 desire_playfield1_right:
 	.byte $00,$00,$F8,$F8,$F8,$F8,$F8,$F8

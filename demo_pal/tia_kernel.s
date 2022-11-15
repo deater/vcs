@@ -70,11 +70,11 @@ no_frame_oflo:
 	bne	same_effect						; 2/3
 	lda	FRAMEH							; 3
 check3:
-	cmp	#2
+	cmp	#3
 	beq	next_effect
-	cmp	#4
+	cmp	#5
 	beq	next_effect
-	cmp	#6
+	cmp	#7
 	bne	same_effect
 next_effect:
 	inc	WHICH_EFFECT
