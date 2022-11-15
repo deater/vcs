@@ -9,16 +9,13 @@ vcs_desire.bin:	vcs_desire.o
 
 vcs_desire.o:	vcs_desire.s \
 	zp.inc \
-	tia_kernel.s \
+	main_kernel.s \
 	logo_kernel.s desire_logo.inc \
 	raster_kernel.s \
 	bitmap_kernel.s bitmap.inc \
 	tia_spirit_player.s tia_spirit_trackdata.s
 	ca65 -o vcs_desire.o vcs_desire.s -l vcs_desire.lst
 
-#	title_screen.s common_routines.s tia_spirit_scene.s \
-#	tia_spirit3_graphics.inc tia_spirit4_graphics.inc \
-#	tia_spirit5_graphics.inc tia_spirit6_graphics.inc \
 
 ###
 

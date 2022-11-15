@@ -80,7 +80,7 @@ clear_loop:
 	inc	SPRITE1_XADD
 ;	inc	LOGO_YADD
 
-.include "tia_kernel.s"
+.include "main_kernel.s"
 
 .include "logo_kernel.s"
 .include "bitmap_kernel.s"
@@ -97,6 +97,8 @@ clear_loop:
 
 .include "common_routines.s"
 
+.align $100
+.include "bitmap.inc"
 
 .include "tia_spirit_trackdata.s"
 

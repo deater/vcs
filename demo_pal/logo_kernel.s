@@ -6,12 +6,31 @@ LOGO_SIZE=33
 
 logo_effect:
 
+	; 37
+
 	sta	WSYNC
+
+	; 38
+
 	sta	WSYNC
+
+	; 39
+
 	sta	WSYNC
+
+	; 40
+
 	sta	WSYNC
+
+	; 41
+
 	sta	WSYNC
+
+	; 42
+
 	sta	WSYNC
+
+	; 43
 
 	lda	FRAMEL
 	bne	no_start_logo
@@ -22,7 +41,6 @@ logo_effect:
 	sta	LOGO_YADD
 
 no_start_logo:
-	
 
 	sta	WSYNC
 

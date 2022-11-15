@@ -1,85 +1,112 @@
-
 	;================================================
 	; draws bitmap effect
 	;================================================
 
 bitmap_effect:
 
-	sta	WSYNC
-	sta	WSYNC
-	sta	WSYNC
-	sta	WSYNC
-	sta	WSYNC
-
-	lda	#CTRLPF_REF	; reflect
-	sta	CTRLPF
-
-	lda	TITLE_COLOR
-	sta	COLUPF
-
-	lda	FRAMEL
-	and	#$3
-	bne	no_color
-	inc	TITLE_COLOR
-no_color:
-
-	lda	FRAMEL
-	lsr
-	lsr
-	lsr
-	and	#$7
-	tax
-
-	lda	pattern,X
-	sta	PF0
-
+	; 37
 
 	sta	WSYNC
-jmp bbb
-.align $100
-bbb:
+
+	; 38
+
 	sta	WSYNC
 
+	; 39
 
-	        ; center the sprite position
-        ; needs to be right after a WSYNC
+	sta	WSYNC
+
+	; 40
+
+	sta	WSYNC
+
+	; 41
+
+	sta	WSYNC
+
+	;===============================================
+	; VBLANK scanline 42 -- setup animated sidebars
+	;===============================================
+
 ; 0
-        ; to center exactly would want sprite0 at
-        ;       CPU cycle 41.3
-        ; and sprite1 at
-        ;       GPU cycle 44
+	lda	#CTRLPF_REF	; reflect playfield			; 2
+	sta	CTRLPF							; 3
+; 5
+	lda	TITLE_COLOR	; get color				; 3
+	sta	COLUPF							; 3
+; 11
+	lda	FRAMEL		; every 8 frames inc color		; 3
+	and	#$3							; 2
+	bne	no_color						; 2/3
+	inc	TITLE_COLOR						; 5
+no_color:
+; 23 (worst case)
 
-        ldx     #0              ; sprite 0 display nothing              ; 2
-        stx     GRP0            ;                                       ; 3
+	lda	FRAMEL							; 3
+	lsr								; 2
+	lsr								; 2
+	lsr								; 2
+	and	#$7							; 2
+	tax								; 2
+; 36
+	lda	pattern,X		; get pattern			; 4
+	sta	PF0			; and set left/right		; 3
+; 43
+	sta	WSYNC
 
-        ldx     #6              ;                                       ; 2
+
+;jmp bbb
+;.align $100
+;bbb:
+
+
+	;===============================================
+	; VBLANK scanline 43 -- ???
+	;===============================================
+
+	sta	WSYNC
+
+	;===============================================
+	; VBLANK scanline 44 -- ???
+	;===============================================
+
+	; center the sprite position
+	; needs to be right after a WSYNC
+; 0
+	; to center exactly would want sprite0 at
+	;       CPU cycle 41.3
+	; and sprite1 at
+	;       GPU cycle 44
+
+	ldx	#0              ; sprite 0 display nothing              ; 2
+	stx	GRP0            ;                                       ; 3
+
+	ldx	#6              ;                                       ; 2
 ; 7
 
 tpad_x:
-        dex                     ;                                       ; 2
-        bne     tpad_x          ;                                       ; 2/3
-        ; for X delays (5*X)-1
-        ; so in this case, 29
+	dex                     ;                                       ; 2
+	bne     tpad_x          ;                                       ; 2/3
+	; for X delays (5*X)-1
+	; so in this case, 29
 ; 36
-        ; beam is at proper place
-        sta     RESP0                                                   ; 3
-        ; 39 (GPU=??, want ??) +?
+	; beam is at proper place
+	sta     RESP0                                                   ; 3
+	; 39 (GPU=??, want ??) +?
 ; 39
-        sta     RESP1                                                   ; 3
-        ; 42 (GPU=??, want ??) +?
+	sta     RESP1                                                   ; 3
+	; 42 (GPU=??, want ??) +?
 ; 42
 
-        lda     #$F0            ; opposite what you'd think             ; 2
-        sta     HMP0                                                    ; 3
-        lda     #$00                                                    ; 2
-        sta     HMP1                                                    ; 3
+	lda     #$F0            ; opposite what you'd think             ; 2
+	sta     HMP0                                                    ; 3
+	lda     #$00                                                    ; 2
+	sta     HMP1                                                    ; 3
 ; 52
-        sta     WSYNC
+	sta     WSYNC
 ; 0
-        sta     HMOVE           ; adjust fine tune, must be after WSYNC
+	sta     HMOVE           ; adjust fine tune, must be after WSYNC
 ; 3
-
-
 
 	;=================================
 	; VBLANK scanline 45
@@ -108,7 +135,7 @@ tpad_x:
         sta     VDELP1                                                  ; 3
 ; 38
         ; number of lines to draw
-        ldx     #228                                                   ; 2
+	ldx	#226                                                   ; 2
 	stx	TEMP2
 
 
@@ -228,5 +255,5 @@ done_bitmap_kernel:
 pattern:
 	.byte $80,$40,$20,$10,$10,$20,$40,$80
 
-.align $100
-.include "bitmap.inc"
+;.align $100
+;.include "bitmap.inc"

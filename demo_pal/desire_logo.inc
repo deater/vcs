@@ -37,7 +37,6 @@ desire_playfield0_right:
 	.byte $00,$00,$00,$80,$80,$E0,$F0,$F0
 	.byte $80,$80,$C0,$C0,$D0,$F0,$F0,$F0
 	.byte $F0,$70
-.align $100
 
 desire_playfield1_right:
 	.byte $00,$00,$F8,$F8,$F8,$F8,$F8,$F8
