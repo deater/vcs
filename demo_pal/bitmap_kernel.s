@@ -20,7 +20,24 @@ bitmap_effect:
 
 	sta	WSYNC
 
-	; 41
+	;=========================
+	; 41 -- do bright effect
+	;=========================
+
+	lda	FRAMEL
+	bpl	skip_bright_bg
+
+	lda	#$ff
+
+	bne	done_bright_bg		; bra
+
+skip_bright_bg:
+	lda	#$00
+
+done_bright_bg:
+	sta	PF1
+	sta	PF2
+
 
 	sta	WSYNC
 
@@ -52,6 +69,7 @@ no_color:
 	lda	pattern,X		; get pattern			; 4
 	sta	PF0			; and set left/right		; 3
 ; 43
+skip_sidebar:
 	sta	WSYNC
 
 
@@ -124,41 +142,25 @@ tpad_x:
 ; 22
         ; set to be 48 adjacent pixels
 
-        lda     #NUSIZ_THREE_COPIES_CLOSE                               ; 2
-        sta     NUSIZ0                                                  ; 3
-        sta     NUSIZ1                                                  ; 3
+	lda	#NUSIZ_THREE_COPIES_CLOSE				; 2
+	sta	NUSIZ0							; 3
+	sta	NUSIZ1							; 3
 ; 30
         ; turn on delay
 
-        lda     #1                                                      ; 2
-        sta     VDELP0                                                  ; 3
-        sta     VDELP1                                                  ; 3
+	lda	#1							; 2
+	sta	VDELP0							; 3
+	sta	VDELP1							; 3
 ; 38
-        ; number of lines to draw
-	ldx	#226                                                   ; 2
-	stx	TEMP2
+	; number of lines to draw
+	ldx	#226							; 2
+	stx	TEMP2							; 3
 
-
-; 40
-;	lda	#0							; 2
-;	sta	VDELP0							; 3
-;	sta	VDELP1		; turn off delay			; 3
-; 48
-
-;	lda	#NUSIZ_QUAD_SIZE|NUSIZ_MISSILE_WIDTH_8			; 2
-;	sta	NUSIZ0							; 3
-;	lda	#NUSIZ_QUAD_SIZE|NUSIZ_MISSILE_WIDTH_8			; 2
-;	sta	NUSIZ1							; 3
-; 58
-
-;	lda	#2							; 2
-;	sta	COLUPF			; fg, dark grey			; 3
-
-; 63
+; 43
 	ldy	#0							; 2
 	ldx	#114							; 2
 	sta	WSYNC							; 3
-; 70
+;
 
 
 	;=========================
@@ -217,6 +219,11 @@ spriteloop:
         ; 76  (goal is 76)
 
 
+
+	;
+	; draws 113 lines?
+	; so 15 unused?
+
 ; 75
         ;====================
 
@@ -252,6 +259,8 @@ done_bitmap_kernel:
 
 	jmp	effect_done
 
+
+	; pattern for the side bars
 pattern:
 	.byte $80,$40,$20,$10,$10,$20,$40,$80
 
