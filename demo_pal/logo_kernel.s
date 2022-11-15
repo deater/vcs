@@ -1,4 +1,4 @@
-LOGO_SIZE=29
+LOGO_SIZE=33
 
 	;================================================
 	; draws logo effect
@@ -68,6 +68,7 @@ logo_done_y:
 	tax								; 2
 	lda	bg_colors,X						; 4+
         sta	COLUBK							; 3
+	sta	SAVED_COLUBK
 ; 25
 	lda	#0							; 2
 	sta	VDELP0							; 3
@@ -80,8 +81,8 @@ logo_done_y:
 	sta	NUSIZ1							; 3
 ; 43
 	; set playfield color?
-	lda	#2							; 2
-	sta	COLUPF			; fg, dark grey			; 3
+;	lda	#2							; 2
+;	sta	COLUPF			; fg, dark grey			; 3
 
 ; 48
 	; move the logo
@@ -114,6 +115,8 @@ draw_playfield:
 
 draw_logo:
 ; 3
+	sta	COLUBK
+
 	lda	desire_colors,Y						; 4
 	sta	COLUPF							; 3
 ; 10
@@ -142,8 +145,9 @@ draw_logo:
 	; has to happen 49-67 (GPU148-202)
 ; 52
 	inx								 ;2
-	dey					; decrement logo count	; 2
 ; 56
+	lda	desire_bg_colors-1,Y
+	dey					; decrement logo count	; 2
 	sta	WSYNC
 	bne	draw_logo
 
@@ -156,6 +160,9 @@ draw_nothing:
 start_ahead:
 ; 5 / 54
 
+	lda	SAVED_COLUBK
+	sta	COLUBK
+
 	; see if line eqyals Y location?
 	cpx	LOGO_Y							; 2
 	bne	not_logo_start						; 2/3
@@ -167,6 +174,7 @@ not_logo_start:
 	cpx	#226							; 2
 	bcs	done_playfield						; 2/3
 ; 9
+	lda	desire_bg_colors+LOGO_SIZE
 	cpy	#0
 ; 67
 	sta	WSYNC							; 3

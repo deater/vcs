@@ -48,11 +48,11 @@ int main(int argc, char **argv) {
 	int row=0;
 	int col=0;
 	int skip=1;
-	int color,value,background_color=0;
+	int color=0,value,background_color=0;
 	int playfield_left[192],playfield_right[192],background[192];
 	int c,debug=0;
 	int generate_bg=0;
-	int is_pal=0;
+	int is_pal=0,custom_ysize=0;
 
 	char input_filename[BUFSIZ],output_filename[BUFSIZ];
 	char *name=NULL;
@@ -62,13 +62,16 @@ int main(int argc, char **argv) {
 
 
 	/* Check command line arguments */
-	while ((c = getopt (argc, argv,"248b:gdhvn:p"))!=-1) {
+	while ((c = getopt (argc, argv,"248b:gdhvn:py:"))!=-1) {
 		switch (c) {
 		case 'n':
 			name=strdup(optarg);
 			break;
 		case 'b':
 			background_color=strtod(optarg,NULL);
+			break;
+		case 'y':
+			custom_ysize=strtod(optarg,NULL);
 			break;
 		case 'g':
 			generate_bg=1;
@@ -144,15 +147,26 @@ int main(int argc, char **argv) {
 
 	fprintf(outfile,"; Using background color $%02X\n",background_color);
 
+	if (custom_ysize) ysize=custom_ysize;
+
 	for(row=0;row<ysize;row++) background[row]=background_color;
 
 	/* generate background color table */
 	if (generate_bg) {
-		fprintf(outfile,"bg_colors:\n");
+		if (name) {
+			fprintf(outfile,"%s_bg_colors:\n",name);
+		}
+		else {
+			fprintf(outfile,"bg_colors:\n");
+		}
 		for(row=0;row<ysize;row+=skip) {
 			background[row]=image[row*xsize];
-			fprintf(outfile,"\t.byte $%02X\n",background[row]);
+			//fprintf(outfile,"\t.byte $%02X\n",
+			//background[row]);
+			if (is_pal) color=background[row]+16;
+			print_byte(outfile,color,row/skip);
 		}
+		fprintf(outfile,"\n");
 	}
 
 
