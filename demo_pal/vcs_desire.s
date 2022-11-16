@@ -84,7 +84,8 @@ clear_loop:
 
 .include "logo_kernel.s"
 .include "bitmap_kernel.s"
-.include "raster_kernel.s"
+;.include "raster_kernel.s"
+.include "firework_kernel.s"
 
 .align $100
 
