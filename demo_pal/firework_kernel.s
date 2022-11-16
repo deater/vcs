@@ -343,6 +343,9 @@ done_raster_b_y:
 	lda	#50
 	sta	SPRITE0_Y
 
+	lda	#CTRLPF_REF
+	sta	CTRLPF
+
 	sta	WSYNC							; 3
 ; 67
 
@@ -385,6 +388,22 @@ no_sprite0:
 mountain_playfield:
 	ldx	#16
 mountain_loop:
+	lda	sunset_colors,X
+	sta	COLUBK
+	lda	#$2
+	sta	COLUPF
+
+
+	txa
+	lsr
+	tay
+	lda	mountain_left,Y
+	sta	PF0
+	lda	mountain_center,Y
+	sta	PF1
+	lda	mountain_right,Y
+	sta	PF2
+
 	sta	WSYNC
 	dex
 	bne	mountain_loop
@@ -396,8 +415,13 @@ mountain_loop:
 ground_playfield:
 	ldx	#100
 ground_loop:
-	lda	#$e0
+	lda	#$50
 	sta	COLUBK
+	lda	#$00
+	sta	PF0
+	sta	PF1
+	sta	PF2
+
 
 	sta	WSYNC
 	dex
@@ -703,3 +727,16 @@ done_raster:
 
 credits_offset:
 	.byte 0,5,10
+sunset_colors:
+	.byte 22*2+16,20*2+16,27*2+16,26*2+16
+	.byte 42*2+16,41*2+16,59*2+16,57*2+16
+	.byte 83*2+16,97*2+16,96*2+16,90*2+16
+	.byte 89*2+16,88*2+16,2*2+16,0
+
+mountain_left:
+	.byte $F0,$F0,$E0,$C0,$00,$00,$00,$00
+mountain_center:
+	.byte $FF,$FF,$FF,$FF,$FE,$00,$00,$00
+mountain_right:
+	.byte $0f,$07,$03,$00,$00,$00,$00,$00
+
