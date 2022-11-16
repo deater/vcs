@@ -483,6 +483,18 @@ stpad_x:
 	lda     #$00                                                    ; 2
 	sta     HMP1                                                    ; 3
 ; 52
+
+	; turn on delay
+
+	lda	#1							; 2
+	sta	VDELP0							; 3
+	sta	VDELP1							; 3
+; 60
+	lda	#0			; black bg			; 2
+        sta	COLUBK							; 3
+	sta	GRP0							; 3
+	sta	GRP1							; 3
+; 71
 	sta     WSYNC
 ; 0
 	sta     HMOVE           ; adjust fine tune, must be after WSYNC
@@ -492,61 +504,74 @@ stpad_x:
 	; scanline 218
 	;=================================
 ; 3
-        ; turn on delay
 
-	lda	#1							; 2
-	sta	VDELP0							; 3
-	sta	VDELP1							; 3
+;	sta	GRP0							; 3
+;	sta	GRP1							; 3
 
-	lda	#0			; black bg			; 2
-        sta	COLUBK							; 3
-	sta	GRP0
-	sta	GRP1
-	sta	GRP0
-	sta	GRP1
-
-; 8
-	lda     #$E		; bright white                          ; 3
+; 14
+	lda     #$E		; bright white                          ; 2
         sta     COLUP0          ; set sprite color                      ; 3
         sta     COLUP1          ; set sprite color                      ; 3
-; 17
+; 22
         ; set to be 48 adjacent pixels
 
 	lda	#NUSIZ_THREE_COPIES_CLOSE				; 2
 	sta	NUSIZ0							; 3
 	sta	NUSIZ1							; 3
-; 25
-
-; 33
+; 30
 	; number of lines to draw
 	ldx	#9							; 2
 	stx	TEMP2							; 3
+; 35
+	lda	FRAMEL							; 3
+	and	#$7F							; 2
+	bne	no_credits_inc						; 2/3
+; 42
+	inc	CREDITS_COUNT						; 5
+	lda	CREDITS_COUNT						; 3
+	cmp	#3							; 2
+	bne	no_credits_inc						; 2/3
+; 54
+	lda	#0							; 2
+	sta	CREDITS_COUNT						; 3
+; 59
 
-; 38
-	ldy	#0							; 2
-	ldx	#4							; 2
+no_credits_inc:
+	ldx	CREDITS_COUNT						; 3
+	lda	credits_offset,X					; 4
+	sta	CREDITS_OFFSET						; 3
+; 69
+	clc
+	adc	#4
+	tax
+;	inx
+;	ldy	#0							; 2
+;	ldx	#4							; 2
+; 73
 	sta	WSYNC							; 3
-;
 
+;==============================
+; the 48-pixel sprite code
+;==============================
 
 raster_spriteloop:
 ; 0
-	lda	lady_sprite0+10,X	; load sprite data		; 4+
+	lda	lady_sprite0,X		; load sprite data		; 4+
 	sta	GRP0			; 0->[GRP0] [GRP1 (?)]->GRP1	; 3
 ; 7
-	lda	lady_sprite1+10,X	; load sprite data		; 4+
+	lda	lady_sprite1,X		; load sprite data		; 4+
 	sta	GRP1			; 1->[GRP1], [GRP0 (0)]-->GRP0	; 3
 ; 14
-	lda	lady_sprite2+10,X	; load sprite data		; 4+
+	lda	lady_sprite2,X		; load sprite data		; 4+
 	sta	GRP0			; 2->[GRP0], [GRP1 (1)]-->GRP1	; 3
 ; 21
-	lda	lady_sprite5+10,X					; 4+
+	lda	lady_sprite5,X					; 4+
 	sta	TEMP1			; save for later		; 3
 ; 28
-        lda	lady_sprite4+10,X					; 4+
+        lda	lady_sprite4,X						; 4+
         tay				; save in Y			; 2
 ; 34
-	lda	lady_sprite3+10,X					; 4+
+	lda	lady_sprite3,X						; 4+
 	ldx	TEMP1                   ; restore saved value		; 3
 ; 41
 
@@ -563,16 +588,15 @@ raster_spriteloop:
         ; (need this to be 52 .. 54)
 ; 53
 
-        ; need 5 cycles of nops
-	nop
-	lda	TEMP1
-
-; 58
         dec     TEMP2                                                   ; 5
         lda     TEMP2                   ; decrement count               ; 3
+; 61
 	lsr								; 2
+	clc								; 2
+	adc	CREDITS_OFFSET						; 3
 	tax				; reset X to TEMP2/2		; 2
-;	inx
+; 70
+
 	lda	TEMP2							; 3
 ; 73
 	bpl	raster_spriteloop                                        ; 2/3
@@ -625,3 +649,5 @@ done_raster:
 ;raster_color_blue:
 ;	.byte $B0,$B2,$B4,$B6,$B8,$BA,$BC,$BE
 
+credits_offset:
+	.byte 0,5,10
