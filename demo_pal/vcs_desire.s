@@ -87,6 +87,7 @@ clear_loop:
 .include "bitmap_kernel.s"
 .include "raster_kernel.s"
 .include "firework_kernel.s"
+.include "parallax_kernel.s"
 
 .align $100
 

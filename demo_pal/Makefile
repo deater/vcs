@@ -11,7 +11,7 @@ vcs_desire.o:	vcs_desire.s \
 	zp.inc \
 	main_kernel.s \
 	logo_kernel.s desire_logo.inc \
-	raster_kernel.s firework_kernel.s \
+	raster_kernel.s firework_kernel.s parallax_kernel.s \
 	bitmap_kernel.s bitmap.inc \
 	deetia2_player.s deetia2_trackdata.s
 	ca65 -o vcs_desire.o vcs_desire.s -l vcs_desire.lst
