@@ -4,6 +4,25 @@ all:	vcs_desire.bin
 
 ###
 
+submit:	vcs_desire.zip
+
+vcs_desire.zip:	vcs_desire.bin
+	mkdir -p demosplash2022_vcs_desire
+	mkdir -p demosplash2022_vcs_desire/src
+	cp vcs_desire.bin ./demosplash2022_vcs_desire
+	cp file_id.diz ./demosplash2022_vcs_desire
+	cp dsr_vcs_thumb.png ./demosplash2022_vcs_desire
+	cp *.s ./demosplash2022_vcs_desire/src
+	cp *.inc ./demosplash2022_vcs_desire/src
+#       cp apple_desire_512.dsk ./demosplash2022_vcs_desire
+#       cp apple_desire_512.woz ./demosplash2022_vcs_desire
+#       cp apple_desire_720p.mp4 ./demosplash2022_vcs_desire
+#       cp desire2.png ./demosplash2022_vcs_desire
+	zip -r vcs_desire.zip demosplash2022_vcs_desire
+
+
+###
+
 vcs_desire.bin:	vcs_desire.o
 	ld65 -o vcs_desire.bin vcs_desire.o -C $(LINKER_SCRIPT)/atari2600_f000.inc
 
