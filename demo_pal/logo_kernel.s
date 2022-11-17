@@ -1,44 +1,44 @@
 LOGO_SIZE=33
 
+; originall 0/227
+
+LOGO_BOUNCE_TOP	= 32
+LOGO_BOUNCE_BOTTOM = (195-LOGO_SIZE*2-1)
+
 	;================================================
 	; draws logo effect
 	;================================================
 
 logo_effect:
 
+	; FIXME: make this a loop
+
 	; 37
-
 	sta	WSYNC
-
 	; 38
-
 	sta	WSYNC
-
 	; 39
-
 	sta	WSYNC
-
 	; 40
-
 	sta	WSYNC
-
 	; 41
-
 	sta	WSYNC
-
 	; 42
-
 	sta	WSYNC
 
-	; 43
+	;===============================
+	; line 43 -- check if move logo
+	;===============================
+	; start it at 1:80
 
-	lda	FRAMEL
-	bne	no_start_logo
-	lda	FRAMEH
-	cmp	#1
-	bne	no_start_logo
+	lda	FRAMEL							; 3
+	cmp	#$80							; 2
+	bne	no_start_logo						; 2/3
+	lda	FRAMEH							; 3
+	cmp	#1							; 2
+	bne	no_start_logo						; 2/3
 
-	inc	LOGO_YADD
+	inc	LOGO_YADD						; 5
 
 no_start_logo:
 
@@ -53,10 +53,10 @@ no_start_logo:
 	clc							; 2
 	adc	LOGO_Y						; 3
         sta	LOGO_Y						; 3
-        cmp	#(227-LOGO_SIZE*2-2)				; 2
+        cmp	#LOGO_BOUNCE_BOTTOM				; 2
 ; 13
         bcs	logo_invert_y			; bge		; 2/3
-        cmp	#0						; 2
+        cmp	#LOGO_BOUNCE_TOP				; 2
         bcs	logo_done_y			; bge		; 2/3
 logo_invert_y:
 	lda	LOGO_YADD					; 3
@@ -93,28 +93,24 @@ logo_done_y:
 	sta	VDELP1		; turn off delay			; 3
 ; 33
 
-	lda	#NUSIZ_QUAD_SIZE|NUSIZ_MISSILE_WIDTH_8			; 2
-	sta	NUSIZ0							; 3
-	lda	#NUSIZ_QUAD_SIZE|NUSIZ_MISSILE_WIDTH_8			; 2
-	sta	NUSIZ1							; 3
+;	lda	#NUSIZ_QUAD_SIZE|NUSIZ_MISSILE_WIDTH_8			; 2
+;	sta	NUSIZ0							; 3
+;	lda	#NUSIZ_QUAD_SIZE|NUSIZ_MISSILE_WIDTH_8			; 2
+;	sta	NUSIZ1							; 3
 ; 43
-	; set playfield color?
-;	lda	#2							; 2
-;	sta	COLUPF			; fg, dark grey			; 3
-
-; 48
 	; move the logo
 
 	clc								; 2
 	lda	LOGO_Y							; 3
 	adc	LOGO_YADD						; 3
 	sta	LOGO_Y							; 3
-; 59
+; 54
 
 	ldy	#0							; 2
 	ldx	#0							; 2
+; 58
 	sta	WSYNC							; 3
-; 66
+; 61
 
 
 	;=========================

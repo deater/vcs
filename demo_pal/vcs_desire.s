@@ -68,7 +68,7 @@ clear_loop:
 	inc	RASTER_R_YADD
 	inc	RASTER_B_YADD
 	inc	RASTER_G_YADD
-	ldy	#10
+	ldy	#82
 	sty	LOGO_Y
 	ldy	#100
 	sty	SPRITE0_X

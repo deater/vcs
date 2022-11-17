@@ -66,6 +66,8 @@ no_frame_oflo:
 
 	; switch effects
 
+	; note: music repeats at $4a = 74?
+
 	lda	FRAMEL							; 3
 	bne	same_effect						; 2/3
 	lda	FRAMEH							; 3
@@ -105,17 +107,16 @@ le_vblank_loop:
 
 
 jmp_table_low:
-	.byte <firework_effect
-	.byte <raster_effect
 	.byte <logo_effect
 	.byte <bitmap_effect
+	.byte <raster_effect
+	.byte <firework_effect
 
 jmp_table_high:
-	.byte >firework_effect
-	.byte >raster_effect
 	.byte >logo_effect
 	.byte >bitmap_effect
-
+	.byte >raster_effect
+	.byte >firework_effect
 
 
 
