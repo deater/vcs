@@ -74,10 +74,13 @@ no_frame_oflo:
 check3:
 	cmp	#3			; 15s, move on to bitmap
 	beq	next_effect
-	cmp	#5			; 75s, move on to rasterbars
+	cmp	#5			; ??s, move on to parallax
 	beq	next_effect
-	cmp	#7
+	cmp	#7			; ??s, move on to rasterbar
+	beq	next_effect
+	cmp	#9			; ??s, move on to fireworks
 	bne	same_effect
+
 next_effect:
 	inc	WHICH_EFFECT
 same_effect:
@@ -107,16 +110,16 @@ le_vblank_loop:
 
 
 jmp_table_low:
-	.byte <parallax_effect
 	.byte <logo_effect
 	.byte <bitmap_effect
+	.byte <parallax_effect
 	.byte <raster_effect
 	.byte <firework_effect
 
 jmp_table_high:
-	.byte >parallax_effect
 	.byte >logo_effect
 	.byte >bitmap_effect
+	.byte >parallax_effect
 	.byte >raster_effect
 	.byte >firework_effect
 

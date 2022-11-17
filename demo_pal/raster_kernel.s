@@ -336,11 +336,14 @@ raster_r_done_y:
 	sta	PF2							; 3
 	sta	GRP1			; sprite 2			; 3
 
-; 58
+; 29
+	lda	#CTRLPF_REF						; 2
+	sta	CTRLPF							; 3
+; 34
 	ldy	#0							; 2
 	ldx	#0							; 2
 	txa			; needed so top line is black		; 2
-; 64
+; 40
 	sta	WSYNC							; 3
 ; 67
 
