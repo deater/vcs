@@ -73,8 +73,8 @@ check3:
 	cmp	#3			; 15s, move on to bitmap
 	beq	next_effect
 	cmp	#5			; 75s, move on to rasterbars
-;	beq	next_effect
-;	cmp	#7
+	beq	next_effect
+	cmp	#7
 	bne	same_effect
 next_effect:
 	inc	WHICH_EFFECT

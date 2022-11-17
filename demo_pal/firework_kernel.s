@@ -4,10 +4,68 @@
 
 firework_effect:
 
+	;=========================================
+	; scanline 38: ???
+	;=========================================
+	sta	WSYNC
+
+	;=========================================
+	; scanline 39: update firework
+	;=========================================
+; 0
+	lda	SPRITE0_COLOR						; 3
+	and	#$f							; 2
+	bne	not_new_firework					; 2/3
+new_firework:
+; 7
+	; new firework color
+	ldx	FRAMEL							; 3
+	lda	$F000,X							; 4
+	ora	#$0F							; 2
+	and	#$FE							; 2
+	sta	SPRITE0_COLOR						; 3
+; 21
+	; new X
+	ldx	FRAMEL							; 3
+	lda	$F100,X			; sorta random			; 4
+	and	#$7F			; 0..127			; 2
+	sta	SPRITE0_X						; 3
+; 33
+	; new Y
+	ldx	FRAMEL							; 3
+	lda	$F200,X			; sorta random			; 4
+	and	#$3F			; 0..127			; 2
+	sta	SPRITE0_Y						; 3
+; 45
+
+not_new_firework:
+	lda	FRAMEL							; 3
+	and	#$7							; 2
+	bne	skip_progress						; 2/3
+; 52
+	dec	SPRITE0_COLOR						; 5
+	dec	SPRITE0_COLOR						; 5
+; 62
+skip_progress:
+	lda	SPRITE0_COLOR						; 3
+	sta	COLUP0							; 3
+
+; 68
+	sta	WSYNC
+
 	;============]========================
-	; scanline 38: setup X for firework0
+	; scanline 40: setup X for firework0
 	;====================================
 ; 0
+	;	E C A 8  6  4  2  0
+	;               24 16  8  0
+	lda	SPRITE0_COLOR
+	and	#$0e
+	asl
+	asl
+	sta	FIREWORK_PROGRESS
+
+
 	lda	SPRITE0_X						; 3
 ; 3
         ; spritex DIV 16
@@ -27,116 +85,8 @@ firework_effect:
 	sta	HMP0							; 3
 ; 28
 
-;	lda	SPRITE1_X						; 3
-; 31
-        ; spritex DIV 16
-
-;	lsr								; 2
-;	lsr								; 2
-;	lsr								; 2
-;	lsr								; 2
-
-;	sta	SPRITE1_X_COARSE					; 3
-; 42
-;	; apply fine adjust
-;	lda	SPRITE1_X						; 3
-;	and	#$0f							; 2
-;	tax								; 2
-;	lda	fine_adjust_table,X					; 4+
-;	sta	HMP1							; 3
-; 56
-
 	sta	WSYNC
 
-	;=========================================
-	; scanline 39: increment sprite0
-	;=========================================
-; 0
-;	lda	SPRITE0_XADD						; 3
-; 3
-	; XADD in A
-;	clc								; 2
-;	adc	SPRITE0_X						; 3
-;	sta	SPRITE0_X						; 3
-;	cmp	#144							; 2
-;	bcs	sprite0_invert_x	; bge				; 2/3
-;	cmp	#16							; 2
-;	bcs	done_sprite0_x		; bge				; 2/3
-								;============
-								; 16 worst
-;sprite0_invert_x:
-; 19
-;	lda	SPRITE0_XADD						; 3
-;	eor	#$FF							; 2
-;	tay								; 2
-;	iny								; 2
-;	sty	SPRITE0_XADD						; 3
-; 31
-
-;done_sprite0_x:
-
-;	lda	SPRITE0_YADD						; 3
-; 34
-;	clc								; 2
-;	adc	SPRITE0_Y						; 3
-;	sta	SPRITE0_Y						; 3
-;	cmp	#200							; 2
-;	bcs	sprite0_invert_y	; bge				; 2/3
-;	cmp	#8							; 2
-;	bcs	done_sprite0_y		; bge				; 2/3
-								;============
-								; 16 worst
-
-;sprite0_invert_y:
-; 50
-;	lda	SPRITE0_YADD						; 3
-;	eor	#$FF							; 2
-;	tay								; 2
-;	iny								; 2
-;	sty	SPRITE0_YADD						; 3
-;
-	; make so goes behind playfield?
-	; note it's not transparent color, but whether playfield drawn
-	; at all
-	; we'd have to reset PF0/PF1/PF2 in kernel, prob not possible :(
-
-;	lda	#CTRLPF_PFP
-;	sta	CTRLPF
-
-; 62
-;done_sprite0_y:
-	sta	WSYNC
-
-
-	;=========================================
-	; scanline 40: move sprite1
-	;=========================================
-; 0
-;	lda	SPRITE1_XADD						; 3
-;	clc								; 2
-;	adc	SPRITE1_X						; 3
-;	sta	SPRITE1_X						; 3
-;	cmp	#144							; 2
-;	bcs	sprite1_invert_x	; bge				; 2/3
-;	cmp	#16							; 2
-;	bcs	done_sprite1_x		; bge				; 2/3
-								;============
-								; 18 worst
-
-;sprite1_invert_x:
-; 18
-;	lda	SPRITE1_XADD						; 3
-;	eor	#$FF							; 2
-;	clc								; 2
-;	adc	#1							; 2
-;	sta	SPRITE1_XADD						; 3
-; 30
-
-;done_sprite1_x:
-
-	; TODO: change color?
-
-	sta	WSYNC
 
 	;=======================================================
 	; scanline 41: set up sprite0 to be at proper X position
@@ -294,23 +244,25 @@ fire_pad_x:
 
 	; other init
 
-; 31
-	lda	#$86							; 2
-	sta	COLUP0							; 3
-; 38
-;	lda	#$7E							; 2
-;	sta	COLUP1							; 3
-; 43
-	lda	#$00							; 2
-        sta	COLUBK							; 3
+	; E C A 8 6 4 2 0
+
+	ldy	#0
+	lda	SPRITE0_COLOR
+	and	#$E
+	bne	set_bg
+	ldy	#$12
+set_bg:
+        sty	COLUBK							; 3
+
+
 	sta	VDELP0							; 3
 	sta	VDELP1		; turn off delay			; 3
 ; 54
-	lda	#NUSIZ_ONE_COPY						; 2
+	lda	#NUSIZ_DOUBLE_SIZE					; 2
 	sta	NUSIZ0							; 3
 ; 59
-	lda	#NUSIZ_ONE_COPY						; 2
-	sta	NUSIZ1							; 3
+;	lda	#NUSIZ_ONE_COPY						; 2
+;	sta	NUSIZ1							; 3
 ; 64
 	sta	WSYNC
 
@@ -338,10 +290,10 @@ fire_pad_x:
 	ldx	#0							; 2
 	txa			; needed so top line is black		; 2
 ; 64
-	lda	#50
-	sta	SPRITE0_X
-	lda	#50
-	sta	SPRITE0_Y
+;	lda	#50
+;	sta	SPRITE0_X
+;	lda	#50
+;	sta	SPRITE0_Y
 
 	lda	#CTRLPF_REF
 	sta	CTRLPF
@@ -365,17 +317,27 @@ fire_pad_x:
 sky_playfield:
 	ldx	#0
 sky_loop:
+	; X = 100, SPRITE_Y = 100, 0
+	; X = 99, SPRITE_Y = 100, -1
+	; X = 101, SPRITE_Y= 100, 1
+	; X = 116, SPRITE_Y= 100, 16
 
 	ldy	#$0							; 2
 	txa								; 2
 	sbc	SPRITE0_Y						; 3
-	cmp	#16							; 2
+	cmp	#32							; 2
 	bcs	no_firework0						; 2/3
-	ldy	#$FF							; 2
+	lsr								; 2
+	lsr								; 2
+	clc								; 2
+	adc	FIREWORK_PROGRESS					; 2
+	tay								; 2
+	lda	firework7,Y						; 4
+	tay								; 2
 no_firework0:
 	sty	GRP0							; 3
 								;==========
-								; 16 worst
+								; 30 worst
 	sta	WSYNC
 	inx
 	cpx	#99
@@ -413,7 +375,7 @@ mountain_loop:
 	;=========================
 	; 100 scanlines
 ground_playfield:
-	ldx	#100
+	ldx	#99
 ground_loop:
 	lda	#$50
 	sta	COLUBK
@@ -427,101 +389,14 @@ ground_loop:
 	dex
 	bne	ground_loop
 
-.if 0
-firework_playfield:
-	; comes in at 3 cycles
-
-; 3
-	; color is already in A
-	sta	COLUPF							; 3
 
 
-; 6
-	;============================
-	; set sprite size
-	;============================
-
-	ldy	#$0							; 2
-	txa								; 2
-	sbc	SPRITE0_Y						; 3
-	cmp	#16							; 2
-	bcs	no_sprite0						; 2/3
-	ldy	#$FF							; 2
-no_sprite0:
-	sty	GRP0							; 3
-								;==========
-								; 16 worst
-; 22
-
-	;============================
-	; setup raster bars
-	;============================
-; 22
-	; raster red
-
-	txa								; 2
-	sec								; 2
-	sbc	RASTER_R_Y						; 3
-	cmp	#8							; 2
-	bcs	no_raster_red						; 2/3
-; 33
-	asl								; 2
-	adc	#$50							; 2
-	bne	done_raster_color			; bra		; 3
-; 40
-
-no_raster_red:
-; 34
-	; raster green
-
-	txa								; 2
-	sec								; 2
-	sbc	RASTER_G_Y						; 3
-	cmp	#8							; 2
-	bcs	no_raster_green						; 2/3
-; 45
-	asl								; 2
-	adc	#$60							; 2
-	bne	done_raster_color			; bra		; 3
-; 52
-
-no_raster_green:
-; 46
-
-	; raster blue
-
-	txa								; 2
-	sec								; 2
-	sbc	RASTER_B_Y						; 3
-	cmp	#8							; 2
-	bcs	no_raster_blue						; 2/3
-; 57
-	asl								; 2
-	adc	#$B0							; 2
-	bne	done_raster_color			; bra		; 3
-; 64
-
-no_raster_blue:
-; 64
-	lda	#$0							; 2
-done_raster_color:
-; R=40, G=52, B=58 none=66
-
-; 66 worst case
-
-	inx								; 2
-	cpx	#214							; 2
-; 70
-	sta	WSYNC							; 3
-; 73/0
-; NOTE: this is worst case
-;	max overlapping bars is 2 so always 4 less than this? (check)
-
-	bne	firework_playfield					; 2/3
-.endif
-
+; 4
 
 credits_bitmap:
+
+	sta	WSYNC
+	nop
 
 	;=================================
 	; scaline 217
@@ -739,4 +614,23 @@ mountain_center:
 	.byte $FF,$FF,$FF,$FF,$FE,$00,$00,$00
 mountain_right:
 	.byte $0f,$07,$03,$00,$00,$00,$00,$00
+
+firework7:
+	.byte $10,$44,$00,$82,$00,$44,$10,$00
+firework6:
+	.byte $10,$44,$00,$82,$00,$44,$10,$00
+firework5:
+	.byte $10,$44,$00,$82,$00,$44,$10,$00
+firework4:
+	.byte $10,$44,$00,$82,$00,$44,$10,$00
+
+firework3:
+	.byte $10,$44,$00,$82,$00,$44,$10,$00
+firework2:
+	.byte $00,$10,$28,$44,$28,$10,$00,$00
+firework1:
+	.byte $00,$00,$10,$28,$10,$00,$00,$00
+firework0:
+	.byte $00,$00,$00,$10,$00,$00,$00,$00
+
 
