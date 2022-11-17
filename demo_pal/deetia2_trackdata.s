@@ -44,24 +44,24 @@ tt_TrackDataStart:
 
 ; Instrument master CTRL values
 tt_InsCtrlTable:
-        .byte $06, $06, $07, $06, $04, $0c
+        .byte $06, $06, $06, $06
 
 
 ; Instrument Attack/Decay start indexes into ADSR tables.
 tt_InsADIndexes:
-        .byte $00, $0d, $19, $27, $2f, $2f
+        .byte $00, $08, $10, $18
 
 
 ; Instrument Sustain start indexes into ADSR tables
 tt_InsSustainIndexes:
-        .byte $08, $14, $23, $27, $2f, $2f
+        .byte $04, $0c, $14, $1c
 
 
 ; Instrument Release start indexes into ADSR tables
 ; Caution: Values are stored with an implicit -1 modifier! To get the
 ; real index, add 1.
 tt_InsReleaseIndexes:
-        .byte $0a, $16, $24, $2c, $30, $30
+        .byte $05, $0d, $15, $1d
 
 
 ; AUDVx and AUDFx ADSR envelope values.
@@ -74,18 +74,13 @@ tt_InsReleaseIndexes:
 ; The end of the release phase is encoded by a 0.
 tt_InsFreqVolTable:
 ; 0: Pizzicato bass
-        .byte $8f, $8f, $8f, $8b, $8f, $8a, $84, $80
-        .byte $80, $80, $00, $80, $00
-; 1: Pizzicato bass echo
-        .byte $88, $87, $84, $82, $80, $81, $80, $80
-        .byte $80, $00, $80, $00
-; 2: Electronic Guitar
-        .byte $8c, $8c, $8a, $8a, $88, $98, $87, $85
-        .byte $83, $81, $80, $00, $80, $00
-; 3: beep
-        .byte $8e, $87, $85, $83, $82, $00, $80, $00
-; 4+5: ---
-        .byte $80, $00, $80, $00
+        .byte $8f, $8f, $8c, $88, $81, $00, $80, $00
+; 1: Pizzicato bass 3
+        .byte $84, $83, $82, $82, $80, $00, $80, $00
+; 2: Pizzicato bass (echo 1)
+        .byte $8a, $89, $87, $83, $80, $00, $80, $00
+; 3: Pizzicato bass echo 2
+        .byte $85, $83, $82, $82, $80, $00, $80, $00
 
 
 
@@ -104,7 +99,7 @@ tt_InsFreqVolTable:
 ; Caution: Values are stored with an implicit +1 modifier! To get the
 ; real index, subtract 1.
 tt_PercIndexes:
-        .byte $01, $10, $17, $26
+        .byte $01, $10, $1f, $21, $28
 
 
 ; The AUDF frequency values for the percussion instruments.
@@ -117,11 +112,13 @@ tt_PercFreqTable:
         .byte $00, $01, $02, $03, $04, $05, $06, $07
         .byte $08, $09, $0a, $0b, $0c, $0d, $00
 ; 1: Snare
-        .byte $05, $1b, $08, $05, $05, $05, $00
-; 2: Snare
         .byte $07, $0d, $0e, $10, $14, $14, $15, $18
         .byte $18, $19, $1a, $1b, $1e, $1f, $00
-; 3: Hat echo
+; 2: Hat
+        .byte $82, $00
+; 3: Snare
+        .byte $05, $1b, $08, $05, $05, $05, $00
+; 4: Hatehoc
         .byte $82, $00
 
 
@@ -132,14 +129,16 @@ tt_PercFreqTable:
 tt_PercCtrlVolTable:
 ; 0: Kick
         .byte $ef, $ee, $ee, $eb, $e9, $e8, $e8, $e6
-        .byte $e6, $e6, $e4, $e4, $e1, $e1, $00
+        .byte $e6, $e6, $e4, $e4, $e2, $e2, $00
 ; 1: Snare
-        .byte $8f, $cf, $6f, $89, $86, $83, $00
-; 2: Snare
         .byte $8e, $8d, $8d, $8c, $8b, $8a, $88, $88
         .byte $87, $86, $84, $82, $81, $80, $00
-; 3: Hat echo
-        .byte $8c, $00
+; 2: Hat
+        .byte $89, $00
+; 3: Snare
+        .byte $8f, $cf, $6f, $89, $86, $83, $00
+; 4: Hatehoc
+        .byte $82, $00
 
 
         
@@ -196,236 +195,104 @@ TT_FIRST_PERC   = 17
 
 ; Intro left
 tt_pattern0:
-        .byte $38, $08, $2b, $08, $08, $08, $2b, $08
-        .byte $08, $08, $2b, $08, $08, $08, $38, $08
+        .byte $2b, $4b, $2b, $4b, $6b, $4b, $8b, $4b
+        .byte $2b, $4b, $2b, $4b, $8b, $4b, $2d, $4b
         .byte $00
 
-; Intro left 2
+; Intro l2
 tt_pattern1:
-        .byte $38, $08, $2b, $08, $08, $08, $2b, $08
-        .byte $2d, $08, $2e, $08, $2f, $08, $35, $08
+        .byte $29, $49, $29, $49, $69, $49, $89, $49
+        .byte $2d, $4d, $2d, $4d, $8d, $4d, $2d, $4d
         .byte $00
 
-; intro double
+; bass plus kick
 tt_pattern2:
-        .byte $38, $58, $2b, $45, $25, $2b, $2b, $4b
-        .byte $08, $08, $2b, $4b, $38, $58, $2b, $58
+        .byte $2b, $4b, $2b, $4b, $11, $4b, $8b, $4b
+        .byte $2b, $4b, $2b, $4b, $11, $4b, $2d, $4b
         .byte $00
 
-; fill left 2
+; bass+kick+chord2
 tt_pattern3:
-        .byte $38, $08, $2b, $08, $08, $08, $2b, $08
-        .byte $2d, $08, $2e, $08, $2f, $08, $35, $08
+        .byte $29, $49, $29, $49, $11, $49, $89, $49
+        .byte $2d, $4d, $2d, $4d, $11, $4d, $2d, $4d
         .byte $00
 
-; bassline
+; 3octavebass E
 tt_pattern4:
-        .byte $38, $4b, $25, $4b, $38, $4b, $25, $4b
-        .byte $38, $4b, $25, $4b, $38, $4b, $25, $4b
+        .byte $38, $4b, $2b, $4b, $25, $4b, $8b, $4b
+        .byte $38, $4b, $2b, $4b, $25, $4b, $2d, $4b
         .byte $00
 
-; bassline d
+; 3octave GD
 tt_pattern5:
-        .byte $3b, $4d, $26, $4d, $3b, $4d, $26, $4d
-        .byte $3b, $4d, $26, $4d, $3b, $4d, $26, $4d
-        .byte $00
-
-; bassline drum
-tt_pattern6:
-        .byte $11, $58, $2b, $58, $12, $58, $2b, $58
-        .byte $11, $58, $2b, $58, $12, $58, $2b, $58
-        .byte $00
-
-; bassline drum g+
-tt_pattern7:
-        .byte $11, $54, $29, $54, $12, $54, $29, $54
-        .byte $11, $51, $28, $51, $12, $51, $28, $51
-        .byte $00
-
-; leer snare fill
-tt_pattern8:
-        .byte $11, $08, $08, $08, $12, $08, $08, $08
-        .byte $08, $08, $08, $13, $08, $08, $13, $08
-        .byte $00
-
-; break left 1
-tt_pattern9:
-        .byte $08, $08, $38, $58, $08, $08, $08, $08
-        .byte $08, $08, $08, $08, $3b, $5b, $38, $58
-        .byte $00
-
-; break left 2
-tt_pattern10:
-        .byte $3b, $5b, $38, $58, $08, $08, $08, $08
-        .byte $08, $08, $08, $08, $3b, $5b, $38, $58
-        .byte $00
-
-; break left 3
-tt_pattern11:
-        .byte $35, $55, $38, $58, $08, $08, $08, $08
-        .byte $08, $08, $08, $08, $3b, $5b, $38, $58
-        .byte $00
-
-; break left 4
-tt_pattern12:
-        .byte $3b, $5b, $38, $58, $08, $08, $08, $08
-        .byte $65, $08, $08, $08, $08, $08, $08, $08
-        .byte $00
-
-; fill in left
-tt_pattern13:
-        .byte $65, $66, $65, $08, $65, $08, $67, $68
-        .byte $69, $6d, $6b, $08, $6b, $08, $08, $08
-        .byte $00
-
-; bassl.,drum,fill
-tt_pattern14:
-        .byte $11, $58, $2b, $58, $12, $58, $2b, $58
-        .byte $28, $58, $29, $58, $2b, $58, $2d, $58
-        .byte $00
-
-; bassline drumg
-tt_pattern15:
-        .byte $11, $54, $29, $54, $12, $54, $29, $54
-        .byte $11, $54, $29, $54, $12, $54, $29, $54
-        .byte $00
-
-; bassline druma
-tt_pattern16:
-        .byte $11, $51, $28, $51, $12, $51, $28, $51
-        .byte $28, $08, $29, $08, $2b, $08, $2d, $08
-        .byte $00
-
-; end left
-tt_pattern17:
-        .byte $11, $08, $08, $11, $08, $08, $11, $08
-        .byte $11, $08, $08, $08, $78, $08, $08, $08
-        .byte $00
-
-; snnn
-tt_pattern18:
-        .byte $13, $08, $08, $08, $08, $08, $08, $08
-        .byte $08, $08, $08, $08, $08, $08, $08, $08
+        .byte $34, $49, $29, $49, $24, $49, $89, $49
+        .byte $3b, $4d, $2d, $4d, $26, $4d, $2d, $4d
         .byte $00
 
 ; Intro right
-tt_pattern19:
-        .byte $11, $08, $08, $08, $12, $08, $08, $08
-        .byte $11, $08, $08, $08, $12, $08, $08, $08
+tt_pattern6:
+        .byte $08, $08, $08, $08, $08, $08, $08, $08
+        .byte $08, $08, $08, $08, $08, $08, $08, $08
         .byte $00
 
-; fill 2
-tt_pattern20:
+; intro r2
+tt_pattern7:
+        .byte $08, $08, $08, $08, $12, $08, $08, $08
+        .byte $08, $08, $08, $08, $12, $08, $08, $08
+        .byte $00
+
+; intro r3
+tt_pattern8:
+        .byte $08, $08, $12, $08, $08, $12, $08, $08
         .byte $11, $08, $08, $11, $08, $08, $11, $08
-        .byte $11, $08, $08, $08, $13, $08, $08, $08
         .byte $00
 
-; intro 2 right
-tt_pattern21:
-        .byte $11, $08, $65, $08, $12, $08, $08, $08
-        .byte $11, $08, $66, $65, $12, $08, $65, $08
+; Drums
+tt_pattern9:
+        .byte $11, $08, $13, $08, $14, $08, $13, $08
+        .byte $11, $08, $11, $08, $14, $08, $13, $08
         .byte $00
 
-; intro 2 right 2
-tt_pattern22:
-        .byte $11, $08, $6d, $6b, $12, $08, $64, $65
-        .byte $11, $08, $08, $08, $12, $08, $08, $08
+; Drums2
+tt_pattern10:
+        .byte $11, $15, $13, $15, $14, $15, $13, $15
+        .byte $11, $15, $11, $15, $14, $15, $13, $15
         .byte $00
 
-; intro 2 right 3
-tt_pattern23:
-        .byte $11, $08, $78, $08, $12, $08, $6b, $08
-        .byte $11, $08, $08, $08, $12, $08, $08, $08
+; interlude melody
+tt_pattern11:
+        .byte $08, $08, $22, $62, $82, $42, $08, $08
+        .byte $08, $08, $22, $62, $82, $42, $08, $08
         .byte $00
 
-; New pattern
-tt_pattern24:
-        .byte $08, $08, $08, $08, $62, $08, $08, $62
-        .byte $08, $08, $63, $08, $62, $08, $08, $08
+; melody1
+tt_pattern12:
+        .byte $08, $08, $21, $22, $61, $62, $81, $82
+        .byte $41, $42, $08, $08, $08, $08, $08, $08
         .byte $00
 
-; New pattern d
-tt_pattern25:
-        .byte $08, $08, $08, $08, $62, $08, $08, $62
-        .byte $08, $08, $61, $08, $62, $08, $08, $08
+; melody2
+tt_pattern13:
+        .byte $08, $08, $22, $21, $62, $61, $21, $22
+        .byte $62, $61, $08, $08, $22, $21, $42, $41
         .byte $00
 
-; melody
-tt_pattern26:
-        .byte $26, $25, $22, $82, $12, $08, $08, $62
-        .byte $08, $08, $61, $08, $62, $08, $08, $08
+; melody3
+tt_pattern14:
+        .byte $11, $08, $21, $22, $61, $62, $81, $82
+        .byte $41, $42, $08, $08, $12, $08, $08, $08
         .byte $00
 
-; fill
-tt_pattern27:
-        .byte $14, $08, $08, $14, $08, $08, $14, $08
-        .byte $14, $14, $14, $14, $13, $08, $80, $08
+; melody4
+tt_pattern15:
+        .byte $11, $08, $22, $21, $62, $61, $21, $22
+        .byte $62, $61, $08, $08, $12, $08, $11, $08
         .byte $00
 
-; maguggn
-tt_pattern28:
-        .byte $cc, $08, $08, $08, $08, $08, $08, $08
-        .byte $08, $08, $08, $08, $08, $08, $80, $08
-        .byte $00
-
-; maguggn2
-tt_pattern29:
-        .byte $40, $08, $08, $69, $08, $08, $69, $08
-        .byte $08, $08, $68, $08, $08, $08, $68, $08
-        .byte $00
-
-; puremelo1
-tt_pattern30:
-        .byte $67, $08, $67, $67, $08, $08, $67, $08
-        .byte $67, $08, $08, $08, $6b, $08, $08, $08
-        .byte $00
-
-; puremelo2
-tt_pattern31:
-        .byte $67, $08, $67, $67, $08, $08, $68, $08
-        .byte $67, $08, $08, $08, $65, $08, $08, $08
-        .byte $00
-
-; puremelo3
-tt_pattern32:
-        .byte $66, $08, $67, $69, $08, $08, $6d, $08
-        .byte $67, $08, $08, $08, $68, $08, $08, $08
-        .byte $00
-
-; break right 1
-tt_pattern33:
-        .byte $11, $08, $14, $08, $08, $08, $14, $08
-        .byte $08, $08, $14, $08, $08, $08, $14, $08
-        .byte $00
-
-; break left kick 
-tt_pattern34:
-        .byte $11, $08, $14, $11, $08, $08, $11, $08
-        .byte $12, $08, $14, $08, $13, $08, $14, $08
-        .byte $00
-
-; just hihat
-tt_pattern35:
-        .byte $14, $08, $14, $08, $14, $08, $14, $08
-        .byte $14, $08, $14, $08, $14, $08, $14, $08
-        .byte $00
-
-; endspurt recht1 
-tt_pattern36:
-        .byte $61, $08, $14, $08, $14, $08, $63, $08
-        .byte $65, $08, $14, $08, $14, $08, $14, $08
-        .byte $00
-
-; endspurt recht12
-tt_pattern37:
-        .byte $65, $08, $14, $08, $14, $08, $63, $08
-        .byte $62, $08, $14, $08, $14, $08, $14, $08
-        .byte $00
-
-; endright
-tt_pattern38:
-        .byte $08, $08, $65, $08, $08, $08, $65, $08
-        .byte $08, $08, $66, $08, $6b, $08, $08, $08
+; Drums+melo
+tt_pattern16:
+        .byte $11, $08, $21, $22, $14, $08, $21, $22
+        .byte $11, $08, $11, $08, $14, $08, $22, $21
         .byte $00
 
 
@@ -436,10 +303,10 @@ tt_pattern38:
 ; of the tt_PatternPtr tables below.
 ; If TT_USE_FUNKTEMPO is 1, then the low nibble encodes
 ; the even speed and the high nibble the odd speed.
-;.if TT_GLOBAL_SPEED = 0
+;    IF TT_GLOBAL_SPEED = 0
 ;tt_PatternSpeeds:
 ;%%PATTERNSPEEDS%%
-;.endif
+;    ENDIF
 
 
 ; ---------------------------------------------------------------------
@@ -450,23 +317,13 @@ tt_PatternPtrLo:
         .byte <tt_pattern4, <tt_pattern5, <tt_pattern6, <tt_pattern7
         .byte <tt_pattern8, <tt_pattern9, <tt_pattern10, <tt_pattern11
         .byte <tt_pattern12, <tt_pattern13, <tt_pattern14, <tt_pattern15
-        .byte <tt_pattern16, <tt_pattern17, <tt_pattern18, <tt_pattern19
-        .byte <tt_pattern20, <tt_pattern21, <tt_pattern22, <tt_pattern23
-        .byte <tt_pattern24, <tt_pattern25, <tt_pattern26, <tt_pattern27
-        .byte <tt_pattern28, <tt_pattern29, <tt_pattern30, <tt_pattern31
-        .byte <tt_pattern32, <tt_pattern33, <tt_pattern34, <tt_pattern35
-        .byte <tt_pattern36, <tt_pattern37, <tt_pattern38
+        .byte <tt_pattern16
 tt_PatternPtrHi:
         .byte >tt_pattern0, >tt_pattern1, >tt_pattern2, >tt_pattern3
         .byte >tt_pattern4, >tt_pattern5, >tt_pattern6, >tt_pattern7
         .byte >tt_pattern8, >tt_pattern9, >tt_pattern10, >tt_pattern11
         .byte >tt_pattern12, >tt_pattern13, >tt_pattern14, >tt_pattern15
-        .byte >tt_pattern16, >tt_pattern17, >tt_pattern18, >tt_pattern19
-        .byte >tt_pattern20, >tt_pattern21, >tt_pattern22, >tt_pattern23
-        .byte >tt_pattern24, >tt_pattern25, >tt_pattern26, >tt_pattern27
-        .byte >tt_pattern28, >tt_pattern29, >tt_pattern30, >tt_pattern31
-        .byte >tt_pattern32, >tt_pattern33, >tt_pattern34, >tt_pattern35
-        .byte >tt_pattern36, >tt_pattern37, >tt_pattern38        
+        .byte >tt_pattern16        
 
 
 ; ---------------------------------------------------------------------
@@ -484,24 +341,16 @@ tt_SequenceTable:
         .byte $00, $00, $00, $01, $00, $00, $00, $01
         .byte $02, $02, $02, $03, $02, $02, $02, $03
         .byte $04, $04, $04, $05, $04, $04, $04, $05
-        .byte $06, $06, $06, $07, $06, $06, $06, $03
-        .byte $06, $06, $06, $07, $06, $06, $06, $08
-        .byte $09, $0a, $0b, $0c, $09, $0a, $0b, $0c
-        .byte $0d, $06, $06, $06, $0e, $06, $06, $06
-        .byte $0e, $06, $06, $06, $0e, $0f, $10, $06
-        .byte $0e, $0f, $10, $06, $0e, $00, $11, $12
+        .byte $04, $04, $04, $05, $04, $04, $04, $05
+        .byte $02, $02, $02, $03
 
         
         ; ---------- Channel 1 ----------
-        .byte $13, $13, $13, $08, $13, $13, $13, $14
-        .byte $15, $15, $15, $08, $15, $16, $17, $08
-        .byte $18, $18, $18, $19, $1a, $1a, $1a, $1b
-        .byte $1c, $1c, $1c, $1d, $1c, $1c, $1c, $1d
-        .byte $1e, $1f, $1e, $20, $1e, $1f, $1e, $20
-        .byte $21, $21, $21, $22, $21, $21, $21, $1b
-        .byte $14, $23, $23, $23, $23, $23, $23, $23
-        .byte $14, $24, $23, $25, $23, $25, $23, $24
-        .byte $23, $25, $23, $24, $23, $1a, $26, $12
+        .byte $06, $06, $06, $06, $07, $07, $07, $08
+        .byte $09, $09, $09, $08, $0a, $0a, $0a, $08
+        .byte $06, $06, $06, $08, $0b, $0b, $0b, $0b
+        .byte $0c, $0c, $0c, $0d, $0e, $0e, $0e, $0f
+        .byte $10, $10, $10, $10
 
 
 ;        echo "Track size: ", *-tt_TrackDataStart

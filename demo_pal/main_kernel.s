@@ -34,7 +34,7 @@ tia_frame:
 	; run the music player
 	;=======================
 
-.include "tia_spirit_player.s"
+.include "deetia2_player.s"
 
 	; Measure player worst case timing
 	lda	#12		; TIM_VBLANK

@@ -13,7 +13,7 @@ vcs_desire.o:	vcs_desire.s \
 	logo_kernel.s desire_logo.inc \
 	raster_kernel.s firework_kernel.s \
 	bitmap_kernel.s bitmap.inc \
-	tia_spirit_player.s tia_spirit_trackdata.s
+	deetia2_player.s deetia2_trackdata.s
 	ca65 -o vcs_desire.o vcs_desire.s -l vcs_desire.lst
 
 

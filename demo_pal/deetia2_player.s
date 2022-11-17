@@ -21,54 +21,6 @@
 ; @com.wudsn.ide.asm.hardware=ATARI2600
 
 ; =====================================================================
-; Flags
-; =====================================================================
-
-; 1: Global song speed, 0: Each pattern has individual speed
-TT_GLOBAL_SPEED         = 1
-; duration (number of TV frames) of a note
-TT_SPEED                = 6
-; duration of odd frames (needs TT_USE_FUNKTEMPO)
-TT_ODD_SPEED            = 6
-
-; 1: Overlay percussion, +40 bytes
-TT_USE_OVERLAY          = 1
-; 1: Melodic instrument slide, +9 bytes
-TT_USE_SLIDE            = 0
-; 1: Goto pattern, +8 bytes
-TT_USE_GOTO             = 0
-; 1: Odd/even rows have different SPEED values, +7 bytes
-TT_USE_FUNKTEMPO        = 0
-; If the very first notes played on each channel are not PAUSE, HOLD or
-; SLIDE, i.e. if they start with an instrument or percussion, then set
-; this flag to 0 to save 2 bytes.
-; 0: +2 bytes
-TT_STARTS_WITH_NOTES    = 1
-
-
-; =====================================================================
-; Permanent variables. These are states needed by the player.
-; =====================================================================
-.if 0
-tt_timer                ds 1    ; current music timer value
-tt_cur_pat_index_c0     ds 1    ; current pattern index into tt_SequenceTable
-tt_cur_pat_index_c1     ds 1
-tt_cur_note_index_c0    ds 1    ; note index into current pattern
-tt_cur_note_index_c1    ds 1
-tt_envelope_index_c0    ds 1    ; index into ADSR envelope
-tt_envelope_index_c1    ds 1
-tt_cur_ins_c0           ds 1    ; current instrument
-tt_cur_ins_c1           ds 1
-
-
-; =====================================================================
-; Temporary variables. These will be overwritten during a call to the
-; player routine, but can be used between calls for other things.
-; =====================================================================
-tt_ptr                  ds 2
-.endif
-
-; =====================================================================
 ; TIATracker Player
 ; =====================================================================
 tt_PlayerStart:
@@ -91,12 +43,12 @@ tt_PlayerStart:
 ; Helper macro: Retrieves current note. May advance pattern if needed.
 ; Becomes a subroutine if TT_USE_OVERLAY is used.
 ; ---------------------------------------------------------------------
-.macro TT_FETCH_CURRENT_NOTE
+    .macro TT_FETCH_CURRENT_NOTE
         ; construct ptr to pattern
 constructPatPtr:
         ldy tt_cur_pat_index_c0,x       ; get current pattern (index into tt_SequenceTable)
         lda tt_SequenceTable,y
-.if TT_USE_GOTO = 1
+    .if TT_USE_GOTO = 1
         bpl noPatternGoto
         and #%01111111                  ; mask out goto bit to get pattern number
         sta tt_cur_pat_index_c0,x       ; store goto'ed pattern index
@@ -137,14 +89,14 @@ notPrefetched:
         inc tt_cur_pat_index_c0,x
         bne constructPatPtr            ; unconditional
 noEndOfPattern:
-.endmacro
-
+    .endmacro
 
 
 ; ---------------------------------------------------------------------
 ; Music player entry. Call once per frame.
 ; ---------------------------------------------------------------------
 tt_Player: ; SUBROUTINE    
+
         ; ==================== Sequencer ====================
         ; Decrease speed timer
         dec tt_timer
@@ -154,17 +106,17 @@ tt_Player: ; SUBROUTINE
         ; Advance to next note
         ldx #1                          ; 2 channels
 advanceLoop:
-.if TT_USE_OVERLAY = 1
+    .if TT_USE_OVERLAY = 1
         jsr tt_FetchNote
-.else
+    .else
         TT_FETCH_CURRENT_NOTE
-.endif
+    .endif
         ; Parse new note from pattern
         cmp #TT_INS_PAUSE
-.if TT_USE_SLIDE = 0
+    .if TT_USE_SLIDE = 0
         bcc finishedNewNote	
         bne newNote
-.else
+    .else
         beq pause
         bcs newNote
 
@@ -178,7 +130,7 @@ advanceLoop:
         sbc #8
         sta tt_cur_ins_c0,x
         bcs finishedNewNote            ; unconditional, since legally no underflow can happen (ins>0 or HOLD for ins=0)
-.endif
+    .endif
   
         ; --- pause ---
 pause:
@@ -199,11 +151,12 @@ pause:
 ; TT_USE_OVERLAY is not used.
 ; Interleaved here so player can be inlined.
 ; ---------------------------------------------------------------------
-.if TT_USE_OVERLAY = 1
+    .if TT_USE_OVERLAY = 1
 tt_FetchNote:
         TT_FETCH_CURRENT_NOTE
         rts
-.endif
+    .endif
+
 
         ; --- start instrument or percussion ---
 newNote:
@@ -221,11 +174,11 @@ newNote:
 
         ; --- start instrument ---
 startInstrument:
-.if TT_USE_OVERLAY = 1
+    .if TT_USE_OVERLAY = 1
         ; If V flag is set, this note had been pre-fetched. That means
         ; it should remain in sustain.
         bvs finishedNewNote
-.endif
+    .endif
         ; Put note into attack/decay
         jsr tt_CalcInsIndex
         lda tt_InsADIndexes-1,y         ; -1 because instruments start at #1
@@ -242,14 +195,14 @@ sequencerNextChannel:
         bpl advanceLoop
 
         ; Reset timer value
-.if TT_GLOBAL_SPEED = 0
+    .if TT_GLOBAL_SPEED = 0
         ; Get timer value for current pattern in channel 0
         ldx tt_cur_pat_index_c0         ; get current pattern (index into tt_SequenceTable)
         ldy tt_SequenceTable,x          ; Current pattern index now in y
-.if TT_USE_FUNKTEMPO = 0
+      .if TT_USE_FUNKTEMPO = 0
         lda tt_PatternSpeeds,y
         sta tt_timer
-.else
+      .else
         ; Test for odd/even frame
         lda tt_cur_note_index_c0
         lsr
@@ -264,20 +217,20 @@ evenFrame:
         lsr
 storeFunkTempo:
         sta tt_timer
-.endif   ; TT_USE_FUNKTEMPO = 0
+      .endif   ; TT_USE_FUNKTEMPO = 0
 
-.else
+    .else
         ; Global tempo
         ldx #TT_SPEED-1
-.if TT_USE_FUNKTEMPO = 1
+      .if TT_USE_FUNKTEMPO = 1
         lda tt_cur_note_index_c0
         lsr
         bcc noOddFrame
         ldx #TT_ODD_SPEED-1
 noOddFrame:
-.endif   ; TT_USE_FUNKTEMPO = 1
+      .endif   ; TT_USE_FUNKTEMPO = 1
         stx tt_timer
-.endif   ; TT_GLOBAL_SPEED = 0
+    .endif   ; TT_GLOBAL_SPEED = 0
 
         ; No new note to process
 noNewNote:
@@ -287,10 +240,10 @@ noNewNote:
 updateLoop:
         ; Percussion or melodic instrument?
         lda tt_cur_ins_c0,x
-.if TT_STARTS_WITH_NOTES = 0
+    .if TT_STARTS_WITH_NOTES = 0
         ; This branch can be removed if track starts with a note in each channel
         beq afterAudioUpdate
-.endif
+    .endif
         cmp #TT_FREQ_MASK+1
         bcs instrument                 ; Melodic instrument
 
@@ -386,8 +339,5 @@ afterAudioUpdate:
         ; loop over channels
         dex
         bpl updateLoop
-
-
-
 
 ;        echo "Music player size: ", *-tt_PlayerStart

@@ -10,7 +10,7 @@
 	; clear out mem / init things
 	;=============================
 
-tia_spirit:
+vcs_desire:
 ;	sei								; 2
 ;	cld		; clear decimal mode				; 2
 ;
@@ -50,7 +50,7 @@ clear_loop:
 
 	lda	#0
 	sta	tt_cur_pat_index_c0
-	lda	#72
+	lda	#36
 	sta	tt_cur_pat_index_c1
 
 ;======================================================================
@@ -80,6 +80,7 @@ clear_loop:
 	inc	SPRITE1_XADD
 ;	inc	LOGO_YADD
 
+.include "deetia2_variables.s"
 .include "main_kernel.s"
 
 .include "logo_kernel.s"
@@ -101,9 +102,9 @@ clear_loop:
 .align $100
 .include "bitmap.inc"
 
-.include "tia_spirit_trackdata.s"
+.include "deetia2_trackdata.s"
 
 .segment "IRQ_VECTORS"
-	.word tia_spirit	; NMI
-	.word tia_spirit	; RESET
-	.word tia_spirit	; IRQ
+	.word vcs_desire	; NMI
+	.word vcs_desire	; RESET
+	.word vcs_desire	; IRQ
