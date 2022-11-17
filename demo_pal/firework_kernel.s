@@ -73,7 +73,7 @@ firework_effect:
 ;	sty	SPRITE0_XADD						; 3
 ; 31
 
-done_sprite0_x:
+;done_sprite0_x:
 
 ;	lda	SPRITE0_YADD						; 3
 ; 34
@@ -87,7 +87,7 @@ done_sprite0_x:
 								;============
 								; 16 worst
 
-sprite0_invert_y:
+;sprite0_invert_y:
 ; 50
 ;	lda	SPRITE0_YADD						; 3
 ;	eor	#$FF							; 2
@@ -104,7 +104,7 @@ sprite0_invert_y:
 ;	sta	CTRLPF
 
 ; 62
-done_sprite0_y:
+;done_sprite0_y:
 	sta	WSYNC
 
 
@@ -123,7 +123,7 @@ done_sprite0_y:
 								;============
 								; 18 worst
 
-sprite1_invert_x:
+;sprite1_invert_x:
 ; 18
 ;	lda	SPRITE1_XADD						; 3
 ;	eor	#$FF							; 2
@@ -132,7 +132,7 @@ sprite1_invert_x:
 ;	sta	SPRITE1_XADD						; 3
 ; 30
 
-done_sprite1_x:
+;done_sprite1_x:
 
 	; TODO: change color?
 
@@ -161,9 +161,9 @@ done_sprite1_x:
 
 
 	; X is 2..12 here
-pad_x:
+fire_pad_x:
 	dex                     ;                                       2
-	bne	pad_x           ;                                       2/3
+	bne	fire_pad_x           ;                                       2/3
                                 ;===========================================
                                 ;       5*(coarse_x+2)-1
                                 ; COARSE_X is 0..9 so
@@ -198,7 +198,7 @@ pad_x:
 ; 12 (want to be 12 here)
 
 
-pad_x1:
+;pad_x1:
 ;	dex                     ;                                       2
 ;	bne	pad_x1           ;                                       2/3
                                 ;===========================================
@@ -237,7 +237,7 @@ pad_x1:
 ;	sta	RASTER_G_YADD						; 3
 ; 34
 
-done_raster_g_y:
+;done_raster_g_y:
 
 	;=========================
 	; blue rasterbar
@@ -253,7 +253,7 @@ done_raster_g_y:
 ;	bcs	done_raster_b_y		; bge				; 2/3
 								;============
 								; 16 worst case
-raster_b_invert_y:
+;raster_b_invert_y:
 ; 53
 ;	lda	RASTER_B_YADD						; 3
 ;	eor	#$FF							; 2
@@ -262,7 +262,7 @@ raster_b_invert_y:
 ;	sta	RASTER_B_YADD						; 3
 ; 65
 
-done_raster_b_y:
+;done_raster_b_y:
 	sta	WSYNC
 
 
@@ -370,9 +370,9 @@ sky_loop:
 	txa								; 2
 	sbc	SPRITE0_Y						; 3
 	cmp	#16							; 2
-	bcs	no_sprite0						; 2/3
+	bcs	no_firework0						; 2/3
 	ldy	#$FF							; 2
-no_sprite0:
+no_firework0:
 	sty	GRP0							; 3
 								;==========
 								; 16 worst
@@ -691,7 +691,7 @@ raster_spriteloop:
 	sta	WSYNC
 
 
-done_raster:
+done_firework:
 
 	;===========================
 	;===========================

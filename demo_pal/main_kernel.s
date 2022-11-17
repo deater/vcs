@@ -106,14 +106,16 @@ le_vblank_loop:
 
 jmp_table_low:
 	.byte <firework_effect
+	.byte <raster_effect
 	.byte <logo_effect
 	.byte <bitmap_effect
-;	.byte <raster_effect
+
 jmp_table_high:
 	.byte >firework_effect
+	.byte >raster_effect
 	.byte >logo_effect
 	.byte >bitmap_effect
-;	.byte >raster_effect
+
 
 
 
