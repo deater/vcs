@@ -167,6 +167,8 @@ newNote:
 
         ; --- start percussion ---
         ; Get index of envelope
+	inc	IS_DRUM
+	inc	IS_DRUM
         tay
         ; -TT_FIRST_PERC because percussion start with TT_FIRST_PERC
         lda tt_PercIndexes-TT_FIRST_PERC,y

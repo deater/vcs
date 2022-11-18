@@ -64,10 +64,27 @@ parallax_effect:
 	sta	WSYNC
 
 	;=========================================
-	; scanline 40: ?
+	; scanline 40/41 : setup zigzag
 	;=========================================
+; 0
 
-	sta	WSYNC
+	lda	#8
+	ldx	IS_DRUM
+	beq	zigzag_start
+	dec	IS_DRUM
+	clc
+	adc	#$8
+zigzag_start:
+	ldx	#8
+	tay
+zigzag_loop:
+	lda	zigzag,Y						; 4
+	sta	ZIGZAG0,X						; 4
+	dey
+	dex								; 2
+	bne	zigzag_loop						; 2/3
+
+	; 2+ 13*8 -1 = 105
 
 
 	;=========================================
@@ -269,7 +286,7 @@ alternate_pf0:
 	adc	FRAMEL							; 3
 	and	#$7							; 2
 	tay								; 2
-	lda	zigzag,Y						; 4+
+	lda	ZIGZAG0,Y						; 4+
 	sta	PF0							; 3
 
 ; 63 worst case
@@ -309,7 +326,11 @@ done_parallax:
 	jmp	effect_done
 
 zigzag:
+	.byte $40,$40,$20,$20, $40,$40,$20,$20
+zigzag2:
 	.byte $80,$40,$20,$10, $10,$20,$40,$80
 
+
+
 fg_colors:
-	.byte $4E,$9E,$AE,$00
+	.byte $12,$4E,$9E,$AE
