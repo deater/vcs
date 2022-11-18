@@ -7,55 +7,20 @@ PLAYFIELD_MAX = 220
 raster_effect:
 
 	;============]========================
-	; scanline 38: setup X for sprites
+	; scanline 38/39/40: setup X/Y for sprites
 	;====================================
-; 0
-	lda	SPRITE0_X						; 3
-; 3
-        ; spritex DIV 16
 
-	lsr								; 2
-	lsr								; 2
-	lsr								; 2
-	lsr								; 2
+	jsr	adjust_sprites
 
-        sta	SPRITE0_X_COARSE					; 3
-; 14
-	; apply fine adjust
-	lda	SPRITE0_X						; 3
-	and	#$0f							; 2
-	tax								; 2
-	lda	fine_adjust_table,X					; 4+
-	sta	HMP0							; 3
-; 28
+; 6
 
-	lda	SPRITE1_X						; 3
-; 31
-        ; spritex DIV 16
-
-	lsr								; 2
-	lsr								; 2
-	lsr								; 2
-	lsr								; 2
-
-        sta	SPRITE1_X_COARSE					; 3
-; 42
-	; apply fine adjust
-	lda	SPRITE1_X						; 3
-	and	#$0f							; 2
-	tax								; 2
-	lda	fine_adjust_table,X					; 4+
-	sta	HMP1							; 3
-; 56
-
-	sta	WSYNC
 
 	;=========================================
-	; scanline 39: move sprite0
+	; scanline 41: move sprite0
 	;=========================================
-; 0
+; 6
 	lda	SPRITE0_XADD						; 3
-; 3
+; 9
 	; XADD in A
 	clc								; 2
 	adc	SPRITE0_X						; 3
@@ -67,18 +32,18 @@ raster_effect:
 								;============
 								; 16 worst
 sprite0_invert_x:
-; 19
+; 25
 	lda	SPRITE0_XADD						; 3
 	eor	#$FF							; 2
 	tay								; 2
 	iny								; 2
 	sty	SPRITE0_XADD						; 3
-; 31
+; 37
 
 done_sprite0_x:
 
 	lda	SPRITE0_YADD						; 3
-; 34
+; 40
 	clc								; 2
 	adc	SPRITE0_Y						; 3
 	sta	SPRITE0_Y						; 3
@@ -90,7 +55,7 @@ done_sprite0_x:
 								; 16 worst
 
 sprite0_invert_y:
-; 50
+; 56
 	lda	SPRITE0_YADD						; 3
 	eor	#$FF							; 2
 	tay								; 2
@@ -105,13 +70,13 @@ sprite0_invert_y:
 ;	lda	#CTRLPF_PFP
 ;	sta	CTRLPF
 
-; 62
+; 68
 done_sprite0_y:
 	sta	WSYNC
 
 
 	;=========================================
-	; scanline 40: move sprite1
+	; scanline 42: move sprite1
 	;=========================================
 ; 0
 	lda	SPRITE1_XADD						; 3
@@ -137,80 +102,6 @@ sprite1_invert_x:
 done_sprite1_x:
 
 	; TODO: change color?
-
-	sta	WSYNC
-
-	;=======================================================
-	; scanline 41: set up sprite0 to be at proper X position
-	;=======================================================
-	; value will be 0..9
-
-; 0
-
-	ldx	a:SPRITE0_X_COARSE	; force 4-cycle version		; 4
-; 4
-
-;	cpx	#$A                                                     ; 2
-;	bcs	far_right	; bge                                   ; 2/3
-
-	nop								; 2
-	nop								; 2
-
-; 8
-	inx                     ;                                       ; 2
-	inx                     ;                                       ; 2
-; 12 (want to be 12 here)
-
-
-	; X is 2..12 here
-pad_x:
-	dex                     ;                                       2
-	bne	pad_x           ;                                       2/3
-                                ;===========================================
-                                ;       5*(coarse_x+2)-1
-                                ; COARSE_X is 0..9 so
-				;   9 .. 54 cycles
-
-; up to 66
-        ; beam is at proper place
-        sta     RESP0                                                   ; 3
-; up to 69
-
-	sta	WSYNC
-
-
-	;=======================================================
-	; scanline 42: set up sprite1 to be at proper X position
-	;=======================================================
-
-; 0
-
-	ldx	a:SPRITE1_X_COARSE	; force 4-cycle version		; 4
-; 4
-
-;	cpx	#$A                                                     ; 2
-;	bcs	far_right	; bge                                   ; 2/3
-
-	nop								; 2
-	nop								; 2
-
-; 8
-	inx                     ;                                       ; 2
-	inx                     ;                                       ; 2
-; 12 (want to be 12 here)
-
-
-pad_x1:
-	dex                     ;                                       2
-	bne	pad_x1           ;                                       2/3
-                                ;===========================================
-                                ;       5*(coarse_x+2)-1
-                                ; COARSE_X is 0..9 so
-				;   9 .. 54 cycles
-; up to 66
-        ; beam is at proper place
-	sta     RESP1                                                   ; 3
-; up to 69
 
 	sta	WSYNC
 	sta	HMOVE		; finalize fine adjust
@@ -483,3 +374,121 @@ done_raster:
 
 
 
+	;============]========================
+	; scanline 1: setup sprite0/1 X/Y
+	;====================================
+adjust_sprites:
+
+; 6
+	lda	SPRITE0_X						; 3
+; 9
+        ; spritex DIV 16
+
+	lsr								; 2
+	lsr								; 2
+	lsr								; 2
+	lsr								; 2
+
+        sta	SPRITE0_X_COARSE					; 3
+; 20
+	; apply fine adjust
+	lda	SPRITE0_X						; 3
+	and	#$0f							; 2
+	tax								; 2
+	lda	fine_adjust_table,X					; 4+
+	sta	HMP0							; 3
+; 34
+
+	lda	SPRITE1_X						; 3
+; 37
+        ; spritex DIV 16
+
+	lsr								; 2
+	lsr								; 2
+	lsr								; 2
+	lsr								; 2
+
+        sta	SPRITE1_X_COARSE					; 3
+; 48
+	; apply fine adjust
+	lda	SPRITE1_X						; 3
+	and	#$0f							; 2
+	tax								; 2
+	lda	fine_adjust_table,X					; 4+
+	sta	HMP1							; 3
+; 62
+	sta	WSYNC
+
+	;=======================================================
+	; scanline 2: set up sprite0 to be at proper X position
+	;=======================================================
+	; value will be 0..9
+
+; 0
+
+	ldx	a:SPRITE0_X_COARSE	; force 4-cycle version		; 4
+; 4
+
+	nop								; 2
+	nop								; 2
+
+; 8
+	inx                     ;                                       ; 2
+	inx                     ;                                       ; 2
+; 12 (want to be 12 here)
+
+
+	; X is 2..12 here
+pad_x:
+	dex                     ;                                       2
+	bne	pad_x           ;                                       2/3
+                                ;===========================================
+                                ;       5*(coarse_x+2)-1
+                                ; COARSE_X is 0..9 so
+				;   9 .. 54 cycles
+
+; up to 66
+        ; beam is at proper place
+        sta     RESP0                                                   ; 3
+; up to 69
+
+	sta	WSYNC
+
+
+	;=======================================================
+	; scanline 3: set up sprite1 to be at proper X position
+	;=======================================================
+
+; 0
+
+	ldx	a:SPRITE1_X_COARSE	; force 4-cycle version		; 4
+; 4
+
+;	cpx	#$A                                                     ; 2
+;	bcs	far_right	; bge                                   ; 2/3
+
+	nop								; 2
+	nop								; 2
+
+; 8
+	inx                     ;                                       ; 2
+	inx                     ;                                       ; 2
+; 12 (want to be 12 here)
+
+
+pad_x1:
+	dex                     ;                                       2
+	bne	pad_x1           ;                                       2/3
+                                ;===========================================
+                                ;       5*(coarse_x+2)-1
+                                ; COARSE_X is 0..9 so
+				;   9 .. 54 cycles
+; up to 66
+        ; beam is at proper place
+	sta     RESP1                                                   ; 3
+; up to 69
+
+	sta	WSYNC
+
+
+	rts
