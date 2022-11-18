@@ -1,16 +1,13 @@
 	;================================================
-	; draws firework effect
+	; draws fireworks effect
 	;================================================
 
 firework_effect:
-
-	;=========================================
-	; scanline 38: ???
-	;=========================================
+; 26
 	sta	WSYNC
 
 	;=========================================
-	; scanline 39: update firework
+	; scanline 39: update firework0
 	;=========================================
 ; 0
 	lda	SPRITE0_COLOR						; 3
@@ -26,280 +23,159 @@ new_firework:
 	sta	SPRITE0_COLOR						; 3
 ; 21
 	; new X
-	ldx	FRAMEL							; 3
 	lda	$F100,X			; sorta random			; 4
 	and	#$7F			; 0..127			; 2
 	sta	SPRITE0_X						; 3
-; 33
+; 30
 	; new Y
-	ldx	FRAMEL							; 3
 	lda	$F200,X			; sorta random			; 4
 	and	#$3F			; 0..127			; 2
 	sta	SPRITE0_Y						; 3
-; 45
+; 39
 
 not_new_firework:
 	lda	FRAMEL							; 3
 	and	#$7							; 2
 	bne	skip_progress						; 2/3
-; 52
+; 46
 	dec	SPRITE0_COLOR						; 5
 	dec	SPRITE0_COLOR						; 5
-; 62
+; 56
 skip_progress:
 	lda	SPRITE0_COLOR						; 3
 	sta	COLUP0							; 3
 
-; 68
+; 62
 	sta	WSYNC
+
+	;=========================================
+	; scanline 40: update firework1
+	;=========================================
+; 0
+	lda	SPRITE1_COLOR						; 3
+	and	#$f							; 2
+	bne	not_new_firework1					; 2/3
+new_firework1:
+; 7
+	; new firework color
+	ldx	FRAMEL							; 3
+	lda	$F300,X							; 4
+	ora	#$0F							; 2
+	and	#$FE							; 2
+	sta	SPRITE1_COLOR						; 3
+; 21
+	; new X
+	lda	$F400,X			; sorta random			; 4
+	and	#$7F			; 0..127			; 2
+	sta	SPRITE1_X						; 3
+; 30
+	; new Y
+	lda	$F500,X			; sorta random			; 4
+	and	#$3F			; 0..127			; 2
+	sta	SPRITE1_Y						; 3
+; 39
+
+not_new_firework1:
+	lda	FRAMEL							; 3
+	and	#$7							; 2
+	bne	skip_progress1						; 2/3
+; 46
+	dec	SPRITE1_COLOR						; 5
+	dec	SPRITE1_COLOR						; 5
+; 56
+skip_progress1:
+	lda	SPRITE1_COLOR						; 3
+	sta	COLUP1							; 3
+
+; 62
+	sta	WSYNC
+
+	;=========================================
+	; scanline 41/42/43
+	;=========================================
+
+	jsr	adjust_sprites
+
+; 6
+
 
 	;============]========================
-	; scanline 40: setup X for firework0
+	; scanline 44: setup firework progress
 	;====================================
-; 0
+; 6
 	;	E C A 8  6  4  2  0
 	;               24 16  8  0
-	lda	SPRITE0_COLOR
-	and	#$0e
-	asl
-	asl
-	sta	FIREWORK_PROGRESS
+	lda	SPRITE0_COLOR						; 3
+	and	#$0e							; 2
+	asl								; 2
+	asl								; 2
+	sta	FIREWORK_PROGRESS0					; 3
+; 18
 
-
-	lda	SPRITE0_X						; 3
-; 3
-        ; spritex DIV 16
-
-	lsr								; 2
-	lsr								; 2
-	lsr								; 2
-	lsr								; 2
-
-        sta	SPRITE0_X_COARSE					; 3
-; 14
-	; apply fine adjust
-	lda	SPRITE0_X						; 3
-	and	#$0f							; 2
-	tax								; 2
-	lda	fine_adjust_table,X					; 4+
-	sta	HMP0							; 3
-; 28
-
-	sta	WSYNC
-
-
-	;=======================================================
-	; scanline 41: set up sprite0 to be at proper X position
-	;=======================================================
-	; value will be 0..9
-
-; 0
-
-	ldx	a:SPRITE0_X_COARSE	; force 4-cycle version		; 4
-; 4
-
-;	cpx	#$A                                                     ; 2
-;	bcs	far_right	; bge                                   ; 2/3
-
-	nop								; 2
-	nop								; 2
-
-; 8
-	inx                     ;                                       ; 2
-	inx                     ;                                       ; 2
-; 12 (want to be 12 here)
-
-
-	; X is 2..12 here
-fire_pad_x:
-	dex                     ;                                       2
-	bne	fire_pad_x           ;                                       2/3
-                                ;===========================================
-                                ;       5*(coarse_x+2)-1
-                                ; COARSE_X is 0..9 so
-				;   9 .. 54 cycles
-
-; up to 66
-        ; beam is at proper place
-        sta     RESP0                                                   ; 3
-; up to 69
-
-	sta	WSYNC
-
-
-	;=======================================================
-	; scanline 42: set up sprite1 to be at proper X position
-	;=======================================================
-
-; 0
-
-;	ldx	a:SPRITE1_X_COARSE	; force 4-cycle version		; 4
-; 4
-
-;	cpx	#$A                                                     ; 2
-;	bcs	far_right	; bge                                   ; 2/3
-
-;	nop								; 2
-;	nop								; 2
-
-; 8
-;	inx                     ;                                       ; 2
-;	inx                     ;                                       ; 2
-; 12 (want to be 12 here)
-
-
-;pad_x1:
-;	dex                     ;                                       2
-;	bne	pad_x1           ;                                       2/3
-                                ;===========================================
-                                ;       5*(coarse_x+2)-1
-                                ; COARSE_X is 0..9 so
-				;   9 .. 54 cycles
-; up to 66
-        ; beam is at proper place
-;	sta     RESP1                                                   ; 3
-; up to 69
-
-	sta	WSYNC
-	sta	HMOVE		; finalize fine adjust
-
-	;================================================
-	; VBLANK scanline 43 -- adjust green and blue rasterbar
-	;================================================
-; 3
-;	lda	RASTER_G_YADD						; 3
-; 6
-;	clc								; 2
-;	adc	RASTER_G_Y						; 3
-;	sta	RASTER_G_Y						; 3
-;	cmp	#PLAYFIELD_MAX						; 2
-;	bcs	raster_g_invert_y	; bge				; 2/3
-;	cmp	#0							; 2
-;	bcs	done_raster_g_y		; bge				; 2/3
-								;============
-								; 16 worst
-;raster_g_invert_y:
-; 22
-;	lda	RASTER_G_YADD						; 3
-;	eor	#$FF							; 2
-;	clc								; 2
-;	adc	#1							; 2
-;	sta	RASTER_G_YADD						; 3
-; 34
-
-;done_raster_g_y:
-
-	;=========================
-	; blue rasterbar
-; 34
-;	lda	RASTER_B_YADD						; 3
-; 37
-;	clc								; 2
-;	adc	RASTER_B_Y						; 3
-;	sta	RASTER_B_Y						; 3
-;	cmp	#PLAYFIELD_MAX						; 2
-;	bcs	raster_b_invert_y	; bge				; 2/3
-;	cmp	#0							; 2
-;	bcs	done_raster_b_y		; bge				; 2/3
-								;============
-								; 16 worst case
-;raster_b_invert_y:
-; 53
-;	lda	RASTER_B_YADD						; 3
-;	eor	#$FF							; 2
-;	clc								; 2
-;	adc	#1							; 2
-;	sta	RASTER_B_YADD						; 3
-; 65
-
-;done_raster_b_y:
-	sta	WSYNC
-
-
-
-	;================================================
-	; VBLANK scanline 44 -- adjust red rasterbar
-	;================================================
-; 0
-;	lda	RASTER_R_YADD						; 3
-; 3
-;	clc								; 2
-;	adc	RASTER_R_Y						; 3
-;	sta	RASTER_R_Y						; 3
-;	cmp	#PLAYFIELD_MAX						; 2
-;	bcs	raster_r_invert_y	; bge				; 2/3
-;	cmp	#0							; 2
-;	bcs	raster_r_done_y		; bge				; 2/3
-								;============
-								; 16
-; 19
-;raster_r_invert_y:
-;	lda	RASTER_R_YADD						; 3
-;	eor	#$FF							; 2
-;	clc								; 2
-;	adc	#1							; 2
-;	sta	RASTER_R_YADD						; 3
-; 31
-;raster_r_done_y:
+	lda	SPRITE1_COLOR						; 3
+	and	#$0e							; 2
+	asl								; 2
+	asl								; 2
+	sta	FIREWORK_PROGRESS1					; 3
+; 30
 
 	; other init
 
 	; E C A 8 6 4 2 0
 
-	ldy	#0
-	lda	SPRITE0_COLOR
-	and	#$E
-	bne	set_bg
-	ldy	#$12
+	ldy	#0							; 2
+	lda	SPRITE0_COLOR						; 3
+	and	#$E							; 2
+	bne	set_bg							; 2/3
+	ldy	#$12							; 2
 set_bg:
+; 41
         sty	COLUBK							; 3
-
-
+; 44
 	sta	VDELP0							; 3
 	sta	VDELP1		; turn off delay			; 3
-; 54
+; 50
 	lda	#NUSIZ_DOUBLE_SIZE					; 2
 	sta	NUSIZ0							; 3
-; 59
+; 55
 ;	lda	#NUSIZ_ONE_COPY						; 2
 ;	sta	NUSIZ1							; 3
-; 64
+
+
 	sta	WSYNC
+	sta	HMOVE		; finalize fine adjust
 
 	;=================================
 	; VBLANK scanline 45
 	;=================================
-; 0
+; 3
 	lda	#0							; 2
 	sta	VBLANK                  ; turn on beam			; 3
-; 5
+; 8
 
 	lda	#0							; 2
 	sta	COLUPF			; fg, black			; 3
-	sta	GRP0			; sprite 1			; 3
-; 13
-
-	lda	#$00							; 2
+	sta	GRP0			; sprite 0			; 3
+	sta	GRP1			; sprite 1			; 3
 	sta	PF0			;				; 3
 	sta	PF1			;				; 3
 	sta	PF2							; 3
-	sta	GRP1			; sprite 2			; 3
-
-; 58
+; 23
 	ldy	#0							; 2
 	ldx	#0							; 2
-	txa			; needed so top line is black		; 2
-; 64
+;	txa			; needed so top line is black		; 2
+; 
 ;	lda	#50
 ;	sta	SPRITE0_X
 ;	lda	#50
 ;	sta	SPRITE0_Y
 
-	lda	#CTRLPF_REF
-	sta	CTRLPF
-
+; 27
+	lda	#CTRLPF_REF		; reflect playfield		; 2
+	sta	CTRLPF							; 3
+; 32
 	sta	WSYNC							; 3
-; 67
+
 
 
 	;=========================
@@ -330,7 +206,7 @@ sky_loop:
 	lsr								; 2
 	lsr								; 2
 	clc								; 2
-	adc	FIREWORK_PROGRESS					; 2
+	adc	FIREWORK_PROGRESS0					; 2
 	tay								; 2
 	lda	firework7,Y						; 4
 	tay								; 2

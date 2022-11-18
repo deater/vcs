@@ -99,29 +99,30 @@ le_vblank_loop:
 	;============================
 	; choose which effect to run
 	;============================
-
-	ldx	WHICH_EFFECT
-;	ldx	#1
-	lda	jmp_table_low,X
-	sta	INL
-	lda	jmp_table_high,X
-	sta	INH
-	jmp	(INL)
-
+; 4
+	ldx	WHICH_EFFECT						; 3
+	lda	jmp_table_low,X						; 4
+	sta	INL							; 3
+	lda	jmp_table_high,X					; 4
+	sta	INH							; 3
+	jmp	(INL)							; 5
+; 26
 
 jmp_table_low:
+	.byte <firework_effect
 	.byte <logo_effect
 	.byte <bitmap_effect
 	.byte <parallax_effect
 	.byte <raster_effect
-	.byte <firework_effect
+
 
 jmp_table_high:
+	.byte >firework_effect
 	.byte >logo_effect
 	.byte >bitmap_effect
 	.byte >parallax_effect
 	.byte >raster_effect
-	.byte >firework_effect
+
 
 
 
