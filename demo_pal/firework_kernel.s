@@ -137,7 +137,10 @@ set_bg:
 ; 50
 	lda	#NUSIZ_DOUBLE_SIZE					; 2
 	sta	NUSIZ0							; 3
-; 55
+	sta	NUSIZ1							; 3
+
+; 57
+
 ;	lda	#NUSIZ_ONE_COPY						; 2
 ;	sta	NUSIZ1							; 3
 
@@ -164,11 +167,7 @@ set_bg:
 	ldy	#0							; 2
 	ldx	#0							; 2
 ;	txa			; needed so top line is black		; 2
-; 
-;	lda	#50
-;	sta	SPRITE0_X
-;	lda	#50
-;	sta	SPRITE0_Y
+
 
 ; 27
 	lda	#CTRLPF_REF		; reflect playfield		; 2
@@ -214,6 +213,25 @@ no_firework0:
 	sty	GRP0							; 3
 								;==========
 								; 30 worst
+
+
+	ldy	#$0							; 2
+	txa								; 2
+	sbc	SPRITE1_Y						; 3
+	cmp	#32							; 2
+	bcs	no_firework1						; 2/3
+	lsr								; 2
+	lsr								; 2
+	clc								; 2
+	adc	FIREWORK_PROGRESS1					; 2
+	tay								; 2
+	lda	firework7,Y						; 4
+	tay								; 2
+no_firework1:
+	sty	GRP1							; 3
+								;==========
+								; 30 worst
+
 	sta	WSYNC
 	inx
 	cpx	#99
@@ -510,3 +528,4 @@ firework0:
 	.byte $00,$00,$00,$10,$00,$00,$00,$00
 
 
+.include "adjust_sprites.s"
