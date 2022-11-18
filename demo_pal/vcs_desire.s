@@ -50,7 +50,7 @@ clear_loop:
 
 	lda	#0
 	sta	tt_cur_pat_index_c0
-	lda	#36
+	lda	#50
 	sta	tt_cur_pat_index_c1
 
 ;======================================================================
