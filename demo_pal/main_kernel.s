@@ -66,21 +66,31 @@ no_frame_oflo:
 
 	; switch effects
 
-	; note: music repeats at $4a = 74?
 
-	lda	FRAMEL							; 3
-	bne	same_effect						; 2/3
-	lda	FRAMEH							; 3
-check3:
-	cmp	#3			; 15s, move on to bitmap
-	beq	next_effect
-	cmp	#5			; ??s, move on to parallax
-	beq	next_effect
-	cmp	#7			; ??s, move on to rasterbar
-	beq	next_effect
-	cmp	#9			; ??s, move on to fireworks
+	clc
+	lda	FRAMEL
+	rol
 	bne	same_effect
+	lda	FRAMEH
+	rol
 
+;	lda	FRAMEL							; 3
+;	bne	same_effect						; 2/3
+;	lda	FRAMEH							; 3
+check3:
+	cmp	#$6			; $03:00 15s, move on to parallax
+	beq	next_effect
+	cmp	#$C			; $06:00 ??s, move on to bitmap
+	beq	next_effect
+	cmp	#$F			; $07:80 ??s, move on to rasterbar
+	beq	next_effect
+	cmp	#$15			; $0A:80 ??s, move on to fireworks
+	beq	next_effect
+	cmp	#$25			; $12:80 ??s done?
+	bne	same_effect
+;	lda	#$ff			; loop
+;	sta	WHICH_EFFECT
+	jmp	vcs_desire		; restart
 next_effect:
 	inc	WHICH_EFFECT
 same_effect:
