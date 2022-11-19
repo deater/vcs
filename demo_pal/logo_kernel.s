@@ -176,7 +176,7 @@ draw_logo:
 	txa								; 2
 	lsr		; divide by 2					; 2
 ; 58
-	bcs	noc	; skip if odd					; 2/3
+	bcc	noc	; skip if odd					; 2/3
 	dey					; decrement logo count	; 2
 	beq	done_logo						; 2/3
 ; 64
@@ -200,7 +200,7 @@ start_ahead:
 	lda	SAVED_COLUBK
 	sta	COLUBK
 
-	; see if line eqyals Y location?
+	; see if line equals Y location?
 	cpx	LOGO_Y							; 2
 	bne	not_logo_start						; 2/3
 	ldy	#LOGO_SIZE		; set logo height		; 2

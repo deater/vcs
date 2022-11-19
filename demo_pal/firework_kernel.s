@@ -188,17 +188,16 @@ set_bg:
 	sta	VBLANK                  ; turn on beam			; 3
 ; 8
 
-	lda	#0							; 2
+;	lda	#0							; 2
 	sta	COLUPF			; fg, black			; 3
+	sta	PF0			;				; 3
 	sta	GRP0			; sprite 0			; 3
 	sta	GRP1			; sprite 1			; 3
-	sta	PF0			;				; 3
 	sta	PF1			;				; 3
 	sta	PF2							; 3
-; 23
-	ldy	#0							; 2
-	ldx	#0							; 2
-;	txa			; needed so top line is black		; 2
+; 26
+;	ldy	#0							; 2
+;	ldx	#0							; 2
 
 
 ; 27
@@ -341,22 +340,25 @@ ground_loop:
 
 credits_bitmap:
 
+	ldx	#0
+	stx	GRP0            ;                                       ; 3
+	stx	GRP1							; 3
 	sta	WSYNC
-	nop
 
 	;=================================
 	; scaline 217
 	;=================================
 
-; 2
+; 0
 	; to center exactly would want sprite0 at
 	;       CPU cycle 41.3
 	; and sprite1 at
 	;       GPU cycle 44
 
-	ldx	#0              ; sprite 0 display nothing              ; 2
-	stx	GRP0            ;                                       ; 3
-	stx	GRP1							; 3
+	stx	COLUBK							; 3
+	nop								; 2
+	inc	TEMP1		; nop5					; 5
+
 ; 10
 	ldx	#5		;					; 2
 ; 12
