@@ -105,44 +105,40 @@ skip_progress1:
 ; 6
 	;	E C A 8  6  4  2  0
 	;               24 16  8  0
+
+	; firework0 progress
 	lda	SPRITE0_COLOR						; 3
 	and	#$0e							; 2
 	asl								; 2
 	asl								; 2
 	sta	FIREWORK_PROGRESS0					; 3
 ; 18
-
+	; firework1 progress
 	lda	SPRITE1_COLOR						; 3
 	and	#$0e							; 2
 	asl								; 2
 	asl								; 2
 	sta	FIREWORK_PROGRESS1					; 3
 ; 30
+	; set sky color
 
-	; other init
-
-	; E C A 8 6 4 2 0
-
-	ldy	#0							; 2
+	ldy	SKY_COLOR						; 3
+	lda	sky_colors,Y						; 4
+	tay								; 2
 	lda	SPRITE0_COLOR						; 3
-	and	#$E							; 2
+	and	#$E			; if exploding make bright	; 2
 	bne	set_bg							; 2/3
 	ldy	#$12							; 2
 set_bg:
-; 41
         sty	COLUBK							; 3
-; 44
+; 51
 	sta	VDELP0							; 3
 	sta	VDELP1		; turn off delay			; 3
-; 50
+; 57
 	lda	#NUSIZ_DOUBLE_SIZE					; 2
 	sta	NUSIZ0							; 3
 	sta	NUSIZ1							; 3
-
-; 57
-
-;	lda	#NUSIZ_ONE_COPY						; 2
-;	sta	NUSIZ1							; 3
+; 65
 
 
 	sta	WSYNC
@@ -173,6 +169,21 @@ set_bg:
 	lda	#CTRLPF_REF		; reflect playfield		; 2
 	sta	CTRLPF							; 3
 ; 32
+	; darken the sky
+	lda	SKY_COLOR						; 3
+	cmp	#7							; 2
+	beq	sky_fine						; 2/3
+; 39
+	lda	FRAMEL							; 3
+	and	#$7f							; 2
+	bne	sky_fine						; 2/3
+; 48
+	inc	SKY_COLOR						; 5
+; 53
+
+sky_fine:
+
+
 	sta	WSYNC							; 3
 
 
@@ -192,6 +203,7 @@ set_bg:
 sky_playfield:
 	ldx	#0
 sky_loop:
+; 2/3
 	; X = 100, SPRITE_Y = 100, 0
 	; X = 99, SPRITE_Y = 100, -1
 	; X = 101, SPRITE_Y= 100, 1
@@ -232,33 +244,36 @@ no_firework1:
 								;==========
 								; 30 worst
 
+	inx								; 2
+	cpx	#99							; 2
 	sta	WSYNC
-	inx
-	cpx	#99
-	bne	sky_loop
+
+	bne	sky_loop						; 2/3
 
 	;=========================
 	; mountains
 	;=========================
 	; 16 scanlines
 mountain_playfield:
-	ldx	#16
+	ldx	#15							; 2
 mountain_loop:
-	lda	sunset_colors,X
-	sta	COLUBK
-	lda	#$2
-	sta	COLUPF
+; 5 worst case
+	lda	sunset_colors,X			; sunset background	; 4
+	sta	COLUBK							; 3
+; 12
+	lda	#$2				; mountain fg		; 2
+	sta	COLUPF							; 3
+; 17
 
-
-	txa
-	lsr
-	tay
-	lda	mountain_left,Y
-	sta	PF0
-	lda	mountain_center,Y
-	sta	PF1
-	lda	mountain_right,Y
-	sta	PF2
+	txa								; 2
+	lsr								; 2
+	tay				; Y is X/2			; 2
+	lda	mountain_left,Y						; 4
+	sta	PF0							; 3
+	lda	mountain_center,Y					; 4
+	sta	PF1							; 3
+	lda	mountain_right,Y					; 4
+	sta	PF2							; 3
 
 	sta	WSYNC
 	dex
@@ -269,7 +284,8 @@ mountain_loop:
 	;=========================
 	; 100 scanlines
 ground_playfield:
-	ldx	#84
+
+	ldx	#85
 ground_loop:
 	lda	#$50
 	sta	COLUBK
@@ -489,6 +505,8 @@ done_firework:
 credits_offset:
 	.byte 19,13,7,1
 
+sky_colors:
+	.byte (96*2)+16,(96*2)+16,(88*2)+16,(80*2)+16,4+16,2+16,0+16
 
 ;sunset_colors:
 ;	.byte 22*2+16,20*2+16,27*2+16,26*2+16
@@ -497,10 +515,11 @@ credits_offset:
 ;	.byte 89*2+16,88*2+16,2*2+16,0
 
 sunset_colors:
+	.byte 0,0
 	.byte 15*2+16,15*2+16,14*2+16,14*2+16
 	.byte 13*2+16,12*2+16,28*2+16,27*2+16
 	.byte 43*2+16,58*2+16,73*2+16,89*2+16
-	.byte 97*2+16,96*2+16,0*2+16,0
+	.byte 97*2+16,96*2+16 ;,0*2+16,0
 
 
 mountain_left:
