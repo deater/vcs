@@ -42,6 +42,19 @@ logo_effect:
 
 no_start_logo:
 
+	; stop if at 2:a#
+	lda	FRAMEL
+	cmp	#$A3
+	bne	no_stop_logo
+	lda	FRAMEH
+	cmp	#2
+	bne	no_stop_logo
+
+	lda	#0
+	sta	LOGO_YADD
+
+no_stop_logo:
+
 	sta	WSYNC
 
 

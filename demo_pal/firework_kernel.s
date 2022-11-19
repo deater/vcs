@@ -120,25 +120,27 @@ skip_progress1:
 	asl								; 2
 	sta	FIREWORK_PROGRESS1					; 3
 ; 30
+	;==================================
 	; set sky color
 
 	ldy	SKY_COLOR						; 3
 	lda	sky_colors,Y						; 4
 	tay								; 2
+	bne	set_bg			; only if dark			; 2/3
 	lda	SPRITE0_COLOR						; 3
 	and	#$E			; if exploding make bright	; 2
 	bne	set_bg							; 2/3
 	ldy	#$12							; 2
 set_bg:
         sty	COLUBK							; 3
-; 51
+; 53
 	sta	VDELP0							; 3
 	sta	VDELP1		; turn off delay			; 3
-; 57
+; 59
 	lda	#NUSIZ_DOUBLE_SIZE					; 2
 	sta	NUSIZ0							; 3
 	sta	NUSIZ1							; 3
-; 65
+; 67
 
 
 	sta	WSYNC
