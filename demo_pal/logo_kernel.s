@@ -141,51 +141,52 @@ draw_playfield:
 ; 3
 
 draw_logo:
-; 3
+	sta	WSYNC
+; 0
 	sta	COLUBK							; 3
-; 6
+; 3
 	lda	desire_colors,Y						; 4
 	sta	COLUPF							; 3
-; 13
+; 10
 	lda	desire_playfield0_left,Y	; playfield pattern 0	; 4
 	sta	PF0			;				; 3
 	;   has to happen by 22 (GPU 68)
-; 20
+; 17
 	lda	desire_playfield1_left,Y	; playfield pattern 1	; 4
 	sta	PF1			;				; 3
         ;  has to happen by 28 (GPU 84)
-; 27
+; 24
 	lda	desire_playfield2_left,Y	; playfield pattern 2	; 4
 	sta	PF2							; 3
         ;  has to happen by 38 (GPU 116)	;
-; 34
+; 31
 	lda	desire_playfield0_right,Y	; left pf pattern 0     ; 4
 	sta	PF0				;                       ; 3
 	; has to happen 28-49 (GPU 84-148)
-; 41
+; 38
 	lda	desire_playfield1_right,Y	; left pf pattern 1	; 4
 	sta	PF1				;			; 3
 	; has to happen 38-56 (GPU 116-170)
-; 48
+; 45
 	lda	desire_playfield2_right,Y	; left pf pattern 2	; 4
 	sta	PF2				;			; 3
 	; has to happen 49-67 (GPU148-202)
-; 55
-	inx								; 2
+; 52
+	inx		; inc scanline					; 2
 	txa								; 2
-	lsr								; 2
-; 61
-	bcs	noc							; 2/3
+	lsr		; divide by 2					; 2
+; 58
+	bcs	noc	; skip if odd					; 2/3
 	dey					; decrement logo count	; 2
 	beq	done_logo						; 2/3
-; 67
+; 64
 noc:
-; 67 / 64
+; 64 / 61
 	lda	desire_bg_colors,Y					; 4
-; 71
+; 68
 done_logo:
-	sta	WSYNC
-	bne	draw_logo						; 3
+;	sta	WSYNC							; 3
+	bne	draw_logo						; 2/3
 
 
 ; 2/3
@@ -213,8 +214,8 @@ not_logo_start:
 	lda	desire_bg_colors+LOGO_SIZE
 	cpy	#0
 ; 67
-	sta	WSYNC							; 3
 	bne	draw_logo		; if so, draw it		; 2/3
+	sta	WSYNC							; 3
 	beq	draw_nothing		; otherwise draw nothing	; 2/3
 
 
@@ -251,6 +252,8 @@ done_kernel:
 	jmp	effect_done
 
 
+
 bg_colors:
 ;	.byte $00,$04,$08,$0A, $0A,$08,$04,$00
 	.byte $D0,$C0,$B0,$A0, $A0,$B0,$C0,$D0
+

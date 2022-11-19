@@ -8,13 +8,13 @@ parallax_effect:
 	; VBLANK scanline 38 -- init
 	;================================================
 
-; ?
+; 26
 
-	lda	#48
-	sta	SPRITE0_X
-	lda	#82
-	sta	SPRITE1_X
-
+	lda	#48							; 2
+	sta	SPRITE0_X						; 3
+	lda	#82							; 2
+	sta	SPRITE1_X						; 3
+; 36
 	sta	WSYNC
 
 
@@ -69,6 +69,11 @@ parallax_effect:
 ; 0
 
 	lda	#8
+	ldx	FRAMEH
+	cpx	#$4		; not start music response until partway in
+	bcc	zigzag_start
+
+
 	ldx	IS_DRUM
 	beq	zigzag_start
 	dec	IS_DRUM
@@ -326,9 +331,10 @@ done_parallax:
 	jmp	effect_done
 
 zigzag:
-	.byte $40,$40,$20,$20, $40,$40,$20,$20
-zigzag2:
 	.byte $80,$40,$20,$10, $10,$20,$40,$80
+zigzag2:
+	.byte $40,$40,$20,$20, $40,$40,$20,$20
+
 
 
 
