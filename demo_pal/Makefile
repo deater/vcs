@@ -29,7 +29,7 @@ vcs_desire.bin:	vcs_desire.o
 vcs_desire.o:	vcs_desire.s \
 	zp.inc \
 	main_kernel.s adjust_sprites.s \
-	logo_kernel.s desire_logo.inc \
+	logo_kernel.s desire_logo.inc credits.inc \
 	raster_kernel.s firework_kernel.s parallax_kernel.s \
 	bitmap_kernel.s bitmap.inc \
 	deetia2_player.s deetia2_trackdata.s

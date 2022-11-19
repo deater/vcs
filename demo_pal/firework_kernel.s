@@ -269,7 +269,7 @@ mountain_loop:
 	;=========================
 	; 100 scanlines
 ground_playfield:
-	ldx	#99
+	ldx	#84
 ground_loop:
 	lda	#$50
 	sta	COLUBK
@@ -349,50 +349,42 @@ stpad_x:
 	; scanline 218
 	;=================================
 ; 3
-
-;	sta	GRP0							; 3
-;	sta	GRP1							; 3
-
-; 14
 	lda     #$E		; bright white                          ; 2
         sta     COLUP0          ; set sprite color                      ; 3
         sta     COLUP1          ; set sprite color                      ; 3
-; 22
+; 11
         ; set to be 48 adjacent pixels
 
 	lda	#NUSIZ_THREE_COPIES_CLOSE				; 2
 	sta	NUSIZ0							; 3
 	sta	NUSIZ1							; 3
-; 30
+; 19
 	; number of lines to draw
-	ldx	#9							; 2
+	ldx	#24							; 2
 	stx	TEMP2							; 3
-; 35
-	lda	FRAMEL							; 3
+; 24
+	lda	FRAMEL		; only increment every 128 frames	; 3
 	and	#$7F							; 2
 	bne	no_credits_inc						; 2/3
-; 42
-	inc	CREDITS_COUNT						; 5
+; 31
+	inc	CREDITS_COUNT	; which line to display			; 5
 	lda	CREDITS_COUNT						; 3
-	cmp	#3							; 2
+	cmp	#4		; wrap at 5				; 2
 	bne	no_credits_inc						; 2/3
-; 54
-	lda	#0							; 2
+; 43
+	lda	#0		; reset count				; 2
 	sta	CREDITS_COUNT						; 3
-; 59
+; 48
 
 no_credits_inc:
 	ldx	CREDITS_COUNT						; 3
 	lda	credits_offset,X					; 4
-	sta	CREDITS_OFFSET						; 3
-; 69
-	clc
-	adc	#4
-	tax
-;	inx
-;	ldy	#0							; 2
-;	ldx	#4							; 2
-; 73
+	sta	CREDITS_OFFSET	; offset to use in credits read		; 3
+; 58
+;	clc								; 2
+;	adc	#6							; 2
+	tax								; 2
+; 64
 	sta	WSYNC							; 3
 
 ;==============================
@@ -401,22 +393,22 @@ no_credits_inc:
 
 raster_spriteloop:
 ; 0
-	lda	lady_sprite0,X		; load sprite data		; 4+
+	lda	credits_sprite0,X		; load sprite data		; 4+
 	sta	GRP0			; 0->[GRP0] [GRP1 (?)]->GRP1	; 3
 ; 7
-	lda	lady_sprite1,X		; load sprite data		; 4+
+	lda	credits_sprite1,X		; load sprite data		; 4+
 	sta	GRP1			; 1->[GRP1], [GRP0 (0)]-->GRP0	; 3
 ; 14
-	lda	lady_sprite2,X		; load sprite data		; 4+
+	lda	credits_sprite2,X		; load sprite data		; 4+
 	sta	GRP0			; 2->[GRP0], [GRP1 (1)]-->GRP1	; 3
 ; 21
-	lda	lady_sprite5,X					; 4+
+	lda	credits_sprite5,X					; 4+
 	sta	TEMP1			; save for later		; 3
 ; 28
-        lda	lady_sprite4,X						; 4+
+        lda	credits_sprite4,X						; 4+
         tay				; save in Y			; 2
 ; 34
-	lda	lady_sprite3,X						; 4+
+	lda	credits_sprite3,X						; 4+
 	ldx	TEMP1                   ; restore saved value		; 3
 ; 41
 
@@ -444,7 +436,7 @@ raster_spriteloop:
 
 	lda	TEMP2							; 3
 ; 73
-	bpl	raster_spriteloop                                        ; 2/3
+	bpl	raster_spriteloop					; 2/3
         ; 76  (goal is 76)
 
 ; 75
@@ -495,7 +487,9 @@ done_firework:
 ;	.byte $B0,$B2,$B4,$B6,$B8,$BA,$BC,$BE
 
 credits_offset:
-	.byte 0,5,10
+	.byte 19,13,7,1
+
+
 ;sunset_colors:
 ;	.byte 22*2+16,20*2+16,27*2+16,26*2+16
 ;	.byte 42*2+16,41*2+16,59*2+16,57*2+16

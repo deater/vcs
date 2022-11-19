@@ -99,6 +99,7 @@ clear_loop:
 
 
 .include "common_routines.s"
+.include "credits.inc"
 
 .align $100
 .include "bitmap.inc"
