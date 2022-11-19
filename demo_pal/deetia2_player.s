@@ -167,8 +167,10 @@ newNote:
 
         ; --- start percussion ---
         ; Get index of envelope
-	inc	IS_DRUM
-	inc	IS_DRUM
+	pha
+	lda	#2
+	sta	IS_DRUM
+	pla
         tay
         ; -TT_FIRST_PERC because percussion start with TT_FIRST_PERC
         lda tt_PercIndexes-TT_FIRST_PERC,y
@@ -181,6 +183,11 @@ startInstrument:
         ; it should remain in sustain.
         bvs finishedNewNote
     .endif
+;	pha
+;	lda	#2
+;	sta	IS_NOTE
+;	pla
+
         ; Put note into attack/decay
         jsr tt_CalcInsIndex
         lda tt_InsADIndexes-1,y         ; -1 because instruments start at #1

@@ -230,11 +230,24 @@ raster_r_done_y:
 ; 29
 	lda	#CTRLPF_REF						; 2
 	sta	CTRLPF							; 3
+
+	; adjust size of box
+;	ldy	#16
+;	lda	IS_NOTE
+;	beq	box_no_drum
+;	ldy	#20
+;	dec	IS_NOTE
+;box_no_drum:
+;	sty	BOX_HEIGHT
+
+
 ; 34
 	ldy	#0							; 2
 	ldx	#0							; 2
 	txa			; needed so top line is black		; 2
 ; 40
+
+
 	sta	WSYNC							; 3
 ; 67
 
@@ -262,7 +275,7 @@ raster_playfield:
 	ldy	#$0							; 2
 	txa								; 2
 	sbc	SPRITE0_Y						; 3
-	cmp	#16							; 2
+	cmp	#16 ;BOX_HEIGHT						; 2
 	bcs	no_sprite0						; 2/3
 	ldy	#$FF							; 2
 no_sprite0:

@@ -224,7 +224,7 @@ par_pad_x1:
 ;	lsr
 ;	lsr
 ;	lsr
-	and	#$3
+	and	#$7
 	tay
 	lda	fg_colors,Y
 ;	lda	#$4e							; 2
@@ -335,8 +335,5 @@ zigzag:
 zigzag2:
 	.byte $40,$40,$20,$20, $40,$40,$20,$20
 
-
-
-
 fg_colors:
-	.byte $12,$4E,$9E,$AE
+	.byte $4E,$9E,$AE,$12, $4E,$9E,$AE,$7E
