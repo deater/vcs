@@ -9,22 +9,44 @@
 
 
 monkey:
-
-	;==========================
-	; initialize the 6506
+	;=============================
+	; clear out mem / init things
+	;=============================
+	; initialize the 6507
 	;	and clear RAM
 	;==========================
 
-	cld		; clear decimal mode
-
-	ldx	#0
-	txa
+	sei			; disable interrupts			; 2
+	cld			; clear decimal mode			; 2
+	ldx	#0							; 2
+	txa								; 2
 clear_loop:
-	sta	$0,X
-	inx
-	bne	clear_loop
-	dex
-	txs	; point stack to $1FF (mirrored at top of zero page)
+	dex								; 2
+	txs								; 2
+	pha								; 3
+	bne	clear_loop						; 2/3
+						;============================
+	; S = $FF, A=$0, x=$0, Y=??		;       8+(256*10)-1=2567 / 10B
+
+
+	; =========================
+	; Initialize music.
+	; Set tt_cur_pat_index_c0/1 to the indexes of the first patterns from
+	; tt_SequenceTable for each channel.
+	; Set tt_timer and tt_cur_note_index_c0/1 to 0.
+	; All other variables can start with any value.
+	; =========================
+
+	lda	#0
+	sta	tt_cur_pat_index_c0
+	lda	#14
+	sta	tt_cur_pat_index_c1
+
+
+	;=======================
+	; more init
+
+.include "monkey_variables.s"
 
 
 	;=====================
@@ -40,15 +62,15 @@ clear_loop:
 	;=====================
 	; play game
 
-	jsr	do_level
+;	jsr	do_level
 
 	;=====================
 	; Part 1
-	jsr	part1_trials
+;	jsr	part1_trials
 
 	;=====================
 	; Cart message
-	jsr	do_cart_message
+;	jsr	do_cart_message
 
 	;=====================
 	; Recycle
@@ -60,24 +82,24 @@ clear_loop:
 	; other includes
 
 .include "opening.s"
-.include "cart.s"
+;.include "cart.s"
 .align $100
-.include "trials.s"
-.include "level_engine.s"
+;.include "trials.s"
+;.include "level_engine.s"
 
 .include "common_routines.s"
 
 .align	$100
 .include "lucas.inc"
 .align $100
-.include "lookout.inc"
+;.include "lookout.inc"
 .align $100
-.include "cart_message.inc"
+;.include "cart_message.inc"
 .align $100
-.include "trials.inc"
-.include "lookout_over.inc"
+;.include "trials.inc"
+;.include "lookout_over.inc"
 
-;.include "rr_trackdata.s"
+.include "monkey_trackdata.s"
 
 .segment "IRQ_VECTORS"
 	.word monkey	; NMI

@@ -8,6 +8,7 @@ monkey.bin:	monkey.o
 	ld65 -o monkey.bin monkey.o -C $(LINKER_SCRIPT)/atari2600_f000.inc
 
 monkey.o:	monkey.s \
+	monkey_variables.s monkey_trackdata.s monkey_player.s \
 	zp.inc common_routines.s \
 	opening.s lucas.inc \
 	level_engine.s lookout.inc lookout_over.inc \
