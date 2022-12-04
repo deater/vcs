@@ -57,7 +57,7 @@ clear_loop:
 	;=====================
 	; show title
 
-;	jsr	do_title
+	jsr	do_title
 
 	;=====================
 	; play game
@@ -81,16 +81,21 @@ clear_loop:
 	;=====================
 	; other includes
 
+.include "handle_music.s"
 .include "opening.s"
 ;.include "cart.s"
 .align $100
 ;.include "trials.s"
 ;.include "level_engine.s"
+.include "title.s"
 
 .include "common_routines.s"
 
 .align	$100
 .include "lucas.inc"
+.align $100
+.include "title.inc"
+
 .align $100
 ;.include "lookout.inc"
 .align $100

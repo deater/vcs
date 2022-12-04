@@ -28,53 +28,12 @@ start_opening:
 	;========================
 	; update music player
 	;========================
-	; worst case for this particular song seems to be
-	;       around 9 * 64 = 576 cycles = 8 scanlines
-	;       make it 12 * 64 = 11 scanlines to be safe
+	jsr	handle_music
 
-	; Original is 43 * 64 cycles = 2752/76 = 36.2 scanlines
-
-	lda     #12             ; TIM_VBLANK
-	sta     TIM64T
+	sta	WSYNC
+	sta	WSYNC
 
 
-	;=======================
-	; run the music player
-	;=======================
-
-.include "monkey_player.s"
-
-	; Measure player worst case timing
-	lda     #12             ; TIM_VBLANK
-	sec
-	sbc     INTIM
-	cmp     player_time_max
-	bcc     no_new_max
-	sta     player_time_max
-no_new_max:
-
-
-wait_for_vblank:
-	lda     INTIM
-	bne     wait_for_vblank
-
-	; in theory we are 10 scanlines in, need to delay 27 more
-
-	sta     WSYNC
-
-
-
-
-        ldx     #(33-12)
-vbsc_loop:
-        sta     WSYNC
-        dex
-        bne     vbsc_loop
-
-	;====================
-	; now in scanline 34
-	;====================
-        sta     WSYNC
 
 	;===================
 	; now scanline 35
@@ -211,222 +170,33 @@ done_inx:
 
 done_loop:
 
-.if 0
-; 75
-	;================
-	; scanline 120
-
-	sta	WSYNC		; padding
-
-	;===============
-	; scanline 121
-
-	sta	WSYNC
-
-	;===============
-	; scanline 122
-; 0
-	nop								; 2
-; 2
-	;=========================================
-	;=========================================
-	; draw Videlectrix Logo sprite (11 lines)
-	;=========================================
-	;=========================================
-
-	; assume coming in 2 cycles after WSYNC (why??)
-
-	;========================
-	; Still in scanline 122
-	;========================
-	; configure 48-pixel sprite code
-
-	; make playfield black
-	lda	#$00		; black					; 2
-	sta	COLUPF		; playfield color			; 3
-	sta	PF0		; turn off playfield so don't collide	; 3
-	sta	PF1		;					; 3
-	sta	PF2		;					; 3
-	sta	GRP0		; turn off sprites			; 3
-	sta	GRP1		;					; 3
-; 22
-	; set color
-
-	lda	TEXT_COLOR	; bright white				; 3
-	sta	COLUP0		; set sprite color			; 3
-	sta	COLUP1		; set sprite color			; 3
-; 31
-	; set to be 48 adjacent pixels
-
-	lda	#NUSIZ_THREE_COPIES_CLOSE				; 2
-	sta	NUSIZ0							; 3
-	sta	NUSIZ1							; 3
-; 39
-	; turn on delay
-
-	lda	#1							; 2
-	sta	VDELP0							; 3
-	sta	VDELP1							; 3
-; 47
-	; number of lines to draw
-	ldx	#79							; 2
-	stx	TEMP2							; 3
-; 52
-	sta	WSYNC							; 3
-
-	;===================
-	; now scanline 123
-	;===================
-
-	sta	WSYNC
-
-	;===================
-	; now scanline 124
-	;===================
-
-	ldx	TEMP2		; restore length of sprite
-
-	sta	WSYNC
-
-	;===================
-	; now scanline 125
-	;===================
-
-title_spriteloop:
-; 0
-	lda	title_bitmap0,X		; load sprite data		; 4+
-	sta	GRP0			; 0->[GRP0] [GRP1 (?)]->GRP1	; 3
-; 7
-	lda	title_bitmap1,X		; load sprite data		; 4+
-	sta	GRP1			; 1->[GRP1], [GRP0 (0)]-->GRP0	; 3
-; 14
-	lda	title_bitmap2,X		; load sprite data		; 4+
-	sta	GRP0			; 2->[GRP0], [GRP1 (1)]-->GRP1	; 3
-; 21
-
-	lda	title_bitmap5,X						; 4+
-	sta	TEMP1			; save for later		; 3
-; 28
-	lda	title_bitmap4,X						; 4+
-	tay				; save in Y			; 2
-; 34
-	lda	title_bitmap3,X	;					; 4+
-	ldx	TEMP1			; restore saved value		; 3
-; 41
-
-	sta	GRP1			; 3->[GRP1], [GRP0 (2)]-->GRP0	; 3
-	; (need this to be 44 .. 46)
-; 44
-	sty	GRP0			; 4->[GRP0], [GRP1 (3)]-->GRP1	; 3
-	; (need this to be 47 .. 49)
-; 47
-	stx	GRP1			; 5->[GRP1], [GRP0 (4)]-->GRP0	; 3
-	; (need this to be 50 .. 51)
-; 50
-	sty	GRP0			; ?->[GRP0], [GRP1 (5)]-->GRP1 	; 3
-	; (need this to be 52 .. 54)
-; 53
-
-	; need 12 cycles of nops
-	inc	TEMP1		; nop5					; 5
-	inc	TEMP1		; nop5					; 5
-	nop								; 2
-
-; 65
-
-	dec	TEMP2							; 5
-	ldx	TEMP2			; decrement count		; 3
-; 73
-	bpl	title_spriteloop					; 2/3
-	; 76  (goal is 76)
-
-
-; 75
-	;=========================
-	; done drawing line
-
-	ldy	#0		; clear out sprite data			; 2
-	sty	GRP1							; 3
-	sty	GRP0							; 3
-	sty	GRP1							; 3
-
-	sta	WSYNC
-
 	;===================================
-	; scanline 186?
+	; scanline 192?
 	;===================================
 	; check for button or RESET
 	;===================================
 ; 0
-	lda	#0							; 2
-	sta	DONE_TITLE		; init as not done title	; 3
-; 5
-	;===============================
-	; debounce reset/keypress check
+	lda	#0
+	sta	DONE_SEGMENT
 
-	lda	TITLE_COUNTDOWN						; 3
-	beq	waited_enough						; 2/3
-	dec	TITLE_COUNTDOWN						; 5
-	jmp	done_check_input					; 3
+	inc	FRAMEL							; 5
+	bne	no_frame_oflo
+	inc	FRAMEH
+no_frame_oflo:
 
-waited_enough:
-; 11
-	lda	INPT4			; check joystick button pressed	; 3
-	bpl	set_done_title						; 2/3
+	lda	FRAMEH
+	cmp	#2
+	bne	not_done_opener
+	lda	FRAMEL
+	cmp	#64
+	bne	not_done_opener
+done_opener:
+	inc	DONE_SEGMENT
 
-; 16
-	lda	SWCHB			; check if reset pressed	; 3
-	lsr				; put reset into carry		; 2
-	bcc	set_done_title						; 2/3
+not_done_opener:
 
-	jmp	done_check_input					; 3
-
-set_done_title:
-; 17 / 24
-	inc	DONE_TITLE		; we are done			; 5
-;done_check_input:
-; 25 / 22 / 29
-
-	;=========================
-	; screensaver
-; 29
-	inc	FRAME							; 5
-	lda	FRAME							; 3
-; 37
-	and	#$3f			; only every 64 (~1s)		; 2
-	bne	no_rotate_color						; 2/3
-
-; 41
-	clc								; 2
-	lda	BASE_TITLE_COLOR					; 3
-	adc	#$17							; 2
-	sta	BASE_TITLE_COLOR					; 3
-; 51
-	clc								; 2
-	lda	BACKGROUND_COLOR					; 3
-	adc	#$10							; 2
-	sta	BACKGROUND_COLOR					; 3
-; 61
-	clc								; 2
-	lda	TEXT_COLOR						; 3
-	adc	#$10							; 2
-	sta	TEXT_COLOR						; 3
-
-; 71
-no_rotate_color:
-; 42 / 71
-
-	ldx     #5
-; 45 / 73
-endtitle_loop:
         sta     WSYNC
-        dex
-        bne     endtitle_loop
 
-	;========================================
-	; scanline 190?  shouldn't we be at 192?
-	;========================================
-.endif
 
 
 	;==========================
@@ -437,8 +207,8 @@ endtitle_loop:
 	jsr	common_overscan
 
 
-	jsr	check_button_or_reset
-	bcc	done_opening						; 2/3
+	lda	DONE_SEGMENT
+	bne	done_opening						; 2/3
 	jmp	start_opening						; 3
 
 done_opening:
