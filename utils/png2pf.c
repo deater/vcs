@@ -164,6 +164,8 @@ int main(int argc, char **argv) {
 			//fprintf(outfile,"\t.byte $%02X\n",
 			//background[row]);
 			if (is_pal) color=background[row]+16;
+			else color=background[row];
+
 			print_byte(outfile,color,row/skip);
 		}
 		fprintf(outfile,"\n");
