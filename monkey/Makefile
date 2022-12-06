@@ -9,6 +9,7 @@ monkey.e0:	monkey.o
 
 monkey.o:	monkey.s main.bin \
 	part0_opener/opener.bin \
+	part1_title/title.bin \
 	zero.bin zero2.bin
 	ca65 -o monkey.o monkey.s
 

@@ -10,8 +10,8 @@
 
 ; by Vince `deater` Weaver <vince@deater.net>
 
-.incbin	"part0_opener/opener.bin"	; 0..2k
-.incbin	"zero2.bin"	; 2k..4k
-.incbin	"zero2.bin"	; 4k..6k
-.incbin "zero.bin"	; 6k..7k
-.incbin "main.bin"
+.incbin	"part0_opener/opener.bin"	; 0k+1k
+.incbin "part1_title/title.bin"		; 2k,3k,4k
+.incbin "zero.bin"	; 5k
+.incbin "zero.bin"	; 6k
+.incbin "main.bin"	; 7k
