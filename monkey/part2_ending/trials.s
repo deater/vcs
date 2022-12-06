@@ -124,8 +124,8 @@ tdone_inx:
 	;=========================
 
 ; 10
-	jsr	check_button_or_reset
-	bcc	done_trials
+;	jsr	check_button_or_reset
+;	bcc	done_trials
 	jmp	start_trials						; 3
 
 done_trials:

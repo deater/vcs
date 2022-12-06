@@ -12,7 +12,7 @@ main_title.o:	main_title.s \
 	monkey_variables.s \
 	monkey_trackdata.s \
 	monkey_player.s \
-	../zp.inc ../common_routines.s \
+	../zp.inc ../common_addresses.inc \
 	title.s title.inc
 	ca65 -o main_title.o main_title.s -l main_title.lst
 

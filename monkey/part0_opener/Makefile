@@ -13,7 +13,7 @@ opener.o:	opener.s \
 	monkey_intro_variables.s \
 	monkey_intro_trackdata.s \
 	monkey_intro_player.s \
-	../zp.inc ../common_routines.s \
+	../zp.inc ../common_addresses.inc \
 	lucas.inc \
 	title.s title.inc
 	ca65 -o opener.o opener.s -l opener.lst

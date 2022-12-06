@@ -287,8 +287,8 @@ no_rotate_color:
 	jsr	common_overscan
 
 
-	jsr	check_button_or_reset
-	bcc	done_cart						; 2/3
+;	jsr	check_button_or_reset
+;	bcc	done_cart						; 2/3
 ; 15
 	jmp	start_cart						; 3
 ; 18

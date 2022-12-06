@@ -38,7 +38,7 @@ do_opener:
 .include "title.s"
 .include "handle_music.s"
 
-.include "../common_routines.s"
+.include "../common_addresses.inc"
 
 .include "monkey_intro_trackdata.s"
 
