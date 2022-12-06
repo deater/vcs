@@ -1,6 +1,10 @@
 	;==========================
-	; the generic level engine
+	; Draw the title screen
 	;==========================
+	; asymmetric playfield
+	; TODO: cloud at top?
+	; descender on the I?
+
 do_title:
 
 title_frame:
@@ -19,12 +23,6 @@ title_frame:
 	;=================================
 
 ; in VBLANK scanline 0
-
-;	ldx	#33
-;le_vblank_loop:
-;	sta	WSYNC
-;	dex
-;	bne	le_vblank_loop
 
 	jsr	handle_music
 
@@ -143,7 +141,7 @@ pad_x:
 	ldy	#0		; current_block
 
 ; 44
-	lda	title_bg_colors,Y		;			; 3
+	lda	title_words_bg_colors,Y		;			; 3
 	sta	COLUBK		; set background color			; 3
 ; 50
 ;	lda	level_colors	; load level color in advance		; 4
@@ -153,7 +151,7 @@ pad_x:
 	stx	VBLANK		; turn on beam				; 3
 ; 64
 
-	lda	title_colors,Y						; 4
+	lda	title_words_colors,Y						; 4
 
 	sta	WSYNC							; 3
 
@@ -177,22 +175,22 @@ draw_title_scanline:
 ; 3
 	sta	COLUPF			; playfield color		; 3
 ; 6
-	lda	title_bg_colors,Y					; 4
+	lda	title_words_bg_colors,Y					; 4
 	sta	COLUBK			; background color		; 3
 
 ; 13
-	lda	title_playfield0_left,Y	; playfield pattern 0		; 4
+	lda	title_words_playfield0_left,Y	; playfield pattern 0		; 4
 	sta	PF0			;				; 3
 	;   has to happen by 22 (GPU 68)
 ; 20
-	lda	title_playfield1_left,Y	; playfield pattern 1		; 4
+	lda	title_words_playfield1_left,Y	; playfield pattern 1		; 4
 	sta	PF1			;				; 3
 	;  has to happen by 28 (GPU 84)
 
 	; really want this to happen by ??
 
 ; 34
-	lda	title_playfield2_left,Y	; playfield pattern 2		; 4
+	lda	title_words_playfield2_left,Y	; playfield pattern 2		; 4
         sta	PF2							; 3
 	;  has to happen by 38 (GPU 116)	;
 ; 41
@@ -208,18 +206,18 @@ draw_title_scanline:
 
 ; 0
 
-	lda	title_overlay1_sprite,Y					; 4
-	sta	GRP0			; overlay pattern		; 3
+;	lda	title_overlay1_sprite,Y					; 4
+;	sta	GRP0			; overlay pattern		; 3
 ; 7
-	lda	title_overlay1_colors,Y					; 4
-	sta	COLUP0							; 3
+;	lda	title_overlay1_colors,Y					; 4
+;	sta	COLUP0							; 3
 ; 14
 
-	lda	title_overlay2_sprite,Y					; 4
-	sta	GRP1			; overlay pattern		; 3
+;	lda	title_overlay2_sprite,Y					; 4
+;	sta	GRP1			; overlay pattern		; 3
 ; 21
-	lda	title_overlay2_colors,Y					; 4
-	sta	COLUP1							; 3
+;	lda	title_overlay2_colors,Y					; 4
+;	sta	COLUP1							; 3
 ; 28
 
 
@@ -239,7 +237,7 @@ draw_title_scanline:
 	;=============================
 
 	iny								; 2
-	lda	title_colors,Y						; 4
+	lda	title_words_colors,Y						; 4
 
 	cpy	#48		; see if hit end			; 2
 	sta	WSYNC

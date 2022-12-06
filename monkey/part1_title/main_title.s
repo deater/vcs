@@ -19,7 +19,7 @@ do_main_title:
 
         lda     #0
         sta     tt_cur_pat_index_c0
-        lda     #14
+        lda     #15
         sta     tt_cur_pat_index_c1
 
 
