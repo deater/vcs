@@ -5,12 +5,8 @@
 	; ideally VBLANK=2 (beam off)
 
 do_opening:
-
-	lda	#$E
-	sta	DEBOUNCE_COUNTDOWN
-
-	; comes in at ?? cycles from bottom of loop
 start_opening:
+
 	sta	WSYNC
 
 	;=================
@@ -217,3 +213,5 @@ done_opening:
 
 delay_12_cycles:
 	rts
+
+

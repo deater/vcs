@@ -246,8 +246,8 @@ cart2_loop:
 	;=========================
 	; screensaver
 ; 29
-	inc	FRAME							; 5
-	lda	FRAME							; 3
+	inc	FRAMEL							; 5
+	lda	FRAMEL							; 3
 ; 37
 	and	#$3f			; only every 64 (~1s)		; 2
 	bne	no_rotate_color						; 2/3
