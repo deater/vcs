@@ -47,19 +47,12 @@ title_frame:
 	;=======================
 
 	;====================================================
-	; set up sprite1 (overlay) to be at proper X position
+	; set up sprite0 (overlay) to be at proper X position
 	;====================================================
 	; now in setup scanline 0
-
 .if 0
 ; 0
-	nop								; 2
-	nop								; 2
-; 4
-;	ldx	LEVEL_OVERLAY_COARSE					; 3
-	inx			;					; 2
-	inx			;					; 2
-; 11
+	ldx	#2						; 3
 qpad_x:
 	dex			;					; 2
 	bne	qpad_x		;					; 2/3
@@ -74,8 +67,8 @@ qpad_x:
 	sta	HMP0							; 3
 	sta	HMP1							; 3
 .endif
-
 	sta	WSYNC
+;	sta	HMOVE
 
 	;======================================
 	; now vblank 35
@@ -92,7 +85,7 @@ qpad_x:
 	; set up sprite0 to be at proper X position
 	;==========================================
 ; 0
-	ldx	#2
+	ldx	#3
 	inx			;					; 2
 	inx			;					; 2
 ; 12
@@ -106,13 +99,20 @@ pad_x:
 
 	; beam is at proper place
 	sta	RESP0							; 3
-	nop
-	nop
-	lda	$80
+
+	lda	#$D0			; fine adjust overlay		; 2
+	sta	HMP0							; 3
+
+	ldx	#4
+ipad_x:
+	dex			;					; 2
+	bne	ipad_x		;					; 2/3
+				;===========================================
+				;	12-1+5*(coarse_x+2)
 	sta	RESP1							; 3
 
-	lda	#$0			; fine adjust overlay		; 2
-	sta	HMP0							; 3
+
+	lda	#$C0			; fine adjust overlay		; 2
 	sta	HMP1							; 3
 
 	sta	WSYNC							; 3
@@ -132,7 +132,12 @@ pad_x:
 	stx	PF0			; disable playfield		; 3
 	stx	PF1							; 3
 	stx	PF2							; 3
+	stx	GRP0
+	stx	GRP1
 
+	lda	#$5A		; purple
+	sta	COLUP0
+	sta	COLUP1
 
 	lda	#NUSIZ_QUAD_SIZE					; 2
 	sta	NUSIZ0							; 3
@@ -147,14 +152,11 @@ pad_x:
 	lda	top_title_words_bg_colors,Y		;			; 3
 	sta	COLUBK		; set background color			; 3
 ; 50
-;	lda	level_colors	; load level color in advance		; 4
+	lda	top_title_words_colors,Y						; 4
 ; 59
-	ldx	#0		; init hand visibility			; 2
-; 61
+
 	stx	VBLANK		; turn on beam				; 3
 ; 64
-
-	lda	top_title_words_colors,Y						; 4
 
 	sta	WSYNC							; 3
 
@@ -207,25 +209,33 @@ title_top_kernel:
         cpy     #6             ; see if hit end                        ; 2
         sta     WSYNC
         bne     title_top_kernel                                     ; 2/3
-; 76
 
+; 2
 
 	;============================
 	;============================
 	; draw middle kernel
 	;============================
 	;============================
-
-	lda	#$5A	; purple
+; 2
+	lda	#$00							; 2
+	sta	PF0							; 3
+	sta	PF1							; 3
+	sta	PF2							; 3
+; 13
+	sta	COLUBK							; 3
+	sta	CTRLPF		; no-reflect playfield			; 3
+; 19
+	lda	#$5A			; purple			; 2
 	sta	COLUPF			; playfield color		; 3
-	lda	#$0
-	sta	COLUBK
+; 24
+	ldx	#24							; 2
+	ldy	#0							; 2
+; 28
+	sta	WSYNC
 
-	ldx	#24
-	ldy	#0
+	sta	WSYNC
 
-	lda	#0	; no-reflect playfield			; 2
-	sta	CTRLPF		;					; 3
 
 title_middle_kernel:
 	nop
@@ -274,16 +284,40 @@ tdone_inx:
 	cpy	#30							; 2
 	sta	WSYNC
 	bne	title_middle_kernel					; 2/3
-; 76
+; 2
 
+	;============================
+	;============================
+	; draw bottom kernel
+	;============================
+	;============================
 
-
-	; A has level colors
-
-	ldy	#0
+; 2
+	lda	#$00							; 2
+	sta	PF0							; 3
+	sta	PF1							; 3
+	sta	PF2							; 3
+; 13
+	sta	COLUBK							; 3
+; 16
 	lda	#CTRLPF_REF	; reflect playfield			; 2
 	sta	CTRLPF		;					; 3
-	lda	bottom_title_words_colors,Y					; 4
+
+	ldy	#1		; skip a line to make up for 4 skips	; 2
+
+
+	lda	left_sprite
+	sta	GRP0
+
+	lda	right_sprite
+	sta	GRP1
+
+	lda	bottom_title_words_colors,Y				; 4
+
+	sta	WSYNC
+	sta	WSYNC
+
+
 
 	;================================
 	; draw bottom 10 lines (mirrored)
@@ -307,6 +341,12 @@ title_bottom_kernel:
         sta	PF2							; 3
 	;  has to happen by 38 (GPU 116)	;
 ; 41
+	lda	left_sprite,Y
+	sta	GRP0
+
+	lda	right_sprite,Y
+	sta	GRP1
+
 	sta	WSYNC
 	sta	WSYNC
 	sta	WSYNC
