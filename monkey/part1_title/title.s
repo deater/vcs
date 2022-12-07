@@ -245,7 +245,7 @@ draw_title_scanline:
 ; 76
 
 
-done_title:
+done_draw_title:
 ; 74
 
 
@@ -268,16 +268,37 @@ done_title:
 	sta	WSYNC
 
 	;==================================
-	; overscan 29, update pointer
+	; overscan 29, update frame
+	;==================================
 
-        sta     WSYNC
+	lda	#0
+	sta	DONE_SEGMENT
+
+	inc	FRAMEL                                                  ; 5
+	bne	no_frame_title_oflo
+	inc	FRAMEH
+no_frame_title_oflo:
+	lda	FRAMEH
+	cmp	#$28
+	bne	not_done_title
+	lda	FRAMEL
+        cmp     #$80
+	bne	not_done_title
+yes_done_title:
+	inc	DONE_SEGMENT
+not_done_title:
+	sta	WSYNC
+
 
 	;==================================
 	;==================================
 	; overscan 30, handle button press
 	;==================================
 	;==================================
+; 0
+	lda	DONE_SEGMENT
+	bne	done_title
+
 	sta	WSYNC
-
-
 	jmp	title_frame
+done_title:

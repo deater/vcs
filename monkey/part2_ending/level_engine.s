@@ -553,10 +553,10 @@ done_playfield:
 	inc	FRAMEH
 no_frame_level_oflo:
 	lda	FRAMEH
-	cmp	#5
+	cmp	#$2B
 	bne	not_done_level
 	lda	FRAMEL
-	cmp	#$80
+	cmp	#$00
 	bne	not_done_level
 yes_done_level:
 	inc	DONE_SEGMENT

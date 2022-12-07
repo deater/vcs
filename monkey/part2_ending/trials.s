@@ -156,12 +156,12 @@ tdone_inx:
 	inc	FRAMEH
 no_frame_trials_oflo:
 	lda	FRAMEH
-	cmp	#1
+	cmp	#$2C
 	bne	not_done_trials
 	lda	FRAMEL
 	cmp	#$40
 	bne	not_done_trials
-yes_done_level:
+yes_done_trials:
 	inc	DONE_SEGMENT
 not_done_trials:
         sta	WSYNC

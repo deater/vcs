@@ -31,11 +31,15 @@ do_main_title:
 
 .include "monkey_variables.s"
 
-	jsr	do_title
 
-
+	;=======================
+	; run the title routine
 
 .include "title.s"
+
+	rts
+
+
 .include "handle_music.s"
 
 .include "../common_addresses.inc"

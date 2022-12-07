@@ -9,7 +9,7 @@
 
 do_ending:
 
-;.include "level_engine.s"
+.include "level_engine.s"
 
 .include "trials.s"
 
