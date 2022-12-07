@@ -172,12 +172,15 @@ not_done_trials:
 	;=========================
 ; 0
 
-	lda     DONE_SEGMENT
-	bne     done_trials
-
+	lda     DONE_SEGMENT						; 3
+	bne     done_trials						; 2/3
+; 5
 	sta     WSYNC
 	jmp	start_trials						; 3
 
 done_trials:
-; 16
+
+	sta     WSYNC	; needed for sync?
+
+; 0
 

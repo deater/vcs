@@ -5,20 +5,35 @@
 	; ideally VBLANK=2 (beam off)
 
 do_cart_message:
-	jmp	align_cart
+
+; comes in with 0 cycles after last frame of overscan
+
+; 6
+	; turn off audio if left on?
+	lda	#$0							; 2
+	sta	AUDV0							; 3
+	sta	AUDV1							; 3
+; 14
+
+	jmp	align_cart						; 3
 .align	$100
 align_cart:
 	; the init code sets everything to 0
 
+; 17
 	lda	#$28							; 2
 	sta	BASE_TITLE_COLOR					; 3
+; 22
 
 	lda	#$0E							; 2
 	sta	TEXT_COLOR						; 3
 	sta	DEBOUNCE_COUNTDOWN					; 3
+; 30
 
-	; comes in at 14 cycles from bottom of loop
+
 start_cart:
+; 30 / 3
+
 	sta	WSYNC
 
 
@@ -286,14 +301,12 @@ no_rotate_color:
 	ldx	#30
 	jsr	common_overscan
 
+; ???
 
-;	jsr	check_button_or_reset
-;	bcc	done_cart						; 2/3
-; 15
 	jmp	start_cart						; 3
-; 18
+
 
 done_cart:
-; 16
+; ??
 
 	rts
