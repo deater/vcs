@@ -10,7 +10,7 @@ ending.bin:	ending.o
 ending.o:	ending.s \
 	../zp.inc ../common_addresses.inc \
 	trials.s trials.inc \
-	cart.s cart_message.inc
+	cart.s
 	ca65 -o ending.o ending.s -l ending.lst
 
 ###

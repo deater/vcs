@@ -5,8 +5,8 @@
 	; ideally VBLANK=2 (beam off)
 
 do_cart_message:
-;	jmp	align_cart
-;.align	$100
+	jmp	align_cart
+.align	$100
 align_cart:
 	; the init code sets everything to 0
 

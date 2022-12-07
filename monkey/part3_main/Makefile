@@ -12,7 +12,8 @@ main.o:	main.s ../zp.inc \
 	common_routines.s \
 	chapter_variables.s \
 	chapter_trackdata.s \
-	chapter_player.s
+	chapter_player.s \
+	cart_message.inc
 	ca65 -o main.o main.s -l main.lst
 
 ###

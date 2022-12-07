@@ -14,7 +14,10 @@
 .include "chapter_variables.s"
 .include "handle_music.s"
 .include "chapter_trackdata.s"
-
+	;===================================
+	; 48-pixel sprite data
+.align $100
+.include "cart_message.inc"
 
 
 
