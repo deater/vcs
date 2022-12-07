@@ -81,8 +81,12 @@ qpad_x:
 	; update pointer horizontal position
 	;=======================================
 
-	sta	WSYNC			;				3
 
+
+jmp	urgh
+.align $100
+urgh:
+	sta	WSYNC			;				3
 
 	;=========================================
 	; now vblank 36
