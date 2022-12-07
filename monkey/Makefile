@@ -7,10 +7,11 @@ all:	monkey.e0
 monkey.e0:	monkey.o
 	ld65 -o monkey.e0 monkey.o -C $(LINKER_SCRIPT)/atari2600_e0.inc
 
-monkey.o:	monkey.s main.bin \
+monkey.o:	monkey.s \
 	part0_opener/opener.bin \
 	part1_title/title.bin \
-	zero.bin zero2.bin
+	part2_ending/ending.bin \
+	part3_main/main.bin
 	ca65 -o monkey.o monkey.s
 
 ###
