@@ -4,6 +4,9 @@
 	; potentially arrive here with an unknown number of cycles/scanlines
 	; ideally VBLANK=2 (beam off)
 
+; $70C at start
+; $6A1 after removing unneeded
+
 do_opening:
 start_opening:
 
@@ -37,20 +40,13 @@ start_opening:
 	; center the sprite position
 	; needs to be right after a WSYNC
 ; 0
-	; to center exactly would want sprite0 at
-	;	CPU cycle 41.3
-	; and sprite1 at
-	;	GPU cycle 44
 
-;	ldx	#0		; sprite 0 display nothing		; 2
-;	stx	GRP0		;					; 3
-
-;	ldx	#6		;					; 2
+	ldx	#COARSE_X		;				; 2
 ; 7
 
-;tpad_x:
-;	dex			;					; 2
-;	bne	tpad_x		;					; 2/3
+tpad_x:
+	dex			;					; 2
+	bne	tpad_x		;					; 2/3
 	; for X delays (5*X)-1
 	; so in this case, 29
 ; 36
@@ -58,14 +54,10 @@ start_opening:
 ;	sta	RESP0							; 3
 	; 39 (GPU=??, want ??) +?
 ; 39
-	sta	RESP1							; 3
-	; 42 (GPU=??, want ??) +?
-; 42
 
-;	lda	#$F0		; opposite what you'd think		; 2
-;	sta	HMP0							; 3
-;	lda	#$00							; 2
-;	sta	HMP1							; 3
+	lda	#$F0		; opposite what you'd think		; 2
+	sta	HMP0							; 3
+
 ; 52
 	sta	WSYNC
 ; 0
@@ -86,7 +78,9 @@ start_opening:
 	stx	GRP0			; turn off sprite0 		; 3
 	stx	GRP1			; turn off sprite1		; 3
 ; 13
-;	sta	COLUPF							; 3
+	lda	#(47*2)
+	sta	COLUP0
+
 ; 19
 	lda	#0							; 3
 	sta	COLUBK							; 3
@@ -101,11 +95,17 @@ start_opening:
 	;=============================================
 	;=============================================
 
+	; 
+skip_loop:
+	iny
+	cpy	#52
+	sta	WSYNC
+	bne	skip_loop
 
 opening_loop:
 
 
-; 0
+; 2/0
 	lda	lucas_colors,X						; 4+
 	sta	COLUPF		; set playfield color			; 3
 
@@ -131,9 +131,6 @@ opening_loop:
 	sta	PF1				;			; 3
 	; must write by CPU 54 [GPU 164]
 ; 42
-
-;	nop					;			; 2
-;	lda	$80				; nop3			; 3
 	lda	lucas_playfield2_right,X	;			; 4+
 	sta	PF2				;			; 3
 	; must write by CPU 65 [GPU 196]
@@ -151,11 +148,14 @@ done_inx:
                                                                 ; 11/11
 
 ; 60
+	lda	#$FF	; 2
+	sta	GRP0	; 3
+
 	nop
 	nop
 	nop
-	nop
-	lda	$80
+;	nop
+;	lda	$80
 
 
 ; 71
@@ -215,3 +215,18 @@ delay_12_cycles:
 	rts
 
 
+; ...*....
+; ...*....
+; ..***...
+; *******.
+; ..***...
+; ...*....
+; ...*....
+sparkle_sprite:
+	.byte $10
+	.byte $10
+	.byte $38
+	.byte $FE
+	.byte $38
+	.byte $10
+	.byte $10

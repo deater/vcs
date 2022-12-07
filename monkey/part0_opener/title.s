@@ -307,9 +307,4 @@ not_done_title:
 
 done_title:
 
-
-	
-
-
-
 	rts
