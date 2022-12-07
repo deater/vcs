@@ -53,7 +53,7 @@ clear_loop:
 
 	; We want page0 at $1000 and page1 at $1400
 
-.if 1
+.if 0
 	lda	$1FE0
 	lda	$1FE9
 
@@ -70,8 +70,14 @@ clear_loop:
 	lda	$1FEB
 	lda	$1FF4
 
-;	jsr	do_title
-	jsr	$F000
+;	lda	#$5
+;	sta	FRAMEL
+;	lda	#$80
+;	sta	FRAMEL
+
+
+	jsr	$F000			; do_title
+
 .endif
 	;=====================
 	; Do ending
@@ -79,11 +85,16 @@ clear_loop:
 	; We want page0 at $1005 and page6 at $1400
 
 .if 1
+
+	lda	#$28			; for testing
+	sta	FRAMEH
+	lda	#$80
+	sta	FRAMEL
+
 	lda	$1FE5
 	lda	$1FEE
 
-;	jsr	do_level
-	jsr	$F000
+	jsr	$F000			; do_level
 .endif
 
 

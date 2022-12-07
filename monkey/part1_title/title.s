@@ -144,7 +144,7 @@ pad_x:
 	ldy	#0		; current_block
 
 ; 44
-	lda	title_words_bg_colors,Y		;			; 3
+	lda	top_title_words_bg_colors,Y		;			; 3
 	sta	COLUBK		; set background color			; 3
 ; 50
 ;	lda	level_colors	; load level color in advance		; 4
@@ -154,7 +154,7 @@ pad_x:
 	stx	VBLANK		; turn on beam				; 3
 ; 64
 
-	lda	title_words_colors,Y						; 4
+	lda	top_title_words_colors,Y						; 4
 
 	sta	WSYNC							; 3
 
@@ -170,82 +170,155 @@ pad_x:
 
 draw_title_scanline:
 
-	; A has level colors
+	; Y should be 0
+
+	;========================================
+	; Top 6 lines (24 scanlines) are mirrored
+	;========================================
+title_top_kernel:
+
+; 3
+        sta     COLUPF                  ; playfield color               ; 3
+; 6
+	lda	top_title_words_bg_colors,Y                                 ; 4
+	sta	COLUBK                  ; background color              ; 3
+
+; 13
+	lda     top_title_words_playfield0_left,Y ; playfield pattern 0           ; 4
+	sta     PF0                     ;                               ; 3
+        ;   has to happen by 22 (GPU 68)
+; 20
+        lda     top_title_words_playfield1_left,Y ; playfield pattern 1           ; 4
+        sta     PF1                     ;                               ; 3
+        ;  has to happen by 28 (GPU 84)
+; 27
+        lda     top_title_words_playfield2_left,Y ; playfield pattern 2           ; 4
+        sta     PF2                                                     ; 3
+        ;  has to happen by 38 (GPU 116)        ;
+; 34
+
+        sta     WSYNC
+        sta     WSYNC
+        sta     WSYNC
+
+	iny                                                             ; 2
+        lda     top_title_words_colors,Y                                          ; 4
+
+        cpy     #6             ; see if hit end                        ; 2
+        sta     WSYNC
+        bne     title_top_kernel                                     ; 2/3
+; 76
+
 
 	;============================
-	; draw playfield line 0 (1/4)
 	;============================
+	; draw middle kernel
+	;============================
+	;============================
+
+	lda	#$5A	; purple
+	sta	COLUPF			; playfield color		; 3
+	lda	#$0
+	sta	COLUBK
+
+	ldx	#24
+	ldy	#0
+
+	lda	#0	; no-reflect playfield			; 2
+	sta	CTRLPF		;					; 3
+
+title_middle_kernel:
+	nop
+	nop
+	lda	$E8
+; 7
+	lda	title_words_playfield0_left,Y	;			; 4+
+	sta	PF0				;			; 3
+	; must write by CPU 22 [GPU 68]
+; 14
+	lda	title_words_playfield1_left,Y	;			; 4+
+	sta	PF1				;			; 3
+	; must write by CPU 27? [GPU 84]
+; 21
+	lda	title_words_playfield2_left,Y	;			; 4+
+	sta	PF2				;			; 3
+	; must write by CPU 38 [GPU 116]
+; 28
+	lda	title_words_playfield0_right,Y	;			; 4+
+	sta	PF0				;			; 3
+	; must write by CPU 49 [GPU 148]
+; 35
+	lda	title_words_playfield1_right,Y	;			; 4+
+	sta	PF1				;			; 3
+	; must write by CPU 54 [GPU 164]
+; 42
+	lda	title_words_playfield2_right,Y	;			; 4+
+	sta     PF2				;			; 3
+	; must write by CPU 65 [GPU 196]
+; 49
+	inx                                                             ; 2
+	txa                                                             ; 2
+	and     #$3                                                     ; 2
+	beq     tyes_inx                                                ; 2/3
+	.byte   $A5     ; begin of LDA ZP                               ; 3
+tyes_inx:
+        iny             ; $E8 should be harmless to load                ; 2
+tdone_inx:
+                                                                ;===========
+                                                                ; 11/11
+
+; 60
+
+
+; ??
+	cpy	#30							; 2
+	sta	WSYNC
+	bne	title_middle_kernel					; 2/3
+; 76
+
+
+
+	; A has level colors
+
+	ldy	#0
+	lda	#CTRLPF_REF	; reflect playfield			; 2
+	sta	CTRLPF		;					; 3
+	lda	bottom_title_words_colors,Y					; 4
+
+	;================================
+	; draw bottom 10 lines (mirrored)
+	;================================
+title_bottom_kernel:
 ; 3
 	sta	COLUPF			; playfield color		; 3
 ; 6
-	lda	title_words_bg_colors,Y					; 4
+	lda	bottom_title_words_bg_colors,Y					; 4
 	sta	COLUBK			; background color		; 3
-
 ; 13
-	lda	title_words_playfield0_left,Y	; playfield pattern 0		; 4
+	lda	bottom_title_words_playfield0_left,Y	; playfield pattern 0	; 4
 	sta	PF0			;				; 3
 	;   has to happen by 22 (GPU 68)
 ; 20
-	lda	title_words_playfield1_left,Y	; playfield pattern 1		; 4
+	lda	bottom_title_words_playfield1_left,Y	; playfield pattern 1	; 4
 	sta	PF1			;				; 3
 	;  has to happen by 28 (GPU 84)
-
-	; really want this to happen by ??
-
 ; 34
-	lda	title_words_playfield2_left,Y	; playfield pattern 2		; 4
+	lda	bottom_title_words_playfield2_left,Y	; playfield pattern 2	; 4
         sta	PF2							; 3
 	;  has to happen by 38 (GPU 116)	;
 ; 41
-
-; 49
-
 	sta	WSYNC
-
-
-	;============================
-	; draw playfield line 1 (2/4)
-	;============================
-
-; 0
-
-;	lda	title_overlay1_sprite,Y					; 4
-;	sta	GRP0			; overlay pattern		; 3
-; 7
-;	lda	title_overlay1_colors,Y					; 4
-;	sta	COLUP0							; 3
-; 14
-
-;	lda	title_overlay2_sprite,Y					; 4
-;	sta	GRP1			; overlay pattern		; 3
-; 21
-;	lda	title_overlay2_colors,Y					; 4
-;	sta	COLUP1							; 3
-; 28
-
-
 	sta	WSYNC
-
-	;============================
-	; draw playfield line 2 (3/4)
-	;============================
-
 	sta	WSYNC
-
-
-
-
-	;=============================
-	; draw playfield line 3 (4/4)
-	;=============================
 
 	iny								; 2
-	lda	title_words_colors,Y						; 4
+	lda	bottom_title_words_colors,Y					; 4
 
-	cpy	#48		; see if hit end			; 2
+	cpy	#12		; see if hit end			; 2
 	sta	WSYNC
-	bne	draw_title_scanline					; 2/3
+	bne	title_bottom_kernel					; 2/3
 ; 76
+
 
 
 done_draw_title:
