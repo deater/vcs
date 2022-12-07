@@ -1,6 +1,8 @@
 .include "../zp.inc"
 .include "../../vcs.inc"
 
+.include "monkey_variables.s"
+
 	;==========================
 	; Main Title
 	;==========================
@@ -17,19 +19,16 @@ do_main_title:
         ; All other variables can start with any value.
         ; =========================
 
-        lda     #0
-        sta     tt_cur_pat_index_c0
-	sta	tt_timer
-	sta	tt_cur_note_index_c0
-	sta	tt_cur_note_index_c1
-        lda     #15
-        sta     tt_cur_pat_index_c1
+; ??? at least 15
 
-
-        ;=======================
-        ; more init
-
-.include "monkey_variables.s"
+        lda     #0						; 2
+        sta     tt_cur_pat_index_c0				; 3
+	sta	tt_timer					; 3
+	sta	tt_cur_note_index_c0				; 3
+	sta	tt_cur_note_index_c1				; 3
+        lda     #15						; 2
+        sta     tt_cur_pat_index_c1				; 3
+; 19
 
 
 	;=======================

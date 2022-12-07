@@ -7,9 +7,10 @@
 
 do_title:
 
-	sta	WSYNC				; try to avoid glitch
 
 title_frame:
+
+	sta	WSYNC				; try to avoid glitch
 
 	;============================
 	; start VBLANK
