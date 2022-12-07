@@ -213,17 +213,18 @@ not_done_opener:
 	; overscan for 30 scanlines
 	;==========================
 
-	ldx	#29
+	ldx	#27
 	jsr	common_overscan
 
 
 	lda	DONE_SEGMENT
 	bne	done_opening						; 2/3
+	sta	WSYNC
 	jmp	start_opening						; 3
 
 done_opening:
-; 16
-
+; 2
+	sta	WSYNC
 
 delay_12_cycles:
 	rts

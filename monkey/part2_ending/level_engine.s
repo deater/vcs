@@ -528,8 +528,8 @@ done_playfield:
 	; overscan (30 cycles)
 	;===========================
 	;===========================
-
-	ldx	#26
+; FIXME: back to 26, this is hack
+	ldx	#23
 	jsr	common_overscan
 
 

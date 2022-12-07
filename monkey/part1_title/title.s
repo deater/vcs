@@ -414,7 +414,8 @@ not_done_title:
 ; 0
 	lda	DONE_SEGMENT
 	bne	done_title
-
+; 5
 	sta	WSYNC
 	jmp	title_frame
 done_title:
+	sta	WSYNC

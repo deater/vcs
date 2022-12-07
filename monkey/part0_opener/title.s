@@ -4,6 +4,7 @@
 do_title:
 
 title_frame:
+	sta	WSYNC
 
 	;============================
 	; start VBLANK
@@ -285,12 +286,12 @@ not_done_title:
 	;==================================
 	; overscan 28, update sound
 
-	sta	WSYNC
+;	sta	WSYNC
 
 	;==================================
 	; overscan 29, update pointer
 
-        sta     WSYNC
+ ;       sta     WSYNC
 
 	;==================================
 	;==================================

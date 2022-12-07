@@ -53,7 +53,7 @@ clear_loop:
 
 	; We want page0 at $1000 and page1 at $1400
 
-.if 0
+.if 1
 	lda	$1FE0
 	lda	$1FE9
 
