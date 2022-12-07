@@ -9,6 +9,17 @@
 ; Common routines, try not to mess with or we need to re-gen
 .include "common_routines.s"
 
+        ;===================================
+        ; music code, wouldn't fit in part2
+.include "chapter_variables.s"
+.include "handle_music.s"
+.include "chapter_trackdata.s"
+
+
+
+
+
+
 
 
 monkey:

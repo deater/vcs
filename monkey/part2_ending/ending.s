@@ -11,7 +11,7 @@ do_ending:
 
 ;.include "level_engine.s"
 
-;.include "trials.s"
+.include "trials.s"
 
 .include "cart.s"
 

@@ -6,8 +6,28 @@
 
 part1_trials:
 
-	lda	#$E
-	sta	DEBOUNCE_COUNTDOWN
+	; =========================
+	; Initialize music.
+	; Set tt_cur_pat_index_c0/1 to the indexes of the first patterns from
+	; tt_SequenceTable for each channel.
+	; Set tt_timer and tt_cur_note_index_c0/1 to 0.
+	; All other variables can start with any value.
+	; =========================
+
+	lda	#0
+	sta	tt_cur_pat_index_c0
+	sta	tt_timer
+	sta	tt_cur_note_index_c0
+	sta	tt_cur_note_index_c1
+	lda	#1
+	sta	tt_cur_pat_index_c1
+
+
+
+
+
+;	lda	#$E
+;	sta	DEBOUNCE_COUNTDOWN
 
 	; comes in at ?? cycles from bottom of loop
 start_trials:
@@ -21,15 +41,20 @@ start_trials:
 	jsr	common_vblank
 
 ; 9
+
+	jsr	handle_music_chapter
+
+	; now vblank scanline 33
+
 	;=============================
-	; 37 lines of vertical blank
+	; 4 lines of vertical blank
 	;=============================
 
-        ldx     #36
+	ldx	#4
 tvbsc_loop:
-        sta     WSYNC
-        dex								; 2
-        bne     tvbsc_loop						; 2/3
+	sta	WSYNC
+	dex								; 2
+	bne	tvbsc_loop						; 2/3
 
 	;=======================
 	; scanline 37 -- config
@@ -115,19 +140,44 @@ tdone_inx:
 	; overscan for 30 scanlines
 	;==========================
 
-	ldx	#29
+	ldx	#28
 	jsr	common_overscan
+
+	;==========================
+	; overscan 29
+	;==========================
+
+; 10
+	lda	#0
+	sta	DONE_SEGMENT
+
+	inc	FRAMEL                                                  ; 5
+	bne	no_frame_trials_oflo
+	inc	FRAMEH
+no_frame_trials_oflo:
+	lda	FRAMEH
+	cmp	#1
+	bne	not_done_trials
+	lda	FRAMEL
+	cmp	#$40
+	bne	not_done_trials
+yes_done_level:
+	inc	DONE_SEGMENT
+not_done_trials:
+        sta	WSYNC
 
 
 	;=========================
 	; overscan 30
 	;=========================
+; 0
 
-; 10
-;	jsr	check_button_or_reset
-;	bcc	done_trials
+	lda     DONE_SEGMENT
+	bne     done_trials
+
+	sta     WSYNC
 	jmp	start_trials						; 3
 
 done_trials:
 ; 16
-	rts
+
