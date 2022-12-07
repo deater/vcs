@@ -2,9 +2,13 @@
 	;==========================
 	; the generic level engine
 	;==========================
+	; originally meant this to be playable
+	; for now it isn't
+
 do_level:
-	lda	#20
-	sta	DEBOUNCE_COUNTDOWN
+
+;	lda	#20
+;	sta	DEBOUNCE_COUNTDOWN
 
 level_frame:
 
@@ -26,21 +30,12 @@ level_frame:
 
 ; in VBLANK scanline 0
 
-	ldx	#27
+	ldx	#31
 le_vblank_loop:
 	sta	WSYNC
 	dex
 	bne	le_vblank_loop
 
-	;=============================
-	; now at VBLANK scanline 27
-	;=============================
-	; 4 scanlines of handling input
-
-	sta	WSYNC
-	sta	WSYNC
-	sta	WSYNC
-	sta	WSYNC
 
 	;=======================
 	; now scanline 31
@@ -93,7 +88,7 @@ really_no_missile0:
 	;=============================
 	; do some init
 
-	inc	FRAME							; 5
+	inc	FRAMEL							; 5
 
 	ldx	#$00							; 2
 	stx	CURRENT_SCANLINE	; reset scanline counter	; 3
@@ -534,22 +529,40 @@ done_playfield:
 	;===========================
 	;===========================
 
-	ldx	#25
+	ldx	#26
 	jsr	common_overscan
+
 
 	;==================================
 	; overscan 27, general stuff
+	;==================================
 
 	lda	#$0							; 2
 	sta	ENAM0		; disable missile 0			; 3
 	sta	WSYNC
 
 	;==================================
-	; overscan 28, update sound
+	; overscan 28, ??
+	;==================================
 
-;	jsr	update_sound
+	lda	#0
+	sta	DONE_SEGMENT
 
+	inc	FRAMEL                                                  ; 5
+	bne	no_frame_level_oflo
+	inc	FRAMEH
+no_frame_level_oflo:
+	lda	FRAMEH
+	cmp	#5
+	bne	not_done_level
+	lda	FRAMEL
+	cmp	#$80
+	bne	not_done_level
+yes_done_level:
+	inc	DONE_SEGMENT
+not_done_level:
 	sta	WSYNC
+
 
 	;==================================
 	; overscan 29, update pointer
@@ -605,66 +618,17 @@ level_done_update_pointer:
 
 	;==================================
 	;==================================
-	; overscan 30, handle button press
+	; overscan 30, handle timeout
 	;==================================
 	;==================================
 
-	lda	DEBOUNCE_COUNTDOWN					; 3
-	beq	waited_enough_level					; 2/3
-	dec	DEBOUNCE_COUNTDOWN					; 5
-	jmp	done_check_level_input					; 3
+	lda	DONE_SEGMENT
+	bne	done_level
 
-waited_enough_level:
+        sta     WSYNC
+        jmp     level_frame
 
-	lda	INPT4			; check if joystick button pressed
-	bmi	done_check_level_input
-
-	; reset input countdown for debounce
-	lda	#10
-	sta	DEBOUNCE_COUNTDOWN
-
-	; button was pressed
-;	lda	POINTER_TYPE
-;	cmp	#POINTER_TYPE_POINT
-;	beq	clicked_forward
-
-;	cmp	#POINTER_TYPE_LEFT
-;	beq	clicked_left
-
-;	cmp	#POINTER_TYPE_RIGHT
-;	beq	clicked_right
-
-clicked_grab:			; process of elimination
-	;==========================
-	; clicked grab
-;	ldx	CURRENT_LOCATION
-;	cpx	#8			; if level >8 not switch
-;	bcc	handle_switch
-;	cpx	#11
-;	bcs	done_check_level_input	; if level>11 not book
-
-handle_book:
-
-;	jsr	do_book
-
-;	jmp	load_new_level
-
-handle_switch:
-;	ldy	#SFX_CLICK		; play sound
-;	sty	SFX_PTR
-
-	; toggle switch
-;	lda	powers_of_two,X
-;	eor	SWITCH_STATUS
-;	sta	SWITCH_STATUS
-
-	; TODO: switch to white page if switch from $FF to $7F
-
-done_check_level_input:
-
-	sta	WSYNC
-
-	jmp	level_frame
+done_level:
 
 
 

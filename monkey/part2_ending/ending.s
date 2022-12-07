@@ -9,8 +9,14 @@
 
 do_ending:
 
-.include "trials.s"
+;.include "level_engine.s"
+
+;.include "trials.s"
+
 .include "cart.s"
+
+	rts
+
 
 	; =========================
         ; Initialize music.
@@ -29,19 +35,11 @@ do_ending:
         ;=======================
         ; more init
 
-;.include "monkey_intro_variables.s"
-
-
-
-;.include "handle_music.s"
-
 .include "../common_addresses.inc"
 
-;.include "monkey_intro_trackdata.s"
-
 .align $100
-.include "trials.inc"
 .include "cart_message.inc"
+.include "trials.inc"
 .include "lookout.inc"
 .include "lookout_over.inc"
 
