@@ -129,7 +129,7 @@ pad_x:
 	stx	PF0			; disable playfield		; 3
 	stx	PF1							; 3
 	stx	PF2							; 3
-
+	stx	ENAM0			; disable missile0		; 3
 
 	lda	#NUSIZ_QUAD_SIZE					; 2
 	sta	NUSIZ0							; 3

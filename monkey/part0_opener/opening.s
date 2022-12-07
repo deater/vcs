@@ -41,7 +41,18 @@ start_opening:
 	; needs to be right after a WSYNC
 ; 0
 
-	ldx	#COARSE_X		;				; 2
+	; limit coarse X from roughly 2..10
+
+	lda	FRAMEL
+	lsr
+	lsr
+	lsr
+	lsr
+	and	#$7
+	tax
+	inx
+	inx
+
 ; 7
 
 tpad_x:
@@ -51,12 +62,12 @@ tpad_x:
 	; so in this case, 29
 ; 36
 	; beam is at proper place
-;	sta	RESP0							; 3
+	sta	RESM0							; 3
 	; 39 (GPU=??, want ??) +?
 ; 39
 
 	lda	#$F0		; opposite what you'd think		; 2
-	sta	HMP0							; 3
+	sta	HMM0							; 3
 
 ; 52
 	sta	WSYNC
@@ -80,6 +91,9 @@ tpad_x:
 ; 13
 	lda	#(47*2)
 	sta	COLUP0
+
+	lda	#NUSIZ_MISSILE_WIDTH_2
+	sta	NUSIZ0
 
 ; 19
 	lda	#0							; 3
@@ -149,7 +163,7 @@ done_inx:
 
 ; 60
 	lda	#$FF	; 2
-	sta	GRP0	; 3
+	sta	ENAM0	; 3
 
 	nop
 	nop
