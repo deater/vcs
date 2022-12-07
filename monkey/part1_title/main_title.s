@@ -19,6 +19,9 @@ do_main_title:
 
         lda     #0
         sta     tt_cur_pat_index_c0
+	sta	tt_timer
+	sta	tt_cur_note_index_c0
+	sta	tt_cur_note_index_c1
         lda     #15
         sta     tt_cur_pat_index_c1
 

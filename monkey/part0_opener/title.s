@@ -34,8 +34,6 @@ title_frame:
 	;=============================
 	; do some init
 
-	inc	FRAMEL							; 5
-
 	ldx	#$00							; 2
 	stx	CURRENT_SCANLINE	; reset scanline counter	; 3
 
@@ -247,7 +245,7 @@ draw_title_scanline:
 ; 76
 
 
-done_title:
+done_title_frame:
 ; 74
 
 
@@ -257,11 +255,31 @@ done_title:
 	;===========================
 	;===========================
 
-	ldx	#25
+	ldx	#27
 	jsr	common_overscan
 
-	;==================================
-	; overscan 27, general stuff
+
+        ;===================================
+        ; check for button or RESET
+        ;===================================
+; 0
+        lda     #0
+        sta     DONE_SEGMENT
+
+        inc     FRAMEL                                                  ; 5
+        bne     no_frame_title_oflo
+        inc     FRAMEH
+no_frame_title_oflo:
+
+        lda     FRAMEH
+        cmp     #5
+        bne     not_done_title
+        lda     FRAMEL
+        cmp     #$80
+        bne     not_done_title
+yes_done_title:
+        inc     DONE_SEGMENT
+not_done_title:
 	sta	WSYNC
 
 	;==================================
@@ -279,7 +297,19 @@ done_title:
 	; overscan 30, handle button press
 	;==================================
 	;==================================
+
+
+	lda	DONE_SEGMENT
+	bne	done_title
+
 	sta	WSYNC
-
-
 	jmp	title_frame
+
+done_title:
+
+
+	
+
+
+
+	rts
