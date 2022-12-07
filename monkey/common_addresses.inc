@@ -1,6 +1,6 @@
 common_vblank = $FC00 + $00
-common_overscan = $FC00 + $0F
-handle_music_chapter = $FC00 + $19
+common_overscan = $FC00 + $11
+handle_music_chapter = $FC00 + $1B
 cart_message = $FC00 + $200
 cart_message0 = cart_message
 cart_message1 = cart_message + $1E

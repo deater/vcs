@@ -298,7 +298,7 @@ no_rotate_color:
 	; overscan for 30 scanlines
 	;==========================
 
-	ldx	#30
+	ldx	#29
 	jsr	common_overscan
 
 ; ???

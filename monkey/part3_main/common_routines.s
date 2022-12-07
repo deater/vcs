@@ -1,6 +1,7 @@
 	;=====================
 	; VBLANK/VSYNC
 	;=====================
+	; actually takes 4 scanlines, clears out old one first
 
 common_vblank:
 
@@ -9,13 +10,16 @@ common_vblank:
 	;============================
 
 	lda	#2
-	sta	VSYNC
+
 
 	;=================================
 	; wait for 3 scanlines of VSYNC
 	;=================================
 
 	sta	WSYNC		; wait until end of scanline
+	sta	VSYNC
+
+	sta	WSYNC
 	sta	WSYNC
 	lda	#0		; done beam reset			; 2
 	sta	WSYNC
@@ -24,7 +28,7 @@ common_vblank:
 
 	sta	VSYNC							; 3
 
-	rts
+	rts								; 6
 
 ; 9 cycles in
 

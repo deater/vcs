@@ -140,7 +140,7 @@ tdone_inx:
 	; overscan for 30 scanlines
 	;==========================
 
-	ldx	#28
+	ldx	#27
 	jsr	common_overscan
 
 	;==========================

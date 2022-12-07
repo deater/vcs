@@ -7,6 +7,8 @@
 
 do_title:
 
+	sta	WSYNC				; try to avoid glitch
+
 title_frame:
 
 	;============================
