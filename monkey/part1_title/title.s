@@ -430,10 +430,10 @@ done_draw_title:
 	inc	FRAMEH
 no_frame_title_oflo:
 	lda	FRAMEH
-	cmp	#$28
+	cmp	#$17
 	bne	not_done_title
 	lda	FRAMEL
-        cmp     #$80
+        cmp     #$00
 	bne	not_done_title
 yes_done_title:
 	inc	DONE_SEGMENT

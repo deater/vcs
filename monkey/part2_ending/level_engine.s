@@ -88,45 +88,9 @@ really_no_missile0:
 	;=============================
 	; do some init
 
-	inc	FRAMEL							; 5
-
 	ldx	#$00							; 2
 	stx	CURRENT_SCANLINE	; reset scanline counter	; 3
 
-	; flip switch if necessary
-;	lda	CURRENT_LOCATION
-;	cmp	#8
-;	bcs	done_flip_switch
-
-;	tax
-;	lda	powers_of_two,X
-;	and	SWITCH_STATUS
-;	beq	switch_off
-switch_on:
-;	lda	#$A2		; blue
-;	sta	level_overlay_colors_write+30
-;	lda	#$18		; yellow
-;	sta	level_overlay_colors_write+31
-
-;	lda	#$78
-;	sta	level_overlay_sprite_write+30
-;	lda	#$30
-;	sta	level_overlay_sprite_write+31
-
-;	jmp	done_flip_switch		; bra
-
-switch_off:
-;	lda	#$18		; yellow
-;	sta	level_overlay_colors_write+30
-;	lda	#$A2		; blue
-;	sta	level_overlay_colors_write+31
-
-;	lda	#$30
-;	sta	level_overlay_sprite_write+30
-;	lda	#$78
-;	sta	level_overlay_sprite_write+31
-
-done_flip_switch:
 	sta	WSYNC
 
 	;=======================
@@ -553,10 +517,10 @@ done_playfield:
 	inc	FRAMEH
 no_frame_level_oflo:
 	lda	FRAMEH
-	cmp	#$2B
+	cmp	#$18
 	bne	not_done_level
 	lda	FRAMEL
-	cmp	#$00
+	cmp	#$80
 	bne	not_done_level
 yes_done_level:
 	inc	DONE_SEGMENT

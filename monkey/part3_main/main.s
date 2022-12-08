@@ -57,7 +57,7 @@ clear_loop:
 
 	; We want page0 at $1000 and page1 at $1400
 
-.if 0
+.if 1
 	lda	$1FE0
 	lda	$1FE9
 
@@ -89,10 +89,10 @@ clear_loop:
 
 .if 1
 
-	lda	#$28			; for testing
-	sta	FRAMEH
-	lda	#$80
-	sta	FRAMEL
+;	lda	#$28			; for testing
+;	sta	FRAMEH
+;	lda	#$80
+;	sta	FRAMEL
 
 	lda	$1FE5
 	lda	$1FEE
