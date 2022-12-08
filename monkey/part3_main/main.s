@@ -19,6 +19,7 @@
 .align $100
 .include "cart_message.inc"
 
+.include "title_words.inc"
 
 
 

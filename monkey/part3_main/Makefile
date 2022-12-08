@@ -13,7 +13,7 @@ main.o:	main.s ../zp.inc \
 	chapter_variables.s \
 	chapter_trackdata.s \
 	chapter_player.s \
-	cart_message.inc
+	cart_message.inc title_words.inc
 	ca65 -o main.o main.s -l main.lst
 
 ###
