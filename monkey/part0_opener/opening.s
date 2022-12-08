@@ -4,8 +4,6 @@
 	; potentially arrive here with an unknown number of cycles/scanlines
 	; ideally VBLANK=2 (beam off)
 
-; $70C at start
-; $6A1 after removing unneeded
 
 do_opening:
 start_opening:
@@ -33,12 +31,11 @@ start_opening:
 	sta	WSYNC
 
 
-
 	;===================
 	; now scanline 35
 	;===================
-	; center the sprite position
-	; needs to be right after a WSYNC
+	; set up X position for spark
+
 ; 0
 
 	; limit coarse X from roughly 2..10
@@ -85,22 +82,22 @@ tpad_x:
 ; 0
 	ldy	#0							; 2
 	ldx	#0							; 2
-	stx	VBLANK			; turn on beam			; 3
 	stx	GRP0			; turn off sprite0 		; 3
 	stx	GRP1			; turn off sprite1		; 3
+	stx	VBLANK			; turn on beam			; 3
+
 ; 13
-	lda	#(47*2)
-	sta	COLUP0
+	lda	#(47*2)			; color of spark		; 2
+	sta	COLUP0							; 3
+; 18
+	lda	#NUSIZ_MISSILE_WIDTH_2	; set missile size		; 2
+	sta	NUSIZ0							; 3
+; 23
+	stx	ENAM0			; disable missile		; 3
+	stx	COLUBK							; 3
 
-	lda	#NUSIZ_MISSILE_WIDTH_2
-	sta	NUSIZ0
+; 29
 
-; 19
-	lda	#0							; 3
-	sta	ENAM0			; disable missile
-	sta	COLUBK							; 3
-; 25
-;	lda	#$4E							; 3h
 	sta	WSYNC
 
 
@@ -119,113 +116,125 @@ tpad_x:
 	;=============================================
 
 skip_loop:
-	iny
-	cpy	#51
-	sta	WSYNC
-	bne	skip_loop
+	iny								; 2
+	cpy	#51							; 2
+	sta	WSYNC							; 3
+	bne	skip_loop						; 2/3
+
 
 	;=============================================
 	;=============================================
-	; turn sprite on if needed
+	; turn missile on if needed
 	;=============================================
 	;=============================================
-
-	lda	FRAMEH
-	cmp	#1
-	bne	no_missile
-	lda	FRAMEL
-	cmp	#$78
-	bcs	no_missile
-	lda	#$ff
-	sta	ENAM0
+; 2
+	lda	FRAMEH			; only turn on during FRAMEH=1	; 3
+	cmp	#1							; 2
+	bne	no_missile						; 2/3
+	lda	FRAMEL							; 3
+	cmp	#$78							; 2
+	bcs	no_missile						; 2/3
+	lda	#$ff							; 2
+	sta	ENAM0			; actually enable missile	; 3
 
 no_missile:
-	iny
+	iny				; increment row			; 2
 	sta	WSYNC
+
+
+	;=============================================
+	;=============================================
+	; main kernel
+	;=============================================
+	;=============================================
+	; asymmetric
 
 opening_loop:
 
 
-; 2/0
+; 3/0
 	lda	lucas_colors,X						; 4+
 	sta	COLUPF		; set playfield color			; 3
 
-; 7
+; 10
 	lda	lucas_playfield0_left,X		;			; 4+
 	sta	PF0				;			; 3
 	; must write by CPU 22 [GPU 68]
-; 14
+; 17
 	lda	lucas_playfield1_left,X		;			; 4+
 	sta	PF1				;			; 3
 	; must write by CPU 27? [GPU 84]
-; 21
+; 24
 	lda	lucas_playfield2_left,X		;			; 4+
 	sta	PF2				;			; 3
 	; must write by CPU 38 [GPU 116]
-; 28
+; 31
 
 	lda	lucas_playfield0_right,X	;			; 4+
 	sta	PF0				;			; 3
 	; must write by CPU 49 [GPU 148]
-; 35
+; 38
 	lda	lucas_playfield1_right,X	;			; 4+
 	sta	PF1				;			; 3
 	; must write by CPU 54 [GPU 164]
-; 42
+; 45
 	lda	lucas_playfield2_right,X	;			; 4+
 	sta	PF2				;			; 3
 	; must write by CPU 65 [GPU 196]
-; 49
+; 52
 
-        iny                                                             ; 2
-        tya                                                             ; 2
-        and     #$3                                                     ; 2
-        beq     yes_inx                                                 ; 2/3
-        .byte   $A5     ; begin of LDA ZP                               ; 3
+	iny								; 2
+	tya								; 2
+	and	#$3							; 2
+	beq	yes_inx							; 2/3
+	.byte	$A5	; begin of LDA ZP				; 3
 yes_inx:
-        inx             ; $E8 should be harmless to load                ; 2
+	inx		; $E8 should be harmless to load		; 2
 done_inx:
-                                                                ;===========
-                                                                ; 11/11
+								;===========
+								; 11/11
 
-; 60
-;	lda	#$FF	; 2
-;	sta	ENAM0	; 3
-
-	nop
-	nop
-	nop
-	nop
-	lda	$80
+; 63
+	nop			; 2
+	nop			; 2
+	nop			; 2
+	nop			; 2
+	lda	$80		; 3
 
 
-; 71
+; 74
 	cpy	#140							; 2
+; 76 / 0
 	bne	opening_loop						; 2/3
-; 76
 
 
+; 2
 
 	;=============================================
 	;=============================================
 	; bottom 52 lines
 	;=============================================
 	;=============================================
+	; disable everything
 
-	lda	#0
-	sta	PF0
-	sta	PF1
-	sta	PF2
+	lda	#0							; 2
+	sta	PF0		; disable playfield			; 3
+	sta	PF1							; 3
+	sta	PF2							; 3
 
-	sta	ENAM0
-	iny
+	sta	ENAM0		; disable missile			; 3
+
+	iny			; advance row				; 2
 	sta	WSYNC
+
+	;=====================================
+	; repeat until end of screen
 
 skip_loop2:
-	iny
-	cpy	#192
+	iny								; 2
+	cpy	#192							; 2
 	sta	WSYNC
-	bne	skip_loop2
+	bne	skip_loop2						; 2/3
 
 
 
@@ -236,7 +245,7 @@ done_loop:
 	;===================================
 	; check for button or RESET
 	;===================================
-; 0
+; 2
 	lda	#0
 	sta	DONE_SEGMENT
 
@@ -288,11 +297,11 @@ delay_12_cycles:
 ; ..***...
 ; ...*....
 ; ...*....
-sparkle_sprite:
-	.byte $10
-	.byte $10
-	.byte $38
-	.byte $FE
-	.byte $38
-	.byte $10
-	.byte $10
+;sparkle_sprite:
+;	.byte $10
+;	.byte $10
+;	.byte $38
+;	.byte $FE
+;	.byte $38
+;	.byte $10
+;	.byte $10
