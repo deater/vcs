@@ -39,6 +39,7 @@ CURRENT_SCANLINE	=	$9F
 GUYBRUSH_SPRITE		=	$A0
 DONE_SEGMENT		=	$A1
 COARSE_X		=	$A2
+MISSILE_Y		=	$A3
 
 ; tt music player
 tt_timer                = $E0    ; current music timer value

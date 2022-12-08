@@ -96,7 +96,12 @@ tpad_x:
 	stx	ENAM0			; disable missile		; 3
 	stx	COLUBK							; 3
 
+	lda	#100
+	sta	MISSILE_Y
+
 ; 29
+	lda	#$4E
+	sta	COLUPF
 
 	sta	WSYNC
 
@@ -149,39 +154,46 @@ no_missile:
 	;=============================================
 	; asymmetric
 
+
+;	lda	lucas_colors,X						; 4+
+;	sta	COLUPF		; set playfield color			; 3
+
+
 opening_loop:
 
-
 ; 3/0
-	lda	lucas_colors,X						; 4+
-	sta	COLUPF		; set playfield color			; 3
 
-; 10
+	cpy	#140							; 2
+	bcs	ending_loop						; 2/3
+	nop								; 2
+
+; 9
 	lda	lucas_playfield0_left,X		;			; 4+
 	sta	PF0				;			; 3
 	; must write by CPU 22 [GPU 68]
-; 17
+; 16
 	lda	lucas_playfield1_left,X		;			; 4+
 	sta	PF1				;			; 3
 	; must write by CPU 27? [GPU 84]
-; 24
+; 23
 	lda	lucas_playfield2_left,X		;			; 4+
 	sta	PF2				;			; 3
 	; must write by CPU 38 [GPU 116]
-; 31
+
+; 30
 
 	lda	lucas_playfield0_right,X	;			; 4+
 	sta	PF0				;			; 3
 	; must write by CPU 49 [GPU 148]
-; 38
+; 37
 	lda	lucas_playfield1_right,X	;			; 4+
 	sta	PF1				;			; 3
 	; must write by CPU 54 [GPU 164]
-; 45
+; 44
 	lda	lucas_playfield2_right,X	;			; 4+
 	sta	PF2				;			; 3
 	; must write by CPU 65 [GPU 196]
-; 52
+; 51
 
 	iny								; 2
 	tya								; 2
@@ -194,21 +206,28 @@ done_inx:
 								;===========
 								; 11/11
 
-; 63
-	nop			; 2
-	nop			; 2
-	nop			; 2
-	nop			; 2
-	lda	$80		; 3
+; 62
 
+	; see if enable missile
 
-; 74
-	cpy	#140							; 2
-; 76 / 0
-	bne	opening_loop						; 2/3
+	; don't use sec, too many cycles
+	;sec
+	tya			; get Y value into A			; 2
+	sbc	MISSILE_Y	; subtract Missile Y			; 3
+	cmp	#4		; if 0..3 turn on			; 2
+	lda	#$ff		; get FF to enable			; 2
+	adc	#$00		; clever, if carry set from cmp make 0	; 2
+	sta	ENAM0							; 3
+								;==========
+								; 	14
 
+; 76
 
-; 2
+	jmp	opening_loop						; 3
+
+ending_loop:
+
+; 5
 
 	;=============================================
 	;=============================================

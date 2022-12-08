@@ -45,6 +45,6 @@ do_opener:
 
 .include "monkey_intro_trackdata.s"
 
-.align $100
+;.align $100
 .include "lucas.inc"
 .include "title.inc"
