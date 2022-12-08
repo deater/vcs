@@ -92,7 +92,7 @@ stpad_x:
 ; 31
 	inc	CREDITS_COUNT	; which line to display			; 5
 	lda	CREDITS_COUNT						; 3
-	cmp	#6		; wrap at 5				; 2
+	cmp	#6		; wrap at 6				; 2
 	bne	no_credits_inc						; 2/3
 ; 43
 	lda	#0		; reset count				; 2

@@ -1,6 +1,3 @@
-+ move common routines into main
-+ opener, add sparkles
-+ opener, add subtitles
-+ fix title (mirrored top bottom, not-mirrored in middle)
-+ cloud for title
-+ music for ending
++ Fix the text on title so extra space on top/bottom
++ The level engine stuff
++ Fix glitch from part0 to part1

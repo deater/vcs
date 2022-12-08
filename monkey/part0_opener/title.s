@@ -111,6 +111,8 @@ pad_x:
 	stx	PF1							; 3
 	stx	PF2							; 3
 	stx	ENAM0			; disable missile0		; 3
+	stx	VDELP0
+	stx	VDELP1
 
 	lda	#NUSIZ_QUAD_SIZE					; 2
 	sta	NUSIZ0							; 3
