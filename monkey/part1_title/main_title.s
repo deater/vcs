@@ -45,6 +45,6 @@ do_main_title:
 
 .include "monkey_trackdata.s"
 
-.align $100
+;.align $100
 
 .include "title.inc"

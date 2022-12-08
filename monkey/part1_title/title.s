@@ -3,10 +3,10 @@
 	;==========================
 	; asymmetric playfield
 	; TODO: cloud at top?
-	; descender on the I?
 
 do_title:
-
+	lda	#124
+	sta	CLOUD_X
 
 title_frame:
 
@@ -30,32 +30,68 @@ title_frame:
 	jsr	handle_music
 
 
-	;=============================
-	; now VBLANK scanline 33
-	;=============================
-	; do some init
-
-	inc	FRAMEL							; 5
-
-	ldx	#$00							; 2
-	stx	CURRENT_SCANLINE	; reset scanline counter	; 3
-
-	sta	WSYNC
-
-	;=======================
-	; now VBLANK scanline 34
-	;=======================
-	; nothing right now
-	sta	WSYNC
-
-
 	;======================================
 	; now vblank 35
 	;=======================================
 	; update pointer horizontal position
 	;=======================================
 
+	lda	CLOUD_X							; 3
+
+	lsr								; 2
+	lsr								; 2
+	lsr								; 2
+	lsr								; 2
+	sta	CLOUD_X_COARSE						; 3
+
+	; apply fine adjust
+	lda	CLOUD_X							; 3
+	and	#$0f							; 2
+	tax								; 2
+	lda	fine_adjust_table,X					; 4+
+	sta	HMP0
+	sta	HMP1
+
 	sta	WSYNC			;				3
+
+
+
+	;=============================
+	; now VBLANK scanline 33
+	;=============================
+	; do some init
+
+        ldx     CLOUD_X_COARSE ;                                       3
+        inx                     ;                                       2
+        inx                     ;                                       2
+
+zpad_x:
+        dex                     ;                                       2
+        bne     zpad_x          ;                                       2/3
+                                ;===========================================
+                                ;       5*(coarse_x+2)-1
+                                ; max is 9, so worst case is 54
+
+        nop
+        sta     RESP0
+        sta     RESP1
+
+
+	sta	WSYNC
+	sta	HMOVE
+	;=======================
+	; now VBLANK scanline 34
+	;=======================
+	; nothing right now
+
+	lda	FRAMEL
+	and	#$3f
+	bne	no_move_cloud
+	dec	CLOUD_X
+no_move_cloud:
+	sta	WSYNC
+
+
 
 
 	;=========================================
@@ -80,13 +116,13 @@ title_frame:
 	stx	GRP0
 	stx	GRP1
 
-	lda	#$5A		; purple
-	sta	COLUP0
-	sta	COLUP1
+	lda	#$04			; cloud is grey			; 2
+	sta	COLUP0							; 3
+	lda	#$06
+	sta	COLUP1							; 3
 
-	lda	#NUSIZ_QUAD_SIZE					; 2
+	lda	#NUSIZ_THREE_COPIES_CLOSE				; 2
 	sta	NUSIZ0							; 3
-	lda	#NUSIZ_QUAD_SIZE					; 2
 	sta	NUSIZ1							; 3
 ; 37
 	lda	#CTRLPF_REF	; reflect playfield			; 2
@@ -120,7 +156,9 @@ draw_title_scanline:
 	; Y should be 0
 
 	;========================================
+	;========================================
 	; Top 6 lines (24 scanlines) are mirrored
+	;========================================
 	;========================================
 title_top_kernel:
 
@@ -145,7 +183,13 @@ title_top_kernel:
 ; 34
 
         sta     WSYNC
+
+	lda	cloud_data,Y
+	sta	GRP0
+	sta	GRP1
+
         sta     WSYNC
+
         sta     WSYNC
 
 	iny                                                             ; 2
@@ -214,6 +258,13 @@ ipad_x:
 
 	lda	#$5A			; purple			; 2
 	sta	COLUPF			; playfield color		; 3
+	sta	COLUP0
+	sta	COLUP1
+
+	lda	#NUSIZ_QUAD_SIZE					; 2
+	sta	NUSIZ0							; 3
+	sta	NUSIZ1
+
 ; 24
 	ldx	#24							; 2
 	ldy	#0							; 2
@@ -401,5 +452,10 @@ not_done_title:
 ; 5
 	sta	WSYNC
 	jmp	title_frame
+
+
+cloud_data:
+	.byte $00,$7e,$ff,$ff,$7e,$00
+
 done_title:
 	sta	WSYNC

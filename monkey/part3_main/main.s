@@ -16,14 +16,17 @@
 .include "chapter_trackdata.s"
 	;===================================
 	; 48-pixel sprite data
+
+fine_adjust_table:
+        ; left
+        .byte $70,$60,$50,$40,$30,$20,$10,$00
+        ; right -1 ... -8
+        .byte $F0,$E0,$D0,$C0,$B0,$A0,$90,$80
+
 .align $100
 .include "cart_message.inc"
 
 .include "title_words.inc"
-
-
-
-
 
 
 monkey:
@@ -54,12 +57,11 @@ clear_loop:
 
 	; We want page0 at $1000 and page1 at $1400
 
-.if 1
+.if 0
 	lda	$1FE0
 	lda	$1FE9
 
-;	jsr	do_opening
-	jsr	$F000
+	jsr	$F000		; do_opening
 .endif
 
 	;=====================
