@@ -62,6 +62,11 @@ clear_loop:
 	lda	$1FE9
 
 	jsr	$F000		; do_opening
+.else
+	lda	#$5
+	sta	FRAMEL
+	lda	#$80
+	sta	FRAMEL
 .endif
 
 	;=====================
@@ -72,12 +77,6 @@ clear_loop:
 	lda	$1FE2
 	lda	$1FEB
 	lda	$1FF4
-
-;	lda	#$5
-;	sta	FRAMEL
-;	lda	#$80
-;	sta	FRAMEL
-
 
 	jsr	$F000			; do_title
 

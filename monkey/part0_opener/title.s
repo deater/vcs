@@ -45,33 +45,9 @@ title_frame:
 	;=======================
 
 	;====================================================
-	; set up sprite1 (overlay) to be at proper X position
+	; ???
 	;====================================================
 	; now in setup scanline 0
-
-.if 0
-; 0
-	nop								; 2
-	nop								; 2
-; 4
-;	ldx	LEVEL_OVERLAY_COARSE					; 3
-	inx			;					; 2
-	inx			;					; 2
-; 11
-qpad_x:
-	dex			;					; 2
-	bne	qpad_x		;					; 2/3
-				;===========================================
-				;	(5*COASRE+2)-1
-
-	; beam is at proper place
-	sta	RESP0							; 3
-	sta	RESP1							; 3
-
-	lda	#$0			; fine adjust overlay		; 2
-	sta	HMP0							; 3
-	sta	HMP1							; 3
-.endif
 
 	sta	WSYNC
 
@@ -83,9 +59,9 @@ qpad_x:
 
 
 
-jmp	urgh
-.align $100
-urgh:
+;jmp	urgh
+;.align $100
+;urgh:
 	sta	WSYNC			;				3
 
 	;=========================================
@@ -228,31 +204,50 @@ draw_title_scanline:
 
 	sta	WSYNC
 
-	;============================
 	; draw playfield line 2 (3/4)
-	;============================
-
 	sta	WSYNC
-
-
-
-
-	;=============================
 	; draw playfield line 3 (4/4)
-	;=============================
 
 	iny								; 2
-	lda	title_colors,Y						; 4
 
-	cpy	#48		; see if hit end			; 2
+
+	lda	FRAMEH
+	cmp	#3
+	bcc	skip_check
+
+	cpy	#43		; see if hit end			; 2
+	bcs	bottom_words
+skip_check:
+	lda	title_colors,Y						; 4
+	cpy	#48
 	sta	WSYNC
 	bne	draw_title_scanline					; 2/3
+;	beq	totally_done
+	jmp	totally_done
 ; 76
+
+bottom_words:
+;	lda	#0
+;	sta	COLUPF
+;	sta	COLUBK
+;
+;	sta	PF0
+;	sta	PF1
+;	sta	PF2
+;
+;	sta	WSYNC
+;
+;	ldy	#12
+;word_loop:
+;	dey
+;	sta	WSYNC
+;	bne	word_loop
+
+.include "text.s"
 
 
 done_title_frame:
-; 74
-
+totally_done:
 
 	;===========================
 	;===========================
@@ -313,3 +308,6 @@ not_done_title:
 done_title:
 
 	rts
+
+credits_offset:
+        .byte 0,26,17,8,1,1

@@ -15,7 +15,8 @@ opener.o:	opener.s \
 	monkey_intro_player.s \
 	../zp.inc ../common_addresses.inc \
 	lucas.inc \
-	title.s title.inc
+	title.s title.inc \
+	text.s
 	ca65 -o opener.o opener.s -l opener.lst
 
 ###

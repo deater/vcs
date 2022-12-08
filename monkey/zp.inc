@@ -43,6 +43,8 @@ MISSILE_Y		=	$A3
 MISSILE_OFFSET		=	$A4
 CLOUD_X			=	$A5
 CLOUD_X_COARSE		=	$A6
+CREDITS_OFFSET		=	$A7
+CREDITS_COUNT		=	$A8
 
 ; tt music player
 tt_timer                = $E0    ; current music timer value

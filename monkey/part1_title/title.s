@@ -115,6 +115,8 @@ no_move_cloud:
 	stx	PF2							; 3
 	stx	GRP0
 	stx	GRP1
+	stx	VDELP0
+	stx	VDELP1
 
 	lda	#$04			; cloud is grey			; 2
 	sta	COLUP0							; 3
