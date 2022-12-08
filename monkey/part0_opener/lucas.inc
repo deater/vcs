@@ -1,9 +1,9 @@
 ; Using background color $00
 lucas_colors:
-	.byte $08,$4E,$4E
-	.byte $4E,$4E,$4E,$4E,$4E,$4E,$4E,$4E
-	.byte $4E,$4E,$4E,$4C,$4E,$4E,$4E,$4E
-	.byte $4E,$4E,$4E
+;	.byte $08,$4E,$4E
+;	.byte $4E,$4E,$4E,$4E,$4E,$4E,$4E,$4E
+;	.byte $4E,$4E,$4E,$4C,$4E,$4E,$4E,$4E
+;	.byte $4E,$4E,$4E
 
 lucas_playfield0_left:
 	.byte $60,$60,$60

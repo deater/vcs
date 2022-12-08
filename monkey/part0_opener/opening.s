@@ -28,6 +28,19 @@ start_opening:
 	jsr	handle_music
 
 	sta	WSYNC
+
+
+	lda	FRAMEL
+	lsr
+	lsr
+	lsr
+	and	#$7
+	asl
+	asl
+	asl
+	asl
+	sta	MISSILE_OFFSET
+
 	sta	WSYNC
 
 
@@ -139,10 +152,21 @@ skip_loop:
 	lda	FRAMEL							; 3
 	cmp	#$78							; 2
 	bcs	no_missile						; 2/3
-	lda	#$ff							; 2
-	sta	ENAM0			; actually enable missile	; 3
+yes_missile:
+
+;	lda	#$ff							; 2
+;	sta	ENAM0			; actually enable missile	; 3
+	lda	#72
+	ora	MISSILE_OFFSET
+	sta	MISSILE_Y
+
+	bne	save_missile
 
 no_missile:
+	lda	#200
+save_missile:
+	sta	MISSILE_Y
+
 	iny				; increment row			; 2
 	sta	WSYNC
 
@@ -214,7 +238,7 @@ done_inx:
 	;sec
 	tya			; get Y value into A			; 2
 	sbc	MISSILE_Y	; subtract Missile Y			; 3
-	cmp	#4		; if 0..3 turn on			; 2
+	cmp	#5		; if 0..4 turn on			; 2
 	lda	#$ff		; get FF to enable			; 2
 	adc	#$00		; clever, if carry set from cmp make 0	; 2
 	sta	ENAM0							; 3
@@ -241,7 +265,7 @@ ending_loop:
 	sta	PF1							; 3
 	sta	PF2							; 3
 
-	sta	ENAM0		; disable missile			; 3
+;	sta	ENAM0		; disable missile			; 3
 
 	iny			; advance row				; 2
 	sta	WSYNC
