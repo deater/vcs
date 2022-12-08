@@ -45,30 +45,9 @@ title_frame:
 	;=======================
 	; now VBLANK scanline 34
 	;=======================
-
-	;====================================================
-	; set up sprite0 (overlay) to be at proper X position
-	;====================================================
-	; now in setup scanline 0
-.if 0
-; 0
-	ldx	#2						; 3
-qpad_x:
-	dex			;					; 2
-	bne	qpad_x		;					; 2/3
-				;===========================================
-				;	(5*COASRE+2)-1
-
-	; beam is at proper place
-	sta	RESP0							; 3
-	sta	RESP1							; 3
-
-	lda	#$0			; fine adjust overlay		; 2
-	sta	HMP0							; 3
-	sta	HMP1							; 3
-.endif
+	; nothing right now
 	sta	WSYNC
-;	sta	HMOVE
+
 
 	;======================================
 	; now vblank 35
@@ -84,49 +63,15 @@ qpad_x:
 	;==========================================
 	; set up sprite0 to be at proper X position
 	;==========================================
-; 0
-	ldx	#3
-	inx			;					; 2
-	inx			;					; 2
-; 12
-
-pad_x:
-	dex			;					; 2
-	bne	pad_x		;					; 2/3
-				;===========================================
-				;	12-1+5*(coarse_x+2)
-;
-
-	; beam is at proper place
-	sta	RESP0							; 3
-
-	lda	#$D0			; fine adjust overlay		; 2
-	sta	HMP0							; 3
-
-	ldx	#4
-ipad_x:
-	dex			;					; 2
-	bne	ipad_x		;					; 2/3
-				;===========================================
-				;	12-1+5*(coarse_x+2)
-	sta	RESP1							; 3
 
 
-	lda	#$C0			; fine adjust overlay		; 2
-	sta	HMP1							; 3
-
-	sta	WSYNC							; 3
-	sta	HMOVE		; adjust fine tune, must be after WSYNC	; 3
-				; also draws black artifact on left of
-				; screen
+	sta	WSYNC			;				3
 
 	;==========================================
 	; now vblank 37
 	;==========================================
 	; Final setup before going
 	;==========================================
-
-; 3 (from HMOVE)
 
 	ldx	#0			; current scanline?		; 2
 	stx	PF0			; disable playfield		; 3
@@ -226,6 +171,47 @@ title_top_kernel:
 	sta	COLUBK							; 3
 	sta	CTRLPF		; no-reflect playfield			; 3
 ; 19
+
+	;=======================
+	; set things up
+
+; 0
+	ldx	#2
+; 12
+
+pad_x:
+	dex			;					; 2
+	bne	pad_x		;					; 2/3
+				;===========================================
+				;	12-1+5*(coarse_x+2)
+;
+
+	; beam is at proper place
+	sta	RESP0							; 3
+
+	lda	#$D0			; fine adjust overlay		; 2
+	sta	HMP0							; 3
+
+	ldx	#4
+ipad_x:
+	dex			;					; 2
+	bne	ipad_x		;					; 2/3
+				;===========================================
+				;	12-1+5*(coarse_x+2)
+	sta	RESP1							; 3
+
+
+	lda	#$C0			; fine adjust overlay		; 2
+	sta	HMP1							; 3
+
+	sta	WSYNC							; 3
+	sta	HMOVE		; adjust fine tune, must be after WSYNC	; 3
+				; also draws black artifact on left of
+				; screen
+
+	;==============================
+
+
 	lda	#$5A			; purple			; 2
 	sta	COLUPF			; playfield color		; 3
 ; 24
@@ -234,7 +220,6 @@ title_top_kernel:
 ; 28
 	sta	WSYNC
 
-	sta	WSYNC
 
 
 title_middle_kernel:
@@ -292,7 +277,7 @@ tdone_inx:
 	;============================
 	;============================
 
-; 2
+; 3
 	lda	#$00							; 2
 	sta	PF0							; 3
 	sta	PF1							; 3
@@ -315,9 +300,8 @@ tdone_inx:
 	lda	bottom_title_words_colors,Y				; 4
 
 	sta	WSYNC
+
 	sta	WSYNC
-
-
 
 	;================================
 	; draw bottom 10 lines (mirrored)
