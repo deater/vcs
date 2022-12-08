@@ -22,7 +22,7 @@ static void dump_sprite(FILE *outfile,char *name, int which,
 		fprintf(outfile,"\t.byte $%02X\t; ",sprite[row]);
 
 		for(i=0;i<8;i++) {
-			fprintf(outfile,"%c",(sprite[row]&(1<<i))?'*':'.');
+			fprintf(outfile,"%c",(sprite[row]&(128>>i))?'*':'.');
 		}
 		fprintf(outfile,"\n");
 	}
