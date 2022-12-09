@@ -136,6 +136,15 @@ qpad_x:
 	; update pointer horizontal position
 	;=======================================
 
+	lda	FRAMEL
+	and	#$1f
+	bne	no_guybrush
+	inc	GUYBRUSH_Y
+	inc	GUYBRUSH_Y
+	inc	GUYBRUSH_Y
+	inc	GUYBRUSH_Y
+no_guybrush:
+
 	; do this separately as too long to fit in with left/right code
 
 ;	jsr	pointer_moved_horizontally	;			6+48
@@ -600,5 +609,5 @@ level_done_update_pointer:
 
 done_level:
 
-
+	sta	WSYNC
 
