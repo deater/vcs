@@ -312,4 +312,4 @@ done_title:
 	rts
 
 credits_offset:
-        .byte 0,26,17,8,0,0
+        .byte 0,27,17,9,0,0

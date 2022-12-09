@@ -10,10 +10,10 @@ cart_message4 = cart_message + $78
 cart_message5 = cart_message + $96
 
 text_sprite0 = $FC00 + $2B4
-text_sprite1 = $FC00 + $2D7
+text_sprite1 = $FC00 + $2D8
 text_sprite2 = $FC00 + $300
-text_sprite3 = $FC00 + $323
-text_sprite4 = $FC00 + $346
-text_sprite5 = $FC00 + $369
+text_sprite3 = $FC00 + $324
+text_sprite4 = $FC00 + $348
+text_sprite5 = $FC00 + $36C
 
 fine_adjust_table = $FC00 + $175
