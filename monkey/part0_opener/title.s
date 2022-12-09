@@ -309,6 +309,7 @@ not_done_title:
 
 done_title:
 
+	sta	WSYNC
 	rts
 
 credits_offset:

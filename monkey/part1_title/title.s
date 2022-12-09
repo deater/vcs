@@ -12,6 +12,7 @@ title_frame:
 
 	sta	WSYNC				; try to avoid glitch
 
+
 	;============================
 	; start VBLANK
 	;============================
