@@ -150,7 +150,7 @@ raster_spriteloop:
         lda     TEMP2                   ; decrement count               ; 3
 ; 61
 	lsr								; 2
-	clc								; 2
+	sec								; 2
 	adc	CREDITS_OFFSET						; 3
 	tax				; reset X to TEMP2/2		; 2
 ; 70
