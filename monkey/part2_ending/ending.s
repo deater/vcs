@@ -15,6 +15,7 @@ do_ending:
 
 .include "cart.s"
 
+.include "guybrush.inc"
 	rts
 
         ;=======================

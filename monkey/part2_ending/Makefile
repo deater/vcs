@@ -11,7 +11,8 @@ ending.o:	ending.s \
 	../zp.inc ../common_addresses.inc \
 	level_engine.s \
 	trials.s trials.inc \
-	cart.s
+	cart.s \
+	lookout.inc lookout_over.inc guybrush.inc
 	ca65 -o ending.o ending.s -l ending.lst
 
 ###

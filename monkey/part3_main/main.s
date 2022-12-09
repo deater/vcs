@@ -57,7 +57,7 @@ clear_loop:
 
 	; We want page0 at $1000 and page1 at $1400
 
-.if 1
+.if 0
 	lda	$1FE0
 	lda	$1FE9
 
@@ -72,7 +72,7 @@ clear_loop:
 	;=====================
 	; show title
 
-.if 1
+.if 0
 	; we want page2 at $1000, page3 at $1400, and page4 at $1C00
 	lda	$1FE2
 	lda	$1FEB

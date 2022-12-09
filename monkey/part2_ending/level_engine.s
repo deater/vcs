@@ -5,7 +5,12 @@
 	; originally meant this to be playable
 	; for now it isn't
 
+
+
 do_level:
+
+	lda	#20
+	sta	GUYBRUSH_Y
 
 ;	lda	#20
 ;	sta	DEBOUNCE_COUNTDOWN
@@ -148,8 +153,7 @@ qpad_x:
 	; vertical column
 	; later we only enable it for the lines we want
 
-;	ldx	#0		; sprite 0 display nothing		; 2
-;	stx	GRP0		; (FIXME: this already set?)		; 3
+	ldx	#12
 
 ;	ldx	POINTER_X_COARSE	;				; 3
 ;	inx			;					; 2
@@ -157,14 +161,14 @@ qpad_x:
 ; 12
 
 pad_x:
-;	dex			;					; 2
-;	bne	pad_x		;					; 2/3
+	dex			;					; 2
+	bne	pad_x		;					; 2/3
 				;===========================================
 				;	12-1+5*(coarse_x+2)
 ;
 
 	; beam is at proper place
-;	sta	RESP0							; 3
+	sta	RESP0							; 3
 
 	sta	WSYNC							; 3
 	sta	HMOVE		; adjust fine tune, must be after WSYNC	; 3
@@ -191,7 +195,7 @@ pad_x:
 ;	lda	level_overlay_colors					; 4+
 ;	sta	COLUP1		; set secret color (sprite1)		; 3
 ; 27
-	lda	#NUSIZ_DOUBLE_SIZE|NUSIZ_MISSILE_WIDTH_8		; 2
+	lda	#0							; 2
 	sta	NUSIZ0							; 3
 	lda	#NUSIZ_QUAD_SIZE|NUSIZ_MISSILE_WIDTH_4			; 2
 	sta	NUSIZ1							; 3
@@ -268,11 +272,11 @@ draw_playfield:
 
 
 	lda	CURRENT_SCANLINE					; 3
-	cmp	GUYBRUSH_Y						; 3
-	beq	no_activate_guybrush					; 2/3
+	cpy	GUYBRUSH_Y						; 3
+	beq	activate_guybrush					; 2/3
 	jmp	done_activate_guybrush					; 3
-no_activate_guybrush:
-	ldx	#$f							; 2
+activate_guybrush:
+	ldx	#$9							; 2
 done_activate_guybrush:
 								;===========
 								; 11 / 11
@@ -310,9 +314,11 @@ done_activate_guybrush:
 
 	txa								; 2
 	beq	level_no_guybrush					; 2/3
-	lda	GUYBRUSH_SPRITE,X					; 4
+	lda	guybrush_sprite,X					; 4
 	sta	GRP0							; 3
-	dex								; 2
+	lda	guybrush_colors,X
+	sta	COLUP0
+	dex
 	jmp	level_done_guybrush					; 3
 level_no_guybrush:
 	inc	TEMP1		; nop5					; 5
