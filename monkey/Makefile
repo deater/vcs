@@ -4,6 +4,18 @@ all:	monkey.e0
 
 ###
 
+submit:	vcs_monkey.zip
+
+vcs_monkey.zip: monkey.e0
+	mkdir -p vcs_monkey
+	cp monkey.e0 ./vcs_monkey
+	cp file_id.diz ./vcs_monkey
+	cp README ./vcs_monkey
+	cp mi_thumb.png ./vcs_monkey
+	zip -r vcs_monkey.zip vcs_monkey
+
+###
+
 monkey.e0:	monkey.o
 	ld65 -o monkey.e0 monkey.o -C $(LINKER_SCRIPT)/atari2600_e0.inc
 

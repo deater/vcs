@@ -1,12 +1,18 @@
-VCS Monkey Business
+VCS Monkey Island Intro
 
 8K Atari 2600 (NTSC) demo
 
+A rough approximation of what the intro to The Secret of Monkey Island
+would look like if it ran on an Atari 2600.
+
 by Deater / VMW Productions
 	vince@deater.net
+	http://deater.net/weave/vmwprod/monkey_vcs/	
 
-The opening scenes from the game Monkey Island, but on a VCS.
+Plays fine on real hardware with Harmony Cartridge.
 
-I apologize for no video, running against the deadline (I think) and
-ran out of time to do a capture.  Should run OK in stella.
+Also playable on Stella
+
+On MAME you'll want something like this:
+	mame a2600 -cartslot a26_e0 -cart ./monkey.e0
 
