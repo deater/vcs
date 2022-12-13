@@ -1,4 +1,4 @@
-LINKER_SCRIPT = ../linker_script
+LINKER_SCRIPT = ../../linker_script
 CALC_ADDRESS = ./utils/calc_address
 
 all:	myst.e7

@@ -1,6 +1,6 @@
 ; All of the intro code
 
-.include "../../vcs.inc"
+.include "../../../vcs.inc"
 .include "../zp.inc"
 .include "../common_routines.inc"
 

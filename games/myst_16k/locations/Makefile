@@ -1,7 +1,7 @@
 ZX02 = ~/research/6502_compression/zx02.git/build/zx02
-LINKER_SCRIPT = ../../linker_script/
-PNG2PF = ../../utils/png2pf
-PNG2OVERLAY = ../../utils/png2overlay
+LINKER_SCRIPT = ../../../linker_script/
+PNG2PF = ../../../utils/png2pf
+PNG2OVERLAY = ../../../utils/png2overlay
 CALC_ADDRESS = ../utils/calc_address
 
 all:	level_locations.inc

@@ -4,7 +4,7 @@
 
 ; by Vince `deater` Weaver <vince@deater.net>
 
-.include "../vcs.inc"
+.include "../../vcs.inc"
 
 .include "zp.inc"
 .include "locations.inc"
