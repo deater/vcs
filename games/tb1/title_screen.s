@@ -1,7 +1,6 @@
 	;==========================
 	; title screen
 	;==========================
-
 	; the init code sets everything to 0
 
 	; comes in at 14 cycles from bottom of loop
@@ -100,42 +99,44 @@ tpad_x:
 	; draw 192 lines
 	; need to race beam to draw other half of playfield
 
+	jmp	title_loop
+
 title_loop:
-; 0
-	lda	#$0e		;					; 3
+; 3
+	lda	playfield_color_blue,X					; 4+
 	sta	COLUPF		; set playfield color			; 3
-	nop			;					; 2
-	nop
-	lda	$80
-; 13
-	lda	title0_left,X
-	sta	PF0				;			; 3
+; 10
+	lda	title0_left,X						; 4+
+	sta	PF0							; 3
 	; must write by CPU 22 [GPU 68]
-; 20
-	lda	title1_left,X		;			4+
-	sta	PF1				;			3
+; 17
+	lda	title1_left,X						; 4+
+	sta	PF1							; 3
 	; must write by CPU 28 [GPU 84]
-; 27
-	lda	title2_left,X		;			4+
-	sta	PF2				;			3
+; 24
+
+	lda	title2_left,X						; 4+
+	sta	PF2							; 3
 	; must write by CPU 38 [GPU 116]
-; 34
+; 31
 
-	nop					;			2
-	lda	title0_right,X	;			4+
-	sta	PF0				;			3
+	nop
+	lda	playfield_color_red,X					; 4+
+	sta	COLUPF						; 3
+
+; 40
+	lda	title0_right,X						; 4+
+	sta	PF0							; 3
 	; must write by CPU 49 [GPU 148]
-; 43
-	lda	title1_right,X	;			4+
-	sta	PF1				;			3
+; 47
+	lda	title1_right,X						; 4+
+	sta	PF1							; 3
 	; must write by CPU 54 [GPU 164]
-; 50
-
-	lda	$80				; nop3			3
-	lda	title2_right,X	;			4+
-	sta	PF2				;			3
+; 54
+	lda	title2_right,X						; 4+
+	sta	PF2							; 3
 	; must write by CPU 65 [GPU 196]
-; 60
+; 61
 
         iny                                                             ; 2
         tya                                                             ; 2
@@ -147,9 +148,11 @@ yes_inx:
 done_inx:
                                                                 ;===========
                                                                 ; 11/11
-
-; 71
+; 72
 	cpy	#192							; 2
+; 74
+;	sta	WSYNC
+	nop
 	bne	title_loop						; 2/3
 
 ; 76
@@ -388,3 +391,15 @@ endtitle_loop:
 
 done_title:
 ; 16
+
+;playfield_color_blue:
+;.byte	00,128,128,130,132,134,136,138,140,142,142
+;playfield_color_red:
+;.byte	00,64,64,66,68,70,72,74,76,78,78
+
+playfield_color_blue:
+.byte	00,128,128,130,132,134,134,136,138,140,142,142
+playfield_color_red:
+.byte	00,64,64,66,68,70,70,72,74,76,78,78
+
+

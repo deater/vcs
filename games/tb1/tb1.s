@@ -58,6 +58,7 @@ game_over_animation:
 .include	"common_routines.s"
 
 ; data, which has alignment constraints
+.align $100
 ;.include	"game_data.inc"
 ;.include	"level_playfields.inc"
 ;.include	"level_data.inc"
