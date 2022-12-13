@@ -9,40 +9,26 @@
 
 
 tb1:
-	;============================
-	;============================
-	; initial init
-	;============================
-	;============================
+	;=============================
+	; clear out mem / init things
+	;=============================
+	; initialize the 6507
+	;       and clear RAM
+	;==========================
 
-	sei			; disable interrupts
-	cld			; clear decimal mode
-
+	sei			; disable interrupts			; 2
+	cld			; clear decimal mode			; 2
 restart_game:
-
-	;=========================================
-	; init zero page and TIA registers to 0
-
-
-	ldx	#0
-	txa
+	ldx	#0							; 2
+	txa								; 2
 clear_loop:
-	sta	$0,X
-	inx
-	bne	clear_loop
-	dex
-	txs			; init stack pointer to $FF
+	dex								; 2
+	txs								; 2
+	pha								; 3
+	bne	clear_loop						; 2/3
+						;============================
+	; S = $FF, A=$0, x=$0, Y=??		;       8+(256*10)-1=2567 / 10B
 
-	lda	#2
-	sta	VBLANK		; disable beam
-
-init_game:
-
-	lda	#$90		; init the zappy wall colors		; 2
-	sta	ZAP_BASE						; 3
-
-	ldx	#3		; number of lives			; 2
-	stx	MANS							; 3
 
 
 title_screen:
