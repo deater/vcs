@@ -10,6 +10,7 @@
 ; (c) 2022 DMSC
 ; Code under MIT license, see LICENSE file.
 
+; modified to break up across multiple frames
 
 ;ZP=$80
 
@@ -27,6 +28,30 @@
 ; Decompress ZX0 data (6502 optimized format)
 
 zx02_full_decomp:
+
+	pha
+
+	; turn off everything
+
+;	lda	#0
+;	sta	PF0
+;	sta	PF1
+;	sta	PF2
+
+	; fire up counter to trigger
+
+	; want to delay around 192 scanlines
+	;       192*76 = 14592 / 1024 = 14.25
+
+	lda	#14
+	sta	T1024T
+
+
+	sta	WSYNC
+	jsr	common_vblank
+	pla
+
+
 ;              ; Get initialization block
 ;             ldy #7
 ;
@@ -37,12 +62,7 @@ zx02_full_decomp:
 
 
 	sta	ZX0_dst+1	; page to output to in A
-;zx_src_l:
-;	ldy	#$dd
-;	sty	ZX0_src
-;zx_src_h:
-;	ldy	#$dd
-;	sty	ZX0_src+1
+
 	ldy	#$80
 	sty	bitr
 	ldy	#0
@@ -79,26 +99,29 @@ dzx0s_copy:
               lda   ZX0_dst+1
               sbc   offset+1
 ;======
-		; code to handle that read/write different addresses
-		clc
-		adc	READ_WRITE_OFFSET
+	;================================
+	; VMW -- code to handle that read/write different addresses
+	clc
+	adc	READ_WRITE_OFFSET
 ;======
-              sta   pntr+1
+	sta   pntr+1
 
 cop1:
-              lda   (pntr), y
-              inc   pntr
-              bne   plus3
-              inc   pntr+1
-plus3:             sta   (ZX0_dst),y
-              inc   ZX0_dst
-              bne   plus4
-              inc   ZX0_dst+1
-plus4:             dex
-              bne   cop1
+	lda	(pntr), Y
+	inc	pntr
+	bne	plus3
+	inc	pntr+1
+plus3:
+	sta	(ZX0_dst), Y
+	inc	ZX0_dst
+	bne	plus4
+	inc	ZX0_dst+1
+plus4:
+	dex
+	bne	cop1
 
-              asl   bitr
-              bcc   decode_literal
+	asl	bitr
+	bcc	decode_literal
 
 ; Copy from new offset (repeat N bytes from new offset)
 ;    Elias(MSB(offset))  LSB(offset)  Elias(length-1)
@@ -133,9 +156,39 @@ plus5:
 ; Read an elias-gamma interlaced code.
 ; ------------------------------------
 get_elias:
-              ; Initialize return value to #1
-              ldx   #1
-              bne   elias_start
+
+	;=======================
+	;=======================
+	; added for split load
+blug:
+	ldx	INTIM
+	bne	done_vmw
+
+	; need to save A and Y
+	pha
+	tya
+	pha
+
+	ldx	#29
+	jsr	common_overscan
+
+	lda	#14
+	sta	T1024T
+
+	sta	WSYNC
+	jsr	common_vblank
+
+	; restore A and Y
+	pla
+	tay
+	pla
+done_vmw:
+	;=======================
+	;=======================
+
+	; Initialize return value to #1
+	ldx	#1
+	bne	elias_start
 
 elias_get:    ; Read next data bit to result
               asl   bitr
@@ -157,8 +210,23 @@ plus6:             ;sec   ; not needed, C=1 guaranteed from last bit
               sta   bitr
 
 elias_skip1:
-              txa
-              bcs   elias_get
-              ; Got ending bit, stop reading
+
+	txa
+	bcs	elias_get
+
+	; Got ending bit, stop reading
+
+	rts		; debug
+
+
 exit:
-              rts
+
+check_timer:
+	ldx	INTIM			; see if 192 scanline counter done
+	bne	check_timer		; if not, loop
+
+	ldx	#30			; do the overscan
+	jsr	common_overscan
+
+	rts
+
