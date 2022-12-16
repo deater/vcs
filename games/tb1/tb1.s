@@ -35,12 +35,12 @@ title_screen:
 
 	.include "title_screen.s"
 
-;	jsr	init_level
+	jsr	init_level
 
 
 do_level:
 
-;	.include "level_engine.s"
+	.include "level_engine.s"
 
 
 secret_collect_animation:
@@ -52,17 +52,18 @@ game_over_animation:
 ;	.include "game_over_screen.s"
 
 
-;.include	"init_level.s"
-;.include	"sound_trigger.s"
-;.include	"sound_update.s"
+.include	"init_level.s"
+.include	"sound_trigger.s"
+.include	"sound_update.s"
 .include	"common_routines.s"
+.include	"add_score.s"
 
 ; data, which has alignment constraints
 .align $100
-;.include	"game_data.inc"
 ;.include	"level_playfields.inc"
 ;.include	"level_data.inc"
 .include	"title.inc"
+.include	"game_data.inc"
 
 .segment "IRQ_VECTORS"
 	.word tb1	; NMI

@@ -6,6 +6,11 @@
 	; comes in at 14 cycles from bottom of loop
 start_title:
 
+	lda	#20
+	sta	TITLE_COUNTDOWN
+
+
+main_title_loop:
 	;=================
 	; start VBLANK
 	;=================
@@ -299,40 +304,6 @@ title_spriteloop:
 
 	sta	WSYNC
 
-	;===================================
-	; scanline 173?
-	;===================================
-	; check for button or RESET
-	;===================================
-; 0
-	lda	#0							; 2
-	sta	DONE_TITLE		; init as not done title	; 3
-; 5
-	;===============================
-	; debounce reset/keypress check
-
-	lda	TITLE_COUNTDOWN						; 3
-	beq	waited_enough						; 2/3
-	dec	TITLE_COUNTDOWN						; 5
-	jmp	done_check_input					; 3
-
-waited_enough:
-; 11
-	lda	INPT4			; check joystick button pressed	; 3
-	bpl	set_done_title						; 2/3
-
-; 16
-	lda	SWCHB			; check if reset pressed	; 3
-	lsr				; put reset into carry		; 2
-	bcc	set_done_title						; 2/3
-
-	jmp	done_check_input					; 3
-
-set_done_title:
-; 17 / 24
-	inc	DONE_TITLE		; we are done			; 5
-done_check_input:
-; 25 / 22 / 29
 
 	;=========================
 	; screensaver
@@ -382,15 +353,51 @@ endtitle_loop:
 	ldx	#29
 	jsr	common_overscan
 
+
+	;===================================
+	; overscan ??
+	;===================================
+	; check for button or RESET
+	;===================================
+; 0
+	lda	#0							; 2
+	sta	DONE_TITLE		; init as not done title	; 3
+; 5
+	;===============================
+	; debounce reset/keypress check
+
+	lda	TITLE_COUNTDOWN						; 3
+	beq	waited_enough						; 2/3
+	dec	TITLE_COUNTDOWN						; 5
+	jmp	done_check_input					; 3
+
+waited_enough:
+; 11
+	lda	INPT4			; check joystick button pressed	; 3
+	bpl	set_done_title						; 2/3
+
+; 16
+	lda	SWCHB			; check if reset pressed	; 3
+	lsr				; put reset into carry		; 2
+	bcc	set_done_title						; 2/3
+
+	jmp	done_check_input					; 3
+
+set_done_title:
+; 17 / 24
+	inc	DONE_TITLE		; we are done			; 5
+done_check_input:
+; 25 / 22 / 29
+
+
+
+
 ; 10
 	lda	DONE_TITLE						; 3
 	bne	done_title						; 2/3
 ; 15
-	jmp	start_title						; 3
+	jmp	main_title_loop						; 3
 ; 18
-
-done_title:
-; 16
 
 ;playfield_color_blue:
 ;.byte	00,128,128,130,132,134,136,138,140,142,142
@@ -403,3 +410,6 @@ playfield_color_red:
 .byte	00,64,64,66,68,70,70,72,74,76,78,78
 
 
+
+done_title:
+; 16
