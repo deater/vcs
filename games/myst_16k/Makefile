@@ -14,7 +14,7 @@ myst.o:	myst.s main.bin \
 	locations/rom_bank2.bin \
 	locations/rom_bank3.bin \
 	locations/rom_bank4.bin \
-	intro/rom_bank6.bin \
+	bank6_intro/rom_bank6.bin \
 	zero.bin zero2.bin
 	ca65 -o myst.o myst.s
 
@@ -49,8 +49,8 @@ main.o:	main.s zp.inc \
 	$(CALC_ADDRESS) -a 0x1A00 -s do_book main.lst >> common_routines.inc
 	$(CALC_ADDRESS) -a 0x1A00 -s zx02_full_decomp main.lst >> common_routines.inc
 	cd intro && make
-	$(CALC_ADDRESS) -a 0x1000 -s book_common intro/rom_bank6.lst > rom_bank6_routines.inc
-	$(CALC_ADDRESS) -a 0x1000 -s do_intro intro/rom_bank6.lst >> rom_bank6_routines.inc
+	$(CALC_ADDRESS) -a 0x1000 -s book_common bank6_intro/rom_bank6.lst > rom_bank6_routines.inc
+	$(CALC_ADDRESS) -a 0x1000 -s do_intro bank6_intro/rom_bank6.lst >> rom_bank6_routines.inc
 	ca65 -o main.o main.s -l main.lst
 
 ###

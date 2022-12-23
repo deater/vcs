@@ -27,11 +27,13 @@ restart_game:
 	ldx	#0
 	txa
 clear_loop:
-	sta	$0,X
-	inx
-	bne	clear_loop
 	dex
-	txs	; point stack to $1FF (mirrored at top of zero page)
+	txs
+	pha
+	bne	clear_loop
+
+	; S=$FF, A=$00, X=$00, Y=??
+
 
 	lda	#2
 	sta	VBLANK	; disable beam
@@ -45,6 +47,10 @@ clear_loop:
 	sta	E7_SET_256_BANK0	; not necessary?
 
 	jsr	do_intro
+
+	;==============================
+	; Show book (bank 6)
+	;==============================
 
 	ldy	#LOCATION_ARRIVAL_N
 	sty	CURRENT_LOCATION

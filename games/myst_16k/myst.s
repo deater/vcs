@@ -16,6 +16,6 @@
 .incbin	"locations/rom_bank3.bin"
 .incbin	"locations/rom_bank4.bin"
 .incbin	"zero.bin"
-.incbin	"intro/rom_bank6.bin"
+.incbin	"bank6_intro/rom_bank6.bin"
 .incbin	"zero2.bin"
 .incbin	"main.bin"
