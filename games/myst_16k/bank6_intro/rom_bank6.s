@@ -14,11 +14,6 @@ do_intro:
 
 .include "book.s"
 
-;.include "../hand_copy.s"
-;.include "../hand_motion.s"
-;.include "../adjust_sprite.s"
-
-
 .align $100
 
 .include "intro_data.inc"

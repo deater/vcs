@@ -4,7 +4,10 @@
 	; title screen
 	;================================
 	; arrive here with unknown number of cycles
-	; hopefully VBLANK=2 (beam is off)
+
+
+	lda	#2			; disable VBLANK?
+	sta	VBLANK
 
 	lda	#0							; 2
 	sta	FRAME							; 3
@@ -16,9 +19,9 @@
 
 title_frame_loop:
 
-	;=======================
-	; Start Vertical Blank
-	;=======================
+	;=============================================
+	; Start Vertical Blank (with one extra WSYNC)
+	;=============================================
 
 	jsr	common_vblank
 
@@ -165,7 +168,7 @@ done_loop:
 	; overscan
 	;==========================
 
-	ldx	#30			; turn off beam and wait 29 scanlines
+	ldx	#29			; turn off beam and wait 29 scanlines
 	jsr	common_overscan
 
 	;============================

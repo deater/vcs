@@ -35,21 +35,19 @@ clear_loop:
 	; S=$FF, A=$00, X=$00, Y=??
 
 
-	lda	#2
-	sta	VBLANK	; disable beam
-
-
 	;==============================
-	; Run intro (bank 6)
+	; Run intro (ROM bank 6)
 	;==============================
 
 	sta	E7_SET_BANK6		; intro is in rom bank6
 	sta	E7_SET_256_BANK0	; not necessary?
 
+	; this shows the MYST logo as well as the cleft
+
 	jsr	do_intro
 
 	;==============================
-	; Show book (bank 6)
+	; Show book (ROM bank 6)
 	;==============================
 
 	ldy	#LOCATION_ARRIVAL_N

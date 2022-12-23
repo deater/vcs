@@ -258,7 +258,7 @@ done_cleft_playfield:
 	; overscan
 	;==========================
 
-	ldx	#30			; turn off beam and wait 29 scanlines
+	ldx	#29			; turn off beam and wait 29 scanlines
 	jsr	common_overscan
 
 	;============================
