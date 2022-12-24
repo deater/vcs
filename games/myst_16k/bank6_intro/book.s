@@ -7,33 +7,35 @@
 	;=====================
 	; Linking Book
 	;=====================
+	; jumps here after switching to BANK6
 
 book_common:
-
+; ?
 	lda	#20			; debounce button press		; 2
 	sta	INPUT_COUNTDOWN						; 3
-
+; 5
 	; get which book we are for lookup purposes
 
 	lda	CURRENT_LOCATION					; 3
 	sec								; 2
 	sbc	#8							; 2
 	sta	WHICH_BOOK						; 3
-
-	tax
-
+; 15
+	tax								; 2
+; 17
 	; decompress book data into RAM at $1800 write/ $1900 read
 
-	lda	#$1
-	sta	READ_WRITE_OFFSET
-
-	lda     book_data_l,X
-	sta     ZX0_src
-	lda     book_data_h,X
-	sta     ZX0_src_h
-
-	lda	#>E7_256B_WRITE_ADDR
-	jsr     zx02_full_decomp
+	lda	#$1							; 2
+	sta	READ_WRITE_OFFSET					; 3
+; 22
+	lda     book_data_l,X						; 4+
+	sta     ZX0_src							; 3
+	lda     book_data_h,X						; 4+
+	sta     ZX0_src_h						; 3
+; 36
+	lda	#>E7_256B_WRITE_ADDR					; 2
+; 38
+	jsr     zx02_full_decomp					; 6
 
 
 book_frame:
@@ -518,7 +520,7 @@ book_done_playfield:
 	;===========================
 	;===========================
 
-	ldx	#24
+	ldx	#23
 	jsr	common_overscan
 
 	;==================================

@@ -258,7 +258,7 @@ done_cleft_playfield:
 	; overscan
 	;==========================
 
-	ldx	#29			; turn off beam and wait 29 scanlines
+	ldx	#28			; turn off beam and wait 29 scanlines
 	jsr	common_overscan
 
 	;============================
@@ -266,35 +266,43 @@ done_cleft_playfield:
 	;============================
 	; check for button or RESET
         ;============================
-
+; ?
 	;===============================
 	; debounce reset/keypress check
 
-	lda	FALL_COUNT
-	cmp	#5
-	beq	done_cleft
+	lda	FALL_COUNT		; decrement falling count	; 3
+	cmp	#5			; 5 steps			; 2
+	beq	done_cleft						; 2/3
+; +7
 
-	lda	INPUT_COUNTDOWN						; 3
+	lda	INPUT_COUNTDOWN		; check debounce		; 3
 	beq	waited_enough_cleft					; 2/3
-	dec	INPUT_COUNTDOWN						; 5
+; +12
+	dec	INPUT_COUNTDOWN		; dec debounce			; 5
 	jmp	done_check_cleft_input					; 3
 
 waited_enough_cleft:
-	lda	INPT4			; check if joystick button pressed
-	bpl	set_done_cleft
-
-	lda	SWCHB			; check if reset
-	lsr				; put reset into carry
-	bcc	set_done_cleft
-
-	jmp     done_check_cleft_input
+; +13
+	lda	INPT4			; check if joystick button	; 3
+	bpl	set_done_cleft						; 2/3
+; +18
+	lda	SWCHB			; check if reset		; 3
+	lsr				; put reset into carry		; 2
+	bcc	set_done_cleft						; 2/3
+; +25
+	bcs	done_check_cleft_input	; bra				; 3
 
 set_done_cleft:
+; + 19/26
 	jmp	done_cleft
 done_check_cleft_input:
 
+	; hit here if we're staying
+
+	sta	WSYNC
 	jmp	cleft_frame_loop
 
 done_cleft:
-	lda	#0
-	sta	ENABL
+; +22/29
+	lda	#0							; 2
+	sta	ENABL			; disable ball			; 3

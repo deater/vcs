@@ -29,8 +29,13 @@
 
 zx02_full_decomp:
 
-	pha
+	sta	ZX0_dst+1	; page to output to in A
 
+;=======================================
+;=======================================
+; START VMW
+;=======================================
+;=======================================
 	; turn off everything
 
 ;	lda	#0
@@ -40,16 +45,16 @@ zx02_full_decomp:
 
 	; fire up counter to trigger
 
+	jsr	common_vblank
+
+
 	; want to delay around 192 scanlines
 	;       192*76 = 14592 / 1024 = 14.25
 
 	lda	#14
+where_set:
 	sta	T1024T
 
-
-	sta	WSYNC
-	jsr	common_vblank
-	pla
 
 
 ;              ; Get initialization block
@@ -61,7 +66,12 @@ zx02_full_decomp:
 ;              bne copy_init
 
 
-	sta	ZX0_dst+1	; page to output to in A
+
+;=======================================
+;=======================================
+; STOP VMW
+;=======================================
+;=======================================
 
 	ldy	#$80
 	sty	bitr
@@ -159,23 +169,36 @@ get_elias:
 
 	;=======================
 	;=======================
+	;=======================
 	; added for split load
+	;=======================
+	;=======================
+	;=======================
 blug:
 	ldx	INTIM
 	bne	done_vmw
+
+check_here:
 
 	; need to save A and Y
 	pha
 	tya
 	pha
 
+	; 188 scanlines in?
+
+	sta	WSYNC
+	sta	WSYNC
+	sta	WSYNC
+
+
 	ldx	#29
 	jsr	common_overscan
 
-	lda	#14
-	sta	T1024T
+	lda	#14				; 14 * 1024 = 14336
+	sta	T1024T				; which is roughly 188.6 lines
 
-	sta	WSYNC
+
 	jsr	common_vblank
 
 	; restore A and Y
@@ -221,11 +244,18 @@ elias_skip1:
 
 exit:
 
+	;========================================
+	; If we finish before timer expires...
+	;========================================
 check_timer:
 	ldx	INTIM			; see if 192 scanline counter done
 	bne	check_timer		; if not, loop
 
-	ldx	#30			; do the overscan
+	sta	WSYNC
+	sta	WSYNC
+	sta	WSYNC
+
+	ldx	#29			; do the overscan
 	jsr	common_overscan
 
 	rts
