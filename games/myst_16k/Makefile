@@ -69,6 +69,6 @@ main.o:	main.s zp.inc \
 
 clean:	
 	rm -f *~ *.o *.lst myst.rom common_routines.inc
-	cd intro && make clean
+	cd bank6_intro && make clean
 
 

@@ -45,7 +45,7 @@ zx02_full_decomp:
 
 	; fire up counter to trigger
 
-	jsr	common_vblank
+;	jsr	common_vblank
 
 ;	ldx	#37
 ;zx_vblank:
@@ -56,9 +56,9 @@ zx02_full_decomp:
 	; want to delay around 192 scanlines
 	;       192*76 = 14592 / 1024 = 14.25
 
-	lda	#18
-where_set:
-	sta	T1024T
+;	lda	#18
+;where_set:
+;	sta	T1024T
 
 
 
@@ -181,7 +181,8 @@ get_elias:
 	;=======================
 blug:
 	ldx	INTIM
-	bne	done_vmw
+	cpx	#1
+	bne	done_vmw		; blt
 
 check_here:
 
@@ -190,11 +191,9 @@ check_here:
 	tya
 	pha
 
-	; 188 scanlines in?
-
-;	sta	WSYNC
-;	sta	WSYNC
-;	sta	WSYNC
+force_expire:
+	ldx	INTIM			; see if 192 scanline counter done
+	bne	force_expire		; if not, loop
 
 
 	ldx	#29
@@ -259,8 +258,11 @@ check_timer:
 ;	sta	WSYNC
 ;	sta	WSYNC
 ;	sta	WSYNC
-;
-	ldx	#29			; do the overscan
+
+
+; 3 scanlines less because we copy 16 bytes in load_level
+
+	ldx	#26			; do the overscan
 	jsr	common_overscan
 uyat:
 	rts

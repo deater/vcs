@@ -33,9 +33,28 @@ book_common:
 	lda     book_data_h,X						; 4+
 	sta     ZX0_src_h						; 3
 ; 36
+
+
+	;======================
+	; setup in advance
+
+	jsr	common_vblank
+
+	lda	#18
+	sta	T1024T
+
+
+
 	lda	#>E7_256B_WRITE_ADDR					; 2
 ; 38
 	jsr     zx02_full_decomp					; 6
+
+	; hack, the generic code finishes 4 scanlines early
+
+	sta	WSYNC
+	sta	WSYNC
+	sta	WSYNC
+
 
 
 book_frame:

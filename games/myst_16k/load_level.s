@@ -9,6 +9,18 @@
 
 load_level:
 
+	sta	WSYNC
+
+	;=====================
+	; set up in advance
+
+
+	jsr	common_vblank
+
+	lda	#18
+	sta	T1024T
+
+
 	; load in level number
 
 ;	ldy	#2
@@ -54,14 +66,16 @@ copy_compress_loop:
 
 	; copy first 16 bytes to zero page
 
-	ldy	#15
+	ldy	#15							; 2
 copy_zp_loop:
-	lda	E7_1K_READ_ADDR,Y
-	sta	LEVEL_DATA,Y
+	lda	E7_1K_READ_ADDR,Y					; 4+
+	sta	LEVEL_DATA,Y						; 5
 
-	dey
-	bpl	copy_zp_loop
+	dey								; 2
+	bpl	copy_zp_loop						; 2/3
 
+
+; 2+(14*15)-1 = 211 cycles = roughly 3 scanlines
 
 	rts
 
