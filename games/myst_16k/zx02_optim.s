@@ -47,11 +47,16 @@ zx02_full_decomp:
 
 	jsr	common_vblank
 
+;	ldx	#37
+;zx_vblank:
+;	sta	WSYNC
+;	dex
+;	bne	zx_vblank
 
 	; want to delay around 192 scanlines
 	;       192*76 = 14592 / 1024 = 14.25
 
-	lda	#14
+	lda	#18
 where_set:
 	sta	T1024T
 
@@ -187,24 +192,24 @@ check_here:
 
 	; 188 scanlines in?
 
-	sta	WSYNC
-	sta	WSYNC
-	sta	WSYNC
+;	sta	WSYNC
+;	sta	WSYNC
+;	sta	WSYNC
 
 
 	ldx	#29
 	jsr	common_overscan
 
-	lda	#14				; 14 * 1024 = 14336
-	sta	T1024T				; which is roughly 188.6 lines
-
-
 	jsr	common_vblank
+
+	lda	#18				; 14 * 1024 = 14336
+	sta	T1024T				; which is roughly 188.6 lines
 
 	; restore A and Y
 	pla
 	tay
 	pla
+
 done_vmw:
 	;=======================
 	;=======================
@@ -251,12 +256,12 @@ check_timer:
 	ldx	INTIM			; see if 192 scanline counter done
 	bne	check_timer		; if not, loop
 
-	sta	WSYNC
-	sta	WSYNC
-	sta	WSYNC
-
+;	sta	WSYNC
+;	sta	WSYNC
+;	sta	WSYNC
+;
 	ldx	#29			; do the overscan
 	jsr	common_overscan
-
+uyat:
 	rts
 
