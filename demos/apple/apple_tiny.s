@@ -11,6 +11,10 @@
 ; $38D -- only read playfield_left1 every 1/3 line
 ; $31A -- only read playfield_right1 every 1/3 line
 
+; TODO: Music?
+;	Animated sine wave down sides?
+;	Forever text
+
 .include "../../vcs.inc"
 
 ; zero page addresses
@@ -900,7 +904,7 @@ sprite_bitmap0:		; AP
 
 sprite_bitmap1:
 	.byte	$00	; PP
-	.byte	$08
+h	.byte	$08
 	.byte	$08
 	.byte	$08
 	.byte	$cf
