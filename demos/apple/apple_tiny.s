@@ -6,6 +6,9 @@
 ; $830 -- original code
 ; $730 -- remove playfield_right2 (always 0)
 ; $530 -- remove playfield_left0 (always 0)
+; $486 -- skip first 9 lines (always 0)
+; $3ff -- only read color every 1/3 line
+; $38D -- only read playfield_left1 every 1/3 line
 
 .include "../../vcs.inc"
 
@@ -14,27 +17,32 @@
 TEXT_COLOR		=	$80
 TEMP1			=	$90
 TEMP2			=	$91
+DIV3			=	$92
 
 
-start:
-	sei		; disable interrupts
-	cld		; clear decimal bit
-	ldx	#$ff
-	txs		; point stack to top of zero page
+apple_tiny_start:
 
-	; clear out the Zero Page (RAM and TIA registers)
+	;=======================
+	; clear registers/ZP/TIA
+	;=======================
 
+	sei			; disable interrupts
+	cld			; clear decimal mode
 	ldx	#0
 	txa
 clear_loop:
-	sta	$0,X
-	inx
+	dex
+	txs
+	pha
 	bne	clear_loop
 
+	; S = $FF, A=$0, x=$0, Y=??
 
 start_frame:
 
+	;=========================
 	; Start Vertical Blank
+	;=========================
 
 	lda	#2			; reset beam to top of screen
 	sta	VSYNC
@@ -44,7 +52,7 @@ start_frame:
 	sta	WSYNC			; wait until end of scanline
 	sta	WSYNC
 
-	inc	TEXT_COLOR
+	inc	TEXT_COLOR		; update text color
 
 	sta	WSYNC
 
@@ -53,57 +61,89 @@ start_frame:
 
 	; 37 lines of vertical blank
 
-	ldx	#0
-vblank_loop:
+	ldx	#36
+	jsr	scanline_wait
+; 10
 	sta	WSYNC
-	inx
-	cpx	#37
-	bne	vblank_loop
 
 	lda	#0			; turn on beam
 	sta	VBLANK
 
+	;===========================
+	;===========================
+	; playfield
+	;===========================
+	;===========================
 	; draw 192 lines
-	; need to race beam to draw other playfield
 
+
+
+	;===========================
+	; first 9 lines black
+	;===========================
+
+	lda	#0
+	sta	COLUPF
+	ldx	#8
+	jsr	scanline_wait
+
+	; FIXME: X already 0 here?
+; 10
 	ldx	#0
-colorful_loop:
-	lda	colors,X		;				4+
-	sta	COLUPF			; set playfield color		3
+	ldy	#0
 
+	sta	WSYNC
+
+colorful_loop:
+; 3
+	lda	colors,Y		;				4+
+	sta	COLUPF			; set playfield color		3
+; 10/11
 	lda	#0			; always 0			2
 	sta	PF0			;				3
-	lda	playfield1_left,X	;				4+
+	; has to happen by 22
+; 15/16
+	lda	playfield1_left,Y	;				4+
 	sta	PF1			;				3
+	; has to happen by 28
+; 22/23
 	lda	playfield2_left,X	;				4+
 	sta	PF2			;				3
-
-	nop
-	; at this point we're at 28 cycles
-
-	nop				;				2
+	; has to happen by 38
+; 29/30
 	lda	playfield0_right,X	;				4+
 	sta	PF0			;				3
-
-	; now at 37
-	nop				;				2
-	nop				;				2
+	; has to happen 28-49
+; 36/37
 	lda	playfield1_right,X	;				4+
 	sta	PF1			;				3
-
-	; now at 48
-
-	nop				;				2
+	; has to happen 38-56
+; 43/44
 	lda	#0			; always 0			4+
 	sta	PF2			;				3
+	; has to happen 49-67
+; 50/51
 
-	; now at 57
+	inc	DIV3	; 5
+	sec		; 2
+	lda	#3	; 2
+	sbc	DIV3	; 2
+	bne	not3	; 2/3
+
+	sta	DIV3	; 3
+	iny		; 2
+not3:
 
 	inx				;				2
-	cpx	#180			;				2
+	cpx	#171			;				2
+; 64/65
 
 	sta	WSYNC			;				3
 	bne	colorful_loop		;				2/3
+
+
+
+
 
 	;==============================================================
 	; 48-pixel sprite!!!!
@@ -114,21 +154,18 @@ colorful_loop:
 	;	set things up
 
 	lda	TEXT_COLOR
-;	lda	#$0F
 	sta	COLUP0	; set sprite color
-;	lda	#$2F
 	sta	COLUP1	; set sprite color
 
 	lda	#NUSIZ_THREE_COPIES_CLOSE
 	sta	NUSIZ0
-	lda	#NUSIZ_THREE_COPIES_CLOSE
 	sta	NUSIZ1
 
 	lda	#0		; turn off sprite
 	sta	GRP0
 	sta	GRP1
 
-	lda	#1
+	lda	#1		; turn on delay
 	sta	VDELP0
 	sta	VDELP1
 
@@ -142,13 +179,7 @@ colorful_loop:
 	; and sprite1 at
 	;	GPU cycle 44
 
-
-	ldx	#0		; sprite 0 display nothing	2
-	stx	GRP0		;				3
-	; 5
-
-
-	ldx	#6		;				2
+	ldx	#7		;				2
 pad_x:
 	dex			;				2
 	bne	pad_x		;				2/3
@@ -241,407 +272,266 @@ spriteloop:
 	lda	#$2		; turn off beam
 	sta	VBLANK
 
-	ldx	#0
-overscan_loop:
-	sta	WSYNC
-	inx
-	cpx	#30
-	bne	overscan_loop
+	; wait 30 scanlines
+
+	ldx	#30
+	jsr	scanline_wait
 
 	jmp	start_frame
 
-.align $100
+
+	;====================
+	; scanline wait
+	;====================
+	; scanlines to wait in X
+
+scanline_wait:
+	sta	WSYNC
+	dex						; 2
+	bne	scanline_wait				; 2/3
+	rts						; 6
+
+
+;.align $100
+
+; multiples of 3 except very last
 colors:
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $CE
-	.byte $CE
 	.byte $CE
 	.byte $CC
-	.byte $CC
-	.byte $CC
-	.byte $CA
-	.byte $CA
 	.byte $CA
 	.byte $C8
-	.byte $C8
-	.byte $C8
 	.byte $C6
-	.byte $C6
-	.byte $C6
-	.byte $C4
-	.byte $C4
 	.byte $C4
 	.byte $C2
-	.byte $C2
-	.byte $C2
-	.byte $C4
-	.byte $C4
 	.byte $C4
 	.byte $C6
-	.byte $C6
-	.byte $C6
-	.byte $C8
-	.byte $C8
 	.byte $C8
 	.byte $CA
-	.byte $CA
-	.byte $CA
-	.byte $CC
-	.byte $CC
 	.byte $CC
 	.byte $CE
 	.byte $CE
-	.byte $CE
-	.byte $CE
-	.byte $CE
-	.byte $CE
-	.byte $CC
-	.byte $CC
 	.byte $CC
 	.byte $CA
-	.byte $CA
-	.byte $CA
-	.byte $C8
-	.byte $C8
 	.byte $C8
 	.byte $C6
-	.byte $C6
-	.byte $C6
 	.byte $C4
-	.byte $C4
-	.byte $C4
-	.byte $C2
-	.byte $C2
 	.byte $C2
 	.byte $1E
-	.byte $1E
-	.byte $1E
-	.byte $1C
-	.byte $1C
 	.byte $1C
 	.byte $1A
-	.byte $1A
-	.byte $1A
-	.byte $18
-	.byte $18
 	.byte $18
 	.byte $16
-	.byte $16
-	.byte $16
-	.byte $14
-	.byte $14
 	.byte $14
 	.byte $12
-	.byte $12
-	.byte $12
-	.byte $12
-	.byte $2E
-	.byte $2E
 	.byte $2E
 	.byte $2C
-	.byte $2C
-	.byte $2C
-	.byte $2A
-	.byte $2A
 	.byte $2A
 	.byte $28
-	.byte $28
-	.byte $28
-	.byte $26
-	.byte $26
 	.byte $26
 	.byte $24
-	.byte $24
-	.byte $24
-	.byte $22
-	.byte $22
 	.byte $22
 	.byte $4E
-	.byte $4E
-	.byte $4E
-	.byte $4C
-	.byte $4C
 	.byte $4C
 	.byte $4A
-	.byte $4A
-	.byte $4A
-	.byte $48
-	.byte $48
 	.byte $48
 	.byte $46
-	.byte $46
-	.byte $46
-	.byte $44
-	.byte $44
 	.byte $44
 	.byte $42
-	.byte $42
-	.byte $42
-	.byte $42
-	.byte $5E
-	.byte $5E
 	.byte $5E
 	.byte $5C
-	.byte $5C
-	.byte $5C
-	.byte $5A
-	.byte $5A
 	.byte $5A
 	.byte $58
-	.byte $58
-	.byte $58
-	.byte $56
-	.byte $56
 	.byte $56
 	.byte $54
-	.byte $54
-	.byte $54
-	.byte $52
-	.byte $52
 	.byte $52
 	.byte $AE
-	.byte $AE
-	.byte $AE
-	.byte $AC
-	.byte $AC
 	.byte $AC
 	.byte $AA
-	.byte $AA
-	.byte $AA
-	.byte $A8
-	.byte $A8
 	.byte $A8
 	.byte $A6
-	.byte $A6
-	.byte $A6
-	.byte $A4
-	.byte $A4
 	.byte $A4
 	.byte $A2
 	.byte $A2
-	.byte $A2
-	.byte $A2
 	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
+
+
 
 playfield1_left:
+
 	.byte $00
+;		.byte $00
+;		.byte $00
 	.byte $00
+;		.byte $00
+;		.byte $00
 	.byte $00
+;		.byte $00
+;		.byte $00
 	.byte $00
+;		.byte $00
+;		.byte $00
 	.byte $00
+;		.byte $00
+;		.byte $00
 	.byte $00
+;		.byte $00
+;		.byte $00
 	.byte $00
+;		.byte $00
+;		.byte $00
 	.byte $00
+;		.byte $00
+;		.byte $00
 	.byte $00
+;		.byte $00
+;		.byte $00
 	.byte $00
+;		.byte $00
+;		.byte $00
 	.byte $00
+;		.byte $00
+;		.byte $00
 	.byte $00
+;		.byte $00
+;		.byte $00
 	.byte $00
+;		.byte $00
+;		.byte $00
 	.byte $00
+;		.byte $00
+;		.byte $00
 	.byte $00
+;		.byte $00
+;		.byte $00
 	.byte $00
+;		.byte $00
+;		.byte $00
 	.byte $00
+;		.byte $00
+;		.byte $00
 	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
+;		.byte $00
+;		.byte $00
 	.byte $01
+;		.byte $01
+;		.byte $01
 	.byte $01
+;		.byte $01
+;		.byte $01
 	.byte $01
+;		.byte $01
+;		.byte $01
 	.byte $01
+;		.byte $03
+;		.byte $03
+	.byte $03
+;		.byte $03
+;		.byte $03
+	.byte $03
+;		.byte $03
+;		.byte $03
+	.byte $03
+;		.byte $03
+;		.byte $03
+	.byte $03
+;		.byte $03
+;		.byte $03
+	.byte $03
+;		.byte $03
+;		.byte $03
+	.byte $03
+;		.byte $03
+;		.byte $03
+	.byte $03
+;		.byte $03
+;		.byte $03
+	.byte $03
+;		.byte $03
+;		.byte $03
+	.byte $03
+;		.byte $03
+;		.byte $03
+	.byte $03
+;		.byte $03
+;		.byte $03
+	.byte $03
+;		.byte $03
+;		.byte $03
+	.byte $03
+;		.byte $03
+;		.byte $03
+	.byte $03
+;		.byte $03
+;		.byte $03
+	.byte $03
+;		.byte $03
+;		.byte $03
+	.byte $03
+;		.byte $03
+;		.byte $03
+	.byte $03
+;		.byte $03
+;		.byte $03
+	.byte $03
+;		.byte $03
+;		.byte $03
+	.byte $03
+;		.byte $03
+;		.byte $03
+	.byte $03
+;		.byte $01
+;		.byte $01
 	.byte $01
+;		.byte $01
+;		.byte $01
 	.byte $01
+;		.byte $01
+;		.byte $01
 	.byte $01
+;		.byte $01
+;		.byte $01
 	.byte $01
+;		.byte $01
+;		.byte $01
 	.byte $01
-	.byte $01
-	.byte $03
-	.byte $03
-	.byte $03
-	.byte $03
-	.byte $03
-	.byte $03
-	.byte $03
-	.byte $03
-	.byte $03
-	.byte $03
-	.byte $03
-	.byte $03
-	.byte $03
-	.byte $03
-	.byte $03
-	.byte $03
-	.byte $03
-	.byte $03
-	.byte $03
-	.byte $03
-	.byte $03
-	.byte $03
-	.byte $03
-	.byte $03
-	.byte $03
-	.byte $03
-	.byte $03
-	.byte $03
-	.byte $03
-	.byte $03
-	.byte $03
-	.byte $03
-	.byte $03
-	.byte $03
-	.byte $03
-	.byte $03
-	.byte $03
-	.byte $03
-	.byte $03
-	.byte $03
-	.byte $03
-	.byte $03
-	.byte $03
-	.byte $03
-	.byte $03
-	.byte $03
-	.byte $03
-	.byte $03
-	.byte $03
-	.byte $03
-	.byte $03
-	.byte $03
-	.byte $03
-	.byte $03
-	.byte $03
-	.byte $03
-	.byte $03
-	.byte $01
-	.byte $01
-	.byte $01
-	.byte $01
-	.byte $01
-	.byte $01
-	.byte $01
-	.byte $01
-	.byte $01
-	.byte $01
-	.byte $01
-	.byte $01
-	.byte $01
-	.byte $01
-	.byte $01
+;		.byte $00
+;		.byte $00
 	.byte $00
+;		.byte $00
+;		.byte $00
 	.byte $00
+;		.byte $00
+;		.byte $00
 	.byte $00
+;		.byte $00
+;		.byte $00
 	.byte $00
+;		.byte $00
+;		.byte $00
 	.byte $00
+;		.byte $00
+;		.byte $00
 	.byte $00
+;		.byte $00
+;		.byte $00
 	.byte $00
+;		.byte $00
+;		.byte $00
 	.byte $00
+;		.byte $00
+;		.byte $00
 	.byte $00
+;		.byte $00
+;		.byte $00
 	.byte $00
+;		.byte $00
+;		.byte $00
 	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
+;		.byte $00
+;		.byte $00
 
 playfield2_left:
-	.byte $00,$00,$00,$00,$00,$00,$00,$00
-	.byte $00,$00,$00,$00,$00,$00,$00,$00
+	.byte $00,$00,$00,$00,$00,$00,$00
 	.byte $00,$00,$00,$00,$00,$00,$00,$00
 	.byte $00,$00,$00,$00,$00,$00,$00,$00
 	.byte $00,$00,$00,$00,$00,$00,$00,$00
@@ -774,12 +664,10 @@ playfield2_left:
 	.byte $38
 	.byte $38
 	.byte $38
-	.byte $10,$00,$00,$00,$00,$00,$00,$00
-	.byte $00,$00,$00,$00,$00,$00,$00,$00
+	.byte $10,$00,$00,$00
 
 playfield0_right:
-	.byte $00,$00,$00,$00,$00,$00,$00,$00
-	.byte $00,$00,$00,$80,$80,$80,$C0,$C0
+	.byte $00,$00,$80,$80,$80,$C0,$C0
 	.byte $C0
 	.byte $C0
 	.byte $C0
@@ -933,40 +821,14 @@ playfield0_right:
 	.byte $F0
 	.byte $F0
 	.byte $F0,$F0,$C0,$C0,$80,$80,$80,$00
-	.byte $00,$00,$00,$00,$00,$00,$00,$00
-	.byte $00,$00,$00,$00,$00,$00,$00,$00
+	.byte $00,$00,$00,$00
 
 playfield1_right:
-	.byte $00,$00,$00,$00,$00,$00,$00,$00
-	.byte $00,$80,$80,$80,$80,$80,$80,$80
-	.byte $80
-	.byte $80
-	.byte $80
-	.byte $80
-	.byte $80
-	.byte $80
-	.byte $80
-	.byte $80
-	.byte $80
-	.byte $80
-	.byte $80
-	.byte $80
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
+	.byte $80,$80,$80,$80,$80,$80,$80
+	.byte $80,$80,$80,$80,$80,$80,$80
+	.byte $80,$80,$80,$80,$80,$00,$00
+	.byte $00,$00,$00,$00,$00,$00,$00
+	.byte $00,$00,$00,$00,$00,$00,$00
 	.byte $00
 	.byte $00
 	.byte $00
@@ -1043,10 +905,10 @@ playfield1_right:
 	.byte $F8,$F8,$F8,$F8,$F8,$F8,$F8,$F8
 	.byte $F8,$F0,$F0,$F0,$F0,$F0,$F0,$F0
 	.byte $F0,$E0,$E0,$E0,$E0,$E0,$C0,$C0
-	.byte $C0,$00,$00,$00,$00,$00,$00,$00
-	.byte $00,$00,$00,$00,$00,$00,$00,$00
+	.byte $C0,$00,$00,$00
 
-.align	$100
+
+;.align	$100
 
 ; Sprites (upside down)
 
@@ -1111,8 +973,8 @@ sprite_bitmap5:		; [
 	.byte	$BE
 
 .segment "IRQ_VECTORS"
-	.word start	; NMI
-	.word start	; RESET
-	.word start	; IRQ
+	.word apple_tiny_start	; NMI
+	.word apple_tiny_start	; RESET
+	.word apple_tiny_start	; IRQ
 
 
