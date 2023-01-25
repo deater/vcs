@@ -9,6 +9,7 @@
 ; $486 -- skip first 9 lines (always 0)
 ; $3ff -- only read color every 1/3 line
 ; $38D -- only read playfield_left1 every 1/3 line
+; $31A -- only read playfield_right1 every 1/3 line
 
 .include "../../vcs.inc"
 
@@ -115,7 +116,7 @@ colorful_loop:
 	sta	PF0			;				3
 	; has to happen 28-49
 ; 36/37
-	lda	playfield1_right,X	;				4+
+	lda	playfield1_right,Y	;				4+
 	sta	PF1			;				3
 	; has to happen 38-56
 ; 43/44
@@ -824,88 +825,63 @@ playfield0_right:
 	.byte $00,$00,$00,$00
 
 playfield1_right:
-	.byte $80,$80,$80,$80,$80,$80,$80
-	.byte $80,$80,$80,$80,$80,$80,$80
-	.byte $80,$80,$80,$80,$80,$00,$00
-	.byte $00,$00,$00,$00,$00,$00,$00
-	.byte $00,$00,$00,$00,$00,$00,$00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $E0
-	.byte $E0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F8
-	.byte $F8
-	.byte $F8
-	.byte $F8
-	.byte $F8
-	.byte $FC
-	.byte $FC
-	.byte $FC
-	.byte $FC
-	.byte $FC
-	.byte $FC
-	.byte $FC
-	.byte $FC
-	.byte $FC
-	.byte $F8
-	.byte $F8
-	.byte $F8
-	.byte $F8
-	.byte $F8
-	.byte $F8
-	.byte $F8
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $E0
-	.byte $E0
-	.byte $E0
-	.byte $E0
-	.byte $E0
-	.byte $E0
-	.byte $E0
-	.byte $E0
-	.byte $E0
-	.byte $E0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0,$F0,$F0,$F0,$F0,$F0,$F0,$F8
-	.byte $F8,$F8,$F8,$F8,$F8,$F8,$FC,$FC
-	.byte $FC,$FC,$FE,$FE,$FE,$FE,$FE,$FE
-	.byte $FE,$FE,$FE,$FC,$FC,$FC,$FC,$FC
-	.byte $FC,$FC,$FC,$FC,$FC,$FC,$FC,$F8
-	.byte $F8,$F8,$F8,$F8,$F8,$F8,$F8,$F8
-	.byte $F8,$F0,$F0,$F0,$F0,$F0,$F0,$F0
-	.byte $F0,$E0,$E0,$E0,$E0,$E0,$C0,$C0
-	.byte $C0,$00,$00,$00
+	.byte $80;,$80,$80
+	.byte $80;,$80,$80
+	.byte $80;,$80,$80
+	.byte $80;,$80,$80
+	.byte $80;,$80,$80
+	.byte $80;,$80,$80
+	.byte $80;,$00,$00
+	.byte $00;,$00,$00
+	.byte $00;,$00,$00
+	.byte $00;,$00,$00
+	.byte $00;,$00,$00
+	.byte $00;,$00,$00
+	.byte $00;,$00,$00
+	.byte $E0;,$E0,$F0
+	.byte $F0;,$F0,$F0
+	.byte $F8;,$F8,$F8
+	.byte $F8;,$F8,$FC
+	.byte $FC;,$FC,$FC
+	.byte $FC;,$FC,$FC
+	.byte $FC;,$FC,$F8
+	.byte $F8;,$F8,$F8
+	.byte $F8;,$F8,$F8
+	.byte $F0;,$F0,$F0
+	.byte $F0;,$F0,$F0
+	.byte $F0;,$F0,$F0
+	.byte $F0;,$F0,$F0
+	.byte $F0;,$F0,$F0
+	.byte $F0;,$F0,$E0
+	.byte $E0;,$E0,$E0
+	.byte $E0;,$E0,$E0
+	.byte $E0;,$E0,$E0
+	.byte $F0;,$F0,$F0
+	.byte $F0;,$F0,$F0
+	.byte $F0;,$F0,$F0
+	.byte $F0;,$F0,$F0
+	.byte $F0;,$F0,$F0
+	.byte $F0;,$F0,$F8
+	.byte $F8;,$F8,$F8
+	.byte $F8;,$F8,$F8
+	.byte $FC;,$FC,$FC
+	.byte $FC;,$FE,$FE
+	.byte $FE;,$FE,$FE
+	.byte $FE;,$FE,$FE
+	.byte $FE;,$FC,$FC
+	.byte $FC;,$FC,$FC
+	.byte $FC;,$FC,$FC
+	.byte $FC;,$FC,$FC
+	.byte $FC;,$F8,$F8
+	.byte $F8;,$F8,$F8
+	.byte $F8;,$F8,$F8
+	.byte $F8;,$F8,$F0
+	.byte $F0;,$F0,$F0
+	.byte $F0;,$F0,$F0
+	.byte $F0;,$E0,$E0
+	.byte $E0;,$E0,$E0
+	.byte $C0;,$C0,$C0
+	.byte $00;,$00,$00
 
 
 ;.align	$100
