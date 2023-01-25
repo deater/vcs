@@ -904,7 +904,7 @@ sprite_bitmap0:		; AP
 
 sprite_bitmap1:
 	.byte	$00	; PP
-h	.byte	$08
+	.byte	$08
 	.byte	$08
 	.byte	$08
 	.byte	$cf
