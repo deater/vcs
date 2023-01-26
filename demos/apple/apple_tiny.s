@@ -23,7 +23,8 @@ TEXT_COLOR		=	$80
 TEMP1			=	$90
 TEMP2			=	$91
 DIV3			=	$92
-
+XSAVE			=	$93
+COLOR_OFFSET		=	$94
 
 apple_tiny_start:
 
@@ -94,21 +95,32 @@ start_frame:
 
 	; FIXME: X already 0 here?
 ; 10
-	ldx	#0
+	tsx
+	stx	XSAVE
+
+	lda	#0
+	sta	PF0
 	ldy	#0
+	ldx	#171
+	sta	DIV3
+	lda	#2
+	sta	COLOR_OFFSET
 
 	sta	WSYNC
 
 colorful_loop:
 ; 3
+	txs
 	lda	colors,Y		;				4+
 	sta	COLUPF			; set playfield color		3
+	lda	row_lookup,X		;				4+
+	tax
 ; 10/11
-	lda	#0			; always 0			2
-	sta	PF0			;				3
+;	lda	#0			; always 0			2
+;	sta	PF0			;				3
 	; has to happen by 22
 ; 15/16
-	lda	playfield1_left,Y	;				4+
+	lda	playfield1_left,X	;				4+
 	sta	PF1			;				3
 	; has to happen by 28
 ; 22/23
@@ -120,34 +132,40 @@ colorful_loop:
 	sta	PF0			;				3
 	; has to happen 28-49
 ; 36/37
-	lda	playfield1_right,Y	;				4+
+	lda	playfield1_right,X	;				4+
 	sta	PF1			;				3
 	; has to happen 38-56
 ; 43/44
-	lda	#0			; always 0			4+
+	lda	#0			; always 0			2
 	sta	PF2			;				3
+	sta	PF0
 	; has to happen 49-67
-; 50/51
+; 52/53
 
-	inc	DIV3	; 5
-	sec		; 2
-	lda	#3	; 2
-	sbc	DIV3	; 2
-	bne	not3	; 2/3
+	dec	DIV3	; 5
+	bpl	not3	; 2/3
 
-	sta	DIV3	; 3
-	iny		; 2
+	lda	#2		; 2
+	sta	DIV3		; 3
+	iny			; 2
 not3:
+; 66/67
+;	ldy	COLOR_OFFSET		;				3
 
-	inx				;				2
-	cpx	#171			;				2
-; 64/65
+; 70/71
+
+	tsx				;				2
+	dex				;				2
+;	cpx	#171			;				2
+; 74/75
 
 	sta	WSYNC			;				3
+; 80
 	bne	colorful_loop		;				2/3
 
 
-
+	ldx	XSAVE
+	txs
 
 
 	;==============================================================
@@ -300,592 +318,117 @@ scanline_wait:
 ;.align $100
 
 ; multiples of 3 except very last
+
 colors:
-	.byte $CE
-	.byte $CC
-	.byte $CA
-	.byte $C8
-	.byte $C6
-	.byte $C4
-	.byte $C2
-	.byte $C4
-	.byte $C6
-	.byte $C8
-	.byte $CA
-	.byte $CC
-	.byte $CE
-	.byte $CE
-	.byte $CC
-	.byte $CA
-	.byte $C8
-	.byte $C6
-	.byte $C4
-	.byte $C2
-	.byte $1E
-	.byte $1C
-	.byte $1A
-	.byte $18
-	.byte $16
-	.byte $14
-	.byte $12
-	.byte $2E
-	.byte $2C
-	.byte $2A
-	.byte $28
-	.byte $26
-	.byte $24
-	.byte $22
-	.byte $4E
-	.byte $4C
-	.byte $4A
-	.byte $48
-	.byte $46
-	.byte $44
-	.byte $42
-	.byte $5E
-	.byte $5C
-	.byte $5A
-	.byte $58
-	.byte $56
-	.byte $54
-	.byte $52
-	.byte $AE
-	.byte $AC
-	.byte $AA
-	.byte $A8
-	.byte $A6
-	.byte $A4
-	.byte $A2
-	.byte $A2
-	.byte $00
+	.byte $CE	;$CE,$CE,$CE
+	.byte $CC	;$CC,$CC,$CC
+	.byte $CA	;$CA,$CA,$CA
+	.byte $C8	;$C8,$C8,$C8
+	.byte $C6	;$C6,$C6,$C6
+	.byte $C4	;$C4,$C4,$C4
+	.byte $C2	;$C2,$C2,$C2
+	.byte $C4	;$C4,$C4,$C4
+	.byte $C6	;$C6,$C6,$C6
+	.byte $C8	;$C8,$C8,$C8
+	.byte $CA	;$CA,$CA,$CA
+	.byte $CC	;$CC,$CC,$CC
+	.byte $CE	;$CE,$CE,$CE
+	.byte $CE	;$CE,$CE,$CE
+	.byte $CC	;$CC,$CC,$CC
+	.byte $CA	;$CA,$CA,$CA
+	.byte $C8	;$C8,$C8,$C8
+	.byte $C6	;$C6,$C6,$C6
+	.byte $C4	;$C4,$C4,$C4
+	.byte $C2	;$C2,$C2,$C2
+	.byte $1E	;$1E,$1E,$1E
+	.byte $1C	;$1C,$1C,$1C
+	.byte $1A	;$1A,$1A,$1A
+	.byte $18	;$18,$18,$18
+	.byte $16	;$16,$16,$16
+	.byte $14	;$14,$14,$14
+	.byte $12	;$12,$12,$12
+	.byte $2E	;$12,$2E,$2E
+	.byte $2C	;$2E,$2C,$2C
+	.byte $2A	;$2C,$2A,$2A
+	.byte $28	;$2A,$28,$28
+	.byte $26	;$28,$26,$26
+	.byte $24	;$26,$24,$24
+	.byte $22	;$24,$22,$22
+	.byte $4E	;$22,$4E,$4E
+	.byte $4C	;$4E,$4C,$4C
+	.byte $4A	;$4C,$4A,$4A
+	.byte $48	;$4A,$48,$48
+	.byte $46	;$48,$46,$46
+	.byte $44	;$46,$44,$44
+	.byte $42	;$44,$42,$42
+	.byte $42	;$42,$42,$5E
+	.byte $5E	;$5E,$5E,$5C
+	.byte $5C	;$5C,$5C,$5A
+	.byte $5A	;$5A,$5A,$58
+	.byte $58	;$58,$58,$56
+	.byte $56	;$56,$56,$54
+	.byte $54	;$54,$54,$52
+	.byte $52	;$52,$52,$AE
+	.byte $AE	;$AE,$AE,$AC
+	.byte $AC	;$AC,$AC,$AA
+	.byte $AA	;$AA,$AA,$A8
+	.byte $A8	;$A8,$A8,$A6
+	.byte $A6	;$A6,$A6,$A4
+	.byte $A4	;$A4,$A4,$A2
+	.byte $A2	;$A2,$A2,$A2
+	.byte $00	;$00,$00,$00
 
 
+
+row_lookup:
+;.byte	0,0,0,0,0,0,0,0,0,0,0,0,
+.byte 0,0,0,36,35,34,33,32,31,30,29,28,28,28,28,27,27,27,27,17,17,17,17,17,18,18,18,18,18,19,19,19,19,19,19,20,20,20,20,20,20,26,26,26,26,26,26,26,26,26,25,25,25,25,22,22,22,22,22,22,22,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,24,24,24,24,24,24,24,24,24,24,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,22,22,21,21,21,21,21,20,20,20,20,20,19,19,19,19,18,18,18,17,16,15,14,13,12,11,10,9,8,8,8,7,7,7,7,7,7,6,6,6,6,6,6,6,6,6,5,4,4,4,4,4,4,4,4,3,3,3,3,3,3,2,2,2,1,1
+;.byte 0,0,0,0,0,0,0,0,0
+.if 0
+row_lookup:
+;.byte	0,0,0,0,0,0,0,0,0,
+.byte	1,1,2,2,2,3,3,3,3,3,3,4,4,4,4,4
+.byte	4,4,4,5,6,6,6,6,6,6,6,6,6,7,7,7
+.byte	7,7,7,8,8,8,9,10,11,12,13,14,15
+.byte	16,17,18,18,18,19,19,19,19,20,20
+.byte	20,20,20,21,21,21,21,21,22,22,23
+.byte	23,23,23,23,23,23,23,23,23,23,23
+.byte	23,23,23,23,23,24,24,24,24,24,24
+.byte	24,24,24,24,23,23,23,23,23,23,23
+.byte	23,23,23,23,23,23,23,23,23,23,22
+.byte	22,22,22,22,22,22,25,25,25,25,26
+.byte	26,26,26,26,26,26,26,26,20,20,20
+.byte	20,20,20,19,19,19,19,19,19,18,18
+.byte	18,18,18,17,17,17,17,17,27,27,27
+.byte	27,28,28,28,28,29,30,31,32,33,34
+.byte	35,36,0,0,0
+;.byte 0,0,0,0,0,0,0,0,0,0,0,0
+.endif
 
 playfield1_left:
-
-	.byte $00
-;		.byte $00
-;		.byte $00
-	.byte $00
-;		.byte $00
-;		.byte $00
-	.byte $00
-;		.byte $00
-;		.byte $00
-	.byte $00
-;		.byte $00
-;		.byte $00
-	.byte $00
-;		.byte $00
-;		.byte $00
-	.byte $00
-;		.byte $00
-;		.byte $00
-	.byte $00
-;		.byte $00
-;		.byte $00
-	.byte $00
-;		.byte $00
-;		.byte $00
-	.byte $00
-;		.byte $00
-;		.byte $00
-	.byte $00
-;		.byte $00
-;		.byte $00
-	.byte $00
-;		.byte $00
-;		.byte $00
-	.byte $00
-;		.byte $00
-;		.byte $00
-	.byte $00
-;		.byte $00
-;		.byte $00
-	.byte $00
-;		.byte $00
-;		.byte $00
-	.byte $00
-;		.byte $00
-;		.byte $00
-	.byte $00
-;		.byte $00
-;		.byte $00
-	.byte $00
-;		.byte $00
-;		.byte $00
-	.byte $00
-;		.byte $00
-;		.byte $00
-	.byte $01
-;		.byte $01
-;		.byte $01
-	.byte $01
-;		.byte $01
-;		.byte $01
-	.byte $01
-;		.byte $01
-;		.byte $01
-	.byte $01
-;		.byte $03
-;		.byte $03
-	.byte $03
-;		.byte $03
-;		.byte $03
-	.byte $03
-;		.byte $03
-;		.byte $03
-	.byte $03
-;		.byte $03
-;		.byte $03
-	.byte $03
-;		.byte $03
-;		.byte $03
-	.byte $03
-;		.byte $03
-;		.byte $03
-	.byte $03
-;		.byte $03
-;		.byte $03
-	.byte $03
-;		.byte $03
-;		.byte $03
-	.byte $03
-;		.byte $03
-;		.byte $03
-	.byte $03
-;		.byte $03
-;		.byte $03
-	.byte $03
-;		.byte $03
-;		.byte $03
-	.byte $03
-;		.byte $03
-;		.byte $03
-	.byte $03
-;		.byte $03
-;		.byte $03
-	.byte $03
-;		.byte $03
-;		.byte $03
-	.byte $03
-;		.byte $03
-;		.byte $03
-	.byte $03
-;		.byte $03
-;		.byte $03
-	.byte $03
-;		.byte $03
-;		.byte $03
-	.byte $03
-;		.byte $03
-;		.byte $03
-	.byte $03
-;		.byte $03
-;		.byte $03
-	.byte $03
-;		.byte $01
-;		.byte $01
-	.byte $01
-;		.byte $01
-;		.byte $01
-	.byte $01
-;		.byte $01
-;		.byte $01
-	.byte $01
-;		.byte $01
-;		.byte $01
-	.byte $01
-;		.byte $01
-;		.byte $01
-	.byte $01
-;		.byte $00
-;		.byte $00
-	.byte $00
-;		.byte $00
-;		.byte $00
-	.byte $00
-;		.byte $00
-;		.byte $00
-	.byte $00
-;		.byte $00
-;		.byte $00
-	.byte $00
-;		.byte $00
-;		.byte $00
-	.byte $00
-;		.byte $00
-;		.byte $00
-	.byte $00
-;		.byte $00
-;		.byte $00
-	.byte $00
-;		.byte $00
-;		.byte $00
-	.byte $00
-;		.byte $00
-;		.byte $00
-	.byte $00
-;		.byte $00
-;		.byte $00
-	.byte $00
-;		.byte $00
-;		.byte $00
-	.byte $00
-;		.byte $00
-;		.byte $00
-
+	.byte $00,$00,$00,$00,$00,$00,$00,$00
+	.byte $00,$00,$00,$00,$00,$00,$00,$00
+	.byte $00,$00,$00,$00,$01,$01,$03,$03
+	.byte $03,$03,$01,$00,$00,$00,$00,$00
+	.byte $00,$00,$00,$00,$00
 playfield2_left:
-	.byte $00,$00,$00,$00,$00,$00,$00
 	.byte $00,$00,$00,$00,$00,$00,$00,$00
-	.byte $00,$00,$00,$00,$00,$00,$00,$00
-	.byte $00,$00,$00,$00,$00,$00,$00,$00
-	.byte $00,$00,$00,$00,$00,$00,$00,$00
-	.byte $18
-	.byte $3C
-	.byte $3C
-	.byte $7C
-	.byte $7E
-	.byte $FE
-	.byte $FE
-	.byte $FE
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FF
-	.byte $FE
-	.byte $FE
-	.byte $FE
-	.byte $FE
-	.byte $FE
-	.byte $FE
-	.byte $FE
-	.byte $FE
-	.byte $FE
-	.byte $FC
-	.byte $FC
-	.byte $FC
-	.byte $FC
-	.byte $FC
-	.byte $FC
-	.byte $7C
-	.byte $78
-	.byte $38
-	.byte $38
-	.byte $38
-	.byte $10,$00,$00,$00
-
+	.byte $00,$00,$18,$3C,$3C,$7C,$7E,$FE
+	.byte $FE,$FE,$FF,$FF,$FF,$FF,$FF,$FF
+	.byte $FF,$FF,$FF,$FE,$FC,$FC,$FC,$7C
+	.byte $78,$38,$38,$38,$10
 playfield0_right:
-	.byte $00,$00,$80,$80,$80,$C0,$C0
-	.byte $C0
-	.byte $C0
-	.byte $C0
-	.byte $C0
-	.byte $E0
-	.byte $E0
-	.byte $E0
-	.byte $E0
-	.byte $E0
-	.byte $E0
-	.byte $E0
-	.byte $E0
-	.byte $E0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $70
-	.byte $70
-	.byte $70
-	.byte $70
-	.byte $70
-	.byte $70
-	.byte $30
-	.byte $30
-	.byte $30
-	.byte $10
-	.byte $10
-	.byte $00
-	.byte $80
-	.byte $80
-	.byte $C0
-	.byte $C0
-	.byte $E0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0
-	.byte $F0,$F0,$C0,$C0,$80,$80,$80,$00
-	.byte $00,$00,$00,$00
-
+	.byte $00,$00,$80,$C0,$E0,$E0,$F0,$70
+	.byte $30,$10,$10,$00,$80,$80,$C0,$C0
+	.byte $E0,$F0,$F0,$F0,$F0,$F0,$F0,$F0
+	.byte $F0,$F0,$F0,$F0,$F0,$F0,$C0,$C0
+	.byte $80,$80,$80,$00,$00
 playfield1_right:
-	.byte $80;,$80,$80
-	.byte $80;,$80,$80
-	.byte $80;,$80,$80
-	.byte $80;,$80,$80
-	.byte $80;,$80,$80
-	.byte $80;,$80,$80
-	.byte $80;,$00,$00
-	.byte $00;,$00,$00
-	.byte $00;,$00,$00
-	.byte $00;,$00,$00
-	.byte $00;,$00,$00
-	.byte $00;,$00,$00
-	.byte $00;,$00,$00
-	.byte $E0;,$E0,$F0
-	.byte $F0;,$F0,$F0
-	.byte $F8;,$F8,$F8
-	.byte $F8;,$F8,$FC
-	.byte $FC;,$FC,$FC
-	.byte $FC;,$FC,$FC
-	.byte $FC;,$FC,$F8
-	.byte $F8;,$F8,$F8
-	.byte $F8;,$F8,$F8
-	.byte $F0;,$F0,$F0
-	.byte $F0;,$F0,$F0
-	.byte $F0;,$F0,$F0
-	.byte $F0;,$F0,$F0
-	.byte $F0;,$F0,$F0
-	.byte $F0;,$F0,$E0
-	.byte $E0;,$E0,$E0
-	.byte $E0;,$E0,$E0
-	.byte $E0;,$E0,$E0
-	.byte $F0;,$F0,$F0
-	.byte $F0;,$F0,$F0
-	.byte $F0;,$F0,$F0
-	.byte $F0;,$F0,$F0
-	.byte $F0;,$F0,$F0
-	.byte $F0;,$F0,$F8
-	.byte $F8;,$F8,$F8
-	.byte $F8;,$F8,$F8
-	.byte $FC;,$FC,$FC
-	.byte $FC;,$FE,$FE
-	.byte $FE;,$FE,$FE
-	.byte $FE;,$FE,$FE
-	.byte $FE;,$FC,$FC
-	.byte $FC;,$FC,$FC
-	.byte $FC;,$FC,$FC
-	.byte $FC;,$FC,$FC
-	.byte $FC;,$F8,$F8
-	.byte $F8;,$F8,$F8
-	.byte $F8;,$F8,$F8
-	.byte $F8;,$F8,$F0
-	.byte $F0;,$F0,$F0
-	.byte $F0;,$F0,$F0
-	.byte $F0;,$E0,$E0
-	.byte $E0;,$E0,$E0
-	.byte $C0;,$C0,$C0
-	.byte $00;,$00,$00
+	.byte $00,$80,$80,$80,$80,$00,$00,$00
+	.byte $00,$00,$E0,$E0,$F0,$F0,$F0,$F0
+	.byte $F8,$F8,$F8,$FC,$FC,$F8,$F8,$F0
+	.byte $E0,$FC,$FE,$F0,$F0,$E0,$E0,$E0
+	.byte $E0,$E0,$C0,$C0,$C0
 
 
 ;.align	$100
@@ -956,5 +499,4 @@ sprite_bitmap5:		; [
 	.word apple_tiny_start	; NMI
 	.word apple_tiny_start	; RESET
 	.word apple_tiny_start	; IRQ
-
 
