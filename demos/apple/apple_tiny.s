@@ -10,6 +10,8 @@
 ; $3ff -- only read color every 1/3 line
 ; $38D -- only read playfield_left1 every 1/3 line
 ; $31A -- only read playfield_right1 every 1/3 line
+; $2A8 -- more compact encoding
+; $29C -- overlap some of the playfield data
 
 ; TODO: Music?
 ;	Animated sine wave down sides?
@@ -24,7 +26,6 @@ TEMP1			=	$90
 TEMP2			=	$91
 DIV3			=	$92
 XSAVE			=	$93
-COLOR_OFFSET		=	$94
 
 apple_tiny_start:
 
@@ -95,77 +96,75 @@ start_frame:
 
 	; FIXME: X already 0 here?
 ; 10
-	tsx
-	stx	XSAVE
 
-	lda	#0
-	sta	PF0
-	ldy	#0
-	ldx	#171
+	tsx
+	stx	XSAVE		; save stack as we corrupt it
+
+	ldy	#0		; clear div3 count
+	sty	PF0		; also clear leftmost playfield
+
+	ldx	#171		; we count down 171
+
+	lda	#2		; start color count full
 	sta	DIV3
-	lda	#2
-	sta	COLOR_OFFSET
 
 	sta	WSYNC
 
 colorful_loop:
 ; 3
-	txs
-	lda	colors,Y		;				4+
-	sta	COLUPF			; set playfield color		3
-	lda	row_lookup,X		;				4+
-	tax
-; 10/11
-;	lda	#0			; always 0			2
-;	sta	PF0			;				3
-	; has to happen by 22
-; 15/16
-	lda	playfield1_left,X	;				4+
-	sta	PF1			;				3
+	txs				; save X in stack		; 2
+	lda	colors,Y		; get color			; 4+
+	sta	COLUPF			; set playfield color		; 3
+	lda	row_lookup,X		; get which playfield lookup	; 4+
+	tax				; put in X			; 2
+; 18/19
+
+	; PF0 set in previous scanline
+	lda	playfield1_left,X	;				; 4+
+	sta	PF1			;				; 3
 	; has to happen by 28
-; 22/23
-	lda	playfield2_left,X	;				4+
-	sta	PF2			;				3
+; 25/26
+	lda	playfield2_left,X	;				; 4+
+	sta	PF2			;				; 3
 	; has to happen by 38
-; 29/30
-	lda	playfield0_right,X	;				4+
-	sta	PF0			;				3
+; 32/33
+	lda	playfield0_right,X	;				; 4+
+	sta	PF0			;				; 3
 	; has to happen 28-49
-; 36/37
-	lda	playfield1_right,X	;				4+
-	sta	PF1			;				3
+; 39/40
+	lda	playfield1_right,X	;				; 4+
+	sta	PF1			;				; 3
 	; has to happen 38-56
-; 43/44
-	lda	#0			; always 0			2
-	sta	PF2			;				3
-	sta	PF0
+; 46/47
+	lda	#0			; always 0			; 2
+	sta	PF2			;				; 3
+	sta	PF0							; 3
 	; has to happen 49-67
-; 52/53
+; 54/55
 
-	dec	DIV3	; 5
-	bpl	not3	; 2/3
+	dec	DIV3			; dec div3 count		; 5
+	bpl	not3							; 2/3
 
-	lda	#2		; 2
-	sta	DIV3		; 3
-	iny			; 2
+	lda	#2			; reset div3 count		; 2
+	sta	DIV3							; 3
+	iny				; inc div3 color ptr		; 2
 not3:
-; 66/67
-;	ldy	COLOR_OFFSET		;				3
+; 68/69 worst case
 
-; 70/71
+	tsx				; restore X from stack ptr	; 2
+	dex				; dec X				; 2
 
-	tsx				;				2
-	dex				;				2
-;	cpx	#171			;				2
-; 74/75
+; 72/73
 
-	sta	WSYNC			;				3
-; 80
-	bne	colorful_loop		;				2/3
+	sta	WSYNC			;				; 3
+; 75/76
+	bne	colorful_loop		;				; 2/3
 
+	;=================
+	; done!
 
-	ldx	XSAVE
-	txs
+	ldx	XSAVE			; restore stack			; 3
+	txs								; 2
 
 
 	;==============================================================
@@ -315,7 +314,7 @@ scanline_wait:
 	rts						; 6
 
 
-;.align $100
+.align $100
 
 ; multiples of 3 except very last
 
@@ -380,40 +379,18 @@ colors:
 
 
 
-row_lookup:
-;.byte	0,0,0,0,0,0,0,0,0,0,0,0,
-.byte 0,0,0,36,35,34,33,32,31,30,29,28,28,28,28,27,27,27,27,17,17,17,17,17,18,18,18,18,18,19,19,19,19,19,19,20,20,20,20,20,20,26,26,26,26,26,26,26,26,26,25,25,25,25,22,22,22,22,22,22,22,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,24,24,24,24,24,24,24,24,24,24,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,22,22,21,21,21,21,21,20,20,20,20,20,19,19,19,19,18,18,18,17,16,15,14,13,12,11,10,9,8,8,8,7,7,7,7,7,7,6,6,6,6,6,6,6,6,6,5,4,4,4,4,4,4,4,4,3,3,3,3,3,3,2,2,2,1,1
-;.byte 0,0,0,0,0,0,0,0,0
-.if 0
-row_lookup:
-;.byte	0,0,0,0,0,0,0,0,0,
-.byte	1,1,2,2,2,3,3,3,3,3,3,4,4,4,4,4
-.byte	4,4,4,5,6,6,6,6,6,6,6,6,6,7,7,7
-.byte	7,7,7,8,8,8,9,10,11,12,13,14,15
-.byte	16,17,18,18,18,19,19,19,19,20,20
-.byte	20,20,20,21,21,21,21,21,22,22,23
-.byte	23,23,23,23,23,23,23,23,23,23,23
-.byte	23,23,23,23,23,24,24,24,24,24,24
-.byte	24,24,24,24,23,23,23,23,23,23,23
-.byte	23,23,23,23,23,23,23,23,23,23,22
-.byte	22,22,22,22,22,22,25,25,25,25,26
-.byte	26,26,26,26,26,26,26,26,20,20,20
-.byte	20,20,20,19,19,19,19,19,19,18,18
-.byte	18,18,18,17,17,17,17,17,27,27,27
-.byte	27,28,28,28,28,29,30,31,32,33,34
-.byte	35,36,0,0,0
-;.byte 0,0,0,0,0,0,0,0,0,0,0,0
-.endif
 
 playfield1_left:
 	.byte $00,$00,$00,$00,$00,$00,$00,$00
 	.byte $00,$00,$00,$00,$00,$00,$00,$00
 	.byte $00,$00,$00,$00,$01,$01,$03,$03
-	.byte $03,$03,$01,$00,$00,$00,$00,$00
-	.byte $00,$00,$00,$00,$00
+	.byte $03,$03,$01
 playfield2_left:
-	.byte $00,$00,$00,$00,$00,$00,$00,$00
-	.byte $00,$00,$18,$3C,$3C,$7C,$7E,$FE
+	.byte $00,$00,$00,$00,$00
+	.byte $00,$00,$00,$00,$00
+;	.byte $00,$00,$00,$00,$00,$00,$00,$00
+;	.byte $00,$00,
+	.byte $18,$3C,$3C,$7C,$7E,$FE
 	.byte $FE,$FE,$FF,$FF,$FF,$FF,$FF,$FF
 	.byte $FF,$FF,$FF,$FE,$FC,$FC,$FC,$7C
 	.byte $78,$38,$38,$38,$10
@@ -422,13 +399,40 @@ playfield0_right:
 	.byte $30,$10,$10,$00,$80,$80,$C0,$C0
 	.byte $E0,$F0,$F0,$F0,$F0,$F0,$F0,$F0
 	.byte $F0,$F0,$F0,$F0,$F0,$F0,$C0,$C0
-	.byte $80,$80,$80,$00,$00
+	.byte $80,$80,$80,$00
 playfield1_right:
-	.byte $00,$80,$80,$80,$80,$00,$00,$00
+	.byte $00
+
+;	.byte $00,
+	.byte $80,$80,$80,$80,$00,$00,$00
 	.byte $00,$00,$E0,$E0,$F0,$F0,$F0,$F0
 	.byte $F8,$F8,$F8,$FC,$FC,$F8,$F8,$F0
 	.byte $E0,$FC,$FE,$F0,$F0,$E0,$E0,$E0
 	.byte $E0,$E0,$C0,$C0,$C0
+
+row_lookup:
+;.byte	0,0,0,0,0,0,0,0,0,0,0,0,
+;171 total?  upside down
+.byte  0, 0, 0,36,35,34,33,32,31
+.byte 30,29,28,28,28,28,27,27,27
+.byte 27,17,17,17,17,17,18,18,18
+.byte 18,18,19,19,19,19,19,19,20
+.byte 20,20,20,20,20,26,26,26,26
+.byte 26,26,26,26,26,25,25,25,25
+.byte 22,22,22,22,22,22,22,23,23
+.byte 23,23,23,23,23,23,23,23,23
+.byte 23,23,23,23,23,23,24,24,24
+.byte 24,24,24,24,24,24,24,23,23
+.byte 23,23,23,23,23,23,23,23,23
+.byte 23,23,23,23,23,23,22,22,21
+.byte 21,21,21,21,20,20,20,20,20
+.byte 19,19,19,19,18,18,18,17,16
+.byte 15,14,13,12,11,10, 9, 8, 8
+.byte  8, 7, 7, 7, 7, 7, 7, 6, 6
+.byte  6, 6, 6, 6, 6, 6, 6, 5, 4
+.byte  4, 4, 4, 4, 4, 4, 4, 3, 3
+.byte  3, 3, 3, 3, 2, 2, 2, 1, 1
+;.byte 0,0,0,0,0,0,0,0,0
 
 
 ;.align	$100
