@@ -11,7 +11,7 @@ tb1.o:	tb1.s \
 	zp.inc common_routines.s \
 	title_screen.s title.inc \
 	init_level.s level_engine.s \
-	update_score.s add_score.s
+	update_score.s add_score.s timer_bar.s score.s
 	ca65 -o tb1.o tb1.s -l tb1.lst
 
 ###
