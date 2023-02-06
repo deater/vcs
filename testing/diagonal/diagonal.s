@@ -1,16 +1,6 @@
-; Atari Logo
+; Diagonal Lines
 
 ; by Vince `deater` Weaver <vince@deater.net>
-
-
-; $239 -- first attempt
-; $200 -- auto-gen colors
-; $1E0 -- mirror playfield
-; $149 -- re-write kernel a bit
-; $121 -- more re-write
-; $D7  (215) -- only draw every-other line
-; $D6  (214) -- animate colors, but also optimize more
-; $B8  (184) -- skip some long strings of 1s in shape lookup
 
 .include "../../vcs.inc"
 
@@ -64,13 +54,54 @@ start_frame:
 
 	; 37 lines of vertical blank
 
-	ldx	#36
+	ldx	#35
 	jsr	scanline_wait		; Leaves X zero
-
 ; 10
+
+	;===========================
+	; 36
+
+	 ; apply fine adjust
+
+	lda	#$e0
+        sta     HMP0			; sprite0 + 2
+
+	lda	#$20
+        sta     HMP1			; sprite1 - 2
+
+	sta	RESP0			; coasre sprite0
+
+
+	lda	#$40			; red
+	sta	COLUP0
+	sta	COLUP1
+
+	lda	#$ff
+	sta	GRP0			; set sprite
+	sta	GRP1			; set sprite
+
+	ldx	#5
+right_loop:
+	dex
+	bne	right_loop
+	nop
+
+	sta	RESP1			; coarse sprite1
+
+        sta     WSYNC                   ;                               3
+	sta	HMOVE
+
+
+
+	sta	WSYNC
+
+	;=============================
+	; 37
+
 	sta	WSYNC
 
 	stx	VBLANK			; turn on beam (X=0)
+
 
 	;===========================
 	;===========================
@@ -136,6 +167,7 @@ its1:
 ; 39
 
 	sta	WSYNC			;				; 3
+	sta	HMOVE
 	sta	WSYNC			;				; 3
 ; 75/76
 	bne	colorful_loop		;				; 2/3
@@ -166,8 +198,8 @@ oog_loop:
 	ldx	#30
 	jsr	scanline_wait
 
-	beq	start_frame	; bra
-;	jmp	start_frame
+;	beq	start_frame	; bra
+	jmp	start_frame
 
 
 	;====================
