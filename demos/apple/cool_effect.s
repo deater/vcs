@@ -1,4 +1,4 @@
-; Atari Fancy
+; Diagonal Lines
 
 ; by Vince `deater` Weaver <vince@deater.net>
 
@@ -8,10 +8,6 @@
 
 MAIN_COLOR		=	$80
 LINE_COLOR		=	$81
-FRAME			=	$82
-FRAMEH			=	$83
-FRAME2			=	$84
-
 TEMP1			=	$90
 TEMP2			=	$91
 
@@ -75,19 +71,22 @@ start_frame:
 
 	sta	RESP0			; coasre sprite0
 
+
 	lda	#$40			; red
 	sta	COLUP0
 	sta	COLUP1
 
-	ldx	#6
+	lda	#$00
+	sta	GRP0			; set sprite
+	sta	GRP1			; set sprite
+
+	ldx	#5
 right_loop:
 	dex
 	bne	right_loop
-
 	nop
-	lda	$00
 
-	sta	RESP1			; coarse sprite1
+;	sta	RESP1			; coarse sprite1
 
         sta     WSYNC                   ;                               3
 	sta	HMOVE
@@ -98,9 +97,6 @@ right_loop:
 
 	;=============================
 	; 37
-
-
-	jsr	inc_frame				; 6+18
 
 	sta	WSYNC
 
@@ -137,13 +133,10 @@ right_loop:
 	lda	#CTRLPF_REF	; mirror playfield
 	sta	CTRLPF
 
-	lda	FRAMEH
-	beq	not_yet
-
-	lda	#$ff
+	lda	#$FF
 	sta	GRP0			; set sprite
 	sta	GRP1			; set sprite
-not_yet:
+
 	sta	WSYNC
 
 
@@ -172,17 +165,6 @@ its1:
 	inc	LINE_COLOR						; 5
 	inc	LINE_COLOR						; 5
 ; 37
-	; 74...0, frame 0...255
-	stx	FRAME2
-	lda	#74
-	sbc	FRAME2
-	cmp	FRAME
-	bcc	no_draw_x
-	lda	#$00
-	sta	GRP0			; set sprite
-	sta	GRP1			; set sprite
-
-no_draw_x:
 
 	dex				; dec X				; 2
 
@@ -205,7 +187,7 @@ no_draw_x:
 	sta	GRP0			; set sprite
 	sta	GRP1			; set sprite
 
-	ldx	#23
+	ldx	#24
 oog_loop:
 	sta	WSYNC
 	dex
@@ -239,16 +221,6 @@ scanline_wait:
 	bne	scanline_wait				; 2/3
 	rts						; 6
 
-	;==================
-	; increment frame
-	;==================
-	; worst case 18
-inc_frame:
-	inc	FRAME					; 5
-	bne	no_inc_high				; 2/3
-	inc	FRAMEH					; 5
-no_inc_high:
-	rts						; 6
 
 ;.align $100
 
