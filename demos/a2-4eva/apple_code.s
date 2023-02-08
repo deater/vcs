@@ -221,12 +221,14 @@ spriteloop:
 	sty	GRP0			; ?->[GRP0], [GRP1 (5)]-->GRP1 	; 3
 	; 53 (need this to be 52 .. 54)
 
-	nop								; 2
-	nop								; 2
-	nop								; 2
-	nop								; 2
-	nop								; 2
-	nop								; 2
+	jsr	delay_12
+
+;	nop								; 2
+;	nop								; 2
+;	nop								; 2
+;	nop								; 2
+;	nop								; 2
+;	nop								; 2
 
 	; 65
 
@@ -253,15 +255,15 @@ spriteloop:
 
 	; wait 30 scanlines
 
-	ldx	#30
+	ldx	#29
 	jsr	scanline_wait
 
+	;=====================
+
+	jsr	play_music
+
+	sta	WSYNC
+
+
 	jmp	start_frame
-
-
-
-
-
-
-
 

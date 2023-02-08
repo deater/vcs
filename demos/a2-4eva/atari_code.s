@@ -189,8 +189,15 @@ oog_loop:
 
 	; wait 30 scanlines
 
-	ldx	#30
+	ldx	#29
 	jsr	scanline_wait
+
+	;=======================
+	;
+
+	jsr	play_music
+
+	sta	WSYNC
 
 	lda	FRAMEH
 	cmp	#2

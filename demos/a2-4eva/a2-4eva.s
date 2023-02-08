@@ -28,6 +28,8 @@ LINE_COLOR              =       $82
 FRAME                   =       $83
 FRAMEH                  =       $84
 FRAME2                  =       $85
+MUSIC_POINTER		=	$86
+MUSIC_COUNTDOWN		=	$87
 
 TEMP1			=	$90
 TEMP2			=	$91
@@ -59,6 +61,10 @@ clear_loop:
 .include "atari_code.s"
 
 jmp	blah
+
+.include "music_code.s"
+.include "music_data.s"
+
 .align	$100
 blah:
 .include "apple_code.s"
