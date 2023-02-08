@@ -143,6 +143,7 @@ not3:
 	lda	#0		; turn off sprite
 	sta	GRP0
 	sta	GRP1
+	sta	HMP1			;			3
 
 	lda	#1		; turn on delay
 	sta	VDELP0
@@ -158,11 +159,15 @@ not3:
 	; and sprite1 at
 	;	GPU cycle 44
 
-	ldx	#7		;				2
+	ldx	#6		;				2
 pad_x:
 	dex			;				2
 	bne	pad_x		;				2/3
 	; 3 + 5*X each time through
+
+	lda	$80		; nop 6
+	lda	$80
+
 
 	; beam is at proper place
 	sta	RESP0						; 3
@@ -172,8 +177,8 @@ pad_x:
 
 	lda	#$F0		; opposite what you'd think
 	sta	HMP0			;			3
-	lda	#$00
-	sta	HMP1			;			3
+;	lda	#$00
+;	sta	HMP1			;			3
 
 	sta	WSYNC
 	sta	HMOVE		; adjust fine tune, must be after WSYNC
@@ -206,29 +211,28 @@ spriteloop:
 	tay								; 2
 	; 34
 	lda	sprite_bitmap3,X	;				; 4+
-	ldx	TEMP1							; 3
-	; 41
+	ldx	a:TEMP1			; force extra cycle		; 4
+	; 42
 
 	sta	GRP1			; 3->[GRP1], [GRP0 (2)]-->GRP0	; 3
-	; 44 (need this to be 44 .. 46)
+	; 45 (need this to be 44 .. 46)
 
 	sty	GRP0			; 4->[GRP0], [GRP1 (3)]-->GRP1	; 3
-	; 47 (need this to be 47 .. 49)
-
+	; 48 (need this to be 47 .. 49)
 	stx	GRP1			; 5->[GRP1], [GRP0 (4)]-->GRP0	; 3
-	; 50 (need this to be 50 .. 51)
+	; 51 (need this to be 50 .. 51)
 
 	sty	GRP0			; ?->[GRP0], [GRP1 (5)]-->GRP1 	; 3
-	; 53 (need this to be 52 .. 54)
+	; 54 (need this to be 52 .. 54)
 
-	jsr	delay_12
+;	jsr	delay_12
 
-;	nop								; 2
-;	nop								; 2
-;	nop								; 2
-;	nop								; 2
-;	nop								; 2
-;	nop								; 2
+	; delay 11
+
+	inc	$95	; 5
+	lda	$95	; 3
+	lda	$95	; 3
+
 
 	; 65
 
