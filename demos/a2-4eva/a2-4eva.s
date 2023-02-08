@@ -67,7 +67,7 @@ clear_loop:
 .include "music_code.s"
 .include "music_data.s"
 
-.align	$100
+;.align	$100
 blah:
 .include "apple_code.s"
 .include "music_data2.s"

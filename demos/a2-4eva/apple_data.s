@@ -1,4 +1,4 @@
-.align $100
+;.align $100
 
 ; multiples of 3 except very last
 

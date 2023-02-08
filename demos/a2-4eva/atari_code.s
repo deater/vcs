@@ -111,6 +111,9 @@ atari_right_loop:
 	bcc	not_yet
 ;	beq	not_yet
 
+	lda	#<music_len3
+	sta	MUSIC_PTR_L
+
 	lda	#$ff
 	sta	GRP0			; set sprite
 	sta	GRP1			; set sprite
