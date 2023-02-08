@@ -32,6 +32,8 @@ start_frame:
 
 	lda	#<music_len2		; point to secondary music
 	sta	MUSIC_PTR_L
+	lda	#>music_len2		; point to secondary music
+	sta	MUSIC_PTR_H
 
 	sta	WSYNC
 ;	lda	#0			; turn on beam
@@ -254,24 +256,25 @@ spriteloop:
 
 	; scanline 192
 
+	jsr	common_overscan
+
 	;===========================
 	; overscan
 	;============================
 
-	lda	#$2		; turn off beam
-	sta	VBLANK
+;	lda	#$2		; turn off beam
+;	sta	VBLANK
 
 	; wait 30 scanlines
 
-	ldx	#29
-	jsr	scanline_wait
+;	ldx	#29
+;	jsr	scanline_wait
 
 	;=====================
 
-	jsr	play_music
+;	jsr	play_music
 
 	sta	WSYNC
-
 
 	jmp	start_frame
 

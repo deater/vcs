@@ -70,6 +70,11 @@ clear_loop:
 .align	$100
 blah:
 .include "apple_code.s"
+.include "music_data2.s"
+
+.include "apple_data.s"
+.include "atari_data.s"
+
 
 	;====================
 	; scanline wait
@@ -93,8 +98,6 @@ inc_frame:
 no_inc_high:
 	rts						; 6
 
-.include "apple_data.s"
-.include "atari_data.s"
 
 .segment "IRQ_VECTORS"
 	.word apple_tiny_start	; NMI

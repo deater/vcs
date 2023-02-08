@@ -185,11 +185,25 @@ oog_loop:
 	dex
 	bne	oog_loop
 
+	jsr	common_overscan
+
+
+	sta	WSYNC
+
+	lda	FRAMEH
+	cmp	#4
+;	beq	done_atari_code
+	beq	blah
+
+	jmp	atari_code
+
+;done_atari_code:
+
 
 	;============================
 	; overscan
 	;============================
-
+common_overscan:
 	lda	#$2		; turn off beam
 	sta	VBLANK
 
@@ -201,16 +215,6 @@ oog_loop:
 	;=======================
 	; 29
 
-	jsr	play_music
+	; fallthrough
 
-	sta	WSYNC
-
-	lda	FRAMEH
-	cmp	#4
-;	beq	done_atari_code
-	beq	blah
-
-	jmp	atari_code
-
-done_atari_code:
-
+;	jsr	play_music
