@@ -26,7 +26,7 @@ atari_code:
 
 	; 37 lines of vertical blank
 
-	ldx	#35
+	ldx	#36
 	jsr	scanline_wait		; Leaves X zero
 ; 10
 
@@ -52,8 +52,8 @@ atari_right_loop:
 	dex
 	bne	atari_right_loop
 
-	nop
-	lda	$00
+	nop								; 2
+	lda	$00			; nop3				; 3
 
 	sta	RESP1			; coarse sprite1
 
@@ -61,12 +61,13 @@ atari_right_loop:
 	sta	HMOVE
 
 
-
-	sta	WSYNC
-
 	;=============================
 	; 37
 
+	lda	#<music_len		; set up music pointer
+	sta	MUSIC_PTR_L
+	lda	#>music_len
+	sta	MUSIC_PTR_H
 
 	jsr	inc_frame				; 6+18
 
@@ -105,7 +106,7 @@ atari_right_loop:
 	lda	#CTRLPF_REF	; mirror playfield
 	sta	CTRLPF
 
-	lda	FRAMEH
+	lda	FRAMEH		; dont' draw X yet
 	beq	not_yet
 
 	lda	#$ff
@@ -124,7 +125,7 @@ atari_colorful_loop:
 	ldy	#1
 	cpx	#36
 	bcs	its1
-	ldy	atari_row_lookup,X		; get which playfield lookup	; 4+
+	ldy	atari_row_lookup,X	; get which playfield lookup	; 4+
 its1:
 
 ; 13
@@ -160,7 +161,7 @@ no_draw_x:
 	sta	HMOVE
 	sta	WSYNC			;				; 3
 ; 75/76
-	bne	atari_colorful_loop		;				; 2/3
+	bne	atari_colorful_loop	;				; 2/3
 
 	;=================
 	; done!
@@ -169,9 +170,10 @@ no_draw_x:
 	; scanline 168
 	;	do nothing until end
 
-	lda	#$00
-	sta	GRP0			; set sprite
-	sta	GRP1			; set sprite
+	; X is zero here
+;	lda	#$00
+	stx	GRP0			; set sprite
+	stx	GRP1			; set sprite
 
 	ldx	#23
 oog_loop:
@@ -193,7 +195,7 @@ oog_loop:
 	jsr	scanline_wait
 
 	;=======================
-	;
+	; 29
 
 	jsr	play_music
 

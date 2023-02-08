@@ -5,10 +5,10 @@ play_music:
 	dec	MUSIC_COUNTDOWN			; countdown current count
 	bpl	music_ok
 
-	ldx	MUSIC_POINTER			; get pointer
-	inx					; increment
+	ldy	MUSIC_POINTER			; get pointer
+	iny					; increment
 
-	txa					; mask at 16
+	tya					; mask at 16
 	and	#$f
 	sta	MUSIC_POINTER
 
@@ -22,9 +22,9 @@ sound_off:
 do_sound:
 	sta	AUDV0		; volume
 
-	dex
+	dey
 
-	lda	music_len,X			; get countdown
+	lda	(MUSIC_PTR_L),Y			; get countdown
 	sta	MUSIC_COUNTDOWN
 
 	lda	#$f				; always buzz

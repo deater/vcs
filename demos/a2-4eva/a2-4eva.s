@@ -30,6 +30,8 @@ FRAMEH                  =       $84
 FRAME2                  =       $85
 MUSIC_POINTER		=	$86
 MUSIC_COUNTDOWN		=	$87
+MUSIC_PTR_L		=	$88
+MUSIC_PTR_H		=	$89
 
 TEMP1			=	$90
 TEMP2			=	$91
