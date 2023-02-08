@@ -203,7 +203,8 @@ oog_loop:
 
 	lda	FRAMEH
 	cmp	#2
-	beq	done_atari_code
+;	beq	done_atari_code
+	beq	blah
 
 	jmp	atari_code
 

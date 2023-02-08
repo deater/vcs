@@ -2,13 +2,17 @@
 	;========================
 	; music
 play_music:
-	dec	MUSIC_COUNTDOWN			; countdown current count
+	dec	MUSIC_COUNTDOWN		; countdown current count
 	bpl	music_ok
 
-	ldy	MUSIC_POINTER			; get pointer
-	iny					; increment
+	ldy	MUSIC_POINTER		; get pointer
 
-	tya					; mask at 16
+	lda	(MUSIC_PTR_L),Y		; get countdown
+	sta	MUSIC_COUNTDOWN
+
+	iny				; increment
+
+	tya				; mask at 16
 	and	#$f
 	sta	MUSIC_POINTER
 
@@ -22,16 +26,13 @@ sound_off:
 do_sound:
 	sta	AUDV0		; volume
 
-	dey
+;	dey
 
-	lda	(MUSIC_PTR_L),Y			; get countdown
-	sta	MUSIC_COUNTDOWN
+	lda	#$f			; always buzz
+	sta	AUDC0			; audio control
 
-	lda	#$f				; always buzz
-	sta	AUDC0		; audio control
-
-	lda	#$9e				; always deep buzz
-	sta	AUDF0		; freq divider
+	lda	#$9e			; always deep buzz
+	sta	AUDF0			; freq divider
 
 music_ok:
 

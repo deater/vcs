@@ -62,7 +62,7 @@ clear_loop:
 
 .include "atari_code.s"
 
-jmp	blah
+;jmp	blah
 
 .include "music_code.s"
 .include "music_data.s"
