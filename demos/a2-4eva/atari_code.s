@@ -106,8 +106,10 @@ atari_right_loop:
 	lda	#CTRLPF_REF	; mirror playfield
 	sta	CTRLPF
 
-	lda	FRAMEH		; dont' draw X yet
-	beq	not_yet
+	lda	FRAMEH		; don't draw X yet
+	cmp	#2
+	bcc	not_yet
+;	beq	not_yet
 
 	lda	#$ff
 	sta	GRP0			; set sprite
@@ -121,6 +123,8 @@ atari_colorful_loop:
 ; 3
 	lda	LINE_COLOR		; get color			; 3
 	sta	COLUPF			; set playfield color		; 3
+	and	#$10			; set side colors
+	sta	PF0
 ; 9
 	ldy	#1
 	cpx	#36
@@ -202,7 +206,7 @@ oog_loop:
 	sta	WSYNC
 
 	lda	FRAMEH
-	cmp	#2
+	cmp	#4
 ;	beq	done_atari_code
 	beq	blah
 

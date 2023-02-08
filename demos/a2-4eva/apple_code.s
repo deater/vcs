@@ -23,15 +23,19 @@ start_frame:
 
 	ldx	#35
 	jsr	scanline_wait
-; 10
-	sta	WSYNC
-
-	lda	#0
-	sta	CTRLPF
+	; X is 0 here
 
 	sta	WSYNC
-	lda	#0			; turn on beam
-	sta	VBLANK
+
+;	lda	#0
+	stx	CTRLPF			; playfield not-mirrored
+
+	lda	#<music_len2
+	sta	MUSIC_PTR_L
+
+	sta	WSYNC
+;	lda	#0			; turn on beam
+	stx	VBLANK
 
 	;===========================
 	;===========================
