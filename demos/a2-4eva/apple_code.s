@@ -30,7 +30,7 @@ start_frame:
 ;	lda	#0
 	stx	CTRLPF			; playfield not-mirrored
 
-	lda	#<music_len2
+	lda	#<music_len2		; point to secondary music
 	sta	MUSIC_PTR_L
 
 	sta	WSYNC
@@ -50,8 +50,8 @@ start_frame:
 	; first 9 lines black
 	;===========================
 
-	lda	#0
-	sta	COLUPF
+;	lda	#0
+	stx	COLUPF
 	ldx	#8
 	jsr	scanline_wait
 
