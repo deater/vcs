@@ -1,0 +1,4 @@
+The 1k version runs fine in the stella emulator.
+
+To run with a harmony cartridge use the 2k version (which
+is just the 1k version with zeros padded to the front)
