@@ -156,7 +156,7 @@ atari_right_loop:
 	jmp	logo_loop
 
 	;===========================
-	; 28 lines of title
+	; 32 lines of title
 	;===========================
 logo_loop:
 ; 3
@@ -196,19 +196,53 @@ logo_loop:
 
 
 	inx
-	cpx	#29
+	cpx	#32
 	sta	WSYNC
 	bne	logo_loop
 
+	; at scaline 46 here?
+
+
 	;===========================
-	; 148 lines of rest
+	; 46 - 79 = blank
+	;===========================
+
+	ldx	#32
+	jsr	scanline_wait
+
+
+	;===========================
+	; 80 - 129 = bitmap
+	;===========================
+
+	lda	#$1A			; yellow
+	sta	COLUBK			; set playfield background
+
+	ldx	#50
+	jsr	scanline_wait
+
+
+	;===========================
+	; 129 - 172 = rest
 	;===========================
 
 	lda	#$72			; dark blue
 	sta	COLUBK			; set playfield background
 
-	ldx	#148
+	ldx	#44
 	jsr	scanline_wait
+
+	;===========================
+	; 173 - 191 = bottom logo
+	;===========================
+	; 154 = 9A
+
+	lda	#$9A			; light blue
+	sta	COLUBK			; set playfield background
+
+	ldx	#19
+	jsr	scanline_wait
+
 
 
 	;============================
