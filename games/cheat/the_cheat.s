@@ -223,25 +223,149 @@ logo_loop:
 
 
 	;===========================
-	; 129 - 172 = rest
+	; 129 - 170 = rest
 	;===========================
 
 	lda	#$72			; dark blue
 	sta	COLUBK			; set playfield background
 
-	ldx	#44
+	ldx	#42
 	jsr	scanline_wait
 
 	;===========================
-	; 173 - 191 = bottom logo
 	;===========================
-	; 154 = 9A
+	; 171 - 191 = bottom logo
+	;===========================
+	;===========================
+	; 48-pixel sprite!!!!
+	;
+
+	;================
+	; scanline 172
+	;	set things up
+
 
 	lda	#$9A			; light blue
 	sta	COLUBK			; set playfield background
 
-	ldx	#19
-	jsr	scanline_wait
+	lda	#$C2			; dark green 97*2=194  C2
+	sta	COLUP0	; set sprite color
+	sta	COLUP1	; set sprite color
+
+	lda	#NUSIZ_THREE_COPIES_CLOSE
+	sta	NUSIZ0
+	sta	NUSIZ1
+
+	lda	#0		; turn off sprite
+	sta	GRP0
+	sta	GRP1
+	sta	HMP1			;			3
+
+	lda	#1		; turn on delay
+	sta	VDELP0
+	sta	VDELP1
+
+	sta	WSYNC
+
+	;=================
+	; scanline 173
+
+	; to center exactly would want sprite0 at
+	;	CPU cycle 41.3
+	; and sprite1 at
+	;	GPU cycle 44
+
+	ldx	#6		;				2
+pad_x:
+	dex			;				2
+	bne	pad_x		;				2/3
+	; 3 + 5*X each time through
+
+	lda	$80		; nop 6
+	lda	$80
+
+
+	; beam is at proper place
+	sta	RESP0						; 3
+	; 41 (GPU=123, want 124) +1
+	sta	RESP1						; 3
+	; 44 (GPU=132, want 132) 0
+
+	lda	#$F0		; opposite what you'd think
+	sta	HMP0			;			3
+;	lda	#$00
+;	sta	HMP1			;			3
+
+	sta	WSYNC
+	sta	HMOVE		; adjust fine tune, must be after WSYNC
+
+	ldx	#16		; init X
+	stx	TEMP2
+
+	;===============================
+	; scanline 174
+
+	jmp	over_align
+.align $100
+over_align:
+	sta	WSYNC
+
+	;================================
+	; scanline 175
+
+spriteloop:
+	; 0
+	lda	vid_sprite0,X	; load sprite data		; 4+
+	sta	GRP0			; 0->[GRP0] [GRP1 (?)]->GRP1	; 3
+	; 7
+	lda	vid_sprite1,X	; load sprite data		; 4+
+	sta	GRP1			; 1->[GRP1], [GRP0 (0)]-->GRP0	; 3
+	; 14
+	lda	vid_sprite2,X	; load sprite data		; 4+
+	sta	GRP0			; 2->[GRP0], [GRP1 (1)]-->GRP1	; 3
+	; 21
+
+	lda	vid_sprite5,X					; 4+
+	sta	TEMP1							; 3
+	; 28
+	lda	vid_sprite4,X					; 4+
+	tay								; 2
+	; 34
+	lda	vid_sprite3,X	;				; 4+
+	ldx	a:TEMP1			; force extra cycle		; 4
+	; 42
+
+	sta	GRP1			; 3->[GRP1], [GRP0 (2)]-->GRP0	; 3
+	; 45 (need this to be 44 .. 46)
+
+	sty	GRP0			; 4->[GRP0], [GRP1 (3)]-->GRP1	; 3
+	; 48 (need this to be 47 .. 49)
+	stx	GRP1			; 5->[GRP1], [GRP0 (4)]-->GRP0	; 3
+	; 51 (need this to be 50 .. 51)
+
+	sty	GRP0			; ?->[GRP0], [GRP1 (5)]-->GRP1 	; 3
+	; 54 (need this to be 52 .. 54)
+
+	; delay 11
+
+	inc	$95	; 5
+	lda	$95	; 3
+	lda	$95	; 3
+
+
+	; 65
+
+	dec	TEMP2							; 5
+	ldx	TEMP2							; 3
+	bpl	spriteloop						; 2/3
+	; 76  (goal is 76)
+
+	ldy	#0		; clear out sprites
+	sty	GRP1
+	sty	GRP0
+	sty	GRP1
+
+	sta	WSYNC
 
 
 
@@ -271,7 +395,8 @@ blah:
 	jmp	blah
 
 .include "title_pf.inc"
-
+.align $100
+.include "title_sprites.inc"
 
 	;====================
 	; scanline wait
