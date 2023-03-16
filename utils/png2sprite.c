@@ -13,12 +13,12 @@
 
 
 static void dump_sprite(FILE *outfile,char *name, int which,
-	int ysize, int *sprite) {
+	int start_line,int ysize, int *sprite) {
 
 	int row,i;
 
 	fprintf(outfile,"\n%s%d:\n",name,which);
-	for(row=ysize-1;row>=0;row--) {
+	for(row=ysize-1;row>=start_line;row--) {
 		fprintf(outfile,"\t.byte $%02X\t; ",sprite[row]);
 
 		for(i=0;i<8;i++) {
@@ -37,6 +37,7 @@ static void dump_sprite(FILE *outfile,char *name, int which,
 static void print_help(char *name) {
 	fprintf(stderr,"Usage:\t%s [-l lines] [-w width] INFILE OUTFILE\n\n",name);
 	fprintf(stderr,"\t-l lines : number of lines\n");
+	fprintf(stderr,"\t-s line  : start line\n");
 	fprintf(stderr,"\t-w width : width of pixels\n");
 
 	exit(-1);
@@ -46,7 +47,7 @@ static void print_help(char *name) {
 
 int main(int argc, char **argv) {
 
-	int row=0,max_lines=-1,pixel_width=1;
+	int row=0,max_lines=-1,pixel_width=1,start_line=0;
 	int col=0;
 	int sprite0[192],sprite1[192],sprite2[192];
 	int sprite3[192],sprite4[192],sprite5[192];
@@ -59,7 +60,7 @@ int main(int argc, char **argv) {
 
 
 	/* Check command line arguments */
-	while ((c = getopt (argc, argv,"248dhl:w:v"))!=-1) {
+	while ((c = getopt (argc, argv,"248dhl:s:w:v"))!=-1) {
 		switch (c) {
 		case 'd':
 			fprintf(stderr,"DEBUG enabled\n");
@@ -70,6 +71,9 @@ int main(int argc, char **argv) {
 			break;
 		case 'l':
 			max_lines=atoi(optarg);
+			break;
+		case 's':
+			start_line=atoi(optarg);
 			break;
 		case 'w':
 			pixel_width=atoi(optarg);
@@ -126,14 +130,15 @@ int main(int argc, char **argv) {
 	}
 
 
-	fprintf(stderr,"Generating %d lines, reversed\n",ysize);
+	fprintf(stderr,"Generating %d lines starting at %d, reversed\n",
+			ysize-start_line,start_line);
 
 	/* ======================================= */
 
 
 
 	/* generate sprite0 table */
-	for(row=0;row<ysize;row++) {
+	for(row=start_line;row<ysize;row++) {
 		sprite0[row]=0;
 		sprite1[row]=0;
 		sprite2[row]=0;
@@ -157,12 +162,12 @@ int main(int argc, char **argv) {
 	}
 
 
-	dump_sprite(outfile,"sprite",0,ysize,sprite0);
-	dump_sprite(outfile,"sprite",1,ysize,sprite1);
-	dump_sprite(outfile,"sprite",2,ysize,sprite2);
-	dump_sprite(outfile,"sprite",3,ysize,sprite3);
-	dump_sprite(outfile,"sprite",4,ysize,sprite4);
-	dump_sprite(outfile,"sprite",5,ysize,sprite5);
+	dump_sprite(outfile,"sprite",0,start_line,ysize,sprite0);
+	dump_sprite(outfile,"sprite",1,start_line,ysize,sprite1);
+	dump_sprite(outfile,"sprite",2,start_line,ysize,sprite2);
+	dump_sprite(outfile,"sprite",3,start_line,ysize,sprite3);
+	dump_sprite(outfile,"sprite",4,start_line,ysize,sprite4);
+	dump_sprite(outfile,"sprite",5,start_line,ysize,sprite5);
 
 	fclose(outfile);
 
