@@ -9,7 +9,7 @@ the_cheat.bin:	the_cheat.o
 	ld65 -o the_cheat.bin the_cheat.o -C $(LINKER_SCRIPT)/atari2600_f000.inc
 
 the_cheat.o:	the_cheat.s \
-	cheat_code.s
+	title_pf.inc
 	ca65 -o the_cheat.o the_cheat.s -l the_cheat.lst
 
 ####

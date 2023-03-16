@@ -108,6 +108,13 @@ atari_right_loop:
 	;=============================
 	; 37
 
+
+	lda	#$00
+	sta	PF0
+	sta	PF1
+	sta	PF2
+
+
 ;	lda	#<music_len		; set up music pointer
 ;	sta	MUSIC_PTR_L
 ;	lda	#>music_len
@@ -129,34 +136,78 @@ atari_right_loop:
 
 
 	;===========================
-	; first 15 lines black
+	; first 15 lines blue
 	;===========================
 	lda	#$72			; dark blue
 	sta	COLUBK			; set playfield background
 
-	ldx	#15
+	lda	#$34			; ugly orange
+	sta	COLUPF			; for later
+
+	ldx	#14
 	jsr	scanline_wait		; leaves X 0
 
 
 ; 10
+	;=============
+	; scanline 14
+	ldx	#0
+	sta	WSYNC
+	jmp	logo_loop
 
 	;===========================
 	; 28 lines of title
 	;===========================
-	lda	#$34
-	sta	COLUBK
+logo_loop:
+; 3
+	nop
+	nop
+	lda	$80
+; 10
+	lda	title_playfield0_left,X					; 4+
+	sta	PF0							; 3
+	; must write by CPU 22 [GPU 68]
+; 17
+	lda	title_playfield1_left,X					; 4+
+	sta	PF1							; 3
+	; must write by CPU 28 [GPU 84]
+; 24
+	lda	title_playfield2_left,X					; 4+
+	sta	PF2							; 3
+	; must write by CPU 38 [GPU 116]
+; 31
+	nop
+	nop
+	nop
+	nop
+; 39
+	lda	title_playfield0_right,X				; 4+
+	sta	PF0                                                     ; 3
+	; must write by CPU 49 [GPU 148]
+; 46
+	lda	title_playfield1_right,X				; 4+
+	sta	PF1							; 3
+	; must write by CPU 54 [GPU 164]
+; 53
+	lda	title_playfield2_right,X				; 4+
+	sta	PF2							; 3
+	; must write by CPU 65 [GPU 196]
+; 60
 
-	ldx	#28
-	jsr	scanline_wait
+
+	inx
+	cpx	#29
+	sta	WSYNC
+	bne	logo_loop
 
 	;===========================
-	; 149 lines of rest
+	; 148 lines of rest
 	;===========================
 
 	lda	#$72			; dark blue
 	sta	COLUBK			; set playfield background
 
-	ldx	#149
+	ldx	#148
 	jsr	scanline_wait
 
 
