@@ -2,6 +2,11 @@
 
 ; o/~ come to the place where tropical breezes blow o/~
 
+	lda	#120
+	sta	CHEAT_Y
+	lda	#50
+	sta	CHEAT_X
+
 strongbadia_loop:
 
 	;=========================
@@ -27,56 +32,129 @@ strongbadia_loop:
 	sta	VSYNC
 
 	;===============================
+	;===============================
 	; 37 lines of vertical blank
+	;===============================
+	;===============================
 
-	ldx	#36
+	ldx	#34
 	jsr	scanline_wait		; Leaves X zero
 ; 10
 
 	;===========================
-	; 36
+	; scanline 34
+	;================================
+	; cheat moved horizontally
+cheat_moved_horizontally:
+; 10
+	lda	CHEAT_X							; 3
+; 13
+	; spritex DIV 16
 
+	lsr                                                             ; 2
+	lsr                                                             ; 2
+	lsr                                                             ; 2
+	lsr                                                             ; 2
+	sta     CHEAT_X_COARSE						; 3
+; 24
 	; apply fine adjust
+	lda	CHEAT_X							; 3
+	and	#$0f							; 2
+	tax								; 2
+	lda	fine_adjust_table,X					; 4+
+	sta	HMP0							; 3
+; 38
 
-	lda	#$e0
-	sta     HMP0			; sprite0 + 2
+	sta	WSYNC
 
-	lda	#$20
-	sta     HMP1			; sprite1 - 2
+	;=======================================================
+	; set up sprite0 (the cheat)  to be at proper X position
+	;=======================================================
+        ; now in scanline 35
+; 0
+	; we can do this here and the sprite will be drawn as a long
+	; vertical column
+	; later we only enable it for the lines we want
 
+	ldx     a:CHEAT_X_COARSE    ; force 4-cycle version         ; 4
+
+	cpx	#$A                                                     ; 2
+	bcs	far_right       ; bge                                   ; 2/3
+
+; 8
+	inx                     ;                                       ; 2
+	inx                     ;                                       ; 2
+; 12 (want to be 12 here)
+
+pad_x:
+	dex                     ;                                       2
+	bne	pad_x           ;                                       2/3
+                                ;===========================================
+                                ;       5*(coarse_x+2)-1
+                                ; MAX is 9, so up to 54
+; up to 66
+	; beam is at proper place
+	sta	RESP0                                                   ; 3
+; up to 69
+	sta	WSYNC                                                   ; 3
+; up to 72
+	jmp	done_done                                               ; 3
+
+	; special case for when COARSE_X = 10
+	; won't fit with standard loop above
+far_right:
+; 9
+	ldx     #11                                                     ; 2
+
+fpad_x:
+	dex                     ;                                       ; 2
+	bne     fpad_x          ;                                       ; 2/3
+                                ; (5*X)-1 = 54
+; 65
+	nop                                                             ; 2
+	nop                                                             ; 2
+	nop                                                             ; 2
+
+; 71
+	sta     RESP0                                                   ; 3
+; 74
 	nop
-	nop
-	nop
+; 76
 
-	sta	RESP0			; coasre sprite0
+done_done:
 
-	lda	#$34			; red for the periods		; 2
-	sta	COLUP0							; 3
-	sta	a:COLUP1		; force extra cycle		; 4
+	;================================
+	; scanline 36
+	;================================
 
-	sta	RESP1			; coarse sprite1
-
-        sta     WSYNC                   ;                               3
-	sta	HMOVE
-
+	sta     WSYNC
+        sta     HMOVE
 
 	;=============================
 	; 37
+	;=============================
 
-	lda	#NUSIZ_TWO_COPIES_WIDE
+	lda	#NUSIZ_ONE_COPY ; NUSIZ_DOUBLE_SIZE
 	sta	NUSIZ0
 	sta	NUSIZ1
 
 	lda	#$0		; turn off delay
 	sta	VDELP0
 	sta	VDELP1
-
-	sta	GRP0		; clear sprites
 	sta	GRP1
 
 	sta	PF0		; clear playfield
 	sta	PF1
 	sta	PF2
+
+	lda	#$ff
+	sta	GRP0		; turn on sprite1
+
+	lda	#$1C
+	sta	COLUP0
+
+	lda	#$AE			; blue sky
+	sta	COLUBK
 
 
 	sta	WSYNC
@@ -159,13 +237,20 @@ strongbadia_top_loop:
 	sta	WSYNC
 	bne	strongbadia_top_loop
 
-
-
-
 	;===========================
+	; bottom of screen
+	;===========================
+	; at scanline 112
 
-	ldx	#82
-	jsr	scanline_wait
+	ldx	#112
+bottom_loop:
+
+	sta	WSYNC
+
+	inx
+	cpx	#192
+	bne	bottom_loop
+
 
 
 	;============================
@@ -177,8 +262,40 @@ strongbadia_overscan:
 
 	; wait 30 scanlines
 
-	ldx	#30
+	ldx	#28
 	jsr	scanline_wait
+
+	;=============================
+	; now at VBLANK scanline 29
+	;=============================
+	; handle left being pressed
+; 0
+	lda	#$40                    ; check left                    ; 2
+	bit	SWCHA                   ;                               ; 3
+	bne	after_check_left        ;                               ; 2/3
+left_pressed:
+        dec	CHEAT_X
+
+after_check_left:
+	sta	WSYNC                   ;                               ; 3
+
+
+	;=============================
+	; now at VBLANK scanline 30
+	;=============================
+	; handle right being pressed
+; 0
+	lda	#$80			; check right                    ; 2
+	bit	SWCHA			;                               ; 3
+	bne	after_check_right	;                               ; 2/3
+right_pressed:
+	inc	CHEAT_X
+
+after_check_right:
+	sta	WSYNC                   ;                               ; 3
+
+
+
 
 	jmp	strongbadia_loop
 

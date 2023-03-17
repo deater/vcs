@@ -10,16 +10,11 @@
 
 ; zero page addresses
 
-TEXT_COLOR		=	$80
-MAIN_COLOR              =       $81
-LINE_COLOR              =       $82
-FRAME                   =       $83
-FRAMEH                  =       $84
-FRAME2                  =       $85
-MUSIC_POINTER		=	$86
-MUSIC_COUNTDOWN		=	$87
-MUSIC_PTR_L		=	$88
-MUSIC_PTR_H		=	$89
+FRAME                   =       $80
+FRAMEH                  =       $81
+CHEAT_X			=	$82
+CHEAT_Y			=	$83
+CHEAT_X_COARSE		=	$84
 
 TEMP1			=	$90
 TEMP2			=	$91
@@ -125,6 +120,14 @@ inc_frame:
 	inc	FRAMEH					; 5
 no_inc_high:
 	rts						; 6
+
+
+fine_adjust_table:
+        ; left
+        .byte $70,$60,$50,$40,$30,$20,$10,$00
+        ; right -1 ... -8
+        .byte $F0,$E0,$D0,$C0,$B0,$A0,$90,$80
+
 
 
 .segment "IRQ_VECTORS"
