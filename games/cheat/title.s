@@ -179,8 +179,7 @@ blargh2:
 	sta	GRP0
 	sta	GRP1
 
-
-	ldx	#27
+	ldx	#28
 	jsr	scanline_wait
 
 
@@ -321,7 +320,7 @@ spriteloop_cheat:
 	lda	#$72			; dark blue
 	sta	COLUBK			; set playfield background
 
-	ldx	#42
+	ldx	#43
 	jsr	scanline_wait
 
 	;===========================
@@ -348,56 +347,24 @@ spriteloop_cheat:
 	sta	NUSIZ0
 	sta	NUSIZ1
 
-	lda	#0		; turn off sprite
-	sta	GRP0
-	sta	GRP1
-	sta	HMP1			;			3
+	; delay and sprite offsets already set previously
 
-	lda	#1		; turn on delay
-	sta	VDELP0
-	sta	VDELP1
-
-	sta	WSYNC
-
-	;=================
-	; scanline 173
-.if 0
-	; to center exactly would want sprite0 at
-	;	CPU cycle 41.3
-	; and sprite1 at
-	;	GPU cycle 44
-
-	ldx	#6		;				2
-pad_x:
-	dex			;				2
-	bne	pad_x		;				2/3
-	; 3 + 5*X each time through
-
-	lda	$80		; nop 6
-	lda	$80
-
-
-	; beam is at proper place
-	sta	RESP0						; 3
-	; 41 (GPU=123, want 124) +1
-	sta	RESP1						; 3
-	; 44 (GPU=132, want 132) 0
-
-	lda	#$F0		; opposite what you'd think
-	sta	HMP0			;			3
-;	lda	#$00
+;	lda	#0		; turn off sprite
+;	sta	GRP0
+;	sta	GRP1
 ;	sta	HMP1			;			3
 
-	sta	WSYNC
-	sta	HMOVE		; adjust fine tune, must be after WSYNC
-
-.endif
+;	lda	#1		; turn on delay
+;	sta	VDELP0
+;	sta	VDELP1
 
 	ldx	#16		; init X
 	stx	TEMP2
 
+	sta	WSYNC
+
 	;===============================
-	; scanline 174
+	; scanline 173
 
 	jmp	over_align
 .align $100
@@ -483,10 +450,4 @@ common_overscan:
 ;	jsr	play_music
 
 	jmp	title_loop
-
-
-
-
-
-
 
