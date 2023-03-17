@@ -437,17 +437,48 @@ common_overscan:
 	lda	#$2		; turn off beam
 	sta	VBLANK
 
-	; wait 30 scanlines
 
-	ldx	#29
-	jsr	scanline_wait
 
 	;=======================
 	; 29
 
 	; fallthrough
 
-;	jsr	play_music
+	lda	#12
+	sta	TIM64T
+
+	lda	tt_cur_pat_index_c0
+	cmp	#11
+	bcc	do_play_music
+
+	lda	#0
+	sta	AUDV0
+	sta	AUDV1
+	beq	done_music
+
+
+do_play_music:
+	jsr	play_music
+done_music:
+
+	; Measure player worst case timing
+;	lda     #12           ; TIM_VBLANK
+;	sec
+;	sbc	INTIM
+;	cmp	player_time_max
+;	bcc	no_new_max
+;	sta	player_time_max
+;no_new_max:
+
+wait_for_vblank:
+	lda	INTIM
+	bne	wait_for_vblank
+
+
+	; wait 30 scanlines
+
+	ldx	#20
+	jsr	scanline_wait
 
 	jmp	title_loop
 
