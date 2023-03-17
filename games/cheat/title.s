@@ -72,14 +72,6 @@ title_loop:
 	sta	PF1
 	sta	PF2
 
-
-;	lda	#<music_len		; set up music pointer
-;	sta	MUSIC_PTR_L
-;	lda	#>music_len
-;	sta	MUSIC_PTR_H
-
-;	jsr	inc_frame				; 6+18
-
 	sta	WSYNC
 
 	stx	VBLANK			; turn on beam (X=0)
@@ -366,9 +358,9 @@ spriteloop_cheat:
 	;===============================
 	; scanline 173
 
-	jmp	over_align
-.align $100
-over_align:
+;	jmp	over_align
+;.align $100
+;over_align:
 	sta	WSYNC
 
 	;================================

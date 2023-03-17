@@ -17,6 +17,10 @@ strongbadia_loop:
 	sta	WSYNC			; wait until end of scanline
 	sta	WSYNC
 
+	; mirror playfield
+	lda	#CTRLPF_REF
+	sta	CTRLPF
+
 	sta	WSYNC
 
 	lda	#0			; done beam reset
@@ -87,67 +91,80 @@ strongbadia_loop:
 	;===========================
 	; draw 192 lines
 
-.if 0
+	ldx	#0
+
 	;===========================
-	; 32 lines of title
+	; 60 lines of bushes
 	;===========================
-logo_loop:
+	; Hills?  I always thought those were bushes...
+	;	(figurative)
+bushes_top_loop:
 ; 3
-	lda	title_playfield0_left,X					; 4+
+;	lda	bushes_bg_colors,X					; 4+
+	sta	COLUBK							; 3
+; 6
+	lda	bushes_colors,X						; 4+
+	sta	COLUPF							; 3
+; 13
+	lda	bushes_playfield0_left,X				; 4+
 	sta	PF0							; 3
 	; must write by CPU 22 [GPU 68]
-; 10
-	lda	title_playfield1_left,X					; 4+
+; 20
+	lda	bushes_playfield1_left,X				; 4+
 	sta	PF1							; 3
 	; must write by CPU 28 [GPU 84]
-; 17
-	lda	title_playfield2_left,X					; 4+
+; 27
+	lda	bushes_playfield2_left,X				; 4+
 	sta	PF2							; 3
 	; must write by CPU 38 [GPU 116]
-; 24
-	cpy	#28			; 2
-	bcc	blargh			; 2/3
+; 34
 
-	lda	#$30			; 2
-	sta	GRP0			; 3
-	sta	GRP1			; 3
-	bne	blargh2			; 3
-blargh:
-	inc	$95	; nop5		; 5
-	dec	$95	; nop5		; 5
 
-blargh2:
-	; 15/15
-
-; 39
-	lda	title_playfield0_right,X				; 4+
-	sta	PF0                                                     ; 3
-	; must write by CPU 49 [GPU 148]
-; 46
-	lda	title_playfield1_right,X				; 4+
-	sta	PF1							; 3
-	; must write by CPU 54 [GPU 164]
-; 53
-	lda	title_playfield2_right,X				; 4+
-	sta	PF2							; 3
-	; must write by CPU 65 [GPU 196]
-; 60
-	iny								; 2
-	tya								; 2
-	lsr								; 2
-	tax								; 2
-; 68
-	cpy	#32							; 2
+	inx								; 2
+	lda	bushes_bg_colors,X					; 4+
+	cpx	#60							; 2
 ; 70
 	sta	WSYNC
-	bne	logo_loop
+	bne	bushes_top_loop
 
-	; at scaline 46 here?
+	ldx	#0
 
-.endif
+	;===========================
+	; 48 lines of strongbadia
+	;===========================
+strongbadia_top_loop:
+; 3
+	lda	#$D4							; 2
+	sta	COLUBK							; 3
+; 8
+	lda	strongbadia_colors,X					; 4+
+	sta	COLUPF							; 3
+; 15
+	lda	#$00							; 2
+	sta	PF0							; 3
+	; must write by CPU 22 [GPU 68]
+; 20
+	lda	strongbadia_playfield1_left,X				; 4+
+	sta	PF1							; 3
+	; must write by CPU 28 [GPU 84]
+; 27
+	lda	strongbadia_playfield2_left,X				; 4+
+	sta	PF2							; 3
+	; must write by CPU 38 [GPU 116]
+; 34
+
+	inx								; 2
+	cpx	#48							; 2
+; 70
+	sta	WSYNC
+	bne	strongbadia_top_loop
+
+
+
+
 	;===========================
 
-	ldx	#192
+	ldx	#82
 	jsr	scanline_wait
 
 
