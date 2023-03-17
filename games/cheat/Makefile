@@ -10,7 +10,8 @@ the_cheat.bin:	the_cheat.o
 
 the_cheat.o:	the_cheat.s \
 	title.s title_pf.inc title_sprites.inc \
-	cheat2_trackdata.s cheat2_player.s
+	cheat2_trackdata.s cheat2_player.s \
+	strongbadia.s strongbadia.inc
 	ca65 -o the_cheat.o the_cheat.s -l the_cheat.lst
 
 ####

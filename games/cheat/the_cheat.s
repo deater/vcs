@@ -1,5 +1,8 @@
 ; the cheat?
 
+; o/~ F o/~
+; that's not F
+
 ; by Vince `deater` Weaver <vince@deater.net>
 
 .include "../../vcs.inc"
@@ -22,6 +25,8 @@ TEMP1			=	$90
 TEMP2			=	$91
 DIV3			=	$92
 XSAVE			=	$93
+TITLE_COUNTDOWN		=	$9C
+DONE_TITLE		=	$9E
 
 ; tt music player
 tt_timer                = $E0    ; current music timer value
@@ -55,6 +60,8 @@ clear_loop:
 
 	; S = $FF, A=$0, x=$0, Y=??
 
+	lda	#$E			; setup debounce
+	sta	TITLE_COUNTDOWN
 
 ; =====================================================================
 ; Initialize music.
@@ -82,12 +89,17 @@ clear_loop:
 
 	.include "title.s"
 
-blah:
-	jmp	blah
+	;=========================
+	; gameplay
+	;=========================
+
+
+	.include "strongbadia.s"
 
 .include "title_pf.inc"
 .align $100
 .include "title_sprites.inc"
+.include "strongbadia.inc"
 
 .include "cheat2_trackdata.s"
 .include "cheat2_player.s"

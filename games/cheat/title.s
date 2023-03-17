@@ -480,5 +480,45 @@ wait_for_vblank:
 	ldx	#20
 	jsr	scanline_wait
 
+	;===================================
+	; check for button or RESET
+	;===================================
+; 0
+;	lda	#0                                                      ; 2
+;	sta	DONE_TITLE		; init as not done title	; 3
+; 5
+	;===============================
+	; debounce reset/keypress check
+
+	lda	TITLE_COUNTDOWN						; 3
+	beq	waited_enough						; 2/3
+	dec	TITLE_COUNTDOWN						; 5
+	jmp	done_check_input					; 3
+
+waited_enough:
+; 11
+	lda	INPT4			; check joystick button pressed ; 3
+	bpl	done_title                                          ; 2/3
+
+; 16
+	lda	SWCHB			; check if reset pressed        ; 3
+	lsr				; put reset into carry          ; 2
+	bcc	done_title                                          ; 2/3
+
+	jmp	title_loop                                        ; 3
+
+set_done_title:
+; 17 / 24
+;	beq	done_title
+done_check_input:
+; 25 / 22 / 29
+
 	jmp	title_loop
 
+done_title:
+
+	; turn off music
+
+	lda	#0
+	sta	AUDV0
+	sta	AUDV1
