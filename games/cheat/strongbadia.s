@@ -127,6 +127,11 @@ done_done:
 	; scanline 36
 	;================================
 
+	lda	CHEAT_Y
+	clc
+	adc	#18
+	sta	CHEAT_Y_END
+
 	sta     WSYNC
         sta     HMOVE
 
@@ -141,14 +146,13 @@ done_done:
 	lda	#$0		; turn off delay
 	sta	VDELP0
 	sta	VDELP1
+	sta	GRP0		; turn off sprites
 	sta	GRP1
 
 	sta	PF0		; clear playfield
 	sta	PF1
 	sta	PF2
 
-	lda	#$ff
-	sta	GRP0		; turn on sprite1
 
 	lda	#$1C
 	sta	COLUP0
@@ -245,6 +249,21 @@ strongbadia_top_loop:
 	ldx	#112
 bottom_loop:
 
+	; activate cheat sprite if necessary
+	lda     #$FF		; load sprite data			; 2
+	; X = current scanline
+	cpx	CHEAT_Y_END						; 3
+	bcs     turn_off_cheat						; 2/3
+	cpx	CHEAT_Y							; 3
+	bcc	turn_off_cheat						; 2/3
+	bcs	draw_cheat
+turn_off_cheat:
+	lda	#$00
+draw_cheat:
+	sta	GRP0
+
+
+
 	sta	WSYNC
 
 	inx
@@ -262,8 +281,37 @@ strongbadia_overscan:
 
 	; wait 30 scanlines
 
-	ldx	#28
+	ldx	#26
 	jsr	scanline_wait
+
+	;=============================
+	; now at VBLANK scanline 27
+	;=============================
+	; handle down being pressed
+; 0
+	lda	#$20			; check down			; 2
+	bit	SWCHA                   ;				; 3
+	bne	after_check_down        ;				; 2/3
+down_pressed:
+        inc	CHEAT_Y
+
+after_check_down:
+	sta	WSYNC                   ;                               ; 3
+
+	;=============================
+	; now at VBLANK scanline 28
+	;=============================
+	; handle up being pressed
+; 0
+	lda	#$10			; check up			; 2
+	bit	SWCHA                   ;				; 3
+	bne	after_check_up		;				; 2/3
+up_pressed:
+        dec	CHEAT_Y
+
+after_check_up:
+	sta	WSYNC                   ;                               ; 3
+
 
 	;=============================
 	; now at VBLANK scanline 29
@@ -278,7 +326,6 @@ left_pressed:
 
 after_check_left:
 	sta	WSYNC                   ;                               ; 3
-
 
 	;=============================
 	; now at VBLANK scanline 30
@@ -298,4 +345,16 @@ after_check_right:
 
 
 	jmp	strongbadia_loop
+
+
+cheat_sprite:
+	.byte $FC
+	.byte $57
+	.byte $3E
+	.byte $7F
+	.byte $7D
+	.byte $7F
+	.byte $7E
+	.byte $3F
+	.byte $7D
 

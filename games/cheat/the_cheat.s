@@ -15,6 +15,7 @@ FRAMEH                  =       $81
 CHEAT_X			=	$82
 CHEAT_Y			=	$83
 CHEAT_X_COARSE		=	$84
+CHEAT_Y_END		=	$85
 
 TEMP1			=	$90
 TEMP2			=	$91
