@@ -22,6 +22,10 @@ strongbadia_loop:
 	sta	WSYNC			; wait until end of scanline
 	sta	WSYNC
 
+	lda	CHEAT_DIRECTION
+	sta	REFP0
+	sta	REFP1
+
 	; mirror playfield
 	lda	#CTRLPF_REF
 	sta	CTRLPF
@@ -37,15 +41,15 @@ strongbadia_loop:
 	;===============================
 	;===============================
 
-	ldx	#34
+	ldx	#33
 	jsr	scanline_wait		; Leaves X zero
 ; 10
 
 	;===========================
 	; scanline 34
-	;================================
-	; cheat moved horizontally
-cheat_moved_horizontally:
+	;===========================
+	; update cheat horizontal
+update_cheat_horizontal:
 ; 10
 	lda	CHEAT_X							; 3
 ; 13
@@ -65,6 +69,20 @@ cheat_moved_horizontally:
 	sta	HMP0							; 3
 ; 38
 
+	lda	SHADOW_X						; 3
+	lsr                                                             ; 2
+	lsr                                                             ; 2
+	lsr                                                             ; 2
+	lsr                                                             ; 2
+	sta     SHADOW_X_COARSE						; 3
+; 54
+	; apply fine adjust
+	lda	SHADOW_X						; 3
+	and	#$0f							; 2
+	tax								; 2
+	lda	fine_adjust_table,X					; 4+
+	sta	HMP1							; 3
+; 68
 	sta	WSYNC
 
 	;=======================================================
@@ -123,6 +141,65 @@ fpad_x:
 
 done_done:
 
+	sta	WSYNC
+
+	;=======================================================
+	; set up sprite1 (the cheat)  to be at proper X position
+	;=======================================================
+        ; now in scanline 35
+; 0
+	; we can do this here and the sprite will be drawn as a long
+	; vertical column
+	; later we only enable it for the lines we want
+
+	ldx     a:SHADOW_X_COARSE    ; force 4-cycle version         ; 4
+
+	cpx	#$A                                                     ; 2
+	bcs	sfar_right       ; bge                                   ; 2/3
+
+; 8
+	inx                     ;                                       ; 2
+	inx                     ;                                       ; 2
+; 12 (want to be 12 here)
+
+spad_x:
+	dex                     ;                                       2
+	bne	spad_x           ;                                       2/3
+                                ;===========================================
+                                ;       5*(coarse_x+2)-1
+                                ; MAX is 9, so up to 54
+; up to 66
+	; beam is at proper place
+	sta	RESP1                                                   ; 3
+; up to 69
+	sta	WSYNC                                                   ; 3
+; up to 72
+	jmp	sdone_done                                               ; 3
+
+	; special case for when COARSE_X = 10
+	; won't fit with standard loop above
+sfar_right:
+; 9
+	ldx     #11                                                     ; 2
+
+sfpad_x:
+	dex                     ;                                       ; 2
+	bne     sfpad_x          ;                                       ; 2/3
+                                ; (5*X)-1 = 54
+; 65
+	nop                                                             ; 2
+	nop                                                             ; 2
+	nop                                                             ; 2
+
+; 71
+	sta     RESP0                                                   ; 3
+; 74
+	nop
+; 76
+
+sdone_done:
+
+
 	;================================
 	; scanline 36
 	;================================
@@ -154,8 +231,10 @@ done_done:
 	sta	PF2
 
 
-	lda	#$1C
+	lda	#$00		; black cheat
 	sta	COLUP0
+	lda	#$1C		; yellow cheat
+	sta	COLUP1
 
 	lda	#$AE			; blue sky
 	sta	COLUBK
@@ -246,28 +325,51 @@ strongbadia_top_loop:
 	;===========================
 	; at scanline 112
 
+	ldy	#0
 	ldx	#112
 bottom_loop:
 
 	; activate cheat sprite if necessary
-	lda     #$FF		; load sprite data			; 2
-	; X = current scanline
-	cpx	CHEAT_Y_END						; 3
-	bcs     turn_off_cheat						; 2/3
-	cpx	CHEAT_Y							; 3
-	bcc	turn_off_cheat						; 2/3
-	bcs	draw_cheat
-turn_off_cheat:
-	lda	#$00
-draw_cheat:
+;	lda     #$FF		; load sprite data			; 2
+;	; X = current scanline
+;	cpx	CHEAT_Y_END						; 3
+;	bcs     turn_off_cheat						; 2/3
+;	cpx	CHEAT_Y							; 3
+;	bcc	turn_off_cheat						; 2/3
+;	bcs	draw_cheat
+;turn_off_cheat:
+;	lda	#$00
+;draw_cheat:
+;	sta	GRP0
+
+	cpx	CHEAT_Y
+	beq	activate_cheat
+	jmp	done_activate_cheat
+activate_cheat:
+	ldy	#10
+done_activate_cheat:
+
+	tya
+	beq	level_no_cheat
+
+	lda	cheat_sprite_black,Y
 	sta	GRP0
+	lda	cheat_sprite_yellow,Y
+	sta	GRP1
 
+	dey
 
+level_no_cheat:
+
+	inx
 
 	sta	WSYNC
 
+
+
 	inx
 	cpx	#192
+	sta	WSYNC
 	bne	bottom_loop
 
 
@@ -294,6 +396,7 @@ strongbadia_overscan:
 	bne	after_check_down        ;				; 2/3
 down_pressed:
         inc	CHEAT_Y
+        inc	CHEAT_Y
 
 after_check_down:
 	sta	WSYNC                   ;                               ; 3
@@ -307,6 +410,7 @@ after_check_down:
 	bit	SWCHA                   ;				; 3
 	bne	after_check_up		;				; 2/3
 up_pressed:
+        dec	CHEAT_Y
         dec	CHEAT_Y
 
 after_check_up:
@@ -324,6 +428,15 @@ after_check_up:
 left_pressed:
         dec	CHEAT_X
 
+	lda	#$0
+	sta	CHEAT_DIRECTION
+
+	sec
+	lda	CHEAT_X
+	sbc	#2
+	sta	SHADOW_X
+
+
 after_check_left:
 	sta	WSYNC                   ;                               ; 3
 
@@ -337,6 +450,14 @@ after_check_left:
 	bne	after_check_right	;                               ; 2/3
 right_pressed:
 	inc	CHEAT_X
+	lda	#$8
+	sta	CHEAT_DIRECTION
+
+	clc
+	lda	CHEAT_X
+	adc	#2
+	sta	SHADOW_X
+
 
 after_check_right:
 	sta	WSYNC                   ;                               ; 3
@@ -347,14 +468,28 @@ after_check_right:
 	jmp	strongbadia_loop
 
 
-cheat_sprite:
-	.byte $FC
-	.byte $57
-	.byte $3E
-	.byte $7F
+cheat_sprite_yellow:
+	.byte $00
+	.byte $00
 	.byte $7D
-	.byte $7F
-	.byte $7E
 	.byte $3F
+	.byte $7E
+	.byte $7F
 	.byte $7D
+	.byte $7F
+	.byte $3E
+	.byte $57
+	.byte $FC
 
+cheat_sprite_black:
+	.byte $00
+	.byte $00
+	.byte $0A
+	.byte $00
+	.byte $04
+	.byte $01
+	.byte $0B
+	.byte $02
+	.byte $04
+	.byte $A2
+	.byte $04
