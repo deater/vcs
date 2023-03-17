@@ -109,7 +109,8 @@ title_loop:
 ; 10
 	;=============
 	; scanline 14
-	ldx	#0
+;	ldx	#0
+	ldy	#0
 	sta	WSYNC
 	jmp	logo_loop
 
@@ -117,10 +118,6 @@ title_loop:
 	; 32 lines of title
 	;===========================
 logo_loop:
-; 3
-;	nop
-;	nop
-;	lda	$80
 ; 3
 	lda	title_playfield0_left,X					; 4+
 	sta	PF0							; 3
@@ -134,7 +131,7 @@ logo_loop:
 	sta	PF2							; 3
 	; must write by CPU 38 [GPU 116]
 ; 24
-	cpx	#28			; 2
+	cpy	#28			; 2
 	bcc	blargh			; 2/3
 
 	lda	#$30			; 2
@@ -142,11 +139,11 @@ logo_loop:
 	sta	GRP1			; 3
 	bne	blargh2			; 3
 blargh:
-	inc	$95
-	dec	$95
+	inc	$95	; nop5		; 5
+	dec	$95	; nop5		; 5
 
 blargh2:
-	; 5/15
+	; 15/15
 
 ; 39
 	lda	title_playfield0_right,X				; 4+
@@ -161,10 +158,13 @@ blargh2:
 	sta	PF2							; 3
 	; must write by CPU 65 [GPU 196]
 ; 60
-
-
-	inx
-	cpx	#32
+	iny								; 2
+	tya								; 2
+	lsr								; 2
+	tax								; 2
+; 68
+	cpy	#32							; 2
+; 70
 	sta	WSYNC
 	bne	logo_loop
 
