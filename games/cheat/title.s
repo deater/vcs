@@ -1,6 +1,5 @@
 ; title
 
-
 title_loop:
 
 	;=========================
@@ -10,20 +9,18 @@ title_loop:
 	lda	#2			; reset beam to top of screen
 	sta	VSYNC
 
+	;================================
 	; wait for 3 scanlines of VSYNC
 
 	sta	WSYNC			; wait until end of scanline
 	sta	WSYNC
-
-	dec	MAIN_COLOR		; rotate colors
-	lda	MAIN_COLOR		; copy over main color
-	sta	LINE_COLOR
 
 	sta	WSYNC
 
 	lda	#0			; done beam reset
 	sta	VSYNC
 
+	;===============================
 	; 37 lines of vertical blank
 
 	ldx	#36
@@ -33,27 +30,23 @@ title_loop:
 	;===========================
 	; 36
 
-	 ; apply fine adjust
+	; apply fine adjust
 
 	lda	#$e0
-        sta     HMP0			; sprite0 + 2
+	sta     HMP0			; sprite0 + 2
 
 	lda	#$20
-        sta     HMP1			; sprite1 - 2
+	sta     HMP1			; sprite1 - 2
+
+	nop
+	nop
+	nop
 
 	sta	RESP0			; coasre sprite0
 
-	lda	#$40			; red
-	sta	COLUP0
-	sta	COLUP1
-
-	ldx	#6
-atari_right_loop:
-	dex
-	bne	atari_right_loop
-
-	nop								; 2
-	lda	$00			; nop3				; 3
+	lda	#$34			; red for the periods		; 2
+	sta	COLUP0							; 3
+	sta	a:COLUP1		; force extra cycle		; 4
 
 	sta	RESP1			; coarse sprite1
 
@@ -64,9 +57,18 @@ atari_right_loop:
 	;=============================
 	; 37
 
+	lda	#NUSIZ_TWO_COPIES_WIDE
+	sta	NUSIZ0
+	sta	NUSIZ1
 
-	lda	#$00
-	sta	PF0
+	lda	#$0		; turn off delay
+	sta	VDELP0
+	sta	VDELP1
+
+	sta	GRP0		; clear sprites
+	sta	GRP1
+
+	sta	PF0		; clear playfield
 	sta	PF1
 	sta	PF2
 
@@ -76,7 +78,7 @@ atari_right_loop:
 ;	lda	#>music_len
 ;	sta	MUSIC_PTR_H
 
-	jsr	inc_frame				; 6+18
+;	jsr	inc_frame				; 6+18
 
 	sta	WSYNC
 
@@ -116,26 +118,36 @@ atari_right_loop:
 	;===========================
 logo_loop:
 ; 3
-	nop
-	nop
-	lda	$80
-; 10
+;	nop
+;	nop
+;	lda	$80
+; 3
 	lda	title_playfield0_left,X					; 4+
 	sta	PF0							; 3
 	; must write by CPU 22 [GPU 68]
-; 17
+; 10
 	lda	title_playfield1_left,X					; 4+
 	sta	PF1							; 3
 	; must write by CPU 28 [GPU 84]
-; 24
+; 17
 	lda	title_playfield2_left,X					; 4+
 	sta	PF2							; 3
 	; must write by CPU 38 [GPU 116]
-; 31
-	nop
-	nop
-	nop
-	nop
+; 24
+	cpx	#28			; 2
+	bcc	blargh			; 2/3
+
+	lda	#$30			; 2
+	sta	GRP0			; 3
+	sta	GRP1			; 3
+	bne	blargh2			; 3
+blargh:
+	inc	$95
+	dec	$95
+
+blargh2:
+	; 5/15
+
 ; 39
 	lda	title_playfield0_right,X				; 4+
 	sta	PF0                                                     ; 3
@@ -162,6 +174,11 @@ logo_loop:
 	;===========================
 	; 46 - 74 = blank
 	;===========================
+
+	lda	#$0		; turn off periods
+	sta	GRP0
+	sta	GRP1
+
 
 	ldx	#27
 	jsr	scanline_wait
