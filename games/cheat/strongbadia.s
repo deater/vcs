@@ -68,10 +68,10 @@ strongbadia_loop:
 	;===========================
 	; scanline 32
 	;===========================
-	; update cheat horizontal
-update_cheat_horizontal:
+	; update flag horizontal
+update_flag_horizontal:
 ; 0
-	lda	CHEAT_X						; 3
+	lda	#78						; 3
 	ldx	#0						; 2
 	jsr	set_pos_x		; 2 scanlines		; 6+62
 	sta	WSYNC
@@ -79,9 +79,9 @@ update_cheat_horizontal:
 	;==========================
 	; scanline 33
 	;==========================
-wait_pos1:
+wait_pos3:
 	dey								; 2
-	bpl	wait_pos1	; 5-cycle loop (15 TIA color clocks)	; 2/3
+	bpl	wait_pos3	; 5-cycle loop (15 TIA color clocks)	; 2/3
 
 	sta	RESP0							; 4
 	sta	WSYNC
@@ -136,6 +136,7 @@ wait_pos2:
 	sta	PF1
 	sta	PF2
 
+	sta	REFP0
 
 	lda	#$00		; black cheat
 	sta	COLUP0
@@ -144,7 +145,6 @@ wait_pos2:
 
 	lda	#$AE		; blue sky
 	sta	COLUBK
-
 
 	sta	WSYNC
 
@@ -254,6 +254,40 @@ no_incy2:
 ; 70
 	sta	WSYNC
 	bne	strongbadia_top_loop
+
+	;===========================
+	; scanline 48
+	;===========================
+
+	lda	CHEAT_DIRECTION
+	sta	REFP0
+
+	lda	#0
+	sta	HMP1
+
+	sta	WSYNC
+
+	;===========================
+	; scanline 49
+	;===========================
+	; update cheat horizontal
+update_cheat_horizontal:
+; 0
+	lda	CHEAT_X						; 3
+	ldx	#0						; 2
+	jsr	set_pos_x		; 2 scanlines		; 6+62
+	sta	WSYNC
+
+	;==========================
+	; scanline 52
+	;==========================
+wait_pos1:
+	dey								; 2
+	bpl	wait_pos1	; 5-cycle loop (15 TIA color clocks)	; 2/3
+
+	sta	RESP0							; 4
+	sta	WSYNC
+	sta	HMOVE
 
 	;===========================
 	; bottom of screen
