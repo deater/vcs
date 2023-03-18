@@ -1,11 +1,15 @@
 ; strongbadia
 
+; min=2? max=152?
+
 ; o/~ come to the place where tropical breezes blow o/~
 
 	lda	#120
 	sta	CHEAT_Y
 	lda	#50
 	sta	CHEAT_X
+	lda	#48
+	sta	SHADOW_X
 
 strongbadia_loop:
 
@@ -41,163 +45,50 @@ strongbadia_loop:
 	;===============================
 	;===============================
 
-	ldx	#33
+	ldx	#31
 	jsr	scanline_wait		; Leaves X zero
 ; 10
+	sta	WSYNC
 
 	;===========================
-	; scanline 34
+	; scanline 32
 	;===========================
 	; update cheat horizontal
 update_cheat_horizontal:
-; 10
-	lda	CHEAT_X							; 3
-; 13
-	; spritex DIV 16
-
-	lsr                                                             ; 2
-	lsr                                                             ; 2
-	lsr                                                             ; 2
-	lsr                                                             ; 2
-	sta     CHEAT_X_COARSE						; 3
-; 24
-	; apply fine adjust
-	lda	CHEAT_X							; 3
-	and	#$0f							; 2
-	tax								; 2
-	lda	fine_adjust_table,X					; 4+
-	sta	HMP0							; 3
-; 38
-
-	lda	SHADOW_X						; 3
-	lsr                                                             ; 2
-	lsr                                                             ; 2
-	lsr                                                             ; 2
-	lsr                                                             ; 2
-	sta     SHADOW_X_COARSE						; 3
-; 54
-	; apply fine adjust
-	lda	SHADOW_X						; 3
-	and	#$0f							; 2
-	tax								; 2
-	lda	fine_adjust_table,X					; 4+
-	sta	HMP1							; 3
-; 68
+; 0
+	lda	CHEAT_X						; 3
+	ldx	#0						; 2
+	jsr	set_pos_x		; 2 scanlines		; 6+62
 	sta	WSYNC
 
-	;=======================================================
-	; set up sprite0 (the cheat)  to be at proper X position
-	;=======================================================
-        ; now in scanline 35
-; 0
-	; we can do this here and the sprite will be drawn as a long
-	; vertical column
-	; later we only enable it for the lines we want
+	;==========================
+	; scanline 33
+	;==========================
+wait_pos1:
+	dey								; 2
+	bpl	wait_pos1	; 5-cycle loop (15 TIA color clocks)	; 2/3
 
-	ldx     a:CHEAT_X_COARSE    ; force 4-cycle version         ; 4
-
-	cpx	#$A                                                     ; 2
-	bcs	far_right       ; bge                                   ; 2/3
-
-; 8
-	inx                     ;                                       ; 2
-	inx                     ;                                       ; 2
-; 12 (want to be 12 here)
-
-pad_x:
-	dex                     ;                                       2
-	bne	pad_x           ;                                       2/3
-                                ;===========================================
-                                ;       5*(coarse_x+2)-1
-                                ; MAX is 9, so up to 54
-; up to 66
-	; beam is at proper place
-	sta	RESP0                                                   ; 3
-; up to 69
-	sta	WSYNC                                                   ; 3
-; up to 72
-	jmp	done_done                                               ; 3
-
-	; special case for when COARSE_X = 10
-	; won't fit with standard loop above
-far_right:
-; 9
-	ldx     #11                                                     ; 2
-
-fpad_x:
-	dex                     ;                                       ; 2
-	bne     fpad_x          ;                                       ; 2/3
-                                ; (5*X)-1 = 54
-; 65
-	nop                                                             ; 2
-	nop                                                             ; 2
-	nop                                                             ; 2
-
-; 71
-	sta     RESP0                                                   ; 3
-; 74
-	nop
-; 76
-
-done_done:
-
+	sta	RESP0							; 4
 	sta	WSYNC
 
-	;=======================================================
-	; set up sprite1 (the cheat)  to be at proper X position
-	;=======================================================
-        ; now in scanline 35
+	;==========================
+	; scanline 34
+	;==========================
 ; 0
-	; we can do this here and the sprite will be drawn as a long
-	; vertical column
-	; later we only enable it for the lines we want
+	lda	SHADOW_X						; 3
+	ldx	#1							; 2
+	jsr	set_pos_x		; 2 scanlines			; 6+62
+	sta	WSYNC
 
-	ldx     a:SHADOW_X_COARSE    ; force 4-cycle version         ; 4
+	;==========================
+	; scanline 35
+	;==========================
+wait_pos2:
+	dey                                                             ; 2
+	bpl	wait_pos2	; 5-cycle loop (15 TIA color clocks)    ; 2/3
 
-	cpx	#$A                                                     ; 2
-	bcs	sfar_right       ; bge                                   ; 2/3
-
-; 8
-	inx                     ;                                       ; 2
-	inx                     ;                                       ; 2
-; 12 (want to be 12 here)
-
-spad_x:
-	dex                     ;                                       2
-	bne	spad_x           ;                                       2/3
-                                ;===========================================
-                                ;       5*(coarse_x+2)-1
-                                ; MAX is 9, so up to 54
-; up to 66
-	; beam is at proper place
-	sta	RESP1                                                   ; 3
-; up to 69
-	sta	WSYNC                                                   ; 3
-; up to 72
-	jmp	sdone_done                                               ; 3
-
-	; special case for when COARSE_X = 10
-	; won't fit with standard loop above
-sfar_right:
-; 9
-	ldx     #11                                                     ; 2
-
-sfpad_x:
-	dex                     ;                                       ; 2
-	bne     sfpad_x          ;                                       ; 2/3
-                                ; (5*X)-1 = 54
-; 65
-	nop                                                             ; 2
-	nop                                                             ; 2
-	nop                                                             ; 2
-
-; 71
-	sta     RESP0                                                   ; 3
-; 74
-	nop
-; 76
-
-sdone_done:
+	sta	RESP1							; 4
+	sta	WSYNC
 
 
 	;================================
