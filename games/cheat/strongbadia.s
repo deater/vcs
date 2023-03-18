@@ -159,6 +159,7 @@ wait_pos2:
 	; draw 192 lines
 
 	ldx	#0
+	ldy	#0
 
 	;===========================
 	; 60 lines of bushes
@@ -185,8 +186,20 @@ bushes_top_loop:
 	sta	PF2							; 3
 	; must write by CPU 38 [GPU 116]
 ; 34
+	txa								; 2
+	cmp	#22							; 2
+	bcc	no_incy							; 2/3
+	and	#$1							; 2
+	bne	no_incy							; 2/3
+	iny								; 2
+no_incy:
+; 48 (worst case)
 
-
+	lda	sbadia_overlay_colors,Y					; 4+
+	sta	COLUP0							; 3
+	lda	sbadia_overlay_sprite,Y					; 4+
+	sta	GRP0							; 3
+; 62
 	inx								; 2
 	lda	bushes_bg_colors,X					; 4+
 	cpx	#60							; 2
@@ -194,7 +207,9 @@ bushes_top_loop:
 	sta	WSYNC
 	bne	bushes_top_loop
 
+
 	ldx	#0
+	ldy	#0
 
 	;===========================
 	; 48 lines of strongbadia
@@ -219,6 +234,20 @@ strongbadia_top_loop:
 	sta	PF2							; 3
 	; must write by CPU 38 [GPU 116]
 ; 34
+
+	nop
+
+
+	txa								; 2
+	and	#$1							; 2
+	bne	no_incy2						; 2/3
+	iny								; 2
+no_incy2:
+	lda	below_fence_colors,Y					; 4+
+	sta	COLUP0							; 3
+	lda	below_fence_sprite,Y					; 4+
+	sta	GRP0							; 3
+
 
 	inx								; 2
 	cpx	#48							; 2

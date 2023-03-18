@@ -93,3 +93,29 @@ strongbadia_playfield2_left:
 	.byte $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 	.byte $FF,$FF,$00,$00;,$00,$00,$00,$00
 
+
+sbadia_overlay_colors:
+	.byte $00
+	.byte $40,$40,$0E,$0E,$f0,$f0,$12,$12
+	.byte $12,$12,$12,$12,$12,$12,$12,$12
+	.byte $12,$12,$12
+
+below_fence_colors:
+	.byte $00
+	.byte $00,$00,$00,$00,$00
+	.byte $00,$00,$00,$00,$00,$00,$00,$00
+	.byte $00,$0E,$0A,$08,$08,$06,$06,$06
+	.byte $00,$00,$00
+
+sbadia_overlay_sprite:
+	.byte $00
+	.byte $FF,$FF,$E7,$E7,$FB,$FF,$80,$80
+	.byte $80,$40,$40,$40,$40,$40,$80,$80
+	.byte $80,$80,$80
+
+below_fence_sprite:
+	.byte $00
+	.byte $00,$00,$00,$3C,$7E
+	.byte $77,$E7,$EF,$FE,$7E,$3C,$00,$00
+	.byte $00,$1E,$21,$41,$99,$81,$42,$7D
+	.byte $00,$00,$00
