@@ -20,6 +20,10 @@ TEMP1			=	$90
 TEMP2			=	$91
 DIV3			=	$92
 XSAVE			=	$93
+MINX			=	$94
+MAXX			=	$95
+MINY			=	$96
+MAXY			=	$97
 TITLE_COUNTDOWN		=	$9C
 DONE_TITLE		=	$9E
 

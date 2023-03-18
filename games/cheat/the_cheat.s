@@ -63,7 +63,7 @@ clear_loop:
 	.include "strongbadia.s"
 
 .include "title_pf.inc"
-.align $100
+;.align $100
 .include "title_sprites.inc"
 .include "strongbadia.inc"
 
@@ -71,6 +71,11 @@ clear_loop:
 .include "cheat2_player.s"
 
 .include "position.s"
+.include "blue.s"
+;.align $100
+.include "draw_score.s"
+.include "update_score.s"
+.include "blue.inc"
 
 	;====================
 	; scanline wait

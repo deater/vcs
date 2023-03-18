@@ -13,7 +13,8 @@ the_cheat.o:	the_cheat.s \
 	title.s title_pf.inc title_sprites.inc \
 	cheat2_trackdata.s cheat2_player.s \
 	strongbadia.s strongbadia.inc \
-	draw_score.s
+	draw_score.s update_score.s \
+	blue.s blue.inc
 	ca65 -o the_cheat.o the_cheat.s -l the_cheat.lst
 
 ####

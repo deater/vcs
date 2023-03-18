@@ -1,8 +1,6 @@
-; strongbadia
+; blue land
 
-; min=2? max=152?
-
-; o/~ come to the place where tropical breezes blow o/~
+blue_land:
 
 	lda	#120
 	sta	CHEAT_Y
@@ -11,18 +9,7 @@
 	lda	#48
 	sta	SHADOW_X
 
-	lda	#8
-	sta	MINX
-	lda	#160
-	sta	MAXX
-
-	lda	#112
-	sta	MINY
-	lda	#162
-	sta	MAXY
-
-
-strongbadia_loop:
+blue_loop:
 
 	;=========================
 	; Start Vertical Blank
@@ -41,9 +28,12 @@ strongbadia_loop:
 	sta	REFP0
 	sta	REFP1
 
-	; mirror playfield
-	lda	#CTRLPF_REF
+	; no mirror playfield, sprites behind
+	lda	#CTRLPF_PFP
 	sta	CTRLPF
+
+	lda	#$80
+	sta	COLUBK
 
 	sta	WSYNC
 
@@ -56,22 +46,25 @@ strongbadia_loop:
 	;===============================
 	;===============================
 
-	ldx	#20
+	ldx	#21
 	jsr	scanline_wait		; Leaves X zero
 ; 10
 	sta	WSYNC
 
+	;====================
+	; 10 scanlines
 
 	jsr	update_score
 	sta	WSYNC
 
+
 	;===========================
 	; scanline 32
 	;===========================
-	; update flag horizontal
-update_flag_horizontal:
+	; update cheat horizontal
+bupdate_cheat_horizontal:
 ; 0
-	lda	#78						; 3
+	lda	CHEAT_X						; 3
 	ldx	#0						; 2
 	jsr	set_pos_x		; 2 scanlines		; 6+62
 	sta	WSYNC
@@ -79,12 +72,13 @@ update_flag_horizontal:
 	;==========================
 	; scanline 33
 	;==========================
-wait_pos3:
+bwait_pos1:
 	dey								; 2
-	bpl	wait_pos3	; 5-cycle loop (15 TIA color clocks)	; 2/3
+	bpl	bwait_pos1	; 5-cycle loop (15 TIA color clocks)	; 2/3
 
 	sta	RESP0							; 4
 	sta	WSYNC
+	sta	HMOVE
 
 	;==========================
 	; scanline 34
@@ -98,9 +92,9 @@ wait_pos3:
 	;==========================
 	; scanline 35
 	;==========================
-wait_pos2:
+bwait_pos2:
 	dey                                                             ; 2
-	bpl	wait_pos2	; 5-cycle loop (15 TIA color clocks)    ; 2/3
+	bpl	bwait_pos2	; 5-cycle loop (15 TIA color clocks)    ; 2/3
 
 	sta	RESP1							; 4
 	sta	WSYNC
@@ -143,15 +137,13 @@ wait_pos2:
 	lda	#$1C		; yellow cheat
 	sta	COLUP1
 
-	lda	#$AE		; blue sky
-	sta	COLUBK
+	ldx	#0
 
 	sta	WSYNC
 
-	ldx	#0
 	stx	VBLANK		; turn on beam (X=0)
 
-
+.if 0
 	;===========================
 	;===========================
 	; playfield
@@ -268,27 +260,7 @@ no_incy2:
 
 	sta	WSYNC
 
-	;===========================
-	; scanline 49
-	;===========================
-	; update cheat horizontal
-update_cheat_horizontal:
-; 0
-	lda	CHEAT_X						; 3
-	ldx	#0						; 2
-	jsr	set_pos_x		; 2 scanlines		; 6+62
-	sta	WSYNC
 
-	;==========================
-	; scanline 52
-	;==========================
-wait_pos1:
-	dey								; 2
-	bpl	wait_pos1	; 5-cycle loop (15 TIA color clocks)	; 2/3
-
-	sta	RESP0							; 4
-	sta	WSYNC
-	sta	HMOVE
 
 	;===========================
 	; bottom of screen
@@ -329,25 +301,32 @@ level_no_cheat:
 	sta	WSYNC
 	bne	bottom_loop
 
-	;===================
 	; 8 scanlines
-	;===================
+.endif
+
+	ldx	#184
+	jsr	scanline_wait
+
+	;======================
+	; draw score
+	;======================
+	; 8 scanlines
 
 	jsr	draw_score
-
 
 	;============================
 	; overscan
 	;============================
-strongbadia_overscan:
+blue_overscan:
 	lda	#$2		; turn off beam
 	sta	VBLANK
 
 	; wait 30 scanlines
 
-	ldx	#26
+	ldx	#30
 	jsr	scanline_wait
 
+.if 0
 	;=============================
 	; now at VBLANK scanline 27
 	;=============================
@@ -355,17 +334,12 @@ strongbadia_overscan:
 ; 0
 	lda	#$20			; check down			; 2
 	bit	SWCHA                   ;				; 3
-	bne	after_check_down        ;				; 2/3
-down_pressed:
-	lda	MAXY
-	cmp	CHEAT_Y
-	bcc	cant_inc_y
-
+	bne	bafter_check_down        ;				; 2/3
+bdown_pressed:
         inc	CHEAT_Y
         inc	CHEAT_Y
-cant_inc_y:
 
-after_check_down:
+bafter_check_down:
 	sta	WSYNC                   ;                               ; 3
 
 	;=============================
@@ -375,17 +349,12 @@ after_check_down:
 ; 0
 	lda	#$10			; check up			; 2
 	bit	SWCHA                   ;				; 3
-	bne	after_check_up		;				; 2/3
-up_pressed:
-
-	lda	MINY
-	cmp	CHEAT_Y
-	bcs	cant_dec_y
+	bne	bafter_check_up		;				; 2/3
+bup_pressed:
         dec	CHEAT_Y
         dec	CHEAT_Y
-cant_dec_y:
 
-after_check_up:
+bafter_check_up:
 	sta	WSYNC                   ;                               ; 3
 
 
@@ -396,15 +365,9 @@ after_check_up:
 ; 0
 	lda	#$40                    ; check left                    ; 2
 	bit	SWCHA                   ;                               ; 3
-	bne	after_check_left        ;                               ; 2/3
-left_pressed:
-
-	lda	MINX
-	cmp	CHEAT_X
-	bcs	can_dec
-
+	bne	bafter_check_left        ;                               ; 2/3
+bleft_pressed:
         dec	CHEAT_X
-can_dec:
 
 	lda	#$0
 	sta	CHEAT_DIRECTION
@@ -415,7 +378,7 @@ can_dec:
 	sta	SHADOW_X
 
 
-after_check_left:
+bafter_check_left:
 	sta	WSYNC                   ;                               ; 3
 
 	;=============================
@@ -425,15 +388,9 @@ after_check_left:
 ; 0
 	lda	#$80			; check right                    ; 2
 	bit	SWCHA			;                               ; 3
-	bne	after_check_right	;                               ; 2/3
-right_pressed:
-
-	lda	MAXX
-	cmp	CHEAT_X
-	bcc	can_inc
+	bne	bafter_check_right	;                               ; 2/3
+bright_pressed:
 	inc	CHEAT_X
-can_inc:
-
 	lda	#$8
 	sta	CHEAT_DIRECTION
 
@@ -442,39 +399,13 @@ can_inc:
 	adc	#2
 	sta	SHADOW_X
 
-	cmp	#140
-	bcs	done_strongbadia
 
-after_check_right:
+bafter_check_right:
 	sta	WSYNC                   ;                               ; 3
 
-	jmp	strongbadia_loop
+.endif
 
-done_strongbadia:
-	jmp	blue_land
 
-cheat_sprite_yellow:
-	.byte $00
-	.byte $00
-	.byte $7D
-	.byte $3F
-	.byte $7E
-	.byte $7F
-	.byte $7D
-	.byte $7F
-	.byte $3E
-	.byte $57
-	.byte $FC
+	jmp	blue_loop
 
-cheat_sprite_black:
-	.byte $00
-	.byte $00
-	.byte $0A
-	.byte $00
-	.byte $04
-	.byte $01
-	.byte $0B
-	.byte $02
-	.byte $04
-	.byte $A2
-	.byte $04
+
