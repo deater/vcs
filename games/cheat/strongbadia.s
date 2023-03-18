@@ -127,13 +127,13 @@ wait_pos2:
 	lda	#$1C		; yellow cheat
 	sta	COLUP1
 
-	lda	#$AE			; blue sky
+	lda	#$AE		; blue sky
 	sta	COLUBK
 
 
 	sta	WSYNC
 
-	stx	VBLANK			; turn on beam (X=0)
+	stx	VBLANK		; turn on beam (X=0)
 
 
 	;===========================
@@ -220,33 +220,22 @@ strongbadia_top_loop:
 	ldx	#112
 bottom_loop:
 
-	; activate cheat sprite if necessary
-;	lda     #$FF		; load sprite data			; 2
-;	; X = current scanline
-;	cpx	CHEAT_Y_END						; 3
-;	bcs     turn_off_cheat						; 2/3
-;	cpx	CHEAT_Y							; 3
-;	bcc	turn_off_cheat						; 2/3
-;	bcs	draw_cheat
-;turn_off_cheat:
-;	lda	#$00
-;draw_cheat:
-;	sta	GRP0
+; 3
+	; activate cheat sprite
 
-	cpx	CHEAT_Y
-	beq	activate_cheat
-	jmp	done_activate_cheat
+	cpx	CHEAT_Y							; 2
+	bne	done_activate_cheat					; 2/3
 activate_cheat:
-	ldy	#10
+	ldy	#10							; 2
 done_activate_cheat:
-
-	tya
-	beq	level_no_cheat
 
 	lda	cheat_sprite_black,Y
 	sta	GRP0
 	lda	cheat_sprite_yellow,Y
 	sta	GRP1
+
+	tya
+	beq	level_no_cheat
 
 	dey
 
