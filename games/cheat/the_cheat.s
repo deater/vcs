@@ -6,40 +6,7 @@
 ; by Vince `deater` Weaver <vince@deater.net>
 
 .include "../../vcs.inc"
-
-
-; zero page addresses
-
-FRAME                   =       $80
-FRAMEH                  =       $81
-CHEAT_X			=	$82
-CHEAT_Y			=	$83
-CHEAT_X_COARSE		=	$84
-CHEAT_Y_END		=	$85
-CHEAT_DIRECTION		=	$86
-SHADOW_X		=	$87
-SHADOW_X_COARSE		=	$88
-
-TEMP1			=	$90
-TEMP2			=	$91
-DIV3			=	$92
-XSAVE			=	$93
-TITLE_COUNTDOWN		=	$9C
-DONE_TITLE		=	$9E
-
-; tt music player
-tt_timer                = $E0    ; current music timer value
-tt_cur_pat_index_c0     = $E1    ; current pattern index into tt_SequenceTable
-tt_cur_pat_index_c1     = $E2
-tt_cur_note_index_c0    = $E3    ; note index into current pattern
-tt_cur_note_index_c1    = $E4
-tt_envelope_index_c0    = $E5   ; index into ADSR envelope
-tt_envelope_index_c1    = $E6
-tt_cur_ins_c0           = $E7   ; current instrument
-tt_cur_ins_c1           = $E8
-tt_ptr                  = $E9   ; temporary
-tt_ptr2                 = $EA
-player_time_max         = $EB
+.include "zp.inc"
 
 the_cheat_start:
 
@@ -126,6 +93,27 @@ inc_frame:
 	inc	FRAMEH					; 5
 no_inc_high:
 	rts						; 6
+
+score_bitmap0:  ; turns out this was same pattern
+score_zeros:    .byte $22,$55,$55,$55,$55,$55,$22,$00
+score_ones:     .byte $22,$66,$22,$22,$22,$22,$77,$00
+score_twos:     .byte $22,$55,$11,$22,$44,$44,$77,$00
+score_threes:   .byte $22,$55,$11,$22,$11,$55,$22,$00
+score_fours:    .byte $55,$55,$55,$77,$11,$11,$11,$00
+
+; --****** ----**-- --****** ----**-- ----**--
+; --**---- --**--** ------** --**--** --**--**
+; --****-- --**---- ------** --**--** --**--**
+; ------** --****-- ----**-- ----**-- ----****
+; ------** --**--** --**---- --**--** ------**
+; --**--** --**--** --**---- --**--** --**--**
+; ----**-- ----**-- --**---- ----**-- ----**--
+
+score_fives:    .byte   $77,$44,$66,$11,$11,$55,$22,$00
+score_sixes:    .byte   $33,$44,$44,$66,$55,$55,$22,$00
+score_sevens:   .byte   $77,$11,$11,$22,$44,$44,$44,$00
+score_eights:   .byte   $22,$55,$55,$22,$55,$55,$22,$00
+score_nines:    .byte   $22,$55,$55,$33,$11,$55,$22,$00
 
 
 .segment "IRQ_VECTORS"

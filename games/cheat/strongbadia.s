@@ -45,10 +45,25 @@ strongbadia_loop:
 	;===============================
 	;===============================
 
-	ldx	#31
+	ldx	#21
 	jsr	scanline_wait		; Leaves X zero
 ; 10
 	sta	WSYNC
+
+
+	.include "update_score.s"
+
+	sed
+	sec
+	lda	SCORE_LOW
+	sbc	#1
+	sta	SCORE_LOW
+	lda	SCORE_HIGH
+	sbc	#0
+	sta	SCORE_HIGH
+	cld
+
+
 
 	;===========================
 	; scanline 32
@@ -245,12 +260,14 @@ level_no_cheat:
 
 	sta	WSYNC
 
-
-
 	inx
-	cpx	#192
+	cpx	#184
 	sta	WSYNC
 	bne	bottom_loop
+
+	; 8 scanlines
+
+.include "draw_score.s"
 
 
 
