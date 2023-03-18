@@ -1,6 +1,6 @@
 ; Using background color $72, FG $08
 
-playfield1_left:
+blue_playfield1_left:
 	.byte $00,$00,$00,$00,$00,$00,$00,$00
 	.byte $00,$00,$00,$38,$7C,$FC,$FE,$FF
 	.byte $FF,$FF,$FF,$FF,$F7,$07,$77,$77
@@ -14,7 +14,7 @@ playfield1_left:
 	.byte $00,$00,$00,$00,$00,$00,$00,$00
 	.byte $00,$00,$00,$00
 
-playfield2_left:
+blue_playfield2_left:
 	.byte $00,$00,$00,$00,$09,$0B,$0F,$0F
 	.byte $0F,$0F,$0F,$0F,$0E,$06,$03,$03
 	.byte $03,$03,$03,$03,$03,$03,$03,$03
@@ -28,7 +28,7 @@ playfield2_left:
 	.byte $48,$48,$48,$08,$08,$08,$00,$00
 	.byte $00,$00,$00,$00
 
-playfield0_right:
+blue_playfield0_right:
 	.byte $00,$00,$00,$00,$00,$00,$80,$00
 	.byte $00,$00,$00,$00,$00,$00,$00,$00
 	.byte $00,$00,$00,$00,$00,$00,$00,$00
@@ -42,7 +42,7 @@ playfield0_right:
 	.byte $20,$20,$20,$20,$20,$20,$20,$00
 	.byte $00,$00,$00,$00
 
-playfield1_right:
+blue_playfield1_right:
 	.byte $00,$00,$00,$00,$00,$E0,$61,$20
 	.byte $20,$20,$20,$70,$70,$70,$70,$00
 	.byte $A6,$A6,$FF,$FF,$FF,$F6,$6F,$6F
@@ -56,7 +56,7 @@ playfield1_right:
 	.byte $00,$00,$00,$00,$00,$00,$00,$00
 	.byte $00,$00,$00,$00
 
-playfield2_right:
+blue_playfield2_right:
 	.byte $00,$00,$00,$00,$00,$07,$06,$04
 	.byte $04,$04,$04,$0E,$0E,$0E,$0E,$00
 	.byte $0A,$0A,$0F,$0F,$0F,$0F,$06,$06

@@ -2,7 +2,7 @@
 
 blue_land:
 
-	lda	#120
+	lda	#60		; half as big
 	sta	CHEAT_Y
 	lda	#50
 	sta	CHEAT_X
@@ -78,7 +78,6 @@ bwait_pos1:
 
 	sta	RESP0							; 4
 	sta	WSYNC
-	sta	HMOVE
 
 	;==========================
 	; scanline 34
@@ -130,7 +129,7 @@ bwait_pos2:
 	sta	PF1
 	sta	PF2
 
-	sta	REFP0
+;	sta	REFP0
 
 	lda	#$00		; black cheat
 	sta	COLUP0
@@ -143,7 +142,7 @@ bwait_pos2:
 
 	stx	VBLANK		; turn on beam (X=0)
 
-.if 0
+
 	;===========================
 	;===========================
 	; playfield
@@ -151,161 +150,132 @@ bwait_pos2:
 	;===========================
 	; draw 192 lines
 
-	ldx	#0
+	lda	#$72		; dark blue
+	sta	COLUBK
+
+	lda	#$08		; grey
+	sta	COLUPF
+
 	ldy	#0
 
+	sta	WSYNC
+	jmp	blue_bg_loop
+
 	;===========================
-	; 60 lines of bushes
+	; 184 lines of title
 	;===========================
-	; Hills?  I always thought those were bushes...
-	;	(figurative)
-bushes_top_loop:
+blue_bg_loop:
 ; 3
-;	lda	bushes_bg_colors,X					; 4+
-	sta	COLUBK							; 3
-; 6
-	lda	bushes_colors,X						; 4+
-	sta	COLUPF							; 3
-; 13
-	lda	bushes_playfield0_left,X				; 4+
+	lda	#0							; 2
 	sta	PF0							; 3
 	; must write by CPU 22 [GPU 68]
-; 20
-	lda	bushes_playfield1_left,X				; 4+
-	sta	PF1							; 3
-	; must write by CPU 28 [GPU 84]
-; 27
-	lda	bushes_playfield2_left,X				; 4+
-	sta	PF2							; 3
-	; must write by CPU 38 [GPU 116]
-; 34
-	txa								; 2
-	cmp	#22							; 2
-	bcc	no_incy							; 2/3
-	and	#$1							; 2
-	bne	no_incy							; 2/3
-	iny								; 2
-no_incy:
-; 48 (worst case)
-
-	lda	sbadia_overlay_colors,Y					; 4+
-	sta	COLUP0							; 3
-	lda	sbadia_overlay_sprite,Y					; 4+
-	sta	GRP0							; 3
-; 62
-	inx								; 2
-	lda	bushes_bg_colors,X					; 4+
-	cpx	#60							; 2
-; 70
-	sta	WSYNC
-	bne	bushes_top_loop
-
-
-	ldx	#0
-	ldy	#0
-
-	;===========================
-	; 48 lines of strongbadia
-	;===========================
-strongbadia_top_loop:
-; 3
-	lda	#$D4							; 2
-	sta	COLUBK							; 3
 ; 8
-	lda	strongbadia_colors,X					; 4+
-	sta	COLUPF							; 3
-; 15
-	lda	#$00							; 2
-	sta	PF0							; 3
-	; must write by CPU 22 [GPU 68]
-; 20
-	lda	strongbadia_playfield1_left,X				; 4+
+	lda	blue_playfield1_left,X					; 4+
 	sta	PF1							; 3
 	; must write by CPU 28 [GPU 84]
-; 27
-	lda	strongbadia_playfield2_left,X				; 4+
+; 15
+	lda	blue_playfield2_left,X					; 4+
 	sta	PF2							; 3
 	; must write by CPU 38 [GPU 116]
-; 34
+; 22
 
-	nop
-
-
-	txa								; 2
-	and	#$1							; 2
-	bne	no_incy2						; 2/3
-	iny								; 2
-no_incy2:
-	lda	below_fence_colors,Y					; 4+
-	sta	COLUP0							; 3
-	lda	below_fence_sprite,Y					; 4+
-	sta	GRP0							; 3
-
-
-	inx								; 2
-	cpx	#48							; 2
-; 70
-	sta	WSYNC
-	bne	strongbadia_top_loop
-
-	;===========================
-	; scanline 48
-	;===========================
-
-	lda	CHEAT_DIRECTION
-	sta	REFP0
-
-	lda	#0
-	sta	HMP1
-
-	sta	WSYNC
-
-
-
-	;===========================
-	; bottom of screen
-	;===========================
-	; at scanline 112
-
-	ldy	#0
-	ldx	#112
-bottom_loop:
-
-; 3
 	; activate cheat sprite
 
-	cpx	CHEAT_Y							; 2
-	bne	done_activate_cheat					; 2/3
-activate_cheat:
-	ldy	#10							; 2
-done_activate_cheat:
+	cpx	CHEAT_Y                                                 ; 2
+	bne	bdone_activate_cheat					; 2/3
+bactivate_cheat:
+	ldy	#10                                                     ; 2
+	bne	bdone_activate_cheat_skip	; bra			; 3
+bdone_activate_cheat:
+	nop								; 2
+	nop								; 2
+bdone_activate_cheat_skip:
+	; 9/9
 
-	lda	cheat_sprite_black,Y
-	sta	GRP0
-	lda	cheat_sprite_yellow,Y
-	sta	GRP1
+; 31
 
-	tya
-	beq	level_no_cheat
+	inc	TEMP1	; nop5
+	lda	TEMP1	; nop3
 
-	dey
 
-level_no_cheat:
 
-	inx
+; 39
+	lda	blue_playfield0_right,X					; 4+
+	sta	PF0                                                     ; 3
+	; must write by CPU 49 [GPU 148]
+; 46
+	lda	blue_playfield1_right,X					; 4+
+	sta	PF1							; 3
+	; must write by CPU 54 [GPU 164]
+; 53
+	lda	blue_playfield2_right,X					; 4+
+	sta	PF2							; 3
+	; must write by CPU 65 [GPU 196]
+
+; 60
 
 	sta	WSYNC
 
-	inx
-	cpx	#184
+; 0
+
+	lda	$0	; nop3						; 3
+	lda	#0							; 2
+	sta	PF0							; 3
+	; must write by CPU 22 [GPU 68]
+; 8
+	lda	blue_playfield1_left,X					; 4+
+	sta	PF1							; 3
+	; must write by CPU 28 [GPU 84]
+; 15
+	lda	blue_playfield2_left,X					; 4+
+	sta	PF2							; 3
+	; must write by CPU 38 [GPU 116]
+; 22
+
+	; put sprite
+
+	lda	cheat_sprite_black,Y					; 4
+	sta	GRP0							; 3
+	lda	cheat_sprite_yellow,Y					; 4
+	sta	GRP1							; 3
+
+; 36
+
+	lda	$00	; nop3
+
+
+
+; 39
+	lda	blue_playfield0_right,X					; 4+
+	sta	PF0                                                     ; 3
+	; must write by CPU 49 [GPU 148]
+; 46
+	lda	blue_playfield1_right,X					; 4+
+	sta	PF1							; 3
+	; must write by CPU 54 [GPU 164]
+; 53
+	lda	blue_playfield2_right,X					; 4+
+	sta	PF2							; 3
+	; must write by CPU 65 [GPU 196]
+; 60
+
+	tya								; 2
+	beq	blevel_no_cheat						; 2/3
+	dey								; 2
+blevel_no_cheat:
+	; 6/5
+
+; 66
+
+	inx								; 2
+	cpx	#92							; 2
+; 70
 	sta	WSYNC
-	bne	bottom_loop
+	bne	blue_bg_loop
 
-	; 8 scanlines
-.endif
 
-	ldx	#184
-	jsr	scanline_wait
+
+
 
 	;======================
 	; draw score
@@ -318,15 +288,14 @@ level_no_cheat:
 	; overscan
 	;============================
 blue_overscan:
-	lda	#$2		; turn off beam
+	lda	#$2             ; turn off beam
 	sta	VBLANK
 
 	; wait 30 scanlines
 
-	ldx	#30
+	ldx	#26
 	jsr	scanline_wait
 
-.if 0
 	;=============================
 	; now at VBLANK scanline 27
 	;=============================
@@ -403,7 +372,7 @@ bright_pressed:
 bafter_check_right:
 	sta	WSYNC                   ;                               ; 3
 
-.endif
+
 
 
 	jmp	blue_loop
