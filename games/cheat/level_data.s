@@ -2,11 +2,13 @@
 	; call with new X in A
 	; call with new level in Y
 init_level:
+	sty	CURRENT_LEVEL
+
 	sta	CHEAT_X						; 3
 	clc							; 2
 	ldx	CHEAT_DIRECTION					; 3
 ; 8
-	bne	init_level_left					; 2/3
+	beq	init_level_left					; 2/3
 init_level_right:
 	adc	#2						; 2
 	jmp	done_adjust_cheat				; 3
@@ -19,49 +21,39 @@ done_adjust_cheat:
 
 	sta	SHADOW_X					; 3
 ; 18
-	dey							; 2
-	lda	level_lookup_l,Y				; 4+
-	sta	INL						; 3
-	lda	level_lookup_h,Y				; 4+
-	sta	INH						; 3
-; 34
 
-	ldy	#5						; 2
-; 36
-
-init_level_loop:
-	lda	(INL),Y						; 5
-	sta	MINX,Y						; 5
-	dey							; 2
-	bpl	init_level_loop					; 2/3
-
-							; 6*15 = 90-1
-; 125
 	rts
-; 131
-
-level_lookup_l:
-	.byte <strongbadia_data
-	.byte <blue_level_data
-
-level_lookup_h:
-	.byte >strongbadia_data
-	.byte >blue_level_data
 
 
-strongbadia_data:
-	.byte	8		; MINX
-	.byte	160		; MAXX
-	.byte	112		; MINY
-	.byte	162		; MAXY	(note, div2)
-	.byte	0		; LEFT_DEST
-	.byte	DESTINATION_BLUE		; RIGHT_DEST
+minx_data:
+	.byte 8			; strongbadia
+	.byte 8			; blue
 
-blue_level_data:
-	.byte	8		; MINX
-	.byte	152		; MAXX
-	.byte	20		; MINY
-	.byte	80		; MAXY	(note, div2)
-	.byte	DESTINATION_STRONGBADIA	; LEFT_DEST
-	.byte	0		; RIGHT_DEST
+maxx_data:
+	.byte 150		; strongbadia
+	.byte 152		; blue
+
+miny_data:
+	.byte 112		; strongbadia
+	.byte 20		; blue
+
+maxy_data:
+	.byte 162		; strongbadia
+	.byte 80		; blue (note, div2)
+
+left_dest_data:
+	.byte DESTINATION_NONE		; strongbadia
+	.byte DESTINATION_STRONGBADIA	; blue
+
+right_dest_data:
+	.byte DESTINATION_BLUE	; strongbadia
+	.byte DESTINATION_NONE	; blue
+
+left_dest_x:
+	.byte 0			; strongbadia
+	.byte 140		; blue
+
+right_dest_x:
+	.byte 10		; strongbadia
+	.byte 0			; blue
 

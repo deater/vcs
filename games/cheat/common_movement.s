@@ -1,3 +1,4 @@
+	; 4 scanlines?
 
 common_movement:
 
@@ -5,12 +6,17 @@ common_movement:
 	; now at VBLANK scanline 27
 	;=============================
 	; handle down being pressed
-; 0
+; 6
+	lda	#$ff
+	sta	NEW_LEVEL
+
+	ldy	CURRENT_LEVEL
+
 	lda	#$20			; check down			; 2
 	bit	SWCHA                   ;				; 3
 	bne	after_check_down        ;				; 2/3
 down_pressed:
-	lda	MAXY
+	lda	maxy_data,Y
 	cmp	CHEAT_Y
 	bcc	cant_inc_y
 
@@ -31,7 +37,7 @@ after_check_down:
 	bne	after_check_up		;				; 2/3
 up_pressed:
 
-	lda	MINY
+	lda	miny_data,Y
 	cmp	CHEAT_Y
 	bcs	cant_dec_y
         dec	CHEAT_Y
@@ -52,13 +58,21 @@ after_check_up:
 	bne	after_check_left        ;                               ; 2/3
 left_pressed:
 
-	lda	MINX
+	lda	minx_data,Y
 	cmp	CHEAT_X
-	bcs	can_dec
-
-        dec	CHEAT_X
+	bcs	cant_dec
 can_dec:
+        dec	CHEAT_X
+	jmp	update_left
+cant_dec:
+	; if hit here, tried to go off left
+	lda	left_dest_data,Y	; see if should leave
+	bmi	update_left
+	sta	NEW_LEVEL
+	lda	left_dest_x,Y
+	sta	NEW_X
 
+update_left:
 	lda	#$0
 	sta	CHEAT_DIRECTION
 
@@ -81,12 +95,21 @@ after_check_left:
 	bne	after_check_right	;                               ; 2/3
 right_pressed:
 
-	lda	MAXX
+	lda	maxx_data,Y
 	cmp	CHEAT_X
-	bcc	can_inc
-	inc	CHEAT_X
+	bcc	cant_inc
 can_inc:
+	inc	CHEAT_X
+	jmp	update_right
+cant_inc:
+	; if hit here, tried to go off left
+	lda	right_dest_data,Y	; see if should leave
+	bmi	update_right
+	sta	NEW_LEVEL
+	lda	right_dest_x,Y
+	sta	NEW_X
 
+update_right:
 	lda	#$8
 	sta	CHEAT_DIRECTION
 
@@ -95,14 +118,25 @@ can_inc:
 	adc	#2
 	sta	SHADOW_X
 
-	cmp	#140
-	bcs	done_level
-
 after_check_right:
 
+	ldy	NEW_LEVEL
+	bpl	done_level
 	rts
 
 done_level:
-	jmp	blue_land
 
+	lda	level_dest_h,Y
+	pha
+	lda	level_dest_l,Y
+	pha
 
+	lda	NEW_X
+
+	rts
+
+level_dest_l:
+	.byte	<(strongbadia_start-1),<(blue_land-1)
+
+level_dest_h:
+	.byte	>(strongbadia_start-1),>(blue_land-1)

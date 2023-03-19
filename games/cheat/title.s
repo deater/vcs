@@ -131,8 +131,8 @@ logo_loop:
 	sta	GRP1			; 3
 	bne	blargh2			; 3
 blargh:
-	inc	$95	; nop5		; 5
-	dec	$95	; nop5		; 5
+	inc	TEMP1	; nop5		; 5
+	dec	TEMP1	; nop5		; 5
 
 blargh2:
 	; 15/15
@@ -285,9 +285,9 @@ spriteloop_cheat:
 
 	; delay 11
 
-	inc	$95	; 5
-	lda	$95	; 3
-	lda	$95	; 3
+	inc	TEMP1	; 5
+	lda	TEMP1	; 3
+	lda	TEMP1	; 3
 
 
 	; 65
@@ -401,9 +401,9 @@ spriteloop:
 
 	; delay 11
 
-	inc	$95	; 5
-	lda	$95	; 3
-	lda	$95	; 3
+	inc	TEMP1	; 5
+	lda	TEMP1	; 3
+	lda	TEMP1	; 3
 
 
 	; 65

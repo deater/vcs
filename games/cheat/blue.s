@@ -1,8 +1,13 @@
 ; blue land
 
 blue_land:
-	lda	#10
-	ldy	#DESTINATION_BLUE
+
+	pha
+	lda	CHEAT_Y
+	lsr
+	sta	CHEAT_Y
+	pla
+
 	jsr	init_level
 
 blue_loop:
