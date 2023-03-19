@@ -11,6 +11,7 @@ the_cheat.bin:	the_cheat.o
 the_cheat.o:	the_cheat.s \
 	zp.inc \
 	title.s title_pf.inc title_sprites.inc \
+	common_movement.s level_data.s \
 	cheat2_trackdata.s cheat2_player.s \
 	strongbadia.s strongbadia.inc \
 	draw_score.s update_score.s \

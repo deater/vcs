@@ -75,6 +75,9 @@ clear_loop:
 ;.align $100
 .include "draw_score.s"
 .include "update_score.s"
+.include "common_movement.s"
+.include "level_data.s"
+
 .include "blue.inc"
 
 	;====================

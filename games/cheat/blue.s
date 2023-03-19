@@ -1,13 +1,9 @@
 ; blue land
 
 blue_land:
-
-	lda	#60		; half as big
-	sta	CHEAT_Y
-	lda	#50
-	sta	CHEAT_X
-	lda	#48
-	sta	SHADOW_X
+	lda	#10
+	ldy	#DESTINATION_BLUE
+	jsr	init_level
 
 blue_loop:
 
@@ -296,6 +292,10 @@ blue_overscan:
 	ldx	#26
 	jsr	scanline_wait
 
+	jsr	common_movement
+
+.if 0
+
 	;=============================
 	; now at VBLANK scanline 27
 	;=============================
@@ -370,10 +370,8 @@ bright_pressed:
 
 
 bafter_check_right:
+.endif
 	sta	WSYNC                   ;                               ; 3
-
-
-
 
 	jmp	blue_loop
 

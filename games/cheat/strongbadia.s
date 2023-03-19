@@ -6,20 +6,26 @@
 
 	lda	#120
 	sta	CHEAT_Y
+
 	lda	#50
-	sta	CHEAT_X
-	lda	#48
-	sta	SHADOW_X
+	ldy	#DESTINATION_STRONGBADIA
 
-	lda	#8
-	sta	MINX
-	lda	#160
-	sta	MAXX
+	jsr	init_level		; 2 scanlines
 
-	lda	#112
-	sta	MINY
-	lda	#162
-	sta	MAXY
+
+;	sta	CHEAT_X
+;	lda	#48
+;	sta	SHADOW_X
+
+;	lda	#8
+;	sta	MINX
+;	lda	#160
+;	sta	MAXX
+
+;	lda	#112
+;	sta	MINY
+;	lda	#162
+;	sta	MAXY
 
 
 strongbadia_loop:
@@ -348,6 +354,9 @@ strongbadia_overscan:
 	ldx	#26
 	jsr	scanline_wait
 
+	jsr	common_movement
+
+.if 0
 	;=============================
 	; now at VBLANK scanline 27
 	;=============================
@@ -446,12 +455,12 @@ can_inc:
 	bcs	done_strongbadia
 
 after_check_right:
+.endif
+
 	sta	WSYNC                   ;                               ; 3
 
 	jmp	strongbadia_loop
 
-done_strongbadia:
-	jmp	blue_land
 
 cheat_sprite_yellow:
 	.byte $00
