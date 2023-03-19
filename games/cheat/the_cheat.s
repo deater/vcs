@@ -1,59 +1,19 @@
-; the cheat?
-
-; o/~ F o/~
-; that's not F
+; C.H.E.A.T. Gameplay
 
 ; by Vince `deater` Weaver <vince@deater.net>
+
+; runs in bank1
 
 .include "../../vcs.inc"
 .include "zp.inc"
 
 the_cheat_start:
 
-	;=======================
-	; clear registers/ZP/TIA
-	;=======================
+	; if we accidentally come up with bank1 enabled, switch
+	; to bank0 to run the title
 
-	sei			; disable interrupts
-	cld			; clear decimal mode
-	ldx	#0
-	txa
-clear_loop:
-	dex
-	txs
-	pha
-	bne	clear_loop
-
-	; S = $FF, A=$0, x=$0, Y=??
-
-	lda	#$E			; setup debounce
-	sta	TITLE_COUNTDOWN
-
-; =====================================================================
-; Initialize music.
-; Set tt_cur_pat_index_c0/1 to the indexes of the first patterns from
-; tt_SequenceTable for each channel.
-; Set tt_timer and tt_cur_note_index_c0/1 to 0.
-; All other variables can start with any value.
-; =====================================================================
-        lda #0
-        sta tt_cur_pat_index_c0
-        lda #11
-        sta tt_cur_pat_index_c1
-        ; the rest should be 0 already from startup code. If not,
-        ; set the following variables to 0 manually:
-        ; - tt_timer
-        ; - tt_cur_pat_index_c0
-        ; - tt_cur_pat_index_c1
-        ; - tt_cur_note_index_c0
-        ; - tt_cur_note_index_c1
-
-
-	;=========================
-	; title
-	;=========================
-
-	.include "title.s"
+switch_bank0:
+	bit	$1FF8
 
 	;=========================
 	; gameplay
@@ -62,13 +22,8 @@ clear_loop:
 
 	.include "strongbadia.s"
 
-.include "title_pf.inc"
-;.align $100
-.include "title_sprites.inc"
 .include "strongbadia.inc"
 
-.include "cheat2_trackdata.s"
-.include "cheat2_player.s"
 
 .include "position.s"
 .include "blue.s"
