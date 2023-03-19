@@ -1,16 +1,15 @@
-; blue land
+; In a pit
 
-blue_land:
+the_pit:
 
-	pha
-	lda	CHEAT_Y
-	lsr
+	lda	#30
 	sta	CHEAT_Y
-	pla
+
+	lda	#136		; x pos, center
 
 	jsr	init_level
 
-blue_loop:
+pit_loop:
 
 	;=========================
 	; Start Vertical Blank
@@ -29,8 +28,8 @@ blue_loop:
 	sta	REFP0
 	sta	REFP1
 
-	; no mirror playfield, sprites behind
-	lda	#CTRLPF_PFP
+	; mirror playfield
+	lda	#CTRLPF_REF
 	sta	CTRLPF
 
 	sta	WSYNC
@@ -60,7 +59,7 @@ blue_loop:
 	; scanline 32
 	;===========================
 	; update cheat horizontal
-bupdate_cheat_horizontal:
+pupdate_cheat_horizontal:
 ; 0
 	lda	CHEAT_X						; 3
 	ldx	#0						; 2
@@ -70,9 +69,9 @@ bupdate_cheat_horizontal:
 	;==========================
 	; scanline 33
 	;==========================
-bwait_pos1:
+pwait_pos1:
 	dey								; 2
-	bpl	bwait_pos1	; 5-cycle loop (15 TIA color clocks)	; 2/3
+	bpl	pwait_pos1	; 5-cycle loop (15 TIA color clocks)	; 2/3
 
 	sta	RESP0							; 4
 	sta	WSYNC
@@ -89,9 +88,9 @@ bwait_pos1:
 	;==========================
 	; scanline 35
 	;==========================
-bwait_pos2:
+pwait_pos2:
 	dey                                                             ; 2
-	bpl	bwait_pos2	; 5-cycle loop (15 TIA color clocks)    ; 2/3
+	bpl	pwait_pos2	; 5-cycle loop (15 TIA color clocks)    ; 2/3
 
 	sta	RESP1							; 4
 	sta	WSYNC
@@ -113,7 +112,7 @@ bwait_pos2:
 	; 37
 	;=============================
 
-	lda	#NUSIZ_ONE_COPY ; NUSIZ_DOUBLE_SIZE
+	lda	#NUSIZ_ONE_COPY
 	sta	NUSIZ0
 	sta	NUSIZ1
 
@@ -126,8 +125,6 @@ bwait_pos2:
 	sta	PF0		; clear playfield
 	sta	PF1
 	sta	PF2
-
-;	sta	REFP0
 
 	lda	#$00		; black cheat
 	sta	COLUP0
@@ -148,31 +145,33 @@ bwait_pos2:
 	;===========================
 	; draw 192 lines
 
-	lda	#$72		; dark blue
+	lda	#$00		; black
 	sta	COLUBK
 
-	lda	#$08		; grey
+	lda	#$04		; grey
 	sta	COLUPF
 
 	ldy	#0
 
 	sta	WSYNC
-	jmp	blue_bg_loop
+
+
+	jmp	pit_bg_loop
 
 	;===========================
 	; 184 lines of title
 	;===========================
-blue_bg_loop:
+pit_bg_loop:
 ; 3
 	lda	#0							; 2
 	sta	PF0							; 3
 	; must write by CPU 22 [GPU 68]
 ; 8
-	lda	blue_playfield1_left,X					; 4+
+	lda	pit_playfield1_left,X					; 4+
 	sta	PF1							; 3
 	; must write by CPU 28 [GPU 84]
 ; 15
-	lda	blue_playfield2_left,X					; 4+
+	lda	pit_playfield2_left,X					; 4+
 	sta	PF2							; 3
 	; must write by CPU 38 [GPU 116]
 ; 22
@@ -180,56 +179,17 @@ blue_bg_loop:
 	; activate cheat sprite
 
 	cpx	CHEAT_Y                                                 ; 2
-	bne	bdone_activate_cheat					; 2/3
-bactivate_cheat:
+	bne	pdone_activate_cheat					; 2/3
+pactivate_cheat:
 	ldy	#10                                                     ; 2
-	bne	bdone_activate_cheat_skip	; bra			; 3
-bdone_activate_cheat:
+	bne	pdone_activate_cheat_skip	; bra			; 3
+pdone_activate_cheat:
 	nop								; 2
 	nop								; 2
-bdone_activate_cheat_skip:
+pdone_activate_cheat_skip:
 	; 9/9
 
 ; 31
-
-	inc	TEMP1	; nop5
-	lda	TEMP1	; nop3
-
-
-
-; 39
-	lda	blue_playfield0_right,X					; 4+
-	sta	PF0                                                     ; 3
-	; must write by CPU 49 [GPU 148]
-; 46
-	lda	blue_playfield1_right,X					; 4+
-	sta	PF1							; 3
-	; must write by CPU 54 [GPU 164]
-; 53
-	lda	blue_playfield2_right,X					; 4+
-	sta	PF2							; 3
-	; must write by CPU 65 [GPU 196]
-
-; 60
-
-	sta	WSYNC
-
-; 0
-
-	lda	$0	; nop3						; 3
-	lda	#0							; 2
-	sta	PF0							; 3
-	; must write by CPU 22 [GPU 68]
-; 8
-	lda	blue_playfield1_left,X					; 4+
-	sta	PF1							; 3
-	; must write by CPU 28 [GPU 84]
-; 15
-	lda	blue_playfield2_left,X					; 4+
-	sta	PF2							; 3
-	; must write by CPU 38 [GPU 116]
-; 22
-
 	; put sprite
 
 	lda	cheat_sprite_black,Y					; 4
@@ -237,42 +197,22 @@ bdone_activate_cheat_skip:
 	lda	cheat_sprite_yellow,Y					; 4
 	sta	GRP1							; 3
 
-; 36
-
-	lda	$00	; nop3
-
-
-
-; 39
-	lda	blue_playfield0_right,X					; 4+
-	sta	PF0                                                     ; 3
-	; must write by CPU 49 [GPU 148]
-; 46
-	lda	blue_playfield1_right,X					; 4+
-	sta	PF1							; 3
-	; must write by CPU 54 [GPU 164]
-; 53
-	lda	blue_playfield2_right,X					; 4+
-	sta	PF2							; 3
-	; must write by CPU 65 [GPU 196]
-; 60
-
 	tya								; 2
-	beq	blevel_no_cheat						; 2/3
+	beq	plevel_no_cheat						; 2/3
 	dey								; 2
-blevel_no_cheat:
+plevel_no_cheat:
 	; 6/5
 
-; 66
 
 	inx								; 2
-	cpx	#92							; 2
-; 70
+	cpx	#184							; 2
+
 	sta	WSYNC
-	bne	blue_bg_loop
+	bne	pit_bg_loop
 
 
-
+;	ldx	#184
+;	jsr	scanline_wait
 
 
 	;======================
@@ -285,7 +225,7 @@ blevel_no_cheat:
 	;============================
 	; overscan
 	;============================
-blue_overscan:
+pit_overscan:
 	lda	#$2             ; turn off beam
 	sta	VBLANK
 
@@ -298,6 +238,6 @@ blue_overscan:
 
 	sta	WSYNC                   ;                               ; 3
 
-	jmp	blue_loop
+	jmp	pit_loop
 
 

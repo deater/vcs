@@ -27,6 +27,8 @@ switch_bank0:
 
 .include "position.s"
 .include "blue.s"
+.include "pit.s"
+
 ;.align $100
 .include "draw_score.s"
 .include "update_score.s"
@@ -34,6 +36,7 @@ switch_bank0:
 .include "level_data.s"
 
 .include "blue.inc"
+.include "pit.inc"
 
 	;====================
 	; scanline wait
