@@ -291,8 +291,26 @@ blue_overscan:
 
 	; wait 30 scanlines
 
-	ldx	#26
+	ldx	#23
 	jsr	scanline_wait
+
+        ;==================
+        ; 23
+
+
+        ldy     SFX_NEW
+        beq     skip_blue_sound
+        jsr     trigger_sound           ; 52 cycles
+        lda     #0
+        sta     SFX_NEW
+skip_blue_sound:
+        sta     WSYNC
+
+        jsr     update_sound            ; 2 scanlines
+        sta     WSYNC
+
+
+
 
 	jsr	common_movement
 

@@ -342,6 +342,25 @@ strongbadia_overscan:
 	ldx	#26
 	jsr	scanline_wait
 
+
+        ;==================
+        ; 23
+
+
+        ldy     SFX_NEW
+        beq     skip_sound
+        jsr     trigger_sound           ; 52 cycles
+        lda     #0
+        sta     SFX_NEW
+skip_sound:
+        sta     WSYNC
+
+        jsr     update_sound            ; 2 scanlines
+        sta     WSYNC
+
+	;============================
+	;
+
 	jsr	common_movement
 
 	sta	WSYNC                   ;                               ; 3

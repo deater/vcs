@@ -2,6 +2,9 @@
 
 the_pit:
 
+	lda	#SFX_SPEED
+	sta	SFX_NEW
+
 	lda	#30		; have the cheat fall		; 2
 	sta	CHEAT_Y						; 3
 
@@ -603,7 +606,7 @@ pit_overscan:
 
 	; wait 30 scanlines
 
-	ldx	#22
+	ldx	#21
 	jsr	scanline_wait
 
 
@@ -617,7 +620,9 @@ pit_overscan:
 	lda	#0
 	sta	GRUMBLECAKE_Y
 
-	; TODO: play sound
+	; trigger sound
+	lda	#SFX_ZAP
+	sta	SFX_NEW
 
 no_gc_collision:
 
@@ -631,8 +636,8 @@ no_gc_collision:
 	inc	CHEATCAKE_COUNT
 
 	; trigger sound
-	ldy	#SFX_COLLECT
-	jsr	trigger_sound		; 52 cycles
+	lda	#SFX_COLLECT
+	sta	SFX_NEW
 
 no_cc_collision:
 
@@ -642,6 +647,15 @@ no_cc_collision:
 
 	;==================
 	; 23
+
+
+	ldy	SFX_NEW
+	beq	skip_pit_sound
+	jsr	trigger_sound		; 52 cycles
+	lda	#0
+	sta	SFX_NEW
+skip_pit_sound:
+	sta	WSYNC
 
 	jsr	update_sound		; 2 scanlines
 	sta	WSYNC
