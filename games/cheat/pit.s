@@ -4,6 +4,15 @@ the_pit:
 
 	lda	#30		; have the cheat fall		; 2
 	sta	CHEAT_Y						; 3
+	lda	#20
+	sta	GRUMBLECAKE_Y
+	lda	#30
+	sta	CHEATCAKE_Y
+
+	lda	#50
+	sta	GRUMBLECAKE_X
+	lda	#100
+	sta	CHEATCAKE_X
 
 	lda	#76		; x pos, center			; 2
 
@@ -43,16 +52,69 @@ pit_loop:
 	;===============================
 	;===============================
 
-	ldx	#24
+	ldx	#19
 	jsr	scanline_wait		; Leaves X zero
 ; 10
 	sta	WSYNC
 
 	;====================
-	; scanlines 25-35
+	; scanlines 20-30
 
 	jsr	update_score
 	sta	WSYNC
+
+	;===========================
+	; scanline 31
+	;===========================
+	; move grumblecakes
+
+	inc	GRUMBLECAKE_Y
+	inc	CHEATCAKE_Y
+
+
+	;===========================
+	; scanline 32
+	;===========================
+	; update cheatcake
+update_cheatcake_horizontal:
+; 0
+	lda	CHEATCAKE_X					; 3
+	ldx	#3			; M1			; 2
+	jsr	set_pos_x		; 2 scanlines		; 6+62
+	sta	WSYNC
+
+	;==========================
+	; scanline 33
+	;==========================
+ccake_pos1:
+	dey								; 2
+	bpl	ccake_pos1	; 5-cycle loop (15 TIA color clocks)	; 2/3
+
+	sta	RESM1							; 4
+	sta	WSYNC
+
+
+	;===========================
+	; scanline 34
+	;===========================
+	; update grumblecake
+update_grumblecake_horizontal:
+; 0
+	lda	GRUMBLECAKE_X					; 3
+	ldx	#2			; M0			; 2
+	jsr	set_pos_x		; 2 scanlines		; 6+62
+	sta	WSYNC
+
+	;==========================
+	; scanline 35
+	;==========================
+gcake_pos1:
+	dey								; 2
+	bpl	gcake_pos1	; 5-cycle loop (15 TIA color clocks)	; 2/3
+
+	sta	RESM0							; 4
+	sta	WSYNC
+
 
 
 	;================
@@ -313,6 +375,11 @@ pwait_pos2:
 	; 164 lines of title
 	;===========================
 pit_bg_loop:
+
+
+	;============================
+	; line 0
+
 ; 3
 	lda	#0							; 2
 	sta	PF0							; 3
@@ -355,9 +422,28 @@ plevel_no_cheat:
 
 	inc	SCANLINE
 	sta	WSYNC
+
+	;============================
+	; line 1
+
 ; 0
+
+	lda	SCANLINE
+	cmp	CHEATCAKE_Y
+	bcc	disable_cc1
+enable_cc1:
+	lda	#$2		; enable grumblecake
+	bne	put_cc		; bra
+disable_cc1:
+	lda	#$0
+put_cc:
+	sta	ENAM1
+
 	inc	SCANLINE
 	sta	WSYNC
+
+	;============================
+	; line 2
 
 ; 0
 	; activate cheat sprite
@@ -384,10 +470,24 @@ qdone_activate_cheat:
 qlevel_no_cheat:
 	; 6/5
 
+; 0
+	;==============================
+	; line 3
+
+	lda	SCANLINE
+	cmp	GRUMBLECAKE_Y
+	bcc	disable_gc1
+enable_gc1:
+	lda	#$2		; enable grumblecake
+	bne	put_gc		; bra
+disable_gc1:
+	lda	#$0
+put_gc:
+	sta	ENAM0
 
 	inc	SCANLINE
 	sta	WSYNC
-; 0
+
 
 	inc	SCANLINE
 	inx
