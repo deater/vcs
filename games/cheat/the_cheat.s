@@ -38,6 +38,8 @@ switch_bank0:
 .include "blue.inc"
 .include "pit.inc"
 .include "random16.s"
+.include "the_stick.s"
+.include "the_stick.inc"
 
 	;====================
 	; scanline wait

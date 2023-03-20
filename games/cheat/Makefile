@@ -31,8 +31,8 @@ the_cheat.o:	the_cheat.s \
 	strongbadia.s strongbadia.inc \
 	draw_score.s update_score.s \
 	blue.s blue.inc \
-	pit.s pit.inc
-
+	pit.s pit.inc \
+	the_stick.s the_stick.inc
 	ca65 -o the_cheat.o the_cheat.s -l the_cheat.lst
 ####
 
