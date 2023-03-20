@@ -40,6 +40,9 @@ switch_bank0:
 .include "random16.s"
 .include "the_stick.s"
 .include "the_stick.inc"
+.include "sfx.inc"
+.include "sound_trigger.s"
+.include "sound_update.s"
 
 	;====================
 	; scanline wait

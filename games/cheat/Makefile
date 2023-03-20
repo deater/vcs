@@ -28,6 +28,7 @@ the_cheat.o:	the_cheat.s \
 	zp.inc \
 	position.s random16.s \
 	common_movement.s level_data.s \
+	sound_trigger.s sound_update.s sfx.inc \
 	strongbadia.s strongbadia.inc \
 	draw_score.s update_score.s \
 	blue.s blue.inc \

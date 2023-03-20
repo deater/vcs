@@ -603,8 +603,9 @@ pit_overscan:
 
 	; wait 30 scanlines
 
-	ldx	#24
+	ldx	#22
 	jsr	scanline_wait
+
 
 	;==================
 	; 25
@@ -629,7 +630,10 @@ no_gc_collision:
 
 	inc	CHEATCAKE_COUNT
 
-	; TODO: play sound
+	; trigger sound
+	ldy	#SFX_COLLECT
+	jsr	trigger_sound		; 52 cycles
+
 no_cc_collision:
 
 	sta	CXCLR		; clear collisions
@@ -637,11 +641,20 @@ no_cc_collision:
 	sta	WSYNC
 
 	;==================
+	; 23
+
+	jsr	update_sound		; 2 scanlines
+	sta	WSYNC
+
+
+
+	;==================
 	; 26
 
 	jsr	common_movement
 
 	sta	WSYNC                   ;                               ; 3
+
 
 	;==================
 	; 26

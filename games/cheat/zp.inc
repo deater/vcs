@@ -61,6 +61,9 @@ SCORE_SPRITE_HIGH_4     =       $AB
 SCORE_SPRITE_HIGH_5     =       $AC
 SCORE_SPRITE_HIGH_6     =       $AD
 
+SFX_RIGHT		=	$B0
+SFX_LEFT		=	$B1
+
 
 ; tt music player
 tt_timer                = $E0    ; current music timer value
