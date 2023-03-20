@@ -36,7 +36,7 @@ static void dump_sprite(FILE *outfile,char *name, int which,
 
 static void print_help(char *name) {
 	fprintf(stderr,"Usage:\t%s [-l lines] [-w width] INFILE OUTFILE\n\n",name);
-	fprintf(stderr,"\t-l lines : number of lines\n");
+	fprintf(stderr,"\t-l line  : end line\n");
 	fprintf(stderr,"\t-s line  : start line\n");
 	fprintf(stderr,"\t-w width : width of pixels\n");
 

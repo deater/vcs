@@ -28,22 +28,22 @@ done_adjust_cheat:
 minx_data:
 	.byte 8			; strongbadia
 	.byte 8			; blue
-	.byte 8			; pit
+	.byte 50		; pit
 
 maxx_data:
 	.byte 150		; strongbadia
 	.byte 152		; blue
-	.byte 150		; pit
+	.byte 110		; pit
 
 miny_data:
 	.byte 112		; strongbadia
 	.byte 20		; blue
-	.byte 140		; pit
+	.byte 124		; pit
 
 maxy_data:
 	.byte 162		; strongbadia
 	.byte 80		; blue (note, div2)
-	.byte 140		; pit
+	.byte 124		; pit
 
 left_dest_data:
 	.byte DESTINATION_PIT		; strongbadia
