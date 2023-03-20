@@ -8,6 +8,7 @@ the_pit:
 	lda	#0
 	sta	GRUMBLECAKE_Y
 	sta	CHEATCAKE_Y
+	sta	CHEATCAKE_COUNT
 
 	lda	#76		; x pos, center			; 2
 	sta	CHEATCAKE_X
@@ -602,13 +603,62 @@ pit_overscan:
 
 	; wait 30 scanlines
 
-	ldx	#26
+	ldx	#24
 	jsr	scanline_wait
+
+	;==================
+	; 25
+
+	lda	CXM0P		; see if if grumblecake hit us
+	and	#$C0
+	beq	no_gc_collision
+
+	lda	#0
+	sta	GRUMBLECAKE_Y
+
+	; TODO: play sound
+
+no_gc_collision:
+
+	lda	CXM1P		; see if cheatcake hit us
+	and	#$C0
+	beq	no_cc_collision
+
+	lda	#0
+	sta	CHEATCAKE_Y
+
+	inc	CHEATCAKE_COUNT
+
+	; TODO: play sound
+no_cc_collision:
+
+	sta	CXCLR		; clear collisions
+
+	sta	WSYNC
+
+	;==================
+	; 26
 
 	jsr	common_movement
 
 	sta	WSYNC                   ;                               ; 3
 
+	;==================
+	; 26
+
+	lda	CHEATCAKE_COUNT
+	cmp	#5
+	bcs	done_pit
+
+	sta	WSYNC
+
 	jmp	pit_loop
 
 
+done_pit:
+	ldy	#DESTINATION_STRONGBADIA		; FIXME: last_level
+	lda	#80
+	sta	NEW_X
+	lda	#100
+	sta	CHEAT_Y
+	jmp	done_level
