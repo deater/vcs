@@ -37,6 +37,7 @@ switch_bank0:
 
 .include "blue.inc"
 .include "pit.inc"
+.include "random16.s"
 
 	;====================
 	; scanline wait

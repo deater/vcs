@@ -4,17 +4,14 @@ the_pit:
 
 	lda	#30		; have the cheat fall		; 2
 	sta	CHEAT_Y						; 3
-	lda	#20
+
+	lda	#0
 	sta	GRUMBLECAKE_Y
-	lda	#30
 	sta	CHEATCAKE_Y
 
-	lda	#50
-	sta	GRUMBLECAKE_X
-	lda	#100
-	sta	CHEATCAKE_X
-
 	lda	#76		; x pos, center			; 2
+	sta	CHEATCAKE_X
+	sta	GRUMBLECAKE_X
 
 	jsr	init_level					; 6+??
 
@@ -52,25 +49,108 @@ pit_loop:
 	;===============================
 	;===============================
 
-	ldx	#19
+	ldx	#17
 	jsr	scanline_wait		; Leaves X zero
 ; 10
 	sta	WSYNC
 
 	;====================
-	; scanlines 20-30
+	; scanlines 18-28
 
 	jsr	update_score
 	sta	WSYNC
 
 	;===========================
-	; scanline 31
+	; scanline 29
+	;===========================
+	; random number gen
+
+	jsr	random16
+	sta	WSYNC
+
+	;===========================
+	; scanline 30
 	;===========================
 	; move grumblecakes
 
-	inc	GRUMBLECAKE_Y
-	inc	CHEATCAKE_Y
+	; if 0, not out.  randomly see if should start
+; 0
+	lda	GRUMBLECAKE_Y				; 3
+	bne	move_gc					; 2/3
 
+	; if 0
+; 5
+	lda	SEEDL					; 3
+; 8
+	sta	TEMP1					; 4
+	and	#$7					; 2
+	bne	done_move_gc				; 2/3
+; 16
+	clc						; 2
+	lda	TEMP1					; 3
+	and	#$3f					; 2
+	adc	#48					; 2
+	sta	GRUMBLECAKE_X				; 4
+; 29
+move_gc:
+	inc	GRUMBLECAKE_Y				; 5
+; 34
+done_move_gc:
+
+	; if too big, stop
+
+	lda	GRUMBLECAKE_Y				; 3
+	cmp	#140					; 2
+	bcc	gc_good					; 2/3
+; 41
+
+	lda	#0					; 2
+	sta	GRUMBLECAKE_Y				; 3
+gc_good:
+; 46
+	sta	WSYNC
+
+	;===========================
+	; scanline 31
+	;===========================
+	; move cheatcakes
+
+	; if 0, not out.  randomly see if should start
+; 0
+	lda	CHEATCAKE_Y				; 3
+	bne	move_cc					; 2/3
+
+	; if 0
+; 5
+	lda	SEEDH					; 3
+; 8
+	sta	TEMP1					; 4
+	and	#$7					; 2
+	bne	done_move_cc				; 2/3
+; 16
+	clc						; 2
+	lda	TEMP1					; 3
+	and	#$3f					; 2
+	adc	#48					; 2
+	sta	CHEATCAKE_X				; 4
+; 29
+move_cc:
+	inc	CHEATCAKE_Y				; 5
+; 34
+done_move_cc:
+
+	; if too big, stop
+
+	lda	CHEATCAKE_Y				; 3
+	cmp	#140					; 2
+	bcc	cc_good					; 2/3
+; 41
+
+	lda	#0					; 2
+	sta	CHEATCAKE_Y				; 3
+cc_good:
+; 46
+	sta	WSYNC
 
 	;===========================
 	; scanline 32
@@ -322,7 +402,7 @@ pwait_pos2:
 	; 28
 	;=============================
 
-	lda	#NUSIZ_ONE_COPY
+	lda	#NUSIZ_ONE_COPY|NUSIZ_MISSILE_WIDTH_2
 	sta	NUSIZ0
 	sta	NUSIZ1
 
@@ -431,6 +511,10 @@ plevel_no_cheat:
 	lda	SCANLINE
 	cmp	CHEATCAKE_Y
 	bcc	disable_cc1
+	sec	; not needed
+	sbc	#4
+	cmp	CHEATCAKE_Y
+	bcs	disable_cc1
 enable_cc1:
 	lda	#$2		; enable grumblecake
 	bne	put_cc		; bra
@@ -477,6 +561,10 @@ qlevel_no_cheat:
 	lda	SCANLINE
 	cmp	GRUMBLECAKE_Y
 	bcc	disable_gc1
+	sec			; not needed
+	sbc	#4
+	cmp	GRUMBLECAKE_Y
+	bcs	disable_gc1
 enable_gc1:
 	lda	#$2		; enable grumblecake
 	bne	put_gc		; bra
