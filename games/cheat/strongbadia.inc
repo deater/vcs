@@ -7,14 +7,6 @@ bushes_bg_colors:
 	.byte $C2,$C2,$C2,$C2,$C2,$C2,$C2,$C2
 	.byte $C2,$C2,$C2,$C2,$D0,$D0,$D0,$D0
 	.byte $D0,$D0,$D0,$C2
-strongbadia_bg_colors:
-;	.byte $D4,$D4,$D4,$D4
-;	.byte $D4,$D4,$D4,$D4,$D4,$D4,$D4,$D4
-;	.byte $D4,$D4,$D4,$D4,$D4,$D4,$D4,$D4
-;	.byte $D4,$D4,$D4,$D4,$D4,$D4,$D4,$D4
-;	.byte $D4,$D4,$D4,$D4,$D4,$D4,$D4,$D4
-;	.byte $D4,$D4,$D4,$D4,$D4,$D4,$D4,$D4
-;	.byte $D4,$D4,$D4,$D4,$D4,$D4,$D4,$D4
 
 bushes_colors:
 	.byte $0E,$0E,$0E,$0E,$0E,$0E,$AE,$AE
@@ -46,14 +38,16 @@ bushes_playfield0_left:
 	.byte $40,$40,$40,$E0,$00,$00,$00,$80
 	.byte $C0,$C0,$E0,$00
 
-strongbadia_playfield0_left:
-;	.byte $00,$00,$00,$00
-;	.byte $00,$00,$00,$00,$00,$00,$00,$00
-;	.byte $00,$00,$00,$00,$00,$00,$00,$00
-;	.byte $00,$00,$00,$00,$00,$00,$00,$00
-;	.byte $00,$00,$00,$00,$00,$00,$00,$00
-;	.byte $00,$00,$00,$00,$00,$00,$00,$00
-;	.byte $00,$00,$00,$00,$00,$00,$00,$00
+below_fence_colors:
+	.byte $00
+	.byte $00,$00,$00,$00,$00
+	.byte $00,$00,$00,$00,$00,$00,$00,$00
+	.byte $00,$0E,$0A,$08,$08,$06,$06,$06
+	.byte $00,$00,$00
+
+; 28 bytes or so here...
+
+.align $100
 
 bushes_playfield1_left:
 	.byte $F9,$FF,$FF,$FF,$FF,$BF,$F0,$F0
@@ -100,12 +94,7 @@ sbadia_overlay_colors:
 	.byte $12,$12,$12,$12,$12,$12,$12,$12
 	.byte $12,$12,$12
 
-below_fence_colors:
-	.byte $00
-	.byte $00,$00,$00,$00,$00
-	.byte $00,$00,$00,$00,$00,$00,$00,$00
-	.byte $00,$0E,$0A,$08,$08,$06,$06,$06
-	.byte $00,$00,$00
+
 
 sbadia_overlay_sprite:
 	.byte $00

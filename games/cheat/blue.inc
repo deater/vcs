@@ -28,6 +28,8 @@ blue_playfield2_left:
 	.byte $48,$48,$48,$08,$08,$08,$00,$00
 	.byte $00,$00,$00,$00
 
+.align $100  ; large here
+
 blue_playfield0_right:
 	.byte $00,$00,$00,$00,$00,$00,$80,$00
 	.byte $00,$00,$00,$00,$00,$00,$00,$00
