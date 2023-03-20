@@ -22,25 +22,18 @@ switch_bank0:
 
 	.include "strongbadia.s"
 
-.include "strongbadia.inc"
-
 
 .include "position.s"
 .include "blue.s"
 .include "pit.s"
-
-;.align $100
 .include "draw_score.s"
 .include "update_score.s"
 .include "common_movement.s"
 .include "level_data.s"
 
-.include "blue.inc"
-.include "pit.inc"
+
 .include "random16.s"
 .include "the_stick.s"
-.include "the_stick.inc"
-.include "sfx.inc"
 .include "sound_trigger.s"
 .include "sound_update.s"
 
@@ -55,16 +48,15 @@ scanline_wait:
 	bne	scanline_wait				; 2/3
 	rts						; 6
 
-	;==================
-	; increment frame
-	;==================
-	; worst case 18
-inc_frame:
-	inc	FRAME					; 5
-	bne	no_inc_high				; 2/3
-	inc	FRAMEH					; 5
-no_inc_high:
-	rts						; 6
+
+.align $100
+
+.include "strongbadia.inc"
+.include "blue.inc"
+.include "pit.inc"
+.include "the_stick.inc"
+.include "sfx.inc"
+
 
 score_bitmap0:  ; turns out this was same pattern
 score_zeros:    .byte $22,$55,$55,$55,$55,$55,$22,$00
@@ -87,8 +79,37 @@ score_sevens:   .byte   $77,$11,$11,$22,$44,$44,$44,$00
 score_eights:   .byte   $22,$55,$55,$22,$55,$55,$22,$00
 score_nines:    .byte   $22,$55,$55,$33,$11,$55,$22,$00
 
+cheat_sprite_yellow:
+	.byte $00
+	.byte $00
+	.byte $7D
+	.byte $3F
+	.byte $7E
+	.byte $7F
+	.byte $7D
+	.byte $7F
+	.byte $3E
+	.byte $57
+	.byte $FC
+
+cheat_sprite_black:
+	.byte $00
+	.byte $00
+	.byte $0A
+	.byte $00
+	.byte $04
+	.byte $01
+	.byte $0B
+	.byte $02
+	.byte $04
+	.byte $A2
+	.byte $04
+
 
 .segment "IRQ_VECTORS"
 	.word the_cheat_start	; NMI
 	.word the_cheat_start	; RESET
 	.word the_cheat_start	; IRQ
+
+
+

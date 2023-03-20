@@ -368,28 +368,3 @@ skip_sound:
 	jmp	strongbadia_loop
 
 
-cheat_sprite_yellow:
-	.byte $00
-	.byte $00
-	.byte $7D
-	.byte $3F
-	.byte $7E
-	.byte $7F
-	.byte $7D
-	.byte $7F
-	.byte $3E
-	.byte $57
-	.byte $FC
-
-cheat_sprite_black:
-	.byte $00
-	.byte $00
-	.byte $0A
-	.byte $00
-	.byte $04
-	.byte $01
-	.byte $0B
-	.byte $02
-	.byte $04
-	.byte $A2
-	.byte $04
