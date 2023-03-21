@@ -4,7 +4,7 @@
 ; o/~ come to the place where tropical breezes blow o/~
 
 
-	lda	#50				; set X position
+	lda	#100				; set X position
 	ldy	#DESTINATION_STRONGBADIA	; destination
 
 strongbadia_start:
@@ -15,7 +15,7 @@ strongbadia_start:
 	pla
 	jsr	init_level		; 1 scanline
 
-	lda	#10
+	lda	#70
 	sta	STRONGBAD_X
 	lda	#120
 	sta	STRONGBAD_Y
@@ -284,6 +284,7 @@ no_incy2:
 
 	lda	#0
 	sta	HMP1
+	sta	CXCLR
 
 	lda	#$1E
 	sta	COLUPF
@@ -386,12 +387,12 @@ strongbadia_overscan:
 
 	; wait 30 scanlines
 
-	ldx	#22
+	ldx	#21
 	jsr	scanline_wait
 
 
         ;===============================
-        ; 22 scanlines -- move strongbad
+        ; 21 scanlines -- move strongbad
 	;===============================
 move_strongbad:
 	inc	FRAME
@@ -422,11 +423,30 @@ strongbad_less_y:
 done_move_strongbad_y:
 
 
-
-
 done_move_strongbad:
 	sta	WSYNC
 
+
+        ;===================================
+        ; 22 scanlines -- collide strongbad
+	;===================================
+
+	lda	CXP0FB
+	and	#$40
+	beq	no_hit_strongbad
+
+	; should be adjust based on Y?
+
+	lda	#SFX_COLLIDE
+	sta	SFX_NEW
+
+	ldy	#DESTINATION_BLUE
+	lda	#74
+	sta	NEW_X
+	jmp	done_level
+
+no_hit_strongbad:
+	sta	WSYNC
 
         ;===============================
         ; 23 scanlines -- trigger sound

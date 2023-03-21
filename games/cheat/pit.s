@@ -290,6 +290,9 @@ cheat_on_ground:
 
 	sta	WSYNC
 
+	jmp	skip
+.align $100
+skip:
 	sta	WSYNC
 
 	;================================

@@ -7,12 +7,15 @@ the_stick:
 stick_start:
 
 	pha
-	lda	#120				; set initial Y position
+	lda	#120			; set initial Y position
 	sta	CHEAT_Y
 	pla
-	jsr	init_level		; 1 scanline
 
+	jsr	init_level		; 1 scanline
 stick_loop:
+
+
+
 
 	;=========================
 	; Start Vertical Blank
@@ -30,6 +33,7 @@ stick_loop:
 	lda	CHEAT_DIRECTION
 	sta	REFP0
 	sta	REFP1
+	sta	HMCLR
 
 	; mirror playfield
 	lda	#CTRLPF_REF
