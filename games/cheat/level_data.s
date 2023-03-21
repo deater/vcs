@@ -2,12 +2,12 @@
 	; call with new X in A
 	; call with new level in Y
 init_level:
-	sty	CURRENT_LEVEL
-
+	sty	CURRENT_LEVEL					; 3
+; 3
 	sta	CHEAT_X						; 3
 	clc							; 2
 	ldx	CHEAT_DIRECTION					; 3
-; 8
+; 11
 	beq	init_level_left					; 2/3
 init_level_right:
 	adc	#2						; 2
@@ -17,13 +17,13 @@ init_level_left:
 	adc	#$FE						; 2
 
 done_adjust_cheat:
-; 8+7/8+5, so 15 worst case
+; 11+7/11+5, so 18 worst case
 
 	sta	SHADOW_X					; 3
-; 18
+; 21
 
 	rts
-
+; 27
 
 minx_data:
 	.byte 8			; strongbadia

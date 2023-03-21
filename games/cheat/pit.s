@@ -5,16 +5,16 @@ the_pit:
 	lda	#30		; have the cheat fall		; 2
 	sta	CHEAT_Y						; 3
 
-	lda	#0
-	sta	GRUMBLECAKE_Y
-	sta	CHEATCAKE_Y
-	sta	CHEATCAKE_COUNT
+	lda	#0		; reset cakes			; 2
+	sta	GRUMBLECAKE_Y					; 3
+	sta	CHEATCAKE_Y					; 3
+	sta	CHEATCAKE_COUNT					; 3
 
 	lda	#76		; x pos, center			; 2
 	sta	CHEATCAKE_X
 	sta	GRUMBLECAKE_X
 
-	jsr	init_level					; 6+??
+	jsr	init_level					; 6+27
 
 pit_loop:
 
@@ -56,13 +56,15 @@ pit_loop:
 	sta	WSYNC
 
 	;====================
-	; scanlines 18-28
+	; scanlines 18
+	;=====================
+	; score, 10 scanlines
 
 	jsr	update_score
 	sta	WSYNC
 
 	;===========================
-	; scanline 29
+	; scanline 28
 	;===========================
 	; random number gen
 
@@ -70,7 +72,7 @@ pit_loop:
 	sta	WSYNC
 
 	;===========================
-	; scanline 30
+	; scanline 29
 	;===========================
 	; move grumblecakes
 
@@ -112,7 +114,7 @@ gc_good:
 	sta	WSYNC
 
 	;===========================
-	; scanline 31
+	; scanline 30
 	;===========================
 	; move cheatcakes
 
@@ -154,7 +156,7 @@ cc_good:
 	sta	WSYNC
 
 	;===========================
-	; scanline 32
+	; scanline 31
 	;===========================
 	; update cheatcake
 update_cheatcake_horizontal:
@@ -165,7 +167,7 @@ update_cheatcake_horizontal:
 	sta	WSYNC
 
 	;==========================
-	; scanline 33
+	; scanline 32
 	;==========================
 ccake_pos1:
 	dey								; 2
@@ -176,7 +178,7 @@ ccake_pos1:
 
 
 	;===========================
-	; scanline 34
+	; scanline 33
 	;===========================
 	; update grumblecake
 update_grumblecake_horizontal:
@@ -187,7 +189,7 @@ update_grumblecake_horizontal:
 	sta	WSYNC
 
 	;==========================
-	; scanline 35
+	; scanline 34
 	;==========================
 gcake_pos1:
 	dey								; 2
@@ -199,7 +201,7 @@ gcake_pos1:
 
 
 	;================
-	; scanline 36
+	; scanline 35
 	;	set things up for 48-pixel
 
 	lda	#$0E			; white
@@ -222,7 +224,7 @@ gcake_pos1:
 	sta	WSYNC
 
 	;=================
-	; scanline 37
+	; scanline 36
 
 	; to center exactly would want sprite0 at
 	;	CPU cycle 41.3
@@ -251,15 +253,18 @@ cpad_x:
 	sta	HMP1			;			3
 
 	sta	WSYNC
-	sta	HMOVE		; adjust fine tune, must be after WSYNC
 
-	sta	VBLANK		; turn on beam (A=0)
+;
 
-	ldx	#23		; init X
-	stx	TEMP2
+	sta	HMOVE		; adjust fine tune, must be after WSYNC	; 3
+
+	sta	VBLANK		; turn on beam (A=0)			; 3
+
+	ldx	#23		; init X				; 2
+	stx	TEMP2							; 3
 
 
-
+; 11
 	;===========================
 	;===========================
 	; playfield
@@ -283,9 +288,8 @@ cpad_x:
 	inc	CHEAT_Y
 cheat_on_ground:
 
-	jmp	over_align2
-.align $100
-over_align2:
+	sta	WSYNC
+
 	sta	WSYNC
 
 	;================================
@@ -453,7 +457,7 @@ pwait_pos2:
 	jmp	pit_bg_loop
 
 	;===========================
-	; 164 lines of title
+	; 156 lines of pit
 	;===========================
 pit_bg_loop:
 
@@ -469,28 +473,27 @@ pit_bg_loop:
 
 	; activate cheat sprite
 
-	lda	SCANLINE
+	lda	SCANLINE						; 3
 	cmp	CHEAT_Y                                                 ; 2
 	bne	pdone_activate_cheat					; 2/3
 pactivate_cheat:
 	ldy	#10                                                     ; 2
 pdone_activate_cheat:
-	; 6/5
+	; 9/8
 
-; 14
+; 17
 	lda	pit_playfield1_left,X					; 4+
 	sta	PF1							; 3
 	; must write by CPU 28 [GPU 84]
-; 21
-
-	; put sprite
-	lda	cheat_sprite_black,Y					; 4+
-	sta	GRP0							; 3
-; 28
+; 24
 	lda	pit_playfield2_left,X					; 4+
 	sta	PF2							; 3
 	; must write by CPU 38 [GPU 116]
-; 35
+; 31
+	; put sprite
+	lda	cheat_sprite_black,Y					; 4+
+	sta	GRP0							; 3
+; 38
 
 	lda	cheat_sprite_yellow,Y					; 4
 	sta	GRP1							; 3
@@ -580,16 +583,16 @@ put_gc:
 
 	inc	SCANLINE
 	inx
-	cpx	#38							; 2
+	cpx	#37							; 2
 
 	sta	WSYNC
 	bne	pit_bg_loop
 
 
 
-	;======================
-	; draw score
-	;======================
+	;============================
+	; scanline 184 -- draw score
+	;============================
 	; 8 scanlines
 
 	jsr	draw_score
@@ -605,10 +608,10 @@ pit_overscan:
 
 	ldx	#21
 	jsr	scanline_wait
-
+	sta	WSYNC
 
 	;==================
-	; 25
+	; 22
 
 	lda	CXM0P		; see if if grumblecake hit us
 	and	#$C0
@@ -660,7 +663,7 @@ skip_pit_sound:
 
 
 	;==================
-	; 26
+	; 24 - 28
 
 	jsr	common_movement
 
@@ -668,7 +671,7 @@ skip_pit_sound:
 
 
 	;==================
-	; 26
+	; 29
 
 	lda	CHEATCAKE_COUNT
 	cmp	#5
