@@ -1,6 +1,5 @@
 ; strongbadia
 
-; min=2? max=152?
 
 ; o/~ come to the place where tropical breezes blow o/~
 
@@ -55,12 +54,16 @@ strongbadia_loop:
 ; 10
 	sta	WSYNC
 
+	;===========================
+	; scanline 20
+	;===========================
+	; takes 10 scanlines
 
 	jsr	update_score
 	sta	WSYNC
 
 	;===========================
-	; scanline 32
+	; scanline 31
 	;===========================
 	; update flag horizontal
 update_flag_horizontal:
@@ -71,7 +74,7 @@ update_flag_horizontal:
 	sta	WSYNC
 
 	;==========================
-	; scanline 33
+	; scanline 32
 	;==========================
 wait_pos3:
 	dey								; 2
@@ -81,7 +84,7 @@ wait_pos3:
 	sta	WSYNC
 
 	;==========================
-	; scanline 34
+	; scanline 33
 	;==========================
 ; 0
 	lda	SHADOW_X						; 3
@@ -90,7 +93,7 @@ wait_pos3:
 	sta	WSYNC
 
 	;==========================
-	; scanline 35
+	; scanline 34
 	;==========================
 wait_pos2:
 	dey                                                             ; 2
@@ -101,7 +104,7 @@ wait_pos2:
 
 
 	;================================
-	; scanline 36
+	; scanline 35
 	;================================
 
 	lda	CHEAT_Y
@@ -113,7 +116,7 @@ wait_pos2:
         sta     HMOVE
 
 	;=============================
-	; 37
+	; 36
 	;=============================
 
 	lda	#NUSIZ_ONE_COPY ; NUSIZ_DOUBLE_SIZE
@@ -207,6 +210,8 @@ no_incy:
 	ldy	#0
 
 	;===========================
+	; scanline 60 -- strongbadia
+	;===========================
 	; 48 lines of strongbadia
 	;===========================
 strongbadia_top_loop:
@@ -251,7 +256,7 @@ no_incy2:
 	bne	strongbadia_top_loop
 
 	;===========================
-	; scanline 48
+	; scanline 108 -- grass
 	;===========================
 
 	lda	CHEAT_DIRECTION
@@ -263,7 +268,7 @@ no_incy2:
 	sta	WSYNC
 
 	;===========================
-	; scanline 49
+	; scanline 109
 	;===========================
 	; update cheat horizontal
 update_cheat_horizontal:
@@ -274,7 +279,7 @@ update_cheat_horizontal:
 	sta	WSYNC
 
 	;==========================
-	; scanline 52
+	; scanline 110
 	;==========================
 wait_pos1:
 	dey								; 2
@@ -339,13 +344,13 @@ strongbadia_overscan:
 
 	; wait 30 scanlines
 
-	ldx	#26
+	ldx	#23
 	jsr	scanline_wait
 
 
-        ;==================
-        ; 23
-
+        ;===============================
+        ; 23 scanlines -- trigger sound
+	;===============================
 
         ldy     SFX_NEW
         beq     skip_sound
@@ -355,11 +360,19 @@ strongbadia_overscan:
 skip_sound:
         sta     WSYNC
 
+	;=============================
+	; 24 scanlines -- update sound
+	;=============================
+	; takes two scanlines
+
         jsr     update_sound            ; 2 scanlines
+
         sta     WSYNC
 
 	;============================
-	;
+	; 26 scanlines -- movement
+	;============================
+	; takes 4 scanlines
 
 	jsr	common_movement
 
