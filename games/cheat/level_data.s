@@ -53,11 +53,11 @@ left_dest_data:
 	.byte DESTINATION_STICK		; strongbadia
 	.byte DESTINATION_STRONGBADIA	; blue
 	.byte DESTINATION_NONE		; pit
-	.byte DESTINATION_PIT		; the stick
+	.byte DESTINATION_BLUE		; the stick
 
 right_dest_data:
 	.byte DESTINATION_BLUE	; strongbadia
-	.byte DESTINATION_NONE	; blue
+	.byte DESTINATION_STICK	; blue
 	.byte DESTINATION_NONE	; pit
 	.byte DESTINATION_STRONGBADIA	; the stick
 
@@ -65,10 +65,10 @@ left_dest_x:
 	.byte 140		; strongbadia
 	.byte 140		; blue
 	.byte 0			; pit
-	.byte 0			; the stick
+	.byte 140		; the stick
 
 right_dest_x:
 	.byte 10		; strongbadia
-	.byte 0			; blue
+	.byte 10		; blue
 	.byte 0			; pit
 	.byte 10		; the stick

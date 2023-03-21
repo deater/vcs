@@ -73,6 +73,9 @@ cant_dec:
 	sta	NEW_X
 
 update_left:
+;	lda	#SFX_CLICK
+;	sta	SFX_NEW
+
 	lda	#$0
 	sta	CHEAT_DIRECTION
 

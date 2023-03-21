@@ -2,9 +2,6 @@
 
 the_pit:
 
-	lda	#SFX_SPEED
-	sta	SFX_NEW
-
 	lda	#30		; have the cheat fall		; 2
 	sta	CHEAT_Y						; 3
 

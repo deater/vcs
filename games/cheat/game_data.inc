@@ -194,6 +194,33 @@ pit_playfield1_left:
 	.byte $07,$07,$03,$01,$00,$00,$00,$00
 	.byte $00,$00,$00,$00,$00,$00,$00,$00
 
+cheat_sprite_yellow:
+	.byte $00
+	.byte $00
+	.byte $7D
+	.byte $3F
+	.byte $7E
+	.byte $7F
+	.byte $7D
+	.byte $7F
+	.byte $3E
+	.byte $57
+	.byte $FC
+
+cheat_sprite_black:
+	.byte $00
+	.byte $00
+	.byte $0A
+	.byte $00
+	.byte $04
+	.byte $01
+	.byte $0B
+	.byte $02
+	.byte $04
+	.byte $A2
+	.byte $04
+
+
 .align $100
 
 pit_playfield2_left:
@@ -416,31 +443,6 @@ score_sevens:   .byte   $77,$11,$11,$22,$44,$44,$44,$00
 score_eights:   .byte   $22,$55,$55,$22,$55,$55,$22,$00
 score_nines:    .byte   $22,$55,$55,$33,$11,$55,$22,$00
 
-cheat_sprite_yellow:
-	.byte $00
-	.byte $00
-	.byte $7D
-	.byte $3F
-	.byte $7E
-	.byte $7F
-	.byte $7D
-	.byte $7F
-	.byte $3E
-	.byte $57
-	.byte $FC
-
-cheat_sprite_black:
-	.byte $00
-	.byte $00
-	.byte $0A
-	.byte $00
-	.byte $04
-	.byte $01
-	.byte $0B
-	.byte $02
-	.byte $04
-	.byte $A2
-	.byte $04
 
 
 
@@ -461,7 +463,8 @@ sfx_collect:
 sfx_speed:
 	.byte	0, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8 ; ping
 sfx_ping:
-	.byte	0,26,26,26,26,26,26,26,29,29,29,29,29,29,29 ; game over
+;	.byte	0,26,26,26,26,26,26,26,29,29,29,29,29,29,29 ; game over
+	.byte	0,26,26,26,26,26,26
 sfx_game_over:
 
 sfx_cv:
@@ -473,7 +476,7 @@ sfx_cv:
 	.byte	0,$41,$42,$43,$44,$45,$46,$47,$48
 	.byte	  $49,$4a,$4b,$4c,$4d,$4e,$4f ; ping
 	.byte	0,$7f,$7f,$7f,$7f,$7f,$7f,$7f
-	.byte	  $1f,$1f,$1f,$1f,$1f,$1f,$1f ; game over
+	.byte	  0,$E0,$E0,$E0,$E0,$E0,$EF ; game over
 
 ; F, C/V
 ; collide V=F, C=8, F=31    (8,26)
@@ -481,13 +484,13 @@ sfx_cv:
 ; collect V=F, C=6, F=2		; not really
 ; die	  V=F, C=8, F=24
 ; level over V=G,  7/26 1/29
-
+; click  V=F C=15, F=26
 SFX_COLLIDE	=	sfx_collide-sfx_start-1
 SFX_ZAP		=	sfx_zap-sfx_start-1
 SFX_COLLECT	=	sfx_collect-sfx_start-1
 SFX_SPEED	=	sfx_speed-sfx_start-1
 SFX_PING	=	sfx_ping-sfx_start-1
-SFX_GAMEOVER	=	sfx_game_over-sfx_start-1
+SFX_CLICK	=	sfx_game_over-sfx_start-1
 
 
 

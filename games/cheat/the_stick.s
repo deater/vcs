@@ -233,6 +233,7 @@ no_incy22:
 	sta	REFP0
 
 	lda	#0
+	sta	CXCLR		; clear collision
 	sta	HMP1
 
 	sta	WSYNC
@@ -289,7 +290,21 @@ sdone_activate_cheat:
 
 slevel_no_cheat:
 
-	inx
+	; draw the pits
+
+	txa								; 2
+	sbc	#140							; 2
+	cmp	#10							; 2
+	bcs	blah							; 2/3
+	lda	#$ff							; 2
+	bne	blah2							; 2/3
+blah:
+	lda	#$00							; 2
+blah2:
+	sta	PF1							; 3
+; 17 worst case?
+
+	inx								; 2
 
 	sta	WSYNC
 
@@ -314,8 +329,24 @@ stick_overscan:
 
 	; wait 30 scanlines
 
-	ldx	#23
+	ldx	#22
 	jsr	scanline_wait
+
+	;==================
+        ; 22
+
+	lda	CXP0FB		; p0 with field/ball
+	bpl	no_fall_in_pit
+
+	; play sound
+	lda     #SFX_SPEED
+	sta     SFX_NEW
+
+	jmp	stick_to_pit
+
+no_fall_in_pit:
+
+	sta	WSYNC
 
 	;==================
         ; 23
@@ -342,3 +373,6 @@ sskip_sound:
 
 	jmp	stick_loop
 
+stick_to_pit:
+	ldy	#DESTINATION_PIT
+	jmp	done_level
