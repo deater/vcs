@@ -437,15 +437,7 @@ done_move_strongbad:
 	and	#$40
 	beq	no_hit_strongbad
 
-	; should be adjust based on Y?
-
-	lda	#SFX_COLLIDE
-	sta	SFX_NEW
-
-	ldy	#DESTINATION_BLUE
-	lda	#74
-	sta	NEW_X
-	jmp	done_level
+	jmp	taken_away
 
 no_hit_strongbad:
 	sta	WSYNC
@@ -483,3 +475,22 @@ skip_sound:
 	jmp	strongbadia_loop
 
 
+taken_away:
+	sta	WSYNC
+	sta	WSYNC
+	sta	WSYNC
+	sta	WSYNC
+	sta	WSYNC
+	sta	WSYNC
+	sta	WSYNC
+;	sta	WSYNC
+
+	; should be adjust based on Y?
+
+	lda	#SFX_COLLIDE
+	sta	SFX_NEW
+
+	ldy	#DESTINATION_BLUE
+	lda	#74
+	sta	NEW_X
+	jmp	done_level
