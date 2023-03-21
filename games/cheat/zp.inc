@@ -65,6 +65,9 @@ SFX_RIGHT		=	$B0
 SFX_LEFT		=	$B1
 SFX_NEW			=	$B2
 
+STRONGBAD_X		=	$B3
+STRONGBAD_Y		=	$B4
+
 ; tt music player
 tt_timer                = $E0    ; current music timer value
 tt_cur_pat_index_c0     = $E1    ; current pattern index into tt_SequenceTable

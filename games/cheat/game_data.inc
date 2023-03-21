@@ -495,3 +495,23 @@ SFX_CLICK	=	sfx_game_over-sfx_start-1
 
 
 
+strongbad_colors:
+	.byte	$42,$42		; head (red)
+	.byte	$42,$42		; head (red)
+	.byte	$42,$42		; head (red)
+	.byte	$42,$42		; head (red)
+	.byte	$42,$42		; head (red)
+	.byte	$42,$42		; head (red)
+	.byte	$4e,$4e		; arm (pink)
+	.byte	$4e,$4e		; arm (pink)
+	.byte	$02,$02		; pants
+	.byte	$02,$02		; pants
+	.byte	$02,$02		; pants
+	.byte	$42,$42		; shoe (red)
+	.byte	$42,$42		; shoe (red)
+	.byte	$0E,$0E		; shoe (white)
+
+
+
+
+

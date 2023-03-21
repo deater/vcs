@@ -38,6 +38,7 @@ stick_loop:
 	sta	WSYNC
 
 	lda	#0			; done beam reset
+	sta	ENABL
 	sta	VSYNC
 
 	;===============================

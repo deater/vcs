@@ -15,6 +15,11 @@ strongbadia_start:
 	pla
 	jsr	init_level		; 1 scanline
 
+	lda	#10
+	sta	STRONGBAD_X
+	lda	#120
+	sta	STRONGBAD_Y
+
 strongbadia_loop:
 
 	;=========================
@@ -35,7 +40,7 @@ strongbadia_loop:
 	sta	REFP1
 
 	; mirror playfield
-	lda	#CTRLPF_REF
+	lda	#CTRLPF_REF|CTRLPF_BALL_SIZE4
 	sta	CTRLPF
 
 	sta	WSYNC
@@ -49,13 +54,13 @@ strongbadia_loop:
 	;===============================
 	;===============================
 
-	ldx	#20
+	ldx	#18
 	jsr	scanline_wait		; Leaves X zero
 ; 10
 	sta	WSYNC
 
 	;===========================
-	; scanline 20
+	; scanline 17
 	;===========================
 	; takes 10 scanlines
 
@@ -63,7 +68,7 @@ strongbadia_loop:
 	sta	WSYNC
 
 	;===========================
-	; scanline 31
+	; scanline 28
 	;===========================
 	; update flag horizontal
 update_flag_horizontal:
@@ -74,7 +79,7 @@ update_flag_horizontal:
 	sta	WSYNC
 
 	;==========================
-	; scanline 32
+	; scanline 29
 	;==========================
 wait_pos3:
 	dey								; 2
@@ -84,7 +89,7 @@ wait_pos3:
 	sta	WSYNC
 
 	;==========================
-	; scanline 33
+	; scanline 30
 	;==========================
 ; 0
 	lda	SHADOW_X						; 3
@@ -93,7 +98,7 @@ wait_pos3:
 	sta	WSYNC
 
 	;==========================
-	; scanline 34
+	; scanline 32
 	;==========================
 wait_pos2:
 	dey                                                             ; 2
@@ -101,22 +106,37 @@ wait_pos2:
 
 	sta	RESP1							; 4
 	sta	WSYNC
-
-
-	;================================
-	; scanline 35
-	;================================
-
-	lda	CHEAT_Y
-	clc
-	adc	#18
-	sta	CHEAT_Y_END
-
-	sta     WSYNC
         sta     HMOVE
 
+	;================================
+	; scanline 33
+	;================================
+
+	sta     WSYNC
+
+
+	;==========================
+	; scanline 33
+	;==========================
+; 0
+	lda	STRONGBAD_X						; 3
+	ldx	#4			; ball				; 2
+	jsr	set_pos_x		; 2 scanlines			; 6+62
+	sta	WSYNC
+
+	;==========================
+	; scanline 35
+	;==========================
+wait_pos12:
+	dey                                                             ; 2
+	bpl	wait_pos12	; 5-cycle loop (15 TIA color clocks)    ; 2/3
+
+	sta	RESBL							; 4
+	sta	WSYNC
+
+
 	;=============================
-	; 36
+	; scanline 37
 	;=============================
 
 	lda	#NUSIZ_ONE_COPY ; NUSIZ_DOUBLE_SIZE
@@ -265,6 +285,9 @@ no_incy2:
 	lda	#0
 	sta	HMP1
 
+	lda	#$1E
+	sta	COLUPF
+
 	sta	WSYNC
 
 	;===========================
@@ -323,6 +346,25 @@ level_no_cheat:
 
 	sta	WSYNC
 
+	txa				; 150		; 100	;125
+	sec				; - 120		; -120	;-120
+	sbc	STRONGBAD_Y		;=======	;=====	;====
+	cmp	#28			; 30		; -20	; 5
+	bcs	no_strongbad
+
+	stx	TEMP1
+	tax
+	lda	strongbad_colors,X
+	sta	COLUPF
+	ldx	TEMP1
+
+	lda	#2
+	bne	done_strongbad
+no_strongbad:
+	lda	#0
+done_strongbad:
+	sta	ENABL
+
 	inx
 	cpx	#184
 	sta	WSYNC
@@ -344,8 +386,46 @@ strongbadia_overscan:
 
 	; wait 30 scanlines
 
-	ldx	#23
+	ldx	#22
 	jsr	scanline_wait
+
+
+        ;===============================
+        ; 22 scanlines -- move strongbad
+	;===============================
+move_strongbad:
+	inc	FRAME
+	lda	FRAME
+	and	#$3
+	bne	done_move_strongbad
+
+move_strongbad_x:
+	lda	STRONGBAD_X
+	cmp	CHEAT_X
+	bcc	strongbad_less_x
+strongbad_more_x:
+	dec	STRONGBAD_X
+	jmp	done_move_strongbad_x
+strongbad_less_x:
+	inc	STRONGBAD_X
+done_move_strongbad_x:
+
+move_strongbad_y:
+	lda	STRONGBAD_Y
+	cmp	CHEAT_Y
+	bcc	strongbad_less_y
+strongbad_more_y:
+	dec	STRONGBAD_Y
+	jmp	done_move_strongbad_y
+strongbad_less_y:
+	inc	STRONGBAD_Y
+done_move_strongbad_y:
+
+
+
+
+done_move_strongbad:
+	sta	WSYNC
 
 
         ;===============================
