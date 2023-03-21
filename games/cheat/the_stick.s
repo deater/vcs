@@ -269,6 +269,7 @@ swait_pos1:
 	ldx	#104
 sbottom_loop:
 
+
 ; 3
 	; activate cheat sprite
 
@@ -276,34 +277,49 @@ sbottom_loop:
 	bne	sdone_activate_cheat					; 2/3
 sactivate_cheat:
 	ldy	#10							; 2
+	jmp	sdone_really						; 3
 sdone_activate_cheat:
+	nop
+	nop
+sdone_really:
+;	9/9
 
-	lda	cheat_sprite_black,Y
-	sta	GRP0
-	lda	cheat_sprite_yellow,Y
-	sta	GRP1
+; 12
+	lda	cheat_sprite_black,Y					; 4+
+	sta	GRP0							; 3
+	lda	cheat_sprite_yellow,Y					; 4+
+	sta	GRP1							; 3
+; 26
 
-	tya
-	beq	slevel_no_cheat
-
-	dey
-
+	tya								; 2
+; 28
+	beq	slevel_no_cheat						; 2/3
+	dey								; 2
+	jmp	slevel_no_cheat2					; 3
 slevel_no_cheat:
+	nop
+	nop
+slevel_no_cheat2:
+;		7/7
+
+; 35
 
 	; draw the pits
-
+	sec								; 2
 	txa								; 2
 	sbc	#140							; 2
 	cmp	#10							; 2
-	bcs	blah							; 2/3
+	bcs	stick_nopit						; 2/3
 	lda	#$ff							; 2
-	bne	blah2							; 2/3
-blah:
+	bne	stick_yespit		; bra				; 3
+stick_nopit:
 	lda	#$00							; 2
-blah2:
+	nop
+stick_yespit:
 	sta	PF1							; 3
-; 17 worst case?
+; 16 / 16
 
+; 51
 	inx								; 2
 
 	sta	WSYNC
