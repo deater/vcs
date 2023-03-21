@@ -13,8 +13,9 @@ the_cheat_start:
 	; to bank0 to run the title
 
 switch_bank0:
+; 38
 	bit	$1FF8
-
+; 42
 	;=========================
 	; gameplay
 	;=========================

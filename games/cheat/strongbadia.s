@@ -3,9 +3,11 @@
 
 ; o/~ come to the place where tropical breezes blow o/~
 
+; 42
+	lda	#100				; set X position	; 2
+	ldy	#DESTINATION_STRONGBADIA	; destination		; 2
 
-	lda	#100				; set X position
-	ldy	#DESTINATION_STRONGBADIA	; destination
+; 46
 
 strongbadia_start:
 

@@ -528,7 +528,7 @@ wait_for_vblank:
 
 	; wait 30 scanlines
 
-	ldx	#20
+	ldx	#19
 	jsr	scanline_wait
 
 	;===================================
@@ -554,27 +554,30 @@ waited_enough:
 ; 16
 	lda	SWCHB			; check if reset pressed        ; 3
 	lsr				; put reset into carry          ; 2
-	bcc	done_title                                          ; 2/3
+	bcc	done_title                                          	; 2/3
 
-	jmp	title_loop                                        ; 3
+;	jmp	title_loop						; 3
 
-set_done_title:
-; 17 / 24
-;	beq	done_title
 done_check_input:
 ; 25 / 22 / 29
 
+	sta	WSYNC
+
+	; empty, makes us match better the game
+
 	jmp	title_loop
 
+; 27
 done_title:
 
 	; turn off music
 
-	lda	#0
-	sta	AUDV0
-	sta	AUDV1
+	lda	#0							; 2
+	sta	AUDV0							; 3
+	sta	AUDV1							; 3
 
-	jmp	switch_bank1
+	jmp	switch_bank1						; 3
+; 38
 
 .include "title_pf.inc"
 ;.align $100
@@ -593,16 +596,6 @@ scanline_wait:
 	bne	scanline_wait				; 2/3
 	rts						; 6
 
-	;==================
-	; increment frame
-	;==================
-	; worst case 18
-inc_frame:
-	inc	FRAME					; 5
-	bne	no_inc_high				; 2/3
-	inc	FRAMEH					; 5
-no_inc_high:
-	rts						; 6
 
 .segment "IRQ_VECTORS"
 	.word the_cheat_start	; NMI
