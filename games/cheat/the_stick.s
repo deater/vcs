@@ -374,5 +374,10 @@ sskip_sound:
 	jmp	stick_loop
 
 stick_to_pit:
+
+	lda	#DESTINATION_STICK
+	sta	LAST_LEVEL
+
 	ldy	#DESTINATION_PIT
+
 	jmp	done_level

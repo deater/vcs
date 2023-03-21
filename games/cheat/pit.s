@@ -683,7 +683,7 @@ skip_pit_sound:
 
 
 done_pit:
-	ldy	#DESTINATION_STRONGBADIA		; FIXME: last_level
+	ldy	LAST_LEVEL
 	lda	#80
 	sta	NEW_X
 	lda	#100
