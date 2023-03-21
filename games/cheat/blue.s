@@ -2,6 +2,8 @@
 
 blue_land:
 
+	; divide CHEAT_Y by two because we have a 4-line kernel
+
 	pha
 	lda	CHEAT_Y
 	lsr
@@ -49,18 +51,19 @@ blue_loop:
 ; 10
 	sta	WSYNC
 
-	;====================
+	;============================
+	; scanline 21 -- update score
+	;============================
 	; 10 scanlines
 
 	jsr	update_score
 	sta	WSYNC
 
-
 	;===========================
-	; scanline 32
+	; scanline 31
 	;===========================
 	; update cheat horizontal
-bupdate_cheat_horizontal:
+update_cheat_horizontal_blue:
 ; 0
 	lda	CHEAT_X						; 3
 	ldx	#0						; 2
@@ -127,8 +130,6 @@ bwait_pos2:
 	sta	PF1
 	sta	PF2
 
-;	sta	REFP0
-
 	lda	#$00		; black cheat
 	sta	COLUP0
 	lda	#$1C		; yellow cheat
@@ -137,9 +138,9 @@ bwait_pos2:
 	ldx	#0
 
 	sta	WSYNC
-
+; 0
 	stx	VBLANK		; turn on beam (X=0)
-
+; 3
 
 	;===========================
 	;===========================
@@ -148,15 +149,23 @@ bwait_pos2:
 	;===========================
 	; draw 192 lines
 
-	lda	#$72		; dark blue
-	sta	COLUBK
+	;===========================
+	; scanline 0 -- init
+; 3
+	lda	#$72		; dark blue				; 2
+	sta	COLUBK							; 3
+; 8
+	lda	#$08		; grey					; 2
+	sta	COLUPF							; 3
+; 13
+	ldy	#0							; 2
 
-	lda	#$08		; grey
-	sta	COLUPF
+	sta	WSYNC							; 3
 
-	ldy	#0
+	sta	WSYNC							; 3
 
-	sta	WSYNC
+
+; 0
 	jmp	blue_bg_loop
 
 	;===========================
@@ -266,7 +275,7 @@ blevel_no_cheat:
 ; 66
 
 	inx								; 2
-	cpx	#92							; 2
+	cpx	#90							; 2
 ; 70
 	sta	WSYNC
 	bne	blue_bg_loop
