@@ -16,7 +16,8 @@ title.bin:	title.o
 
 title.o:	zp.inc \
 	title.s title_pf.inc title_sprites.inc \
-	cheat2_trackdata.s cheat2_player.s
+	cheat2_trackdata.s cheat2_player.s \
+	game_over_screen.s game_over.inc
 	ca65 -o title.o title.s -l title.lst
 
 ####

@@ -585,6 +585,11 @@ done_title:
 .include "cheat2_trackdata.s"
 .include "cheat2_player.s"
 
+.include "game_over_screen.s"
+.include "sound_update.s"
+.include "sfx.inc"
+.include "game_over.inc"
+
 	;====================
 	; scanline wait
 	;====================
