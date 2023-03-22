@@ -611,7 +611,7 @@ pit_overscan:
 
 	; wait 30 scanlines
 
-	ldx	#21
+	ldx	#20
 	jsr	scanline_wait
 	sta	WSYNC
 
@@ -679,6 +679,12 @@ skip_pit_sound:
 	sta	WSYNC                   ;                               ; 3
 
 
+	lda	GRUMBLECAKE_COUNT
+	cmp	#3
+	bcs	too_much_grumble
+
+	sta	WSYNC
+
 	;==================
 	; 29
 
@@ -686,9 +692,6 @@ skip_pit_sound:
 	cmp	#5
 	bcs	done_pit
 
-	lda	GRUMBLECAKE_COUNT
-	cmp	#3
-	bcs	too_much_grumble
 
 	sta	WSYNC
 
@@ -704,5 +707,6 @@ done_pit:
 	jmp	done_level
 
 too_much_grumble:
+	sta	WSYNC
 	jmp	switch_to_bank0_and_game_over
 

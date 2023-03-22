@@ -140,8 +140,8 @@ done_level:
 
 level_dest_l:
 	.byte	<(strongbadia_start-1),<(blue_land-1)
-	.byte	<(the_pit-1),<(the_stick-1)
+	.byte	<(the_pit-1),<(the_stick-1),<(bubs_start-1)
 
 level_dest_h:
 	.byte	>(strongbadia_start-1),>(blue_land-1)
-	.byte	>(the_pit-1),>(the_stick-1)
+	.byte	>(the_pit-1),>(the_stick-1),>(bubs_start-1)

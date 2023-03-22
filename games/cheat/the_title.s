@@ -22,6 +22,14 @@ switch_to_bank1_and:
 switched_from_bank0_and_start_game_over:
 	jmp	game_over
 
+switch_to_bank1_andq:
+	bit	$1FF9
+
+switched_from_bank0_and_blue:
+	jmp	blue_land
+
+
+
 the_cheat_start:
 
 	;=======================

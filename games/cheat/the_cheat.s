@@ -25,6 +25,14 @@ switch_to_bank0_and_game_over:
 switched_from_bank0_and:
 	jmp	switched_from_bank0_and
 
+blue_land:
+switch_to_bank0_and_blue_land:
+	bit	$1FF8
+
+switched_from_bank0_andq:
+	jmp	switched_from_bank0_andq
+
+
 	;=========================
 	; gameplay
 	;=========================
@@ -34,7 +42,8 @@ switched_from_bank0_and:
 
 
 .include "position.s"
-.include "blue.s"
+.include "bubs.s"
+;.include "blue.s"
 .include "pit.s"
 .include "draw_score.s"
 .include "update_score.s"
