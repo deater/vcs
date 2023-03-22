@@ -1,14 +1,13 @@
-	;===================================
-	; game over screen, with the duck
-	;===================================
+	;======================================
+	; game over screen, with the shark bear
+	;======================================
 	; ideally VBLANK is off (2) when we get here
 
-        lda     #0							; 2
-        sta     CTRLPF		; turn off reflect on playfield		; 3
-        sta     VDELP0		; turn off vdelay on sprite0		; 3
-        sta     FRAME		; reset frame counter			; 3
+	lda	#20
+	sta	TITLE_COUNTDOWN
+	sta	WSYNC
 
-go_frame:
+game_over_loop:
 	;=============================
 	; start VBLANK
 	;=============================
@@ -22,24 +21,28 @@ go_frame:
 	sta     WSYNC                   ; wait until end of scanline
 	sta     WSYNC
 
-	sta     WSYNC
-
 	lda     #0                      ; done beam reset
 	sta     ENABL
+	sta	COLUBK
+	sta     CTRLPF		; turn off reflect on playfield		; 3
+	sta     VDELP0		; turn off vdelay on sprite0		; 3
+	sta     VDELP1		; turn off vdelay on sprite1		; 3
+
+
+	sta     WSYNC
 	sta     VSYNC
 
 
+
+
 ; 9
-	;=============================
+	;============================
 	; 37 lines of vertical blank
 	;=============================
 
 
 	ldx     #35
-vbgo_loop:
-        sta     WSYNC
-        dex
-        bne     vbgo_loop
+	jsr	scanline_wait
 
 	;=============================
 	; vblank scanline 35
@@ -80,43 +83,19 @@ goad_x:
 	lda	#NUSIZ_QUAD_SIZE					; 2
 	sta	NUSIZ0							; 3
 ; 8
-	lda	#$C8		; light green				; 2
-	sta	COLUPF		; color of playfield			; 3
 	lda	#$1C		; yellow				; 2
 	sta	COLUP0		; color of sprite			; 3
 
 ; 18
 	ldy	#0		; clear sprite				; 2
 	sty	GRP0							; 3
-	sty	PF0							; 3
-	sty	PF1							; 3
-	sty	PF2							; 3
+;	sty	PF0							; 3
+;	sty	PF1							; 3
+;	sty	PF2							; 3
 
 ; 32
 
 	ldx	#0		; reset scanline count			; 2
-
-	inc	FRAME		; update frame				; 5
-	lda	FRAME							; 3
-	and	#$20							; 2
-; 44
-
-	bne	beak_closed						; 2/3
-beak_open:
-; 46
-	lda	#<game_overlay_top					; 2
-	jmp	beak_done						; 3
-; 51
-beak_closed:
-; 47
-	lda	#<game_overlay2_top					; 2
-beak_done:
-; 49/51
-	sta	INL							; 3
-	; ASSUME ALWAYS IN SAME PAGE
-	lda	#>game_overlay_top					; 2
-	sta	INH							; 3
-; 57/59
 
 	lda	#0			; turn on beam			; 2
 	sta	VBLANK							; 3
@@ -126,122 +105,195 @@ beak_done:
 
 	;=============================================
 	;=============================================
-	;=============================================
-	;=============================================
 	;
-	; draw 156 (192 - 36) lines of just the sprite
+	; draw 168 lines of asymmetric playfield
+	;	bear holding shark
+	;==================================
+	;==================================
 
-	; need to race beam to draw other half of playfield
 
 game_over_loop_top:
 ; 0
-	lda	(INL),Y		; load proper sprite data		; 5
-	sta	GRP0							; 3
-; 8
-	inx			; increment scanline (X)		; 2
-	txa                     ; keep Y as X/4				; 2
-	and	#$3							; 2
-	beq	yes_iny							; 2/3
-	.byte	$A5     ; begin of LDA ZP				; 3
-yes_iny:
-	iny		; $E8 should be harmless to load		; 2
-done_iny:
-                                                                ;===========
-                                                                ; 11/11
-; 19
+	lda	#6				; grey			; 2
+	sta	COLUPF				; set playfield color	; 3
+; 5
+	lda	#0				; left 4 always empty	; 2
+	sta	PF0				;			; 3
+	; must write by CPU 22 [GPU 68]
+; 10
+	lda	bearshark_playfield1_left,Y	;			; 4+
+	sta	PF1				;			; 3
+	; must write by CPU 28 [GPU 84]
+; 17
 
-	cpx	#80
-	bne	no_switch_sprite_bottom
-switch_sprite_bottom:
-	lda	#<(game_overlay_common-20)	; assume in same page
-	sta	INL
+	lda	bearshark_playfield2_left,Y	;			; 4+
+	sta	PF2			;				; 3
+	; must write by CPU 38 [GPU 116]
+; 24
 
-no_switch_sprite_bottom:
-	cpx	#156							; 2
-	sta	WSYNC
+	; change color
+	nop								; 2
+; 26
+
+	lda	#$24							; 2
+	cpx	#64							; 2
+	bcs	yes_bear						; 2/3
+	.byte $2C		; bit					; 4
+yes_bear:
+	sta	COLUPF							; 3
+done_bear:
+	; 10 / 10
+
+; 36
+
+;	lda	bearshark_playfield2_left,Y	; load sprite data	; 4+
+;	sta	GRP0							; 3
+
+; 36
+	; update asymmetric screen
+
+	lda	bearshark_playfield0_right,Y	;			; 4+
+	sta	PF0			;				; 3
+	; must write by CPU 49 [GPU 148]
+; 43
+	lda	bearshark_playfield1_right,Y	;			; 4+
+	sta	PF1				;			; 3
+	; must write by CPU 54 [GPU 164]
+; 50
+	nop
+	nop
+
+	lda	bearshark_playfield2_right,Y	;			; 4+
+	sta	PF2				;			; 3
+	; must write by CPU 65 [GPU 196]
+
+; 61
+	inx	; 2
+	txa	; 2
+	lsr	; 2
+	lsr	; 2
+	tay	; 2
+
+; 71
+	cpx	#167							; 2
 	bne	game_over_loop_top					; 2/3
+; 76
 
-; 2
 
+; 75
+	ldx	#0
+	ldy	#0
+
+	sta	WSYNC
+
+	;=============================================
+	;=============================================
+	;
+	; draw 24 lines of asymmetric playfield
+	;	"game over"
 	;==================================
 	;==================================
 
 
 game_over_loop_bottom:
 ; 0
-	nop
-	nop
-	lda	$80
-;	lda	go_colors,Y		;				; 4+
-;	sta	COLUPF			; set playfield color		; 3
-; 7
-	lda	go_playfield0_left-39,Y	;				; 4+
-	sta	PF0			;				; 3
+	lda	#$C8				; light green		; 2
+	sta	COLUPF				; set playfield color	; 3
+; 5
+	lda	game_over_playfield0_left,Y				; 4+
+	sta	PF0				;			; 3
 	; must write by CPU 22 [GPU 68]
-; 14
-	lda	go_playfield1_left-39,Y	;				; 4+
-	sta	PF1			;				; 3
+; 12
+	lda	game_over_playfield1_left,Y	;			; 4+
+	sta	PF1				;			; 3
 	; must write by CPU 28 [GPU 84]
+; 19
 
-; 21
-
-	lda	go_playfield2_left-39,Y	;				; 4+
+	lda	game_over_playfield2_left,Y	;			; 4+
 	sta	PF2			;				; 3
 	; must write by CPU 38 [GPU 116]
+; 26
 
-; 28
-	lda	(INL),Y			; load proper sprite data	; 5
-	sta	GRP0							; 3
+	inc	TEMP1	; nop5
+	dec	TEMP1	; nop5
+
 ; 36
 	; update asymmetric screen
 
-	nop				; nop				; 2
-	lda	#$0			; always 0			; 2
+	lda	game_over_playfield0_right,Y	;			; 4+
 	sta	PF0			;				; 3
 	; must write by CPU 49 [GPU 148]
 ; 43
-	lda	go_playfield1_right-39,Y	;			; 4+
+	lda	game_over_playfield1_right,Y	;			; 4+
 	sta	PF1				;			; 3
 	; must write by CPU 54 [GPU 164]
 ; 50
-	lda	$80				; nop3			; 3
-	lda	go_playfield2_right-39,Y	;			; 4+
+	nop
+	nop
+
+	lda	game_over_playfield2_right,Y	;			; 4+
 	sta	PF2				;			; 3
 	; must write by CPU 65 [GPU 196]
 
-; 60
-	inx				; increment scanline (X)	; 2
-	txa								; 2
-	and	#$3			; make sure Y=X/4		; 2
-	beq	yes_iny2						; 2/3
-	.byte	$A5     ; begin of LDA ZP				; 3
-yes_iny2:
-	iny		; $E8 should be harmless to load		; 2
-done_iny2:
-                                                                ;===========
-                                                                ; 11/11
+; 61
+	inx	; 2
+	txa	; 2
+	lsr	; 2
+	lsr	; 2
+	tay	; 2
 
 ; 71
-	cpx	#192							; 2
+	cpx	#24							; 2
 	bne	game_over_loop_bottom					; 2/3
 
 ; 76
 
-go_done_loop:
 
 ; 75
 
 
-	;==========================
-	; overscan (30 scanlines)
-	;==========================
+
+	;============================
+	; overscan
+	;============================
+game_overscan:
+        lda     #$2             ; turn off beam
+        sta     VBLANK
+
+        ; wait 30 scanlines
 
 	ldx	#26
-	jsr	common_overscan
+	jsr	scanline_wait
 
+
+	;============================
+	; scanlines 27+28 handle sound (2 scanlines)
 ; 10
+	jsr	update_sound
+
+	sta	WSYNC
+
+
+; 0
 	;=================================
-	; check input to go back to title
+	; scanline 29
+	;=================================
+	; check input
+
+	lda	#0							; 2
+	sta	DONE_TITLE						; 3
+; 5
+
+	;===============================
+	; debounce reset/keypress check
+
+	lda	TITLE_COUNTDOWN						; 3
+	beq	go_waited_enough					; 2/3
+	dec	TITLE_COUNTDOWN						; 5
+	jmp	go_done_check_input					; 3
+
+go_waited_enough:
+; 11
 
 	lda	INPT4			; check if joystick button pressed
 	bpl	set_done_go
@@ -250,17 +302,14 @@ go_done_loop:
 	lsr				; put reset into carry
 	bcc	set_done_go
 
+go_done_check_input:
+
 	sta	WSYNC
 
-
-
-	;============================
-	; handle sound (2 scanlines)
-
-	jsr	update_sound
-
-	jmp	go_frame
+	jmp	game_over_loop
 
 
 set_done_go:
+	sta	WSYNC
+
 	jmp	switch_bank1

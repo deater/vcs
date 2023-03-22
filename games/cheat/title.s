@@ -3,35 +3,6 @@
 ; o/~ F o/~
 ; that's not F
 
-; by Vince `deater` Weaver <vince@deater.net>
-
-.include "../../vcs.inc"
-.include "zp.inc"
-
-switch_bank1:
-	bit	$1FF9		; switch to bank1
-
-
-the_cheat_start:
-
-	;=======================
-	; clear registers/ZP/TIA
-	;=======================
-
-	sei			; disable interrupts
-	cld			; clear decimal mode
-	ldx	#0
-	txa
-clear_loop:
-	dex
-	txs
-	pha
-	bne	clear_loop
-
-	; S = $FF, A=$0, x=$0, Y=??
-
-	lda	#$E			; setup debounce
-	sta	TITLE_COUNTDOWN
 
 ; =====================================================================
 ; Initialize music.
@@ -576,33 +547,6 @@ done_title:
 	sta	AUDV0							; 3
 	sta	AUDV1							; 3
 
-	jmp	switch_bank1						; 3
+;	jmp	switch_bank1						; 3
 ; 38
 
-.include "title_pf.inc"
-;.align $100
-.include "title_sprites.inc"
-.include "cheat2_trackdata.s"
-.include "cheat2_player.s"
-
-.include "game_over_screen.s"
-.include "sound_update.s"
-.include "sfx.inc"
-.include "game_over.inc"
-
-	;====================
-	; scanline wait
-	;====================
-	; scanlines to wait in X
-
-scanline_wait:
-	sta	WSYNC
-	dex						; 2
-	bne	scanline_wait				; 2/3
-	rts						; 6
-
-
-.segment "IRQ_VECTORS"
-	.word the_cheat_start	; NMI
-	.word the_cheat_start	; RESET
-	.word the_cheat_start	; IRQ
