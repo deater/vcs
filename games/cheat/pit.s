@@ -9,10 +9,12 @@ the_pit:
 	sta	GRUMBLECAKE_Y					; 3
 	sta	CHEATCAKE_Y					; 3
 	sta	CHEATCAKE_COUNT					; 3
+	sta	GRUMBLECAKE_COUNT				; 3
 
 	lda	#76		; x pos, center			; 2
-	sta	CHEATCAKE_X
-	sta	GRUMBLECAKE_X
+	sta	CHEATCAKE_X	; need to set as if not valid	; 3
+	sta	GRUMBLECAKE_X	; the timing loop can take	; 3
+				; more than a scanline
 
 	jsr	init_level					; 6+27
 
@@ -620,8 +622,12 @@ pit_overscan:
 	and	#$C0
 	beq	no_gc_collision
 
+gc_collision:
+
 	lda	#0
 	sta	GRUMBLECAKE_Y
+
+	inc	GRUMBLECAKE_COUNT
 
 	; trigger sound
 	lda	#SFX_ZAP
@@ -680,6 +686,10 @@ skip_pit_sound:
 	cmp	#5
 	bcs	done_pit
 
+	lda	GRUMBLECAKE_COUNT
+	cmp	#3
+	bcs	too_much_grumble
+
 	sta	WSYNC
 
 	jmp	pit_loop
@@ -692,3 +702,7 @@ done_pit:
 	lda	#100
 	sta	CHEAT_Y
 	jmp	done_level
+
+too_much_grumble:
+	jmp	switch_to_bank0_and_game_over
+

@@ -2,20 +2,29 @@
 
 ; by Vince `deater` Weaver <vince@deater.net>
 
-; runs in bank1
-
 .include "../../vcs.inc"
 .include "zp.inc"
 
-the_cheat_start:
+; this is bank1
+
+
 
 	; if we accidentally come up with bank1 enabled, switch
 	; to bank0 to run the title
-
-switch_bank0:
+the_cheat_start:
+switch_to_bank0_and_start_game:
 ; 38
 	bit	$1FF8
 ; 42
+switched_from_bank0_and_start_strongbadia:
+	jmp	strongbadia
+
+switch_to_bank0_and_game_over:
+	bit	$1FF8
+
+switched_from_bank0_and:
+	jmp	switched_from_bank0_and
+
 	;=========================
 	; gameplay
 	;=========================
@@ -58,6 +67,3 @@ scanline_wait:
 	.word the_cheat_start	; NMI
 	.word the_cheat_start	; RESET
 	.word the_cheat_start	; IRQ
-
-
-

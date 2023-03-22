@@ -547,6 +547,6 @@ done_title:
 	sta	AUDV0							; 3
 	sta	AUDV1							; 3
 
-;	jmp	switch_bank1						; 3
+	jmp	switch_to_bank1_and_start_strongbadia			; 3
 ; 38
 

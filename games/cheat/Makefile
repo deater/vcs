@@ -15,8 +15,8 @@ title.bin:	title.o
 	ld65 -o title.bin title.o -C $(LINKER_SCRIPT)/atari2600_f000.inc
 
 title.o:	zp.inc \
-	the_title.s \
-	title.s title_pf.inc title_sprites.inc \
+	the_title.s title.s \
+	title_pf.inc title_sprites.inc \
 	cheat2_trackdata.s cheat2_player.s \
 	game_over_screen.s bearshark.inc \
 	bubs.s

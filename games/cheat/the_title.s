@@ -8,9 +8,19 @@
 .include "../../vcs.inc"
 .include "zp.inc"
 
-switch_bank1:
-	bit	$1FF9		; switch to bank1
+; we're in bank0 here
 
+switch_to_bank1_and_start_strongbadia:
+	bit	$1FF9		; switch to bank1
+				; this is followed by a jumpg
+switched_from_bank1_and_start_game:
+	jmp	the_cheat_start
+
+switch_to_bank1_and:
+	bit	$1FF9
+
+switched_from_bank0_and_start_game_over:
+	jmp	game_over
 
 the_cheat_start:
 

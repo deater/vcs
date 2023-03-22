@@ -2,7 +2,7 @@
 	; game over screen, with the shark bear
 	;======================================
 	; ideally VBLANK is off (2) when we get here
-
+game_over:
 	lda	#20
 	sta	TITLE_COUNTDOWN
 	sta	WSYNC
@@ -312,4 +312,4 @@ go_done_check_input:
 set_done_go:
 	sta	WSYNC
 
-	jmp	switch_bank1
+	jmp	switch_to_bank1_and_start_strongbadia
