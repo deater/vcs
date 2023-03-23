@@ -4,15 +4,34 @@ an Atari 2600 Game
 
 8k cartridge, needs NTSC
 
+
+Directions
+~~~~~~~~~~
+
+Press reset/fire to start. Use the joystick to move.
+
+You are the Cheat. Your goal is to collect 5 cheatcakes (little yellow boxes)
+and take them to the Concession Stand.
+
+Watch out! If the crude approximation of Strong Bad catches you, he'll
+steal all your cheat cakes and send you back to your home.
+
+While in a pit, watch out for grumble cakes (little black boxes) as
+if you touch too many bad things can happen.
+
+
+Background
+~~~~~~~~~~
+
 This was based on an old fake screenshot from the Homestar Runner people.
 It was a parody of the opening screen of the infamous E.T game, but
 with their character the Cheat instead.
 
-I did the title, but then also came up with some E.T. inspired gameplay.
+I did the title, but then also came up with some vaguely E.T. inspired
+gameplay.
 
-It's more of a demo, you really can't win.
 
 Vince Weaver
 vince@deater.net
 http://deater.net/weave/vmwprod/cheat/
-21 March 2023
+22 March 2023
