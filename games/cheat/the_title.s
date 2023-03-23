@@ -57,9 +57,7 @@ clear_loop:
 
 ; 38
 
-
-
-.include "title_sprites.inc"
+;.include "title_sprites.inc"
 .include "cheat2_trackdata.s"
 .include "cheat2_player.s"
 
@@ -94,9 +92,9 @@ scanline_wait:
 
 
 .align $100
-.include "title_pf.inc"
+;.include "title_pf.inc"
 .include "game_data2.inc"
-.include "bearshark.inc"
+;.include "bearshark.inc"
 
 
 .segment "IRQ_VECTORS"

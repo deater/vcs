@@ -48,7 +48,7 @@ miny_data:
 
 maxy_data:
 	.byte 162		; strongbadia
-	.byte 80		; blue (note, div2)
+	.byte 79		; blue (note, div2)
 	.byte 124		; pit
 	.byte 162		; the stick
 	.byte 162		; bubs
