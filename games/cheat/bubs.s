@@ -43,13 +43,13 @@ bubs_loop:
 	;===============================
 	;===============================
 
-	ldx	#18
+	ldx	#20
 	jsr	scanline_wait		; Leaves X zero
 ; 10
 	sta	WSYNC
 
 	;===========================
-	; scanline 17
+	; scanline 20
 	;===========================
 	; takes 10 scanlines
 
@@ -57,18 +57,19 @@ bubs_loop:
 	sta	WSYNC
 
 	;===========================
-	; scanline 28
+	; scanline 30-31
 	;===========================
-	; update flag horizontal
-bupdate_flag_horizontal:
+	; update overlay horizontal
+
+update_bubs_overlay_horizontal:
 ; 0
-	lda	#78						; 3
-	ldx	#0						; 2
+	lda	#74						; 3
+	ldx	#0			; P0			; 2
 	jsr	set_pos_x		; 2 scanlines		; 6+62
 	sta	WSYNC
 
 	;==========================
-	; scanline 29
+	; scanline 32
 	;==========================
 bwait_pos3:
 	dey								; 2
@@ -78,16 +79,16 @@ bwait_pos3:
 	sta	WSYNC
 
 	;==========================
-	; scanline 30
+	; scanline 33-34
 	;==========================
 ; 0
 	lda	SHADOW_X						; 3
-	ldx	#1							; 2
+	ldx	#1			; P1				; 2
 	jsr	set_pos_x		; 2 scanlines			; 6+62
 	sta	WSYNC
 
 	;==========================
-	; scanline 32
+	; scanline 35
 	;==========================
 bwait_pos2:
 	dey                                                             ; 2
@@ -98,38 +99,18 @@ bwait_pos2:
         sta     HMOVE
 
 	;================================
-	; scanline 33
+	; scanline 36
 	;================================
 
 	sta     WSYNC
-
-
-	;==========================
-	; scanline 33
-	;==========================
-; 0
-;	lda	STRONGBAD_X						; 3
-;	ldx	#4			; ball				; 2
-;	jsr	set_pos_x		; 2 scanlines			; 6+62
-	sta	WSYNC
-
-	;==========================
-	; scanline 35
-	;==========================
-;wait_pos12:
-;	dey                                                             ; 2
-;	bpl	wait_pos12	; 5-cycle loop (15 TIA color clocks)    ; 2/3
-
-;	sta	RESBL							; 4
-	sta	WSYNC
-
 
 	;=============================
 	; scanline 37
 	;=============================
 
-	lda	#NUSIZ_ONE_COPY ; NUSIZ_DOUBLE_SIZE
+	lda	#NUSIZ_DOUBLE_SIZE	; for overlay
 	sta	NUSIZ0
+	lda	#NUSIZ_ONE_COPY		; for cheat
 	sta	NUSIZ1
 
 	lda	#$0		; turn off delay
@@ -144,8 +125,8 @@ bwait_pos2:
 
 	sta	REFP0
 
-	lda	#$00		; black cheat
-	sta	COLUP0
+;	lda	#$00		; black cheat
+;	sta	COLUP0
 	lda	#$1C		; yellow cheat
 	sta	COLUP1
 
@@ -193,19 +174,9 @@ bbushes_top_loop:
 	sta	PF2							; 3
 	; must write by CPU 38 [GPU 116]
 ; 34
-	txa								; 2
-	cmp	#22							; 2
-	bcc	bno_incy							; 2/3
-	and	#$1							; 2
-	bne	bno_incy							; 2/3
-	iny								; 2
-bno_incy:
-; 48 (worst case)
 
-	lda	sbadia_overlay_colors,Y					; 4+
-	sta	COLUP0							; 3
-	lda	sbadia_overlay_sprite,Y					; 4+
-	sta	GRP0							; 3
+
+
 ; 62
 	inx								; 2
 	lda	bushes_bg_colors,X					; 4+
@@ -215,48 +186,39 @@ bno_incy:
 	bne	bbushes_top_loop
 
 
+	lda	#$D4							; 2
+	sta	COLUBK							; 3
+
 	ldx	#0
-	ldy	#0
 
 	;===========================
 	; scanline 60 -- bubs
 	;===========================
-	; 48 lines of bubs
+	; 48 lines of bubs + overlay
 	;===========================
 bubs_top_loop:
 ; 3
-	lda	#$D4							; 2
-	sta	COLUBK							; 3
-; 8
-	lda	strongbadia_colors,X					; 4+
+	lda	bubs_colors,X						; 4+
 	sta	COLUPF							; 3
-; 15
+; 10
 	lda	#$00							; 2
 	sta	PF0							; 3
 	; must write by CPU 22 [GPU 68]
-; 20
-	lda	strongbadia_playfield1_left,X				; 4+
+; 15
 	sta	PF1							; 3
 	; must write by CPU 28 [GPU 84]
-; 27
-	lda	strongbadia_playfield2_left,X				; 4+
+; 18
+	lda	bubs_playfield2_left,X					; 4+
 	sta	PF2							; 3
 	; must write by CPU 38 [GPU 116]
-; 34
+; 25
 
-	nop
-
-
-	txa								; 2
-	and	#$1							; 2
-	bne	no_incy42						; 2/3
-	iny								; 2
-no_incy42:
-	lda	below_fence_colors,Y					; 4+
+	lda	stand_overlay_colors,X					; 4+
 	sta	COLUP0							; 3
-	lda	below_fence_sprite,Y					; 4+
+; 32
+	lda	stand_overlay_sprite,X					; 4+
 	sta	GRP0							; 3
-
+; 39
 
 	inx								; 2
 	cpx	#48							; 2
@@ -267,6 +229,9 @@ no_incy42:
 	;===========================
 	; scanline 108 -- grass
 	;===========================
+
+	lda	#NUSIZ_ONE_COPY
+	sta	NUSIZ0
 
 	lda	CHEAT_DIRECTION
 	sta	REFP0

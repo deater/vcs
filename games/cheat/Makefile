@@ -35,7 +35,7 @@ the_cheat.o:	the_cheat.s \
 	sound_trigger.s sound_update.s sfx.inc \
 	strongbadia.s strongbadia.inc \
 	draw_score.s update_score.s \
-	blue.s blue.inc \
+	bubs.s \
 	pit.s pit.inc \
 	the_stick.s the_stick.inc \
 	game_data.inc
