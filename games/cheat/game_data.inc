@@ -45,7 +45,7 @@ below_fence_colors:
 	.byte $00,$0E,$0A,$08,$08,$06,$06,$06
 	.byte $00,$00,$00
 
-; 28 bytes or so here...
+; 4 bytes here...
 
 .align $100
 
@@ -85,7 +85,7 @@ strongbadia_playfield2_left:
 	.byte $F8,$F8,$FF,$FF,$FF,$FF,$FF,$FF
 	.byte $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 	.byte $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-	.byte $FF,$FF,$00,$00;,$00,$00,$00,$00
+	.byte $FF,$FF,$00,$00;,$00,$00,$00 ;,$00
 
 
 sbadia_overlay_colors:
@@ -102,42 +102,14 @@ sbadia_overlay_sprite:
 	.byte $80,$40,$40,$40,$40,$40,$80,$80
 	.byte $80,$80,$80
 
+.align $100
+
 below_fence_sprite:
 	.byte $00
 	.byte $00,$00,$00,$3C,$7E
 	.byte $77,$E7,$EF,$FE,$7E,$3C,$00,$00
 	.byte $00,$1E,$21,$41,$99,$81,$42,$7D
-	.byte $00,$00,$00
-; Using background color $72, FG $08
-
-blue_playfield1_left:
-	.byte $00,$00,$00,$00,$00,$00,$00,$00
-	.byte $00,$00,$00,$38,$7C,$FC,$FE,$FF
-	.byte $FF,$FF,$FF,$FF,$F7,$07,$77,$77
-	.byte $77,$77,$77,$77,$07,$FF,$FE,$FE
-	.byte $00,$18,$18,$18,$18,$18,$18,$18
-	.byte $18,$18,$08,$08,$08,$00,$00,$00
-	.byte $00,$00,$00,$00,$00,$00,$00,$00
-	.byte $00,$00,$00,$00,$00,$00,$00,$00
-	.byte $00,$00,$00,$00,$00,$00,$00,$00
-	.byte $00,$00,$00,$00,$00,$00,$00,$00
-	.byte $00,$00,$00,$00,$00,$00,$00,$00
-	.byte $00,$00,$00,$00
-
-blue_playfield2_left:
-	.byte $00,$00,$00,$00,$09,$0B,$0F,$0F
-	.byte $0F,$0F,$0F,$0F,$0E,$06,$03,$03
-	.byte $03,$03,$03,$03,$03,$03,$03,$03
-	.byte $01,$01,$01,$01,$00,$00,$00,$00
-	.byte $00,$00,$00,$00,$00,$00,$E0,$A0
-	.byte $00,$F0,$F0,$F0,$78,$78,$78,$78
-	.byte $F8,$F8,$FC,$FC,$F0,$EC,$1C,$FC
-	.byte $F8,$F8,$F8,$F8,$F0,$F0,$F0,$F0
-	.byte $E0,$E0,$50,$50,$50,$50,$50,$50
-	.byte $10,$F0,$50,$10,$50,$50,$50,$48
-	.byte $48,$48,$48,$08,$08,$08,$00,$00
-	.byte $00,$00,$00,$00
-
+	.byte $00 ;,$00,$00
 
 stick_overlay_colors:
 	.byte $00
@@ -145,7 +117,7 @@ stick_overlay_colors:
 	.byte $22,$22,$22,$22
 	.byte $22,$22,$22,$22
 	.byte $22,$22,$22,$22
-	.byte $22,$C0,$00,$00
+	.byte $22,$C0 ;,$00,$00
 
 stick_overlay_sprite:
 	.byte $00
@@ -153,37 +125,7 @@ stick_overlay_sprite:
 	.byte $0C,$04,$04,$04
 	.byte $05,$06,$44,$2C
 	.byte $2C,$18,$08,$08
-	.byte $08,$3E,$00,$00
-
-.align $100  ;
-
-blue_playfield0_right:
-	.byte $00,$00,$00,$00,$00,$00,$80,$00
-	.byte $00,$00,$00,$00,$00,$00,$00,$00
-	.byte $00,$00,$00,$00,$00,$00,$00,$00
-	.byte $00,$00,$00,$00,$00,$00,$00,$00
-	.byte $00,$00,$00,$00,$00,$00,$00,$00
-	.byte $00,$00,$00,$10,$10,$30,$20,$20
-	.byte $30,$30,$30,$70,$30,$40,$70,$70
-	.byte $70,$30,$30,$30,$30,$30,$10,$10
-	.byte $00,$00,$10,$10,$10,$10,$10,$10
-	.byte $10,$10,$10,$10,$10,$20,$20,$20
-	.byte $20,$20,$20,$20,$20,$20,$20,$00
-	.byte $00,$00,$00,$00
-
-blue_playfield1_right:
-	.byte $00,$00,$00,$00,$00,$E0,$61,$20
-	.byte $20,$20,$20,$70,$70,$70,$70,$00
-	.byte $A6,$A6,$FF,$FF,$FF,$F6,$6F,$6F
-	.byte $6F,$6F,$6F,$69,$69,$69,$69,$69
-	.byte $69,$69,$69,$69,$69,$69,$60,$26
-	.byte $06,$06,$0F,$0F,$0F,$0F,$0F,$0F
-	.byte $06,$00,$00,$00,$00,$00,$00,$00
-	.byte $00,$00,$00,$00,$00,$00,$00,$00
-	.byte $00,$00,$00,$00,$00,$00,$00,$00
-	.byte $00,$00,$00,$00,$00,$00,$00,$00
-	.byte $00,$00,$00,$00,$00,$00,$00,$00
-	.byte $00,$00,$00,$00
+	.byte $08,$3E;,$00,$00
 
 pit_playfield1_left:
 	;.byte $00,$00,
@@ -192,7 +134,7 @@ pit_playfield1_left:
 	.byte $3F,$3F,$3F,$3F,$3F,$1F,$1F,$1F
 	.byte $1F,$1F,$1F,$1F,$0F,$0F,$0F,$0F
 	.byte $07,$07,$03,$01,$00,$00,$00,$00
-	.byte $00,$00,$00,$00,$00,$00,$00,$00
+	.byte $00,$00,$00,$00,$00,$00;,$00,$00
 
 cheat_sprite_yellow:
 	.byte $00
@@ -221,8 +163,6 @@ cheat_sprite_black:
 	.byte $04
 
 
-.align $100
-
 pit_playfield2_left:
 	;.byte $00,$00,
 	.byte $00,$00,$00,$00,$FF,$FF
@@ -231,7 +171,6 @@ pit_playfield2_left:
 	.byte $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 	.byte $FF,$FF,$FF,$FF,$FF,$00,$00,$00
 	.byte $00,$00,$00,$00,$00,$00,$00,$00
-
 
 avoid_sprite0:
 	.byte $00	; ........
@@ -291,22 +230,6 @@ avoid_sprite1:
 
 
 
-blue_playfield2_right:
-	.byte $00,$00,$00,$00,$00,$07,$06,$04
-	.byte $04,$04,$04,$0E,$0E,$0E,$0E,$00
-	.byte $0A,$0A,$0F,$0F,$0F,$0F,$06,$06
-	.byte $06,$06,$06,$06,$06,$06,$06,$06
-	.byte $06,$06,$06,$06,$06,$06,$02,$00
-	.byte $00,$00,$00,$00,$00,$00,$00,$00
-	.byte $00,$00,$00,$00,$00,$00,$00,$00
-	.byte $00,$00,$00,$00,$00,$00,$00,$00
-	.byte $00,$00,$00,$00,$00,$00,$00,$00
-	.byte $00,$00,$00,$00,$00,$00,$00,$00
-	.byte $00,$00,$00,$00,$00,$00,$00,$00
-	.byte $00,$00,$00,$00
-
-
-
 avoid_sprite2:
 	.byte $00	; ........
 	.byte $00	; ........
@@ -335,6 +258,8 @@ avoid_sprite2:
 	.byte $00	; ........
 	.byte $00	; ........
 
+.align $100
+
 avoid_sprite3:
 	.byte $00	; ........
 	.byte $00	; ........
@@ -362,8 +287,6 @@ avoid_sprite3:
 	.byte $9D	; *..***.*
 	.byte $00	; ........
 	.byte $00	; ........
-
-.align $100
 
 avoid_sprite4:
 	.byte $00	; ........
@@ -445,6 +368,23 @@ score_nines:    .byte   $22,$55,$55,$33,$11,$55,$22,$00
 
 
 
+strongbad_colors:
+	.byte	$42,$42		; head (red)
+	.byte	$42,$42		; head (red)
+	.byte	$42,$42		; head (red)
+	.byte	$42,$42		; head (red)
+	.byte	$42,$42		; head (red)
+	.byte	$42,$42		; head (red)
+	.byte	$4e,$4e		; arm (pink)
+	.byte	$4e,$4e		; arm (pink)
+	.byte	$02,$02		; pants
+	.byte	$02,$02		; pants
+	.byte	$02,$02		; pants
+	.byte	$42,$42		; shoe (red)
+	.byte	$42,$42		; shoe (red)
+	.byte	$0E,$0E		; shoe (white)
+
+
 
 
 ;=========================================
@@ -493,20 +433,3 @@ SFX_SPEED	=	sfx_speed-sfx_start-1
 ;SFX_CLICK	=	sfx_game_over-sfx_start-1
 
 
-
-
-strongbad_colors:
-	.byte	$42,$42		; head (red)
-	.byte	$42,$42		; head (red)
-	.byte	$42,$42		; head (red)
-	.byte	$42,$42		; head (red)
-	.byte	$42,$42		; head (red)
-	.byte	$42,$42		; head (red)
-	.byte	$4e,$4e		; arm (pink)
-	.byte	$4e,$4e		; arm (pink)
-	.byte	$02,$02		; pants
-	.byte	$02,$02		; pants
-	.byte	$02,$02		; pants
-	.byte	$42,$42		; shoe (red)
-	.byte	$42,$42		; shoe (red)
-	.byte	$0E,$0E		; shoe (white)
