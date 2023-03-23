@@ -71,6 +71,11 @@ pit_loop:
 	; random number gen
 
 	jsr	random16
+
+	nop	; THESE ARE IMPORTANT!  MAKE SURE ALIGNMENT AFTER
+	nop	; SCANLINE35 DOESN'T STRADDLE A PAGE
+	nop
+
 	sta	WSYNC
 
 	;===========================

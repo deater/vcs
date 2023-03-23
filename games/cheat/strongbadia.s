@@ -423,6 +423,8 @@ strongbad_more_y:
 	dec	STRONGBAD_Y
 	jmp	done_move_strongbad_y
 strongbad_less_y:
+	cmp	#150		 ;see if too big
+	bcs	done_move_strongbad_y
 	inc	STRONGBAD_Y
 done_move_strongbad_y:
 
@@ -493,6 +495,8 @@ taken_away:
 	sta	SFX_NEW
 
 	ldy	#DESTINATION_BLUE
+	lda	#100
+	sta	CHEAT_Y
 	lda	#74
 	sta	NEW_X
 	jmp	done_level
