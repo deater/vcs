@@ -22,8 +22,8 @@ switched_from_bank0_and_start_strongbadia:
 switch_to_bank0_and_game_over:
 	bit	$1FF8
 
-switched_from_bank0_and:
-	jmp	switched_from_bank0_and
+switched_from_bank0_and_start_bubs:
+	jmp	bubs_start
 
 blue_land:
 switch_to_bank0_and_blue_land:

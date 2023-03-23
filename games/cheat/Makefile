@@ -19,7 +19,8 @@ title.o:	zp.inc \
 	title_pf.inc title_sprites.inc \
 	cheat2_trackdata.s cheat2_player.s \
 	game_over_screen.s bearshark.inc \
-	bubs.s
+	blue.s \
+	game_data2.inc
 	ca65 -o title.o the_title.s -l title.lst
 
 ####

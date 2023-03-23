@@ -16,7 +16,8 @@ switch_to_bank1_and_start_strongbadia:
 switched_from_bank1_and_start_game:
 	jmp	the_cheat_start
 
-switch_to_bank1_and:
+bubs_start:
+switch_to_bank1_and_bubs:
 	bit	$1FF9
 
 switched_from_bank0_and_start_game_over:
@@ -66,9 +67,9 @@ clear_loop:
 ;.include "sfx.inc"
 ;.include "game_over.inc"
 
-;.include "bubs.s"
-;.include "position.s"
-;.include "update_score.s"
+.include "blue.s"
+.include "position.s"
+.include "update_score.s"
 .include "draw_score.s"
 .include "common_movement.s"
 .include "level_data.s"
@@ -79,7 +80,7 @@ clear_loop:
 strongbadia_start:
 the_stick:
 the_pit:
-blue_land:
+
 	;====================
 	; scanline wait
 	;====================
@@ -95,7 +96,6 @@ scanline_wait:
 .align $100
 .include "title_pf.inc"
 .include "game_data2.inc"
-.align $100
 .include "bearshark.inc"
 
 
