@@ -380,16 +380,15 @@ bmove_strongbad:
 
 
         ;===================================
-        ; 22 scanlines -- collide strongbad
+        ; 22 scanlines -- check button press
 	;===================================
 
-;	lda	CXP0FB
-;	and	#$40
-;	beq	no_hit_strongbad
 
-;	jmp	taken_away
+	lda     INPT4		; check joystick button pressed 	; 3
+	bpl	show_bubs						; 2/3
 
-;no_hit_strongbad:
+
+
 	sta	WSYNC
 
         ;===============================
@@ -425,3 +424,5 @@ bskip_sound:
 	jmp	bubs_loop
 
 
+show_bubs:
+	jmp	big_bubs

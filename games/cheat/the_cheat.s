@@ -55,6 +55,7 @@ switched_from_bank0_andq:
 .include "the_stick.s"
 .include "sound_trigger.s"
 .include "sound_update.s"
+.include "bubs_cake.s"
 
 	;====================
 	; scanline wait
