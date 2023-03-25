@@ -69,7 +69,7 @@ scanline_wait:
 	rts						; 6
 
 
-.align $100
+;.align $100
 
 .include "game_data.inc"
 

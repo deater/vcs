@@ -46,57 +46,41 @@ big_bubs_loop:
 	;=============================
 
 
-	ldx     #35
+	ldx     #34
 	jsr	scanline_wait
 
-	;=============================
-	; vblank scanline 35
+	;========================================================
+	; vblank scanline 34-35 -- align sprite
+	;========================================================
 
+	lda	#74
+	ldx	#0
+	jsr	calc_pos_x
 	sta	WSYNC
 
 	;========================================================
-	; vblank scanline 36 -- align sprite (has to start at 0)
+	; vblank scanline 36 -- align sprite
 	;========================================================
-; 0
-	ldx	#7		;					; 2
-; 2
-goad_x:
-	dex			;					; 2
-	bne	goad_x		;					; 2/3
-
-	; (5*X)-1
-	;       so for X=7 34
-; 36
-	nop								; 2
-	nop								; 2
-; 40
-
-	; beam is at proper place
-	sta	RESP0							; 3
-; 43
-	lda	#$70		; fine adjust				; 2
-	sta	HMP0							; 3
-; 48
-	sta	WSYNC							; 3
-; 0
+wait_pos_99:
+	dey
+	bpl	wait_pos_99
+	sta	RESP0
+	sta	WSYNC
 	sta	HMOVE
 
 	;=======================
 	; vblank scanline 37 -- config
 
 ; 3
-	lda	#NUSIZ_QUAD_SIZE					; 2
+	lda	#NUSIZ_DOUBLE_SIZE					; 2
 	sta	NUSIZ0							; 3
 ; 8
-	lda	#$1C		; yellow				; 2
-	sta	COLUP0		; color of sprite			; 3
+;	lda	#$1C		; yellow				; 2
+;	sta	COLUP0		; color of sprite			; 3
 
 ; 18
 	ldy	#0		; clear sprite				; 2
 	sty	GRP0							; 3
-;	sty	PF0							; 3
-;	sty	PF1							; 3
-;	sty	PF2							; 3
 
 ; 32
 
@@ -108,40 +92,54 @@ goad_x:
 	sta	WSYNC							; 3
 
 
-	;=============================================
-	;=============================================
-	;
-	; draw 168 lines of asymmetric playfield
-	;	bubs
+	;==================================
+	;==================================
+	; draw 168 lines of bubs
 	;==================================
 	;==================================
 
+	lda	big_bubs_colors		; 			; 4+
 
 big_bubs_loop_top:
 ; 0
-	lda	big_bubs_colors,Y		; 			; 4+
 	sta	COLUPF				; set playfield color	; 3
 ; 7
 	lda	#0				; left 4 always empty	; 2
 	sta	PF0				;			; 3
 	; must write by CPU 22 [GPU 68]
 ; 12
-	lda	#0				;			; 2
 	sta	PF1				;			; 3
 	; must write by CPU 28 [GPU 84]
-; 17
+; 15
 
 	lda	big_bubs_playfield2_left,Y	;			; 4+
 	sta	PF2			;				; 3
 	; must write by CPU 38 [GPU 116]
-; 24
+; 22
 
+;	sec				; 0    8  50      		; 2
+	txa				; -8   8   8			; 2
+	sbc	#12	;37		; -8   0  42			; 2
+	cmp	#24	; 37						; 2
+; 30
+	bcs	not_face						; 2/3
+; 32
+	lda	bubs_face_sprite-13,X					; 4+
+	sta	GRP0							; 3
+; 39
+	lda	bubs_face_colors-13,X					; 4+
+	sta	COLUP0							; 3
+; 48
+
+not_face:
 
 	inx	; 2				; set Y to X/4
 	txa	; 2
 	lsr	; 2
 	lsr	; 2
 	tay	; 2
+
+	lda	big_bubs_colors,Y		; 			; 4+
 
 ; 71
 	cpx	#167							; 2
