@@ -3,7 +3,9 @@
 bubs_start:
 
 	pha
-	lda	#120				; set initial Y position
+	lda	#20
+	sta	TITLE_COUNTDOWN
+	lda	#120			; set initial Y position
 	sta	CHEAT_Y
 	pla
 	jsr	init_level		; 1 scanline
@@ -383,11 +385,16 @@ bmove_strongbad:
         ; 22 scanlines -- check button press
 	;===================================
 
+	lda	TITLE_COUNTDOWN
+	beq	bubs_waited_enough
+	dec	TITLE_COUNTDOWN
+	bne	bubs_done_check_input
 
+bubs_waited_enough:
 	lda     INPT4		; check joystick button pressed 	; 3
 	bpl	show_bubs						; 2/3
 
-
+bubs_done_check_input:
 
 	sta	WSYNC
 
