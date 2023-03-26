@@ -1,27 +1,25 @@
-bubs_face_colors:
-;	.byte $00,$00,$00,$00,$00,$00,$00,$00
-;	.byte $00,$00,$00,$00,$00,
-	.byte $0E,$00,$00
-	.byte $00,$00,$00,$00,$0E,$0E,$00,$00
-	.byte $0E,$0E,$0E,$0E,$0E,$0E,$0E,$0E
-	.byte $0E,$0E,$AA,$AA,$00
+cake_message_sprite5:
+	.byte $00	; ........
+	.byte $20	; ..*.....
+	.byte $80	; *.......
+	.byte $20	; ..*.....
+	.byte $20	; ..*.....
+	.byte $A0	; *.*.....
+	.byte $00	; ........
+
 
 bubs_face_sprite:
-;	.byte $00,$00,$00,$00,$00,$00,$00,$00
-;	.byte $00,$00,$00,$00,$00,
 	.byte $60,$60,$60
 	.byte $46,$46,$66,$66,$60,$60,$00,$00
 	.byte $06,$06,$1E,$1E,$FF,$FF,$FF,$FF
-	.byte $7E,$7E,$7E,$18,$00
+	.byte $7E,$7E,$7E,$18;,$00
 
 big_bubs_colors:
 	.byte $00,$AA,$AA,$AA,$AA,$AA,$AA,$34
 	.byte $34,$34,$34,$34,$34,$34,$34,$34
 	.byte $34,$34,$34,$C6,$C6,$06,$06,$06
 	.byte $06,$06,$06,$06,$06,$06,$06,$06
-	.byte $06,$00
-;	.byte $00,$00,$00,$00,$00,$00
-;	.byte $00,$00,$00,$00,$00,$00,$00,$00
+	.byte $06;,$00
 
 big_bubs_playfield2_left:
 	.byte $00,$80,$80,$C0,$C0,$C0,$C0,$E0
@@ -29,8 +27,6 @@ big_bubs_playfield2_left:
 	.byte $F6,$F2,$F2,$F0,$F0,$F0,$F0,$F0
 	.byte $F0,$E0,$E0,$60,$60,$40,$40,$60
 	.byte $60,$00
-;	.byte $00,$00,$00,$00,$00,$00
-;	.byte $00,$00,$00,$00,$00,$00,$00,$00
 
 .align $100
 
@@ -470,14 +466,7 @@ SFX_SPEED	=	sfx_speed-sfx_start-1
 
 
 ; Using background color $D4
-bubs_colors:
-	.byte $00,$00,$00,$00
-	.byte $00,$00,$00,$00,$40,$40,$40,$40
-	.byte $40,$40,$40,$40,$40,$40,$40,$40
-	.byte $40,$40,$40,$40,$40,$40,$40,$40
-	.byte $40,$40,$2C,$28,$40,$40,$40,$40
-	.byte $40,$40,$40,$40,$40,$40,$40,$40
-	.byte $40,$40,$00,$00,$00,$00,$00,$00
+
 
 bubs_playfield2_left:
 	.byte $C0,$C0,$C0,$C0
@@ -486,7 +475,16 @@ bubs_playfield2_left:
 	.byte $20,$20,$20,$20,$20,$20,$20,$20
 	.byte $20,$20,$E0,$E0,$E0,$E0,$E0,$E0
 	.byte $E0,$E0,$E0,$E0,$E0,$E0,$E0,$E0
-	.byte $E0,$E0,$00,$00,$00,$00,$00,$00
+	.byte $E0,$E0;,$00,$00,$00,$00,$00,$00
+
+bubs_colors:
+	.byte $00,$00,$00,$00
+	.byte $00,$00,$00,$00,$40,$40,$40,$40
+	.byte $40,$40,$40,$40,$40,$40,$40,$40
+	.byte $40,$40,$40,$40,$40,$40,$40,$40
+	.byte $40,$40,$2C,$28,$40,$40,$40,$40
+	.byte $40,$40,$40,$40,$40,$40,$40,$40
+	.byte $40,$40,$00,$00,$00,$00;,$00,$00
 
 
 stand_overlay_colors:
@@ -495,7 +493,7 @@ stand_overlay_colors:
 	.byte $08,$08,$08,$08,$08,$08,$08,$08
 	.byte $08,$08,$08,$08,$08,$2C,$00,$00
 	.byte $00,$00,$00,$00,$00,$02,$02,$00
-	.byte $02,$02,$02,$02,$00,$C2,$00,$00
+	.byte $02,$02,$02,$02,$00,$C2;,$00,$00
 
 stand_overlay_sprite:
 	.byte $00,$00,$FF,$FF,$A1,$A1,$FF,$DF
@@ -503,63 +501,8 @@ stand_overlay_sprite:
 	.byte $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 	.byte $FF,$FF,$FF,$FF,$FF,$FF,$00,$00
 	.byte $00,$00,$00,$00,$00,$02,$02,$00
-	.byte $05,$05,$80,$80,$00,$91,$00,$00
+	.byte $05,$05,$80,$80,$00,$91,$00;,$00
 
-.if 0
-cake_message_sprite0:
-	.byte $00	; ........
-	.byte $11	; ...*...*
-	.byte $11	; ...*...*
-	.byte $15	; ...*.*.*
-	.byte $1B	; ...**.**
-	.byte $11	; ...*...*
-	.byte $00	; ........
-
-cake_message_sprite1:
-	.byte $00	; ........
-	.byte $25	; ..*..*.*
-	.byte $55	; .*.*.*.*
-	.byte $56	; .*.*.**.
-	.byte $55	; .*.*.*.*
-	.byte $26	; ..*..**.
-	.byte $00	; ........
-
-cake_message_sprite2:
-	.byte $00	; ........
-	.byte $70	; .***....
-	.byte $41	; .*.....*
-	.byte $61	; .**....*
-	.byte $41	; .*.....*
-	.byte $70	; .***....
-	.byte $00	; ........
-
-cake_message_sprite3:
-	.byte $00	; ........
-	.byte $D5	; **.*.*.*
-	.byte $15	; ...*.*.*
-	.byte $1D	; ...***.*
-	.byte $15	; ...*.*.*
-	.byte $C9	; **..*..*
-	.byte $00	; ........
-
-cake_message_sprite4:
-	.byte $00	; ........
-	.byte $5D	; .*.***.*
-	.byte $50	; .*.*....
-	.byte $98	; *..**...
-	.byte $51	; .*.*...*
-	.byte $5C	; .*.***..
-	.byte $00	; ........
-
-cake_message_sprite5:
-	.byte $00	; ........
-	.byte $90	; *..*....
-	.byte $40	; .*......
-	.byte $90	; *..*....
-	.byte $10	; ...*....
-	.byte $D0	; **.*....
-	.byte $00	; ........
-.endif
 
 cake_message_sprite0:
 	.byte $00	; ........
@@ -568,7 +511,7 @@ cake_message_sprite0:
 	.byte $2A	; ..*.*.*.
 	.byte $36	; ..**.**.
 	.byte $22	; ..*...*.
-	.byte $00	; ........
+;	.byte $00	; ........
 
 cake_message_sprite1:
 	.byte $00	; ........
@@ -577,7 +520,7 @@ cake_message_sprite1:
 	.byte $AC	; *.*.**..
 	.byte $AA	; *.*.*.*.
 	.byte $4C	; .*..**..
-	.byte $00	; ........
+;	.byte $00	; ........
 
 cake_message_sprite2:
 	.byte $00	; ........
@@ -586,7 +529,7 @@ cake_message_sprite2:
 	.byte $C2	; **....*.
 	.byte $82	; *.....*.
 	.byte $E1	; ***....*
-	.byte $00	; ........
+;	.byte $00	; ........
 
 cake_message_sprite3:
 	.byte $00	; ........
@@ -595,7 +538,7 @@ cake_message_sprite3:
 	.byte $3B	; ..***.**
 	.byte $2A	; ..*.*.*.
 	.byte $92	; *..*..*.
-	.byte $00	; ........
+;	.byte $00	; ........
 
 cake_message_sprite4:
 	.byte $00	; ........
@@ -606,11 +549,9 @@ cake_message_sprite4:
 	.byte $B9	; *.***..*
 	.byte $00	; ........
 
-cake_message_sprite5:
-	.byte $00	; ........
-	.byte $20	; ..*.....
-	.byte $80	; *.......
-	.byte $20	; ..*.....
-	.byte $20	; ..*.....
-	.byte $A0	; *.*.....
-	.byte $00	; ........
+
+bubs_face_colors:
+	.byte $0E,$00,$00
+	.byte $00,$00,$00,$00,$0E,$0E,$00,$00
+	.byte $0E,$0E,$0E,$0E,$0E,$0E,$0E,$0E
+	.byte $0E,$0E,$AA,$AA,$00

@@ -149,8 +149,8 @@ not_face:
 
 
 ; 75
-	ldx	#0
-	ldy	#0
+;	ldx	#0
+;	ldy	#0
 
 	sta	WSYNC
 
@@ -169,6 +169,7 @@ not_face:
 	lda	#0		; turn off sprite
 	sta	GRP0
 	sta	GRP1
+;	sta	HMP0
 	sta	HMP1			;			3
 
 	lda	#1		; turn on delay
@@ -210,7 +211,7 @@ bcpad_x:
 	;===============================
 	; scanline 138
 
-	ldx	#7		; init X
+	ldx	#6		; init X
 	stx	TEMP2
 
 	sta	WSYNC
@@ -288,7 +289,7 @@ big_bubs_loop_bottom:
 	inx
 ; 71
 	sta	WSYNC
-	cpx	#43							; 2
+	cpx	#44							; 2
 	bne	big_bubs_loop_bottom					; 2/3
 
 ; 76
@@ -355,6 +356,8 @@ go_done_check_input:
 
 
 set_done_go:
+	lda	CHEAT_X			; make sure X preserved
+	ldy	#DESTINATION_BUBS
 	sta	WSYNC
 
 	jmp	bubs_start

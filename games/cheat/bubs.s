@@ -343,63 +343,11 @@ bubs_overscan:
 
 	; wait 30 scanlines
 
-	ldx	#21
+	ldx	#22
 	jsr	scanline_wait
 
-
         ;===============================
-        ; 21 scanlines -- move strongbad
-	;===============================
-bmove_strongbad:
-;	inc	FRAME
-;	lda	FRAME
-;	and	#$3
-;	bne	done_move_strongbad
-
-;move_strongbad_x:
-;	lda	STRONGBAD_X
-;	cmp	CHEAT_X
-;	bcc	strongbad_less_x
-;strongbad_more_x:
-;	dec	STRONGBAD_X
-;	jmp	done_move_strongbad_x
-;strongbad_less_x:
-;	inc	STRONGBAD_X
-;done_move_strongbad_x:
-
-;move_strongbad_y:
-;	lda	STRONGBAD_Y
-;	cmp	CHEAT_Y
-;	bcc	strongbad_less_y
-;strongbad_more_y:
-;	dec	STRONGBAD_Y
-;	jmp	done_move_strongbad_y
-;strongbad_less_y:
-;	inc	STRONGBAD_Y
-;done_move_strongbad_y:
-;done_move_strongbad:
-	sta	WSYNC
-
-
-        ;===================================
-        ; 22 scanlines -- check button press
-	;===================================
-
-	lda	TITLE_COUNTDOWN
-	beq	bubs_waited_enough
-	dec	TITLE_COUNTDOWN
-	bne	bubs_done_check_input
-
-bubs_waited_enough:
-	lda     INPT4		; check joystick button pressed 	; 3
-	bpl	show_bubs						; 2/3
-
-bubs_done_check_input:
-
-	sta	WSYNC
-
-        ;===============================
-        ; 23 scanlines -- trigger sound
+	; 22 scanlines -- trigger sound
 	;===============================
 
 	ldy	SFX_NEW
@@ -411,13 +359,44 @@ bskip_sound:
 	sta	WSYNC
 
 	;=============================
-	; 24 scanlines -- update sound
+	; 23-24 scanlines -- update sound
 	;=============================
 	; takes two scanlines
 
         jsr     update_sound            ; 2 scanlines
 
         sta     WSYNC
+
+        ;===================================
+        ; 25 scanlines -- check button press
+	;===================================
+
+	lda	TITLE_COUNTDOWN
+	beq	bubs_waited_enough
+	dec	TITLE_COUNTDOWN
+	bne	bubs_done_check_input
+
+bubs_waited_enough:
+	lda     INPT4		; check joystick button pressed 	; 3
+	bmi	bubs_done_check_input
+
+	; make sure in front of stand
+
+	lda	CHEAT_Y
+	cmp	#120
+	bcs	bubs_done_check_input
+
+	lda	CHEAT_X
+	cmp	#90
+	bcs	bubs_done_check_input
+	cmp	#64
+	bcc	bubs_done_check_input
+
+	bcs	show_bubs						; 2/3
+
+bubs_done_check_input:
+
+	sta	WSYNC
 
 	;============================
 	; 26 scanlines -- movement
@@ -432,4 +411,8 @@ bskip_sound:
 
 
 show_bubs:
+	sta	WSYNC		; timing
+	sta	WSYNC
+	sta	WSYNC
+	sta	WSYNC
 	jmp	big_bubs
