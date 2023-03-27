@@ -1,12 +1,22 @@
 TODO:
 	add mattress level?
-	fix issue when going stick->sb->right goes to grill not bubs
 
 Title screen:  Spin colors?
 	Get rid of black line?
 
+Bubs level:
+	Fix so Y pos not change after talking to bubs
+
+
 sound effects
 	get better effects
 
+score:
 	update cheatcake meter
+	two columns, one for current, one for total
+	actually update amount
+	common centering routine for 48-byte sprite
+
+winning:
 	add winning screen
+	rotate colors?  fireworks?
