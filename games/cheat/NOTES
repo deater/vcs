@@ -23,3 +23,13 @@ winning:
 
 	you can only hold 5 cakes at a time
 	fall into pit, can use A to gradually float out
+
+
+TODO:
+	floating
+	update status/score to show cake count
+	have difficulty switch change number of cakes
+
+code to make common:
+	waiting for button press at end of static screen
+		(add this to title)
