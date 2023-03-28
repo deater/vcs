@@ -25,6 +25,7 @@ switch_to_bank0_and_game_over:
 switched_from_bank0_and_start_bubs:
 	jmp	bubs_start
 
+you_win:
 blue_land:
 switch_to_bank0_and_blue_land:
 	bit	$1FF8

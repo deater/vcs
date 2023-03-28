@@ -121,9 +121,9 @@ bwait_pos2:
 	sta	GRP0		; turn off sprites
 	sta	GRP1
 
-	sta	PF0		; clear playfield
-	sta	PF1
-	sta	PF2
+;	sta	PF0		; clear playfield
+;	sta	PF1
+;	sta	PF2
 
 	sta	REFP0
 
@@ -303,25 +303,6 @@ blevel_no_cheat:
 
 	sta	WSYNC
 
-;	txa				; 150		; 100	;125
-;	sec				; - 120		; -120	;-120
-;	sbc	STRONGBAD_Y		;=======	;=====	;====
-;	cmp	#28			; 30		; -20	; 5
-;	bcs	no_strongbad
-
-;	stx	TEMP1
-;	tax
-;	lda	strongbad_colors,X
-;	sta	COLUPF
-;	ldx	TEMP1
-
-;	lda	#2
-;	bne	done_strongbad
-;no_strongbad:
-;	lda	#0
-;done_strongbad:
-;	sta	ENABL
-
 	inx
 	cpx	#184
 	sta	WSYNC
@@ -415,4 +396,12 @@ show_bubs:
 	sta	WSYNC
 	sta	WSYNC
 	sta	WSYNC
+
+	lda	CHEATCAKE_COUNT
+	cmp	#5
+	beq	goto_win
+
 	jmp	big_bubs
+goto_win:
+	ldy	#0
+	jmp	you_win

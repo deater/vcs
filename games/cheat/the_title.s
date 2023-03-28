@@ -26,10 +26,12 @@ switched_from_bank0_and_start_game_over:
 switch_to_bank1_andq:
 	bit	$1FF9
 
-switched_from_bank0_and_blue:
+switched_from_bank0_and_blue_or_win:
+	cpy	#0
+	bne	goto_blue_land		; Y is NEW_LEVEL here
+	jmp	you_win
+goto_blue_land:
 	jmp	blue_land
-
-
 
 the_cheat_start:
 
@@ -72,7 +74,7 @@ clear_loop:
 .include "common_movement.s"
 .include "level_data.s"
 .include "sound_trigger.s"
-
+.include "you_win.s"
 
 
 strongbadia_start:
@@ -92,9 +94,7 @@ scanline_wait:
 
 
 .align $100
-;.include "title_pf.inc"
 .include "game_data2.inc"
-;.include "bearshark.inc"
 
 
 .segment "IRQ_VECTORS"

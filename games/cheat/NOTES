@@ -20,3 +20,6 @@ score:
 winning:
 	add winning screen
 	rotate colors?  fireworks?
+
+	you can only hold 5 cakes at a time
+	fall into pit, can use A to gradually float out
