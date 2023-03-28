@@ -312,4 +312,6 @@ go_done_check_input:
 set_done_go:
 	sta	WSYNC
 
-	jmp	switch_to_bank1_and_start_strongbadia
+;	jmp	switch_to_bank1_and_start_strongbadia
+
+	jmp	the_cheat_start

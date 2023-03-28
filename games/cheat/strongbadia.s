@@ -480,19 +480,24 @@ skip_sound:
 
 
 taken_away:
-	sta	WSYNC
-	sta	WSYNC
-	sta	WSYNC
-	sta	WSYNC
-	sta	WSYNC
-	sta	WSYNC
-	sta	WSYNC
+	ldx	#7
+	jsr	scanline_wait
 ;	sta	WSYNC
+;	sta	WSYNC
+;	sta	WSYNC
+;	sta	WSYNC
+;	sta	WSYNC
+;	sta	WSYNC
+;	sta	WSYNC
+
 
 	; should be adjust based on Y?
 
 	lda	#SFX_COLLIDE
 	sta	SFX_NEW
+
+	lda	#0
+	sta	CHEATCAKE_COUNT
 
 	ldy	#DESTINATION_BLUE
 	lda	#100
