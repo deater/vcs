@@ -1,6 +1,5 @@
 ; strongbadia
 
-
 ; o/~ come to the place where tropical breezes blow o/~
 
 strongbadia:
@@ -14,15 +13,14 @@ strongbadia:
 strongbadia_start:
 
 	pha
-	lda	#120				; set initial Y position
+	lda	#120			; set initial Y position
 	sta	CHEAT_Y
+	sta	STRONGBAD_Y
 	pla
 	jsr	init_level		; 1 scanline
 
 	lda	#70
 	sta	STRONGBAD_X
-	lda	#120
-	sta	STRONGBAD_Y
 
 strongbadia_loop:
 
@@ -147,20 +145,22 @@ wait_pos12:
 	sta	NUSIZ0
 	sta	NUSIZ1
 
-	lda	#$0		; turn off delay
+	lda	#$00		; turn off delay
 	sta	VDELP0
 	sta	VDELP1
 	sta	GRP0		; turn off sprites
 	sta	GRP1
 
-	sta	PF0		; clear playfield
-	sta	PF1
-	sta	PF2
+;	lda	#$00		; black cheat
+	sta	COLUP0		; black cheat markings
 
-	sta	REFP0
+;	sta	PF0		; clear playfield
+;	sta	PF1
+;	sta	PF2
 
-	lda	#$00		; black cheat
-	sta	COLUP0
+	sta	REFP0		; turn off reflect
+
+
 	lda	#$1C		; yellow cheat
 	sta	COLUP1
 
@@ -180,7 +180,7 @@ wait_pos12:
 	;===========================
 	; draw 192 lines
 
-	ldx	#0
+;	ldx	#0		; set earlier
 	ldy	#0
 
 	;===========================
