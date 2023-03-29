@@ -283,15 +283,15 @@ no_incy2:
 	; scanline 108 -- grass
 	;===========================
 
-	lda	CHEAT_DIRECTION
-	sta	REFP0
+	lda	CHEAT_DIRECTION						; 3
+	sta	REFP0		; reflect if needed			; 3
 
-	lda	#0
-	sta	HMP1
-	sta	CXCLR
+	lda	#0							; 2
+	sta	HMP1		; clear p1 fine tune			; 3
+	sta	CXCLR		; clear collisions			; 3
 
-	lda	#$1E
-	sta	COLUPF
+	lda	#$1E		; playfield color (green?)		; 2
+	sta	COLUPF							; 3
 
 	sta	WSYNC
 
@@ -482,14 +482,6 @@ skip_sound:
 taken_away:
 	ldx	#7
 	jsr	scanline_wait
-;	sta	WSYNC
-;	sta	WSYNC
-;	sta	WSYNC
-;	sta	WSYNC
-;	sta	WSYNC
-;	sta	WSYNC
-;	sta	WSYNC
-
 
 	; should be adjust based on Y?
 
@@ -498,6 +490,12 @@ taken_away:
 
 	lda	#0
 	sta	CHEATCAKE_COUNT
+
+	ldx	#7
+clear_cake_count_loop:
+	sta	CAKE_GRAPH_0,X
+	dex
+	bne	clear_cake_count_loop
 
 	ldy	#DESTINATION_BLUE
 	lda	#100

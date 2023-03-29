@@ -72,6 +72,15 @@ SFX_NEW			=	$B2
 STRONGBAD_X		=	$B3
 STRONGBAD_Y		=	$B4
 
+CAKE_GRAPH_0      =       $C0
+CAKE_GRAPH_1      =       $C1
+CAKE_GRAPH_2      =       $C2
+CAKE_GRAPH_3      =       $C3
+CAKE_GRAPH_4      =       $C4
+CAKE_GRAPH_5      =       $C5
+CAKE_GRAPH_6      =       $C6
+
+
 ; tt music player
 tt_timer                = $E0    ; current music timer value
 tt_cur_pat_index_c0     = $E1    ; current pattern index into tt_SequenceTable

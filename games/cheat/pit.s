@@ -649,6 +649,10 @@ no_gc_collision:
 
 	inc	CHEATCAKE_COUNT
 
+	ldx	CHEATCAKE_COUNT
+	lda	#$ff
+	sta	CAKE_GRAPH_0,X
+
 	; trigger sound
 	lda	#SFX_COLLECT
 	sta	SFX_NEW

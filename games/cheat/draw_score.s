@@ -12,8 +12,8 @@
 draw_score:
 ; 16
 	lda	#$00							; 2
-	sta	COLUBK							; 3
-	sta	REFP0							; 3
+	sta	COLUBK		; backgground black			; 3
+	sta	REFP0		; no reflect sprite			; 3
 	sta	REFP1							; 3
 
 ; 27
@@ -75,7 +75,7 @@ scoreloop:
 
 	; Fake values for first four digits?
 ; 0
-	lda	score_ones,X		; load sprite data		; 4+
+	lda	CAKE_GRAPH_0,X		; load sprite data		; 4
 	sta	GRP0			; 				; 3
 ; 7
 	nop

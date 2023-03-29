@@ -19,7 +19,7 @@ title.o:	zp.inc \
 	title_pf.inc title_sprites.inc \
 	cheat2_trackdata.s cheat2_player.s \
 	game_over_screen.s bearshark.inc \
-	blue.s you_win.s \
+	blue.s you_win.s draw_score.s \
 	game_data2.inc
 	ca65 -o title.o the_title.s -l title.lst
 

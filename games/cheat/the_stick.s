@@ -63,7 +63,7 @@ stick_loop:
 	;===========================
 	; scanline 32
 	;===========================
-	; update flag horizontal
+	; adjust stick position
 update_stick_horizontal:
 ; 0
 	lda	#78						; 3
@@ -88,11 +88,15 @@ wait_pos4:
 	lda	SHADOW_X						; 3
 	ldx	#1							; 2
 	jsr	set_pos_x		; 2 scanlines			; 6+62
+
 	sta	WSYNC
 
 	;==========================
 	; scanline 35
 	;==========================
+	lda	TEMP1		; adjust so not cross page
+	dey			; urgh 5 cycles total
+
 wait_pos5:
 	dey                                                             ; 2
 	bpl	wait_pos5	; 5-cycle loop (15 TIA color clocks)    ; 2/3
@@ -127,9 +131,9 @@ wait_pos5:
 	sta	GRP0		; turn off sprites
 	sta	GRP1
 
-	sta	PF0		; clear playfield
-	sta	PF1
-	sta	PF2
+;	sta	PF0		; clear playfield
+;	sta	PF1
+;	sta	PF2
 
 	sta	REFP0
 
@@ -408,10 +412,13 @@ no_fall_in_pit:
 
 stick_to_pit:
 
-	sta	WSYNC
-	sta	WSYNC
-	sta	WSYNC
-	sta	WSYNC
+	ldx	#4
+	jsr	scanline_wait
+
+;	sta	WSYNC
+;	sta	WSYNC
+;	sta	WSYNC
+;	sta	WSYNC
 
 	lda	#DESTINATION_STICK
 	sta	LAST_LEVEL
