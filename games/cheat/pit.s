@@ -8,7 +8,7 @@ the_pit:
 	lda	#0		; reset cakes			; 2
 	sta	GRUMBLECAKE_Y					; 3
 	sta	CHEATCAKE_Y					; 3
-	sta	CHEATCAKE_COUNT					; 3
+;	sta	CHEATCAKE_COUNT					; 3
 	sta	GRUMBLECAKE_COUNT				; 3
 
 	lda	#76		; x pos, center			; 2
@@ -33,17 +33,17 @@ pit_loop:
 	sta	WSYNC			; wait until end of scanline
 	sta	WSYNC
 
-	lda	#0
-	sta	REFP0
-	sta	REFP1
-
 	; mirror playfield
 	lda	#CTRLPF_REF
 	sta	CTRLPF
 
+	lda	#0
+	sta	REFP0
+	sta	REFP1
+
 	sta	WSYNC
 
-	lda	#0			; done beam reset
+;	lda	#0			; done beam reset
 	sta	VSYNC
 
 	;===============================
@@ -431,7 +431,7 @@ pwait_pos2:
 	sta	PF1
 	sta	PF2
 
-	lda	#$00		; black cheat
+;	lda	#$00		; black cheat
 	sta	COLUP0
 	lda	#$1C		; yellow cheat
 	sta	COLUP1
