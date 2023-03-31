@@ -39,7 +39,8 @@ the_cheat.o:	the_cheat.s \
 	pit.s pit.inc \
 	the_stick.s the_stick.inc \
 	bubs_cake.s \
-	game_data.inc
+	game_data.inc \
+	common_overscan_sound.s
 	ca65 -o the_cheat.o the_cheat.s -l the_cheat.lst
 ####
 

@@ -383,16 +383,16 @@ done_strongbad:
 
 
 	;============================
+	;============================
 	; overscan
 	;============================
+	;============================
 strongbadia_overscan:
-	lda	#$2		; turn off beam
-	sta	VBLANK
 
 	; wait 30 scanlines
 
 	ldx	#21
-	jsr	scanline_wait
+	jsr	common_overscan_sound
 
 
         ;===============================
@@ -433,8 +433,8 @@ done_move_strongbad:
 	sta	WSYNC
 
 
-        ;===================================
-        ; 22 scanlines -- collide strongbad
+	;===================================
+	; 25 scanlines -- collide strongbad
 	;===================================
 
 	lda	CXP0FB
@@ -446,26 +446,6 @@ done_move_strongbad:
 no_hit_strongbad:
 	sta	WSYNC
 
-        ;===============================
-        ; 23 scanlines -- trigger sound
-	;===============================
-
-        ldy     SFX_NEW
-        beq     skip_sound
-        jsr     trigger_sound           ; 52 cycles
-        lda     #0
-        sta     SFX_NEW
-skip_sound:
-        sta     WSYNC
-
-	;=============================
-	; 24 scanlines -- update sound
-	;=============================
-	; takes two scanlines
-
-        jsr     update_sound            ; 2 scanlines
-
-        sta     WSYNC
 
 	;============================
 	; 26 scanlines -- movement

@@ -71,6 +71,7 @@ SFX_NEW			=	$B2
 
 STRONGBAD_X		=	$B3
 STRONGBAD_Y		=	$B4
+TOTAL_CHEATCAKES	=	$B5
 
 CAKE_GRAPH_0      =       $C0
 CAKE_GRAPH_1      =       $C1

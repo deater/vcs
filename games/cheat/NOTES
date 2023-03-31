@@ -7,7 +7,6 @@ Title screen:  Spin colors?
 Bubs level:
 	Fix so Y pos not change after talking to bubs
 
-
 sound effects
 	get better effects
 
@@ -24,14 +23,11 @@ winning:
 	you can only hold 5 cakes at a time
 	fall into pit, can use A to gradually float out
 
-
-TODO:
-	floating
-	add sound when floating
-
 	update status/score to show cake count
 	have difficulty switch change number of cakes
 
 code to make common:
 	waiting for button press at end of static screen
 		(add this to title)
+	sfx code at end of level
+

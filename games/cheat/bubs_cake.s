@@ -300,25 +300,17 @@ big_bubs_loop_bottom:
 
 
 	;============================
+	;============================
 	; overscan
 	;============================
+	;============================
+
 big_bubs_overscan:
-        lda     #$2             ; turn off beam
-        sta     VBLANK
 
         ; wait 30 scanlines
 
 	ldx	#26
-	jsr	scanline_wait
-
-
-	;============================
-	; scanlines 27+28 handle sound (2 scanlines)
-; 10
-	jsr	update_sound
-
-	sta	WSYNC
-
+	jsr	common_overscan_sound
 
 ; 0
 	;=================================

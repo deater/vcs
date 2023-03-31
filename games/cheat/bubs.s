@@ -1,5 +1,7 @@
 ; Bubs' Concession Stand
 
+CHEATCAKES_NEEDED_TO_WIN = 5
+
 bubs_start:
 
 	pha
@@ -318,35 +320,11 @@ blevel_no_cheat:
 	;============================
 	; overscan
 	;============================
-bubs_overscan:
-	lda	#$2		; turn off beam
-	sta	VBLANK
-
-	; wait 30 scanlines
 
 	ldx	#22
-	jsr	scanline_wait
+	jsr	common_overscan_sound
 
-        ;===============================
-	; 22 scanlines -- trigger sound
-	;===============================
-
-	ldy	SFX_NEW
-	beq	bskip_sound
-	jsr	trigger_sound           ; 52 cycles
-	lda	#0
-	sta	SFX_NEW
-bskip_sound:
-	sta	WSYNC
-
-	;=============================
-	; 23-24 scanlines -- update sound
-	;=============================
-	; takes two scanlines
-
-        jsr     update_sound            ; 2 scanlines
-
-        sta     WSYNC
+; 6
 
         ;===================================
         ; 25 scanlines -- check button press
@@ -397,9 +375,16 @@ show_bubs:
 	sta	WSYNC
 	sta	WSYNC
 
-	lda	CHEATCAKE_COUNT
-	cmp	#5
-	beq	goto_win
+	clc
+	lda	TOTAL_CHEATCAKES
+	adc	CHEATCAKE_COUNT
+	sta	TOTAL_CHEATCAKES
+
+	cmp	#CHEATCAKES_NEEDED_TO_WIN
+	bcs	goto_win
+
+	lda	#0
+	sta	CHEATCAKE_COUNT
 
 	jmp	big_bubs
 goto_win:

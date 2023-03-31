@@ -44,7 +44,6 @@ switched_from_bank0_andq:
 
 .include "position.s"
 .include "bubs.s"
-;.include "blue.s"
 .include "pit.s"
 .include "draw_score.s"
 .include "update_score.s"
@@ -57,6 +56,7 @@ switched_from_bank0_andq:
 .include "sound_trigger.s"
 .include "sound_update.s"
 .include "bubs_cake.s"
+.include "common_overscan_sound.s"
 
 	;====================
 	; scanline wait

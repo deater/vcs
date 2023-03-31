@@ -346,39 +346,18 @@ stick_yespit:
 
 
 	;============================
+	;============================
 	; overscan
 	;============================
-stick_overscan:
-	lda	#$2		; turn off beam
-	sta	VBLANK
+	;============================
 
-	; wait 30 scanlines
+stick_overscan:
 
 	ldx	#22
-	jsr	scanline_wait
+	jsr	common_overscan_sound
 
 
 
-	;==================
-        ; scanline 22
-	;==================
-	; trigger sound
-
-	ldy	SFX_NEW
-	beq	sskip_sound
-	jsr	trigger_sound           ; 52 cycles
-	lda	#0
-	sta	SFX_NEW
-sskip_sound:
-	sta     WSYNC
-
-	;=============================
-	; scanline 23 -- update sound
-	;=============================
-	; two scanlines
-
-	jsr	update_sound            ; 2 scanlines
-	sta	WSYNC
 
 
 	;================================
