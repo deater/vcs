@@ -465,7 +465,7 @@ taken_away:
 
 	; should be adjust based on Y?
 
-	lda	#SFX_COLLIDE
+	lda	#SFX_ZAP
 	sta	SFX_NEW
 
 	lda	#0
