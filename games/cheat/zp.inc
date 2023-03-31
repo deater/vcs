@@ -1,6 +1,7 @@
 ; zero page addresses
 
 FRAME                   =       $80
+FRAMEL			=	$80
 FRAMEH                  =       $81
 CHEAT_X			=	$82
 CHEAT_Y			=	$83
@@ -73,13 +74,23 @@ STRONGBAD_X		=	$B3
 STRONGBAD_Y		=	$B4
 TOTAL_CHEATCAKES	=	$B5
 
-CAKE_GRAPH_0      =       $C0
-CAKE_GRAPH_1      =       $C1
-CAKE_GRAPH_2      =       $C2
-CAKE_GRAPH_3      =       $C3
-CAKE_GRAPH_4      =       $C4
-CAKE_GRAPH_5      =       $C5
-CAKE_GRAPH_6      =       $C6
+;CAKE_GRAPH_0      =       $C0
+;CAKE_GRAPH_1      =       $C1
+;CAKE_GRAPH_2      =       $C2
+;CAKE_GRAPH_3      =       $C3
+;CAKE_GRAPH_4      =       $C4
+;CAKE_GRAPH_5      =       $C5
+;CAKE_GRAPH_6      =       $C6
+
+SPRITE0_COLOR	=	$C0
+SPRITE0_X	=	$C1
+SPRITE0_Y	=	$C2
+SPRITE1_X	=	$C3
+SPRITE1_COLOR	=	$C4
+SPRITE1_Y	=	$C5
+SKY_COLOR	=	$C6
+FIREWORK_PROGRESS0 =	$C7
+FIREWORK_PROGRESS1 =	$C8
 
 
 ; tt music player

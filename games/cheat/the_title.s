@@ -75,7 +75,7 @@ clear_loop:
 .include "level_data.s"
 .include "sound_trigger.s"
 .include "you_win.s"
-
+;.include "fireworks_kernel.s"
 
 strongbadia_start:
 the_stick:

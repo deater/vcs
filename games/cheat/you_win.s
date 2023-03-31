@@ -95,7 +95,7 @@ ywad_x:
 
 ; 32
 
-	ldx	#0		; reset scanline count			; 2
+;	ldx	#0		; reset scanline count			; 2
 
 	lda	#0			; turn on beam			; 2
 	sta	VBLANK							; 3
@@ -136,10 +136,6 @@ you_win_loop_top:
 	;================
 	; scanline 135
 	;	set things up
-
-
-;	lda	#$9A			; light blue
-;	sta	COLUBK			; set playfield background
 
 	lda	#$0e			; white
 	sta	COLUP0	; set sprite color
@@ -204,8 +200,12 @@ yw_spriteloop:
 	; delay 11
 
 	inc	TEMP1	; 5
-	lda	TEMP1	; 3
-	lda	TEMP1	; 3
+	nop
+	nop
+	nop
+
+;	lda	TEMP1	; 3
+;	lda	TEMP1	; 3
 
 
 	; 65
