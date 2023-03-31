@@ -460,7 +460,7 @@ no_hit_strongbad:
 
 
 taken_away:
-	ldx	#7
+	ldx	#4
 	jsr	scanline_wait
 
 	; should be adjust based on Y?
@@ -470,12 +470,6 @@ taken_away:
 
 	lda	#0
 	sta	CHEATCAKE_COUNT
-
-	ldx	#7
-clear_cake_count_loop:
-	sta	CAKE_GRAPH_0,X
-	dex
-	bne	clear_cake_count_loop
 
 	ldy	#DESTINATION_BLUE
 	lda	#100

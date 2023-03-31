@@ -214,6 +214,9 @@ bcpad_x:
 	ldx	#6		; init X
 	stx	TEMP2
 
+	bne	blug
+.align $100
+blug:
 	sta	WSYNC
 
 	;================================
@@ -309,7 +312,7 @@ big_bubs_overscan:
 
         ; wait 30 scanlines
 
-	ldx	#26
+	ldx	#25
 	jsr	common_overscan_sound
 
 ; 0

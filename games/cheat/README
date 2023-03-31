@@ -10,7 +10,7 @@ Directions
 
 Press reset/fire to start. Use the joystick to move.
 
-You are the Cheat. Your goal is to collect 5 cheatcakes (little yellow boxes)
+You are the Cheat. Your goal is to collect 12 cheatcakes (little yellow boxes)
 and take them to the Concession Stand.
 
 Watch out! If the crude approximation of Strong Bad catches you, he'll
@@ -19,9 +19,9 @@ steal all your cheat cakes and send you back to your home.
 While in a pit, watch out for grumble cakes (little black boxes) as
 if you touch too many bad things can happen.
 
-You can only carry 5 cheatcakes at a time
+You can only carry 4 cheatcakes at a time
 
-TODO: fire button lets you float out of the pit
+The fire button lets you float out of the pit
 
 Background
 ~~~~~~~~~~
@@ -37,4 +37,4 @@ gameplay.
 Vince Weaver
 vince@deater.net
 http://deater.net/weave/vmwprod/cheat/
-27 March 2023
+31 March 2023
