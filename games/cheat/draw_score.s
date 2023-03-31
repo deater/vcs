@@ -12,7 +12,7 @@
 draw_score:
 ; 16
 	lda	#$00							; 2
-	sta	COLUBK		; backgground black			; 3
+	sta	COLUBK		; background black			; 3
 	sta	REFP0		; no reflect sprite			; 3
 	sta	REFP1							; 3
 
@@ -75,19 +75,27 @@ scoreloop:
 
 	; Fake values for first four digits?
 ; 0
-	lda	CAKE_GRAPH_0,X		; load sprite data		; 4
+	lda	CHEATCAKE_COUNT						; 3
+	asl								; 2
+	sta	TEMP1							; 3
+	txa								; 2
+	clc								; 2
+	adc	TEMP1							; 3
+	tay								; 2
+; 17
+	lda	cake_graph,Y		; load sprite data		; 4+
 	sta	GRP0			; 				; 3
-; 7
-	nop
+; 24
 	lda	#0		; load sprite data			; 4+
 	sta	GRP1			; 1->[GRP1], [GRP0 (0)]-->GRP0	; 3
-; 14
-
-	inc	TEMP2
-	inc	TEMP2
+; 31
+;	nop
+;	nop
+;	inc	TEMP2
+;	inc	TEMP2
 ; 24
 	inc	TEMP2
-	inc	TEMP2
+;	inc	TEMP2
 ; 34
 ;	inc	TEMP2
 ;	inc	TEMP2
@@ -127,3 +135,7 @@ scoreloop:
 ; 71
 	; begin of scanline 8
 	rts
+
+;cake_graph:
+;	.byte $00,$00,$00,$00,$00,$00,$00,$00
+;	.byte $f0,$f0,$f0,$f0,$f0,$f0,$f0,$f0

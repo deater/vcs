@@ -1,6 +1,7 @@
 ; Bubs' Concession Stand
 
-CHEATCAKES_NEEDED_TO_WIN = 5
+MAX_HOLD_CHEATCAKES	= 4
+CHEATCAKES_NEEDED_TO_WIN = 12
 
 bubs_start:
 

@@ -648,7 +648,7 @@ no_gc_collision:
 	sta	CHEATCAKE_Y
 
 	ldx	CHEATCAKE_COUNT
-	cpx	#5
+	cpx	#MAX_HOLD_CHEATCAKES
 	beq	no_cc_collision
 
 	inc	CHEATCAKE_COUNT
