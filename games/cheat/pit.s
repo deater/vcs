@@ -647,9 +647,12 @@ no_gc_collision:
 	lda	#0
 	sta	CHEATCAKE_Y
 
+	ldx	CHEATCAKE_COUNT
+	cpx	#5
+	beq	no_cc_collision
+
 	inc	CHEATCAKE_COUNT
 
-	ldx	CHEATCAKE_COUNT
 	lda	#$ff
 	sta	CAKE_GRAPH_0,X
 
@@ -694,13 +697,26 @@ skip_pit_sound:
 
 	sta	WSYNC
 
-	;==================
-	; 29
+	;===============================
+	; 29 -- float if button pressed
+	;===============================
 
-	lda	CHEATCAKE_COUNT
-	cmp	#5
-	bcs	done_pit
+	lda	INPT4		; check joystick button pressed		; 3
+	bmi	done_pit_button						; 2/3
 
+	ldy	#SFX_COLLIDE
+	sty	SFX_NEW
+
+	sec			; float up by 4
+	lda	CHEAT_Y		; a bit much, but has to be even
+	sbc	#4
+	sta	CHEAT_Y
+
+	cmp	#20
+	bcc	done_pit
+
+
+done_pit_button:
 
 	sta	WSYNC
 
