@@ -297,7 +297,12 @@ alternate_pf0:
 ; 63 worst case
 
 	inx								; 2
+.ifdef VCS_NTSC
+	cpx	#191							; 1
+.else
 	cpx	#227							; 2
+.endif
+
 ; 67
 	sta	WSYNC							; 3
 ; 70/0
@@ -308,27 +313,6 @@ alternate_pf0:
 done_parallax:
 	sta	WSYNC
 
-	;===========================
-	;===========================
-	; overscan (36 cycles) (30 on NTSC)
-	;===========================
-	;===========================
-.if 0
-; 0
-	; turn off everything
-	lda	#0							; 2
-	sta	GRP0							; 3
-; 5
-	lda	#2		; we do this in common			; 2
-	sta	VBLANK		; but want it to happen in hblank	; 3
-; 10
-	lda	#0
-	sta	GRP1							; 3
-	sta	PF0							; 3
-	sta	PF1							; 3
-	sta	PF2							; 3
-; 22
-.endif
 	jmp	effect_done
 
 zigzag:

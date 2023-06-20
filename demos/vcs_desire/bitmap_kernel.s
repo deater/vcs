@@ -2,7 +2,11 @@
 	; draws bitmap effect
 	;================================================
 
+.ifdef VCS_NTSC
+BO = 32
+.else
 BO = 14	; bitmap offset
+.endif
 
 bitmap_effect:
 
@@ -155,12 +159,23 @@ tpad_x:
 	sta	VDELP1							; 3
 ; 38
 	; number of lines to draw
+
+.ifdef	VCS_NTSC
+	ldx	#190							; 2
+.else
 	ldx	#226							; 2
+.endif
 	stx	TEMP2							; 3
 
 ; 43
 	ldy	#0							; 2
+
+.ifdef VCS_NTSC
+	ldx	#95							; 2
+.else
 	ldx	#113							; 2
+.endif
+
 	sta	WSYNC							; 3
 ;
 
@@ -243,30 +258,6 @@ done_bitmap_kernel:
 
 	sta	WSYNC
 
-	;===========================
-	;===========================
-	; overscan (36 cycles) (30 on NTSC)
-	;===========================
-	;===========================
-.if 0
-	; turn off everything
-;	lda	#0							; 2
-;	sta	GRP0							; 3
-; 1
-	lda	#2		; we do this in common
-	sta	VBLANK		; but want it to happen in hblank
-
-
-	lda	#0
-	sta	GRP1
-	sta	GRP0
-	sta	GRP1							; 3
-
-	sta	PF0							; 3
-	sta	PF1							; 3
-	sta	PF2							; 3
-; 13
-.endif
 	jmp	effect_done
 
 

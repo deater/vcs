@@ -236,29 +236,9 @@ done_playfield:
 
 done_kernel:
 
+
 	sta	WSYNC
-.if 0
-	;===========================
-	;===========================
-	; overscan (36 cycles) (30 on NTSC)
-	;===========================
-	;===========================
 
-	; turn off everything
-	lda	#0							; 2
-	sta	GRP0							; 3
-; 1
-	lda	#2		; we do this in common
-	sta	VBLANK		; but want it to happen in hblank
-
-
-	lda	#0
-	sta	GRP1							; 3
-	sta	PF0							; 3
-	sta	PF1							; 3
-	sta	PF2							; 3
-; 13
-.endif
 	jmp	effect_done
 
 

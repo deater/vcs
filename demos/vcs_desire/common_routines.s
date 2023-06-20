@@ -30,24 +30,6 @@ common_vblank:
 
 
 
-.if 0
-	;=============================
-	; overscan
-	;=============================
-	; amount of scanlines to wait is in X
 
-common_overscan:
-	lda	#$2		; turn off beam
-	sta	VBLANK
-
-common_delay_scanlines:
-	sta	WSYNC							; 3
-	dex								; 2
-	bne	common_delay_scanlines					; 2/3
-	rts								; 6
-
-; 10
-
-.endif
 
 

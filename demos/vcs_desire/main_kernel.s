@@ -155,9 +155,9 @@ jmp_table_high:
 	; handle overscan
 	;============================
 	; NTSC 30 / PAL 36
-	; 	why is it +1?
+	; 	unsure why we do one extra?
 
-	; arrive 3 cycles after a WSYNC?
+	; should arrive 3 cycles after a WSYNC
 
 effect_done:
 
@@ -175,7 +175,11 @@ effect_done:
 	sta	PF2							; 3
 ; 23
 
+	;=============================
+	; overscan
+	;=============================
 
+common_overscan:
 
 .ifdef VCS_NTSC
 	ldx	#31
@@ -183,15 +187,9 @@ effect_done:
 	ldx     #37							; 2
 .endif
 
-
-	;=============================
-	; overscan
-	;=============================
-	; amount of scanlines to wait is in X
-
-common_overscan2:
-;	lda	#$2		; turn off beam
-;	sta	VBLANK
+	;============================
+	; common delay scanlines?
+	; value in X?
 
 common_delay_scanlines:
 	sta	WSYNC							; 3
