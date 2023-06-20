@@ -88,7 +88,11 @@ clear_loop:
 
 .align $100
 
-.include "desire_logo.inc"
+.ifdef VCS_NTSC
+.include "desire_logo_ntsc.inc"
+.else
+.include "desire_logo_pal.inc"
+.endif
 .include "fine_adjust.inc"
 
 	;=====================

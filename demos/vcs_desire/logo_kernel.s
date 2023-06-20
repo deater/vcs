@@ -264,6 +264,12 @@ done_kernel:
 
 
 bg_colors:
-;	.byte $00,$04,$08,$0A, $0A,$08,$04,$00
+
+.ifdef VCS_NTSC
+	; ntsc
+	.byte $60,$90,$70,$A0, $A0,$70,$90,$60
+.else
+	; pal
 	.byte $D0,$C0,$B0,$A0, $A0,$B0,$C0,$D0
+.endif
 
