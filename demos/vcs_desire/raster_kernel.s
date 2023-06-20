@@ -2,7 +2,11 @@
 	; draws raster effect
 	;================================================
 
+.ifdef VCS_NTSC
+PLAYFIELD_MAX = 184
+.else
 PLAYFIELD_MAX = 220
+.endif
 
 raster_effect:
 
@@ -47,7 +51,12 @@ done_sprite0_x:
 	clc								; 2
 	adc	SPRITE0_Y						; 3
 	sta	SPRITE0_Y						; 3
+.ifdef VCS_NTSC
+	cmp	#164							; 2
+.else
 	cmp	#200							; 2
+.endif
+
 	bcs	sprite0_invert_y	; bge				; 2/3
 	cmp	#8							; 2
 	bcs	done_sprite0_y		; bge				; 2/3
@@ -188,11 +197,25 @@ raster_r_done_y:
 	; other init
 
 ; 31
-	lda	#$86							; 2
+
+.ifdef VCS_NTSC
+	lda	#$56		; medium purple				; 2
+.else
+	lda	#$86		; medium purple				; 2
+.endif
+
 	sta	COLUP0							; 3
 ; 38
-	lda	#$7E							; 2
+
+.ifdef VCS_NTSC
+	lda	#$AE		; teal					; 2
+.else
+	lda	#$7E		; teal					; 2
+.endif
+
 	sta	COLUP1							; 3
+
+
 ; 43
 	lda	#$00							; 2
         sta	COLUBK							; 3
@@ -297,7 +320,11 @@ no_sprite0:
 	bcs	no_raster_red						; 2/3
 ; 33
 	asl								; 2
-	adc	#$50							; 2
+.ifdef VCS_NTSC
+	adc	#$C0		; green?				; 2
+.else
+	adc	#$50		; green?				; 2
+.endif
 	bne	done_raster_color			; bra		; 3
 ; 40
 
@@ -312,7 +339,11 @@ no_raster_red:
 	bcs	no_raster_green						; 2/3
 ; 45
 	asl								; 2
-	adc	#$60							; 2
+.ifdef VCS_NTSC
+	adc	#$40		; red?	($30 might be closer)		; 2
+.else
+	adc	#$60		; red?					; 2
+.endif
 	bne	done_raster_color			; bra		; 3
 ; 52
 
@@ -328,7 +359,12 @@ no_raster_green:
 	bcs	no_raster_blue						; 2/3
 ; 57
 	asl								; 2
-	adc	#$B0							; 2
+.ifdef VCS_NTSC
+	adc	#$80		; blue					; 2
+.else
+	adc	#$B0		; blue					; 2
+.endif
+
 	bne	done_raster_color			; bra		; 3
 ; 64
 
@@ -341,7 +377,12 @@ done_raster_color:
 ; 66 worst case
 
 	inx								; 2
+.ifdef VCS_NTSC
+	cpx	#191							; 2
+.else
 	cpx	#227							; 2
+.endif
+
 ; 70
 	sta	WSYNC							; 3
 ; 73/0
@@ -353,28 +394,8 @@ done_raster_color:
 
 done_raster:
 
-	;===========================
-	;===========================
-	; overscan (36 cycles) (30 on NTSC)
-	;===========================
-	;===========================
 ; 0
 
-.if 0
-	; turn off everything
-	lda	#0							; 2
-	sta	GRP0							; 3
-; 5
-	lda	#2		; we do this in common			; 2
-	sta	VBLANK		; but want it to happen in hblank	; 3
-; 10
-	lda	#0
-	sta	GRP1							; 3
-	sta	PF0							; 3
-	sta	PF1							; 3
-	sta	PF2							; 3
-; 22
-.endif
 	jmp	effect_done
 
 
