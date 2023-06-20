@@ -1,13 +1,18 @@
 LOGO_SIZE=33
 
-; originall 0/227
-
+.ifdef VCS_NTSC
+LOGO_BOUNCE_TOP	= 14
+LOGO_BOUNCE_BOTTOM = (177-LOGO_SIZE*2-1)
+.else
+; this is 32 / 128 so from 32 - 194    228-192 = 36
 LOGO_BOUNCE_TOP	= 32
 LOGO_BOUNCE_BOTTOM = (195-LOGO_SIZE*2-1)
+.endif
 
 	;================================================
 	; draws logo effect
 	;================================================
+	; comes in with 8 cycles left in VBLANK
 
 logo_effect:
 
@@ -208,7 +213,12 @@ not_logo_start:
 ; 5
 
 	; finish 1 early so time to clear up
+.ifdef VCS_NTSC
+	cpx	#190							; 2
+.else
 	cpx	#226							; 2
+.endif
+
 	bcs	done_playfield						; 2/3
 ; 9
 	lda	desire_bg_colors+LOGO_SIZE

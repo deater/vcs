@@ -1,7 +1,14 @@
-
 ;======================================================================
 ; MAIN LOOP
 ;======================================================================
+
+; Technically
+;		vsync	vblank	screen	overscan
+;	PAL	3	37	242	30		= 312
+;	NTSC	3	37	192	30		= 262
+;
+; This demo for some reason did
+;	PAL	3	45	228	36		= 312
 
 tia_frame:
 
@@ -50,13 +57,13 @@ wait_for_vblank:
         lda	INTIM
         bne	wait_for_vblank
 
-	; in theory we are 10 scanlines in, need to delay 27 more
+	; in theory we are 11 scanlines in
 
 	sta	WSYNC
 
-	;=================================
-	; VBLANK scanline 12 -- handle frame
-	;=================================
+	;=====================================================
+	; VBLANK scanline 12 -- handle frame / switch effects
+	;=====================================================
 
 	inc	FRAMEL                                                  ; 5
 	bne	no_frame_oflo						; 2/3
@@ -99,8 +106,17 @@ same_effect:
 	;=======================
 	; wait the rest
 	;=======================
+	; want to come in with 8 scanlines remaining
+	;	so 37 (of 45) on PAL
+	;	so 29 (of 37) on NTSC
+	; subtract 11 we already did
 
+.ifdef VCS_NTSC
+	ldx	#18							; 2
+.else
 	ldx	#26							; 2
+.endif
+
 le_vblank_loop:
 	sta     WSYNC							; 3
 	dex								; 2
@@ -138,8 +154,15 @@ jmp_table_high:
 	;============================
 	; handle overscan
 	;============================
+	; NTSC 30 / PAL 36
+	; 	why is it +1?
 effect_done:
+
+.ifdef VCS_NTSC
+	ldx	#31
+.else
 	ldx     #37							; 2
+.endif
 	jsr	common_overscan						; 6
 
 	jmp	tia_frame

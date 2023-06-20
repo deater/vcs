@@ -61,7 +61,12 @@ clear_loop:
 	inc	RASTER_R_YADD
 	inc	RASTER_B_YADD
 	inc	RASTER_G_YADD
+
+.ifdef VCS_NTSC
+	ldy	#63
+.else
 	ldy	#81
+.endif
 	sty	LOGO_Y
 	ldy	#100
 	sty	SPRITE0_X
@@ -71,7 +76,6 @@ clear_loop:
 	inc	SPRITE0_YADD
 	inc	SPRITE0_YADD
 	inc	SPRITE1_XADD
-;	inc	LOGO_YADD
 
 .include "deetia2_variables.s"
 .include "main_kernel.s"
