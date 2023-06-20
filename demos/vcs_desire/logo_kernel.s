@@ -237,7 +237,7 @@ done_playfield:
 done_kernel:
 
 	sta	WSYNC
-
+.if 0
 	;===========================
 	;===========================
 	; overscan (36 cycles) (30 on NTSC)
@@ -258,7 +258,7 @@ done_kernel:
 	sta	PF1							; 3
 	sta	PF2							; 3
 ; 13
-
+.endif
 	jmp	effect_done
 
 

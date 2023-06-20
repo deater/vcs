@@ -30,7 +30,7 @@ common_vblank:
 
 
 
-
+.if 0
 	;=============================
 	; overscan
 	;=============================
@@ -48,6 +48,6 @@ common_delay_scanlines:
 
 ; 10
 
-
+.endif
 
 

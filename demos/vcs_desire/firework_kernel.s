@@ -513,6 +513,8 @@ done_firework:
 	; overscan (36 cycles) (30 on NTSC)
 	;===========================
 	;===========================
+
+.if 0
 ; 0
 	; turn off everything
 	lda	#0							; 2
@@ -527,7 +529,7 @@ done_firework:
 	sta	PF1							; 3
 	sta	PF2							; 3
 ; 22
-
+.endif
 	jmp	effect_done
 
 

@@ -359,6 +359,8 @@ done_raster:
 	;===========================
 	;===========================
 ; 0
+
+.if 0
 	; turn off everything
 	lda	#0							; 2
 	sta	GRP0							; 3
@@ -372,7 +374,7 @@ done_raster:
 	sta	PF1							; 3
 	sta	PF2							; 3
 ; 22
-
+.endif
 	jmp	effect_done
 
 

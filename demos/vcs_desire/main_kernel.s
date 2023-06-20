@@ -156,15 +156,47 @@ jmp_table_high:
 	;============================
 	; NTSC 30 / PAL 36
 	; 	why is it +1?
+
+	; arrive 3 cycles after a WSYNC?
+
 effect_done:
+
+; 3
+	lda	#2		; we want this to happen in hblank	; 2
+	sta	VBLANK		;					; 3
+; 8
+	; turn off everything
+
+	lda	#0
+	sta	GRP0							; 3
+	sta	GRP1							; 3
+	sta	PF0							; 3
+	sta	PF1							; 3
+	sta	PF2							; 3
+; 23
+
+
 
 .ifdef VCS_NTSC
 	ldx	#31
 .else
 	ldx     #37							; 2
 .endif
-	jsr	common_overscan						; 6
+
+
+	;=============================
+	; overscan
+	;=============================
+	; amount of scanlines to wait is in X
+
+common_overscan2:
+;	lda	#$2		; turn off beam
+;	sta	VBLANK
+
+common_delay_scanlines:
+	sta	WSYNC							; 3
+	dex								; 2
+	bne	common_delay_scanlines					; 2/3
 
 	jmp	tia_frame
-
 
