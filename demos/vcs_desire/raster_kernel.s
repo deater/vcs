@@ -208,7 +208,8 @@ raster_r_done_y:
 ; 38
 
 .ifdef VCS_NTSC
-	lda	#$AE		; teal					; 2
+;	lda	#$AE		; teal					; 2
+	lda	#$BE		; teal					; 2
 .else
 	lda	#$7E		; teal					; 2
 .endif

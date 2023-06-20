@@ -3,11 +3,20 @@
 	;================================================
 
 sunset_colors:
+
+.ifdef VCS_NTSC
+	.byte 0,0
+	.byte  31*2, 31*2,127*2,127*2
+	.byte 126*2,125*2, 21*2, 20*2
+	.byte  35*2, 42*2, 50*2, 49*2
+	.byte  65*2, 64*2
+.else
 	.byte 0,0
 	.byte 15*2+16,15*2+16,14*2+16,14*2+16
 	.byte 13*2+16,12*2+16,28*2+16,27*2+16
 	.byte 43*2+16,58*2+16,73*2+16,89*2+16
 	.byte 97*2+16,96*2+16 ;,0*2+16,0
+.endif
 
 
 
@@ -317,13 +326,25 @@ mountain_loop:
 	;=========================
 	; ground
 	;=========================
-	; 100 scanlines
+	; 100 scanlines (64 on NTSC)
 ground_playfield:
 
+.ifdef VCS_NTSC
+	ldx	#49
+.else
 	ldx	#85
+.endif
+
 ground_loop:
-	lda	#$50
+
+.ifdef VCS_NTSC
+;	lda	#(96*2)		; dark green
+	lda	#(104*2)	; dark green
+.else
+	lda	#$50		; dark green
+.endif
 	sta	COLUBK
+
 	lda	#$00
 	sta	PF0
 	sta	PF1
@@ -508,54 +529,16 @@ raster_spriteloop:
 
 done_firework:
 
-	;===========================
-	;===========================
-	; overscan (36 cycles) (30 on NTSC)
-	;===========================
-	;===========================
-
-.if 0
-; 0
-	; turn off everything
-	lda	#0							; 2
-	sta	GRP0							; 3
-; 5
-	lda	#2		; we do this in common			; 2
-	sta	VBLANK		; but want it to happen in hblank	; 3
-; 10
-	lda	#0
-	sta	GRP1							; 3
-	sta	PF0							; 3
-	sta	PF1							; 3
-	sta	PF2							; 3
-; 22
-.endif
 	jmp	effect_done
-
-
-;raster_color:
-;	.byte $00
-;raster_color_red:
-;	.byte $60,$62,$64,$66,$68,$6A,$6C,$6E
-;raster_color_green:
-;	.byte $50,$52,$54,$56,$58,$5A,$5C,$5E
-;raster_color_blue:
-;	.byte $B0,$B2,$B4,$B6,$B8,$BA,$BC,$BE
 
 credits_offset:
 	.byte 1,19,13,7
 
 sky_colors:
+.ifdef VCS_NTSC
+	.byte (48*2),(48*2),(64*2),(72*2),2,2,0
+.else
 	.byte (96*2)+16,(96*2)+16,(88*2)+16,(80*2)+16,2+16,2+16,0
-
-;sunset_colors:
-;	.byte 22*2+16,20*2+16,27*2+16,26*2+16
-;	.byte 42*2+16,41*2+16,59*2+16,57*2+16
-;	.byte 83*2+16,97*2+16,96*2+16,90*2+16
-;	.byte 89*2+16,88*2+16,2*2+16,0
-
-
-
-
+.endif
 
 .include "adjust_sprites.s"
