@@ -1,6 +1,6 @@
 LINKER_SCRIPT = ../../linker_script
 
-all:	vcs_desire.bin
+all:	vcs_desire_pal.bin vcs_desire_ntsc.bin
 
 ###
 
@@ -19,22 +19,35 @@ vcs_desire.zip:	vcs_desire.bin
 
 ###
 
-vcs_desire.bin:	vcs_desire.o
-	ld65 -o vcs_desire.bin vcs_desire.o -C $(LINKER_SCRIPT)/atari2600_f000.inc
+vcs_desire_pal.bin:	vcs_desire_pal.o
+	ld65 -o vcs_desire_pal.bin vcs_desire_pal.o -C $(LINKER_SCRIPT)/atari2600_f000.inc
 
-vcs_desire.o:	vcs_desire.s \
+vcs_desire_pal.o:	vcs_desire.s \
 	zp.inc \
 	main_kernel.s adjust_sprites.s \
 	logo_kernel.s desire_logo.inc credits.inc \
 	raster_kernel.s firework_kernel.s parallax_kernel.s \
 	bitmap_kernel.s bitmap.inc \
 	deetia2_player.s deetia2_trackdata.s
-	ca65 -o vcs_desire.o vcs_desire.s -l vcs_desire.lst
+	ca65 -o vcs_desire_pal.o vcs_desire.s -l vcs_desire_pal.lst
 
+###
+
+vcs_desire_ntsc.bin:	vcs_desire_ntsc.o
+	ld65 -o vcs_desire_ntsc.bin vcs_desire_ntsc.o -C $(LINKER_SCRIPT)/atari2600_f000.inc
+
+vcs_desire_ntsc.o:	vcs_desire.s \
+	zp.inc \
+	main_kernel.s adjust_sprites.s \
+	logo_kernel.s desire_logo.inc credits.inc \
+	raster_kernel.s firework_kernel.s parallax_kernel.s \
+	bitmap_kernel.s bitmap.inc \
+	deetia2_player.s deetia2_trackdata.s
+	ca65 -o vcs_desire_ntsc.o vcs_desire.s -DVCS_NTSC=1 -l vcs_desire_ntsc.lst
 
 ###
 
 clean:	
-	rm -f *~ *.o *.lst vcs_desire.bin
+	rm -f *~ *.o *.lst vcs_desire_pal.bin vcs_desire_ntsc.bin
 
 

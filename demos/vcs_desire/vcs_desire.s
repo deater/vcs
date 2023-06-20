@@ -1,4 +1,10 @@
-; testing tia music player
+; "VCS Desire" demo, came in 2nd in combined demo at Demosplash 2022
+
+; originally for PAL ATARI VCS systems
+;	later added NTSC codepath
+
+
+; by Vince `deater` Weaver
 
 .include "../../vcs.inc"
 
@@ -11,19 +17,6 @@
 	;=============================
 
 vcs_desire:
-;	sei								; 2
-;	cld		; clear decimal mode				; 2
-;
-;	ldx	#0							; 2
-;	txa								; 2
-;clear_loop:
-;	sta	$0,X							; 4
-;	inx								; 2
-;	bne	clear_loop						; 2/3
-;	dex								; 2
-;	txs	; point stack to $1FF (mirrored at top of zero page)	; 2
-;							;	=============
-;							; 8+256*9+3 = 2315 /12B
 
 	; TODO: can we move txs outside loop?
 
