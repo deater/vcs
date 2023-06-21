@@ -64,3 +64,86 @@ Decompression:
 		the decompression across frames so we still sync
 
 
+
+Book Implementation:
+~~~~~~~~~~~~~~~~~~~~
+
+
+Level Engine:
+~~~~~~~~~~~~~
+
+	Load level routine loads level.  Which level to load is in
+		zero page CURRENT_LOCATION
+	Source is found by using CURRENT_LOCATION to look up 
+		source rom bank and address
+	Copies 256 bytes of data (max we allow) to the $1800 RAM window
+	Then it swaps in RAM to the lower 2k and decompresses from the
+		256 byte RAM to this area
+	Finally the first 16 bytes with level info is copied to the zero
+		page
+
+	Why this crazy way of doing things?  Can't have ROM and the larger
+		RAM active at same time
+
+	Then ZX02 decompression is described in more detail elsewhere
+
+Level Data description:
+~~~~~~~~~~~~~~~~~~~~~~~
+	Offset	Length	Description
+	0	1	color of pointer (sprite0)
+	1	2	background colors (primary, secondary)
+	3	2	x-coord of sprite1 overlay (coarse/fine)
+	5	2	x-coord of missile0 overlay (vertical line)
+	7	2	XMAX/XMIN of action grab area
+	9	2	YMAX/YMIN of action grab area
+	11	1	destination if click on left-facing hand ($FF=none)
+	12	1	destination if click on forward hand
+	13	1	destination if click on right-fancing hand
+	14	2	unused for now ($00)
+
+
+	Description of the images:
+		standard Atari VCS asymmetric display
+		each line:	40 4-pixel wide bytes
+				has background and foreground colors
+				to save room use 4-line high pixels
+				if second background is given, it will
+					switch to that color on 2/4 of the lines
+					at cycle 60 (X across the screen)
+		vertical bar:	optional, full height of screen at
+				given co-ords, same color as pointer
+		overlay:	one color per line (though black is hard)
+				overlays with one more color on top for detail
+				best if at least 4 blocks from left of screen
+
+	Images are made in the gimp as a PNG file, separate overlay file,
+		then some scripts grab the results
+
+	When uncompressed the data above can be found here:
+
+        level_data              = $1400
+        level_colors            = $1410
+        level_playfield0_left   = $1440
+        level_playfield1_left   = $1470
+        level_playfield2_left   = $14A0
+        level_playfield0_right  = $14D0
+        level_playfield1_right  = $1500
+        level_playfield2_right  = $1530
+        level_overlay_colors    = $1560
+        level_overlay_sprite    = $1590
+
+
+
+
+other stuff to describe:
+
+
+	how does the marker switch clicking work
+		it patches the overlay on the fly for different colors
+		means switch has to be at same location in all graphics
+
+	book animations
+
+	music/sound
+
+

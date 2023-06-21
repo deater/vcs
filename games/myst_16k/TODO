@@ -5,21 +5,43 @@ THANKS!  I'LL BRB
 YOU CAN HANG OUT IN MYST
 FEEL FREE TO EXPLORE
 
+FEEL FREE TO HANG
+OUT IN MYST
 
 
-TODO locations:
-	north from shack
-	north from cabin
+TODO for less jumpy navigation:
 	south at pool
-	south from dentist
-	bottom of gear stairs both directions
-	south from rocket
-	fireplace
-	d'ni
-	pattern book
+	north from shack
+	south at rocket
+	south at hill
+	south at dentist
+	bottom of short steps
+	south at dock
 
-locations maybe:
-	steps up from imager
+TODO clock puzzle
+	puzzle location
+	clock_s with bridge up (just an overlay skin?)
+
+	actual clock puzzle.  separate?  two sprites for hands?
+		up-down vs left-right, button
+
+TODO library
+	NW	door open
+	NE	door close
+	S	door close (alt overlay?)
+	book shelf close open
+	book shelf close closed
+	elevator
+	hint
+
+TODO fireplace puzzle
+
+
+
+reach goals:
+	ceiling of library
+	north from cabin
+	short steps other direction
 	inside dentist
 	inside generator
 	inside cabin
@@ -27,6 +49,17 @@ locations maybe:
 	inside clock
 	rocket in close
 	tower rotation
+
+
+
+
+
+
+
+
+
+
+
 	tower elevator
 	tower top
 	front of pool
