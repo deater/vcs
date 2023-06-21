@@ -49,20 +49,8 @@ reach goals:
 	inside clock
 	rocket in close
 	tower rotation
-
-
-
-
-
-
-
-
-
-
-
 	tower elevator
 	tower top
-	front of pool
 
 todo puzzle:
 	somehow allow clock time puzzle
@@ -98,7 +86,7 @@ End, if room:
 
 
 
-Intro: call into common routines instead of incuding them
+Intro:
 
 Title:
 
