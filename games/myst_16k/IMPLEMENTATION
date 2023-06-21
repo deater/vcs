@@ -1,0 +1,66 @@
+Writing this up because I took a 1-year break on this and now forgot
+how it all works and am having to re-learn my own code.  Fun!
+
+ROM/RAM layout:
+~~~~~~~~~~~~~~~
+
+  Mapper:
+  ~~~~~~~
+	Uses the E7 rom mapper which provices 16K of bank-switched ROM
+	and 2k of bank-switched RAM.  Fancy, but there in theory were
+	games that used the mapper back in the day.
+
+	$1000-$17FF (2k) is selectable
+	$1800-$19FF (512B) is RAM
+	$1A00-$1FFF (1.5k) fixed as the last chunk of ROM
+
+	$1FE0 - $1FE6 selects bank 0 through 6 of the ROM into $1000-$17FF
+	$1FE7 enables 1K of the 2K RAM, instead
+              When RAM, enabled there's 1k available:
+                    $1000-$13FF used to write RAM
+		    $1400-$17FF used to read RAM
+
+	$1800-$19FF is also RAM (4 banks of 256B)
+		$1800-$18FF is write
+		$1900-$19FF is read  
+	$1FE8 - $1FEB selects which of four 256B banks
+
+   Myst layout:
+	ROM BANK0	-- level data
+	ROM BANK1	-- level data
+	ROM BANK2	-- level data
+	ROM BANK3	-- level data
+	ROM BANK4	-- level data
+	ROM BANK5	-- unused (will be level data)
+	ROM BANK6	-- title, intro and books?
+	ROM BANK7	-- always mapped, engine and routines
+
+  Having the E7 detected properly by emulators.
+	MAME checks for "lda $FFE5" somewhere in code? (double check this)
+	I'm setting $E7 in the IRQ vector (for reasons?)
+
+
+Build Process
+~~~~~~~~~~~~~
+	Each bank of the ROM built separately.  They all need the origin
+		to be $1000 except for the always-there ROM which is at
+		$1A00
+	Then it is all merged together.  "myst.s" does this by binary
+		including the files, including padding for the 512 bytes
+		that can't be accessed.  Probably could have written
+		a linker script to do this instead.
+
+
+Decompression:
+~~~~~~~~~~~~~~
+
+	Uses ZX02 compression by
+		and decompression code by
+
+	Modified, as it takes too long to finish in ZZZ cycles 
+		(more than a 60Hz frame) and we're responsible
+		for doing the VSYNC and if we don't the display
+		glitches).  So we set up a timer to break up
+		the decompression across frames so we still sync
+
+

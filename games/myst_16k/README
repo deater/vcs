@@ -5,8 +5,11 @@ running on MAME:
 
 note:
 	Plays fine under stella, even under devel mode
+
 	on harmony cart locks up after cleft before book
+
 	javatari locks up fairly permanently on walkway to steps
+
 	mame (internet archive) locks up at startup
 
 
