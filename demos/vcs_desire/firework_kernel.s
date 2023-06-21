@@ -170,10 +170,18 @@ skip_progress1:
 	lda	sky_colors,Y						; 4
 	tay								; 2
 	bne	set_bg			; only if dark			; 2/3
+
+	; if completely dar, flash with color
+
 	lda	SPRITE0_COLOR						; 3
 	and	#$E			; if exploding make bright	; 2
 	bne	set_bg							; 2/3
-	ldy	#$12							; 2
+.ifdef VCS_NTSC
+	ldy	#(112*2); dark yellow (dark grey not dark enough on NTSC)
+.else
+	ldy	#$12	; dark grey					; 2
+.endif
+
 set_bg:
         sty	COLUBK							; 3
 ; 53
@@ -305,7 +313,12 @@ mountain_loop:
 	lda	sunset_colors,X			; sunset background	; 4
 	sta	COLUBK							; 3
 ; 12
+
+.ifdef VCS_NTSC
+	lda	#$0
+.else
 	lda	#$2				; mountain fg		; 2
+.endif
 	sta	COLUPF							; 3
 ; 17
 
@@ -536,7 +549,7 @@ credits_offset:
 
 sky_colors:
 .ifdef VCS_NTSC
-	.byte (48*2),(48*2),(64*2),(72*2),2,2,0
+	.byte (64*2),(64*2),(56*2),(56*2),(72*2),(48*2),0
 .else
 	.byte (96*2)+16,(96*2)+16,(88*2)+16,(80*2)+16,2+16,2+16,0
 .endif
