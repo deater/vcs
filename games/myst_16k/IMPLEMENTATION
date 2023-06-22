@@ -49,7 +49,7 @@ Zero Page Layout (on VCS this is *all* of the stock RAM)
 	$A0-$AF : level data area
 	$B0-$BF : variables for ZX02 decompression
 	$C0-$DF : currently unused
-	$E0-$EF	: holds sprite for current pointer (hand or book)
+	$E0-$EF	: holds sprite for current pointer (hand or page)
 	$F0-$FF : reserved for stack
 
 
