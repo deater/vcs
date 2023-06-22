@@ -6,16 +6,17 @@ ROM/RAM layout:
 
   Mapper:
   ~~~~~~~
-	Uses the E7 rom mapper which provices 16K of bank-switched ROM
-	and 2k of bank-switched RAM.  Fancy, but there in theory were
-	games that used the mapper back in the day.
+	Uses the E7 ROM mapper which provides 16K of bank-switched ROM
+	and 2k of bank-switched RAM, accessible through a 4k address range.
+	Fancy, but there in theory were games that used this mapper back
+	in the day (Burgertime being the most famous example).
 
-	$1000-$17FF (2k) is selectable
-	$1800-$19FF (512B) is RAM
+	$1000-$17FF (2k) one of six 2K ROM banks or 1K or RAM can be mapped here
+	$1800-$19FF (512B) one of four 256B RAM banks can be mapped here
 	$1A00-$1FFF (1.5k) fixed as the last chunk of ROM
 
 	$1FE0 - $1FE6 selects bank 0 through 6 of the ROM into $1000-$17FF
-	$1FE7 enables 1K of the 2K RAM, instead
+	$1FE7 enables 1K of the 2K RAM there instead
               When RAM, enabled there's 1k available:
                     $1000-$13FF used to write RAM
 		    $1400-$17FF used to read RAM
@@ -35,7 +36,7 @@ ROM/RAM layout:
 	ROM BANK6	-- title, intro and books?
 	ROM BANK7	-- always mapped, engine and routines
 
-  Having the E7 detected properly by emulators.
+  Having the E7 detected properly by emulators:
 	MAME checks for "lda $FFE5" somewhere in code? (double check this)
 	I'm setting $E7 in the IRQ vector (for reasons?)
 
@@ -113,7 +114,7 @@ Level Data description:
 	9	2	YMAX/YMIN of action grab area
 	11	1	destination if click on left-facing hand ($FF=none)
 	12	1	destination if click on forward hand
-	13	1	destination if click on right-fancing hand
+	13	1	destination if click on right-facing hand
 	14	2	unused for now ($00)
 
 
@@ -188,4 +189,19 @@ graphics workflow:
 		the right in PNG as this made coding up the command line
 		tool easier
 
-	edit a huge bunch of files to add things (a pain! should automate!)
+Hooking up a new location
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+	Super labor-intensive.  Have to:
+		1. Create an ID for it in locations.inc
+		2. Create a wrapper "locations/something.s" file that includes
+			the level data
+		3. Modify locations/Makefile to run the scripts to extract
+			graphics and compress the result
+		4. Edit the proper rom_bankX.s file to include the data
+		5. Edit load_level.s table to point to the proper 
+			bank and address for the level
+		6. Rebuild.  I'm missing a dependency in the Makefiles
+			somewhere as often you have to make clean / make
+			to get it to properly have all the updated files
+
