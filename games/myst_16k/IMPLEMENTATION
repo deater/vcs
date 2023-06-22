@@ -40,6 +40,18 @@ ROM/RAM layout:
 	I'm setting $E7 in the IRQ vector (for reasons?)
 
 
+Zero Page Layout (on VCS this is *all* of the stock RAM)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	
+	$80-$8F : various variables
+	$90-$9F : more variables
+	$A0-$AF : level data area
+	$B0-$BF : variables for ZX02 decompression
+	$C0-$DF : currently unused
+	$E0-$EF	: holds sprite for current pointer (hand or book)
+	$F0-$FF : reserved for stack
+
+
 Build Process
 ~~~~~~~~~~~~~
 	Each bank of the ROM built separately.  They all need the origin
@@ -54,20 +66,23 @@ Build Process
 Decompression:
 ~~~~~~~~~~~~~~
 
-	Uses ZX02 compression by
-		and decompression code by
+	Uses ZX02 compression by Einar Saukas
+		and decompression code by DMSC
 
-	Modified, as it takes too long to finish in ZZZ cycles 
+	Modified, as it takes too long to finish in [lookup numbers] cycles 
 		(more than a 60Hz frame) and we're responsible
 		for doing the VSYNC and if we don't the display
 		glitches).  So we set up a timer to break up
-		the decompression across frames so we still sync
+		the decompression across frames so we still sync.
+		Otherwise the screen glitches horribly
 
 
 
 Book Implementation:
 ~~~~~~~~~~~~~~~~~~~~
+	Common routines for drawing books as there are many of them
 
+	Extra code for drawing people inside of books, not totally complete
 
 Level Engine:
 ~~~~~~~~~~~~~
@@ -133,6 +148,13 @@ Level Data description:
         level_overlay_sprite    = $1590
 
 
+todo:
+
+	working on kernel for the fireplace puzzle.  Should be doable
+		not sure if will be small enough to fit
+
+	working on kernel for the clock puzzle.  Also not sure if
+		will fit
 
 
 other stuff to describe:
@@ -147,8 +169,8 @@ other stuff to describe:
 	music/sound
 
 
-graphics:
-~~~~~~~~~~
+graphics workflow:
+~~~~~~~~~~~~~~~~~~
 
 	take screenshot of VGA version with ScummVM
 
@@ -159,8 +181,11 @@ graphics:
 	put 40x48 grid on top
 
 	draw over things, careful to have one color per line + overlay
+		overlays really shouldn't be within 4 blocks of left side
+		of screen
 
 	create separate bg and overlay files, overlay starts 4 blocks to
-		the right
+		the right in PNG as this made coding up the command line
+		tool easier
 
 	edit a huge bunch of files to add things (a pain! should automate!)
