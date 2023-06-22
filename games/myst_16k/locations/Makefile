@@ -52,6 +52,8 @@ level_locations.inc:	\
 	$(CALC_ADDRESS) -a 0x1000 -s dni_e_data_zx02 rom_bank4.lst >> level_locations.inc
 	$(CALC_ADDRESS) -a 0x1000 -s atrus_e_data_zx02 rom_bank4.lst >> level_locations.inc
 	$(CALC_ADDRESS) -a 0x1000 -s trapped_data_zx02 rom_bank4.lst >> level_locations.inc
+	$(CALC_ADDRESS) -a 0x1000 -s dock_s_data_zx02 rom_bank4.lst >> level_locations.inc
+
 
 
 
@@ -123,7 +125,7 @@ rom_bank4.bin:	rom_bank4.o
 
 rom_bank4.o:	rom_bank4.s \
 	dni_n_data.zx02 dni_e_data.zx02 atrus_e_data.zx02 \
-	trapped_data.zx02
+	trapped_data.zx02 dock_s_data.zx02
 	ca65 -o rom_bank4.o rom_bank4.s -l rom_bank4.lst
 
 
@@ -265,6 +267,13 @@ shortsteps_w_data.inc:	shortsteps_w_bg.png shortsteps_w_overlay.png
 dock_n_data.inc:	dock_n_bg.png dock_n_overlay.png
 	$(PNG2PF) -4 -n dock_n -b 0x00 dock_n_bg.png - > dock_n_data.inc
 	$(PNG2OVERLAY) -4 -o -n dock_n dock_n_overlay.png - >> dock_n_data.inc
+
+###
+
+dock_s_data.inc:	dock_s_bg.png dock_s_overlay.png
+	$(PNG2PF) -4 -n dock_s -b 0x02 dock_s_bg.png - > dock_s_data.inc
+	$(PNG2OVERLAY) -4 -o -n dock_s dock_s_overlay.png - >> dock_s_data.inc
+
 
 ###
 
@@ -659,6 +668,18 @@ dock_n_data.bin:	dock_n_data.o
 
 dock_n_data.o:	dock_n_data.s dock_n_data.inc
 	ca65 -o dock_n_data.o dock_n_data.s -l dock_n_data.lst
+
+###
+
+dock_s_data.zx02:	dock_s_data.bin
+	$(ZX02) -f dock_s_data.bin dock_s_data.zx02
+
+dock_s_data.bin:	dock_s_data.o
+	ld65 -o dock_s_data.bin dock_s_data.o -C $(LINKER_SCRIPT)/atari2600_f000.inc
+
+dock_s_data.o:	dock_s_data.s dock_s_data.inc
+	ca65 -o dock_s_data.o dock_s_data.s -l dock_s_data.lst
+
 
 ###
 

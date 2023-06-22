@@ -128,6 +128,7 @@ level_bank_lookup:
 	.byte	4			; 41 = dni_e
 	.byte	4			; 42 = atrus_e
 	.byte	4			; 43 = trapped
+	.byte	4			; 44 = dock_s
 
 
 
@@ -178,6 +179,7 @@ level_compress_data_low:
 	.byte	<dni_e_data_zx02
 	.byte	<atrus_e_data_zx02
 	.byte	<trapped_data_zx02
+	.byte	<dock_s_data_zx02
 
 
 
@@ -228,3 +230,4 @@ level_compress_data_high:
 	.byte	>dni_e_data_zx02
 	.byte	>atrus_e_data_zx02
 	.byte	>trapped_data_zx02
+	.byte	>dock_s_data_zx02

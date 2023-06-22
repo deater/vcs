@@ -147,3 +147,20 @@ other stuff to describe:
 	music/sound
 
 
+graphics:
+~~~~~~~~~~
+
+	take screenshot of VGA version with ScummVM
+
+	scale to 320x192
+
+	convert to VCS colormap
+
+	put 40x48 grid on top
+
+	draw over things, careful to have one color per line + overlay
+
+	create separate bg and overlay files, overlay starts 4 blocks to
+		the right
+
+	edit a huge bunch of files to add things (a pain! should automate!)

@@ -6,4 +6,6 @@ atrus_e_data_zx02:
 .incbin "atrus_e_data.zx02"
 trapped_data_zx02:
 .incbin "trapped_data.zx02"
+dock_s_data_zx02:
+.incbin "dock_s_data.zx02"
 
