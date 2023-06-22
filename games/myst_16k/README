@@ -1,17 +1,32 @@
+			Myst demake for ATARI VCS
+			~~~~~~~~~~~~~~~~~~~~~~~~~
 
-running on MAME:
-	mame a2600 -cartslot a26_e7 -cart ./myst.e7
-	has issues same as javatari
+			by Vince `deater` Weaver
 
-note:
+
+Getting things Running:
+~~~~~~~~~~~~~~~~~~~~~~~
+
 	Plays fine under stella, even under devel mode
 
-	on harmony cart locks up after cleft before book
+	Plays fine with MAME and the following command:
+		mame a2600 -cartslot a26_e7 -cart ./myst.e7
 
-	javatari locks up fairly permanently on walkway to steps
+	Until recently crashed on javatari.  This was a bug in javatari
+		E7 ROM handling and a fix has been contributed upsream
 
-	mame (internet archive) locks up at startup
 
+	Notes below from last time tested in 2022:
+
+	running on MAME: (internet archive) locks up at startup
+		this is possibly because it's not auto-detecting
+
+	running on harmony cart:
+		on harmony cart locks up after cleft before book
+
+
+Background info Useful for Playing the Game
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The story so far:
 
@@ -31,4 +46,6 @@ red pages and place them in his book.  One, who seems a bit
 power hungry, implores you to gather blue pages and place them
 in *his* book.
 
-Be sure to check the library for other secrets.
+There are a few puzzles remaining so explore the island and
+try various things...
+
