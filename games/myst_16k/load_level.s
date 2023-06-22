@@ -129,6 +129,7 @@ level_bank_lookup:
 	.byte	4			; 42 = atrus_e
 	.byte	4			; 43 = trapped
 	.byte	4			; 44 = dock_s
+	.byte	4			; 45 = dentist_e
 
 
 
@@ -180,6 +181,7 @@ level_compress_data_low:
 	.byte	<atrus_e_data_zx02
 	.byte	<trapped_data_zx02
 	.byte	<dock_s_data_zx02
+	.byte	<dentist_e_data_zx02
 
 
 
@@ -231,3 +233,4 @@ level_compress_data_high:
 	.byte	>atrus_e_data_zx02
 	.byte	>trapped_data_zx02
 	.byte	>dock_s_data_zx02
+	.byte	>dentist_e_data_zx02

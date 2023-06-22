@@ -53,6 +53,8 @@ level_locations.inc:	\
 	$(CALC_ADDRESS) -a 0x1000 -s atrus_e_data_zx02 rom_bank4.lst >> level_locations.inc
 	$(CALC_ADDRESS) -a 0x1000 -s trapped_data_zx02 rom_bank4.lst >> level_locations.inc
 	$(CALC_ADDRESS) -a 0x1000 -s dock_s_data_zx02 rom_bank4.lst >> level_locations.inc
+	$(CALC_ADDRESS) -a 0x1000 -s dentist_e_data_zx02 rom_bank4.lst >> level_locations.inc
+
 
 
 
@@ -125,7 +127,7 @@ rom_bank4.bin:	rom_bank4.o
 
 rom_bank4.o:	rom_bank4.s \
 	dni_n_data.zx02 dni_e_data.zx02 atrus_e_data.zx02 \
-	trapped_data.zx02 dock_s_data.zx02
+	trapped_data.zx02 dock_s_data.zx02 dentist_e_data.zx02
 	ca65 -o rom_bank4.o rom_bank4.s -l rom_bank4.lst
 
 
@@ -207,10 +209,14 @@ arrival_w_data.inc:	arrival_w_bg.png arrival_w_overlay.png
 ###
 
 dentist_n_data.inc:	dentist_n_bg.png dentist_n_overlay.png
-	$(PNG2PF) -4 -n arrival -b 0x02 dentist_n_bg.png - > dentist_n_data.inc
+	$(PNG2PF) -4 -n dentist_n -b 0x02 dentist_n_bg.png - > dentist_n_data.inc
 	$(PNG2OVERLAY) -4 -o -n dentist_n dentist_n_overlay.png - >> dentist_n_data.inc
 
+###
 
+dentist_e_data.inc:	dentist_e_bg.png dentist_e_overlay.png
+	$(PNG2PF) -4 -n dentist_e -b 0x02 dentist_e_bg.png - > dentist_e_data.inc
+	$(PNG2OVERLAY) -4 -o -n dentist_e dentist_e_overlay.png - >> dentist_e_data.inc
 
 ###
 
@@ -562,6 +568,18 @@ dentist_n_data.bin:	dentist_n_data.o
 
 dentist_n_data.o:	dentist_n_data.s dentist_n_data.inc
 	ca65 -o dentist_n_data.o dentist_n_data.s -l dentist_n_data.lst
+
+###
+
+dentist_e_data.zx02:	dentist_e_data.bin
+	$(ZX02) -f dentist_e_data.bin dentist_e_data.zx02
+
+dentist_e_data.bin:	dentist_e_data.o
+	ld65 -o dentist_e_data.bin dentist_e_data.o -C $(LINKER_SCRIPT)/atari2600_f000.inc
+
+dentist_e_data.o:	dentist_e_data.s dentist_e_data.inc
+	ca65 -o dentist_e_data.o dentist_e_data.s -l dentist_e_data.lst
+
 
 
 
