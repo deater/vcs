@@ -130,6 +130,7 @@ level_bank_lookup:
 	.byte	4			; 43 = trapped
 	.byte	4			; 44 = dock_s
 	.byte	4			; 45 = dentist_e
+	.byte	4			; 46 = rocket_s
 
 
 
@@ -182,6 +183,7 @@ level_compress_data_low:
 	.byte	<trapped_data_zx02
 	.byte	<dock_s_data_zx02
 	.byte	<dentist_e_data_zx02
+	.byte	<rocket_s_data_zx02
 
 
 
@@ -234,3 +236,4 @@ level_compress_data_high:
 	.byte	>trapped_data_zx02
 	.byte	>dock_s_data_zx02
 	.byte	>dentist_e_data_zx02
+	.byte	>rocket_s_data_zx02

@@ -10,4 +10,6 @@ dock_s_data_zx02:
 .incbin "dock_s_data.zx02"
 dentist_e_data_zx02:
 .incbin "dentist_e_data.zx02"
+rocket_s_data_zx02:
+.incbin "rocket_s_data.zx02"
 
