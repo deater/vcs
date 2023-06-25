@@ -10,13 +10,10 @@ OUT IN MYST
 
 
 TODO for less jumpy navigation:
-	south at pool
 	north from shack
-	south at rocket
 	south at hill
 	south at dentist
 	bottom of short steps
-	south at dock
 
 TODO clock puzzle
 	puzzle location
@@ -102,7 +99,7 @@ Book:
 	make generic so can use for other books?
 
 level_engine:
-	fix cycle count
+
 
 Levels:
 

@@ -55,6 +55,7 @@ level_locations.inc:	\
 	$(CALC_ADDRESS) -a 0x1000 -s dock_s_data_zx02 rom_bank4.lst >> level_locations.inc
 	$(CALC_ADDRESS) -a 0x1000 -s dentist_e_data_zx02 rom_bank4.lst >> level_locations.inc
 	$(CALC_ADDRESS) -a 0x1000 -s rocket_s_data_zx02 rom_bank4.lst >> level_locations.inc
+	$(CALC_ADDRESS) -a 0x1000 -s pool_s_data_zx02 rom_bank4.lst >> level_locations.inc
 
 
 
@@ -130,7 +131,7 @@ rom_bank4.bin:	rom_bank4.o
 rom_bank4.o:	rom_bank4.s \
 	dni_n_data.zx02 dni_e_data.zx02 atrus_e_data.zx02 \
 	trapped_data.zx02 dock_s_data.zx02 dentist_e_data.zx02 \
-	rocket_s_data.zx02
+	rocket_s_data.zx02 pool_s_data.zx02
 	ca65 -o rom_bank4.o rom_bank4.s -l rom_bank4.lst
 
 
@@ -418,6 +419,13 @@ gear_s_data.inc:	gear_s_bg.png gear_s_overlay.png
 pool_n_data.inc:	pool_n_bg.png pool_n_overlay.png
 	$(PNG2PF) -4 -n pool_n -b 0x02 pool_n_bg.png - > pool_n_data.inc
 	$(PNG2OVERLAY) -4 -o -n pool_n pool_n_overlay.png - >> pool_n_data.inc
+
+###
+
+pool_s_data.inc:	pool_s_bg.png pool_s_overlay.png
+	$(PNG2PF) -4 -n pool_s -b 0x0e pool_s_bg.png - > pool_s_data.inc
+	$(PNG2OVERLAY) -4 -o -n pool_s pool_s_overlay.png - >> pool_s_data.inc
+
 
 
 ###
@@ -949,6 +957,18 @@ pool_n_data.bin:	pool_n_data.o
 
 pool_n_data.o:	pool_n_data.s pool_n_data.inc
 	ca65 -o pool_n_data.o pool_n_data.s -l pool_n_data.lst
+
+###
+
+pool_s_data.zx02:	pool_s_data.bin
+	$(ZX02) -f pool_s_data.bin pool_s_data.zx02
+
+pool_s_data.bin:	pool_s_data.o
+	ld65 -o pool_s_data.bin pool_s_data.o -C $(LINKER_SCRIPT)/atari2600_f000.inc
+
+pool_s_data.o:	pool_s_data.s pool_s_data.inc
+	ca65 -o pool_s_data.o pool_s_data.s -l pool_s_data.lst
+
 
 
 ###
