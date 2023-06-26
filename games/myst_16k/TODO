@@ -1,19 +1,17 @@
-winning message:
+overlay proposal?
 
-THANKS!  I'LL BRB
+	Steal bit from bank/high.  Will have to add the $1000 manually to
+		the address somewhere to free bits
 
-YOU CAN HANG OUT IN MYST
-FEEL FREE TO EXPLORE
-
-FEEL FREE TO HANG
-OUT IN MYST
-
+	Have 48 byte alternate overlay included after the regular overlay.
+		same colors
+	Will it fit?
 
 TODO for less jumpy navigation:
 	north from shack
-	south at hill
-	south at dentist
-	bottom of short steps
+	south at steps
+	south at dentist		* probably no room
+	bottom of short steps		* probably no room
 
 TODO clock puzzle
 	puzzle location
@@ -105,3 +103,14 @@ Levels:
 
 Marker switches:
 
+
+
+proposed winning messages:
+
+THANKS!  I'LL BRB
+
+YOU CAN HANG OUT IN MYST
+FEEL FREE TO EXPLORE
+
+FEEL FREE TO HANG
+OUT IN MYST

@@ -542,18 +542,22 @@ done_playfield:
 	;==================================
 	; overscan 28, update sound
 
-	jsr	update_sound
+	jsr	update_sound		; 56 cycles?
+
+	lda	#0							; 2
+	sta	POINTER_GRABBING					; 3
 
 	sta	WSYNC
 
 	;==================================
 	; overscan 29, update pointer
 ;0
-	lda     #POINTER_TYPE_POINT		; set default		; 2
-; 2
 	ldx	POINTER_X						; 3
 	ldy	POINTER_Y						; 3
-; 8
+
+	; not needed as A=0 from above
+;	lda	#POINTER_TYPE_POINT
+
 	; first see if grabbing
 
 	cpx	LEVEL_GRAB_MINX						; 3
@@ -564,14 +568,27 @@ done_playfield:
 	bcc	not_grabbing						; 2/3
 	cpy	LEVEL_GRAB_MAXY						; 3
 	bcs	not_grabbing						; 2/3
+
+grabbing:
 	lda	#POINTER_TYPE_GRAB					; 3
-	bne	level_done_update_pointer	; bra			; 3
-								; 21 worst case
-; 29
+	inc	POINTER_GRABBING					; 5
+;	bne	level_done_update_pointer	; bra			; 3
+								; 26 worst case
+; 39
 
 not_grabbing:
 
-; 29
+	ldy	POINTER_COLOR		; if page skip pointer type 	; 3
+	beq	pointer_not_page					; 2/3
+	lda     #POINTER_TYPE_PAGE	; if color then page		; 2
+pointer_not_page:
+
+	; need to do this to over-ride turn pointer if grabbing
+
+	ldy	POINTER_GRABBING
+	bne	level_done_update_pointer
+
+
 	;==================================
 	; check if want left/right pointer
 
@@ -619,15 +636,22 @@ waited_enough_level:
 	sta	INPUT_COUNTDOWN
 
 	; button was pressed
+	lda	POINTER_GRABBING	; secial case if grabbing
+	bne	clicked_grab
+
 	lda	POINTER_TYPE
-	cmp	#POINTER_TYPE_POINT
-	beq	clicked_forward
 
 	cmp	#POINTER_TYPE_LEFT
 	beq	clicked_left
 
 	cmp	#POINTER_TYPE_RIGHT
 	beq	clicked_right
+
+	; default, if page or point, is go forward
+
+;	cmp	#POINTER_TYPE_POINT
+	bne	clicked_forward
+
 
 clicked_grab:			; process of elimination
 	;==========================
@@ -653,7 +677,13 @@ handle_switch:
 	eor	SWITCH_STATUS
 	sta	SWITCH_STATUS
 
-	; TODO: switch to white page if switch from $FF to $7F
+	; Switch to white page if switch from $FF to $7F
+
+	cmp	#$7f
+	bne	done_check_level_input
+
+	lda	#POINTER_COLOR_WHITE
+	sta	POINTER_COLOR
 
 done_check_level_input:
 

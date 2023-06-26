@@ -18,5 +18,5 @@ hand_sprite_right:
 	.byte	$FF,$FF,$60,$30,$18,$00,$00,$00
 
 hand_sprite_page:
-	.byte	$00,$FE,$FE,$FE,$FE,$FE,$FE,$FE
+	.byte	$00,$00,$FE,$FE,$FE,$FE,$FE,$FE
 	.byte	$FE,$FE,$0E,$EE,$6E,$6E,$2E,$2E

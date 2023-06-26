@@ -97,18 +97,31 @@ Level Engine:
 
 	Load level routine loads level.  Which level to load is in
 		zero page CURRENT_LOCATION
+
 	Source is found by using CURRENT_LOCATION to look up 
 		source rom bank and address
+		This is packed with top 3 bits bank, bottom 13 bits adr
+
 	Copies 256 bytes of data (max we allow) to the $1800 RAM window
+
+		HAVE TO BE CAREFUL!  We always copy 256 bytes for
+		simplicity.  If area in RAM > $1700 the copy will
+		write out overlapping to $1800 which is where our copy
+		starts so it will corrupt things
+
 	Then it swaps in RAM to the lower 2k and decompresses from the
 		256 byte RAM to this area
+
+	(ZX02 decompression is described in a bit more detail elsewhere
+		in this document)
+
 	Finally the first 16 bytes with level info is copied to the zero
 		page
 
 	Why this crazy way of doing things?  Can't have ROM and the larger
 		RAM active at same time
 
-	Then ZX02 decompression is described in more detail elsewhere
+
 
 Level Data description:
 ~~~~~~~~~~~~~~~~~~~~~~~
@@ -167,6 +180,8 @@ todo:
 
 Marker Switch Implementation
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	data:
+		8 switches, 1 bit each, stored in SWITCH_STATUS
 
 	switch position:
 		it patches the overlay on the fly for different colors
@@ -176,8 +191,29 @@ Marker Switch Implementation
 		implementation slightly easier
 
 
-other stuff to describe:
+Drawing the Pointer
+~~~~~~~~~~~~~~~~~~~
 
+	It is sprite0, drawn single-copy quad-size
+
+	By default it's just a hand
+
+	If at left or right edge of screen, and that direction
+		is clickable (not $FF) then draw left/right hand
+
+	If there are grab co-ordinates, if in range draw as grab
+		special cases currently handle:
+			1. Marker switches
+			2. Linking books
+
+	If we picked up a page, drawing page over-rides all this
+		page color is based on ??
+
+
+
+
+other stuff to describe:
+~~~~~~~~~~~~~~~~~~~~~~~~
 
 
 
@@ -185,7 +221,7 @@ other stuff to describe:
 
 	music/sound
 
-	drawing the pointer
+
 
 
 graphics workflow:

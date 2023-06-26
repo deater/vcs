@@ -56,6 +56,11 @@ clear_loop:
 
 	jsr	do_book
 
+	; DEBUG
+	lda	#$FF
+	sta	SWITCH_STATUS
+
+
 	;==============================
 	; load in current level
 	;==============================
