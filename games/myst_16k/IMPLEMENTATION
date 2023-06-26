@@ -70,6 +70,11 @@ Decompression:
 	Uses ZX02 compression by Einar Saukas
 		and decompression code by DMSC
 
+	Modified, so that when it reads from previously written-out data
+		it uses the proper read address (offset by 1k) since
+		the hack that makes E7 mappers work has separate address
+		ranges for read/write
+
 	Modified, as it takes too long to finish in [lookup numbers] cycles 
 		(more than a 60Hz frame) and we're responsible
 		for doing the VSYNC and if we don't the display
@@ -84,6 +89,8 @@ Book Implementation:
 	Common routines for drawing books as there are many of them
 
 	Extra code for drawing people inside of books, not totally complete
+
+
 
 Level Engine:
 ~~~~~~~~~~~~~
@@ -158,16 +165,27 @@ todo:
 		will fit
 
 
+Marker Switch Implementation
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+	switch position:
+		it patches the overlay on the fly for different colors
+		means switch has to be at same location in all graphics
+
+	marker switch locations are in level LOCATION 0..7 which makes
+		implementation slightly easier
+
+
 other stuff to describe:
 
 
-	how does the marker switch clicking work
-		it patches the overlay on the fly for different colors
-		means switch has to be at same location in all graphics
+
 
 	book animations
 
 	music/sound
+
+	drawing the pointer
 
 
 graphics workflow:
