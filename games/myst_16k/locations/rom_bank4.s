@@ -14,4 +14,6 @@ rocket_s_data_zx02:
 .incbin "rocket_s_data.zx02"
 pool_s_data_zx02:
 .incbin "pool_s_data.zx02"
+you_win_data_zx02:
+.incbin "you_win_data.zx02"
 

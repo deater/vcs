@@ -56,12 +56,7 @@ level_locations.inc:	\
 	$(CALC_ADDRESS) -a 0x1000 -s dentist_e_data_zx02 rom_bank4.lst >> level_locations.inc
 	$(CALC_ADDRESS) -a 0x1000 -s rocket_s_data_zx02 rom_bank4.lst >> level_locations.inc
 	$(CALC_ADDRESS) -a 0x1000 -s pool_s_data_zx02 rom_bank4.lst >> level_locations.inc
-
-
-
-
-
-
+	$(CALC_ADDRESS) -a 0x1000 -s you_win_data_zx02 rom_bank4.lst >> level_locations.inc
 
 ###
 
@@ -131,7 +126,7 @@ rom_bank4.bin:	rom_bank4.o
 rom_bank4.o:	rom_bank4.s \
 	dni_n_data.zx02 dni_e_data.zx02 atrus_e_data.zx02 \
 	trapped_data.zx02 dock_s_data.zx02 dentist_e_data.zx02 \
-	rocket_s_data.zx02 pool_s_data.zx02
+	rocket_s_data.zx02 pool_s_data.zx02 you_win_data.zx02
 	ca65 -o rom_bank4.o rom_bank4.s -l rom_bank4.lst
 
 
@@ -317,7 +312,11 @@ trapped_data.inc:	trapped_bg.png blank_overlay.png
 	$(PNG2PF) -n trapped -b 0x00 trapped_bg.png - > trapped_data.inc
 	$(PNG2OVERLAY) -o -n trapped blank_overlay.png - >> trapped_data.inc
 
+###
 
+you_win_data.inc:	you_win_bg.png blank_overlay.png
+	$(PNG2PF) -n you_win -b 0x00 you_win_bg.png - > you_win_data.inc
+	$(PNG2OVERLAY) -o -n you_win blank_overlay.png - >> you_win_data.inc
 
 ###
 
@@ -773,6 +772,18 @@ trapped_data.bin:	trapped_data.o
 
 trapped_data.o:	trapped_data.s trapped_data.inc
 	ca65 -o trapped_data.o trapped_data.s -l trapped_data.lst
+
+###
+
+you_win_data.zx02:	you_win_data.bin
+	$(ZX02) -f you_win_data.bin you_win_data.zx02
+
+you_win_data.bin:	you_win_data.o
+	ld65 -o you_win_data.bin you_win_data.o -C $(LINKER_SCRIPT)/atari2600_f000.inc
+
+you_win_data.o:	you_win_data.s you_win_data.inc
+	ca65 -o you_win_data.o you_win_data.s -l you_win_data.lst
+
 
 
 ###

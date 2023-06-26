@@ -132,6 +132,7 @@ level_bank_lookup:
 	.byte	4			; 45 = dentist_e
 	.byte	4			; 46 = rocket_s
 	.byte	4			; 47 = pool_s
+;	.byte	4			; 48 = you_win_s
 
 
 
@@ -186,6 +187,7 @@ level_compress_data_low:
 	.byte	<dentist_e_data_zx02
 	.byte	<rocket_s_data_zx02
 	.byte	<pool_s_data_zx02
+;	.byte	<you_win_data_zx02
 
 
 
@@ -240,3 +242,4 @@ level_compress_data_high:
 	.byte	>dentist_e_data_zx02
 	.byte	>rocket_s_data_zx02
 	.byte	>pool_s_data_zx02
+;	.byte	>you_win_data_zx02
