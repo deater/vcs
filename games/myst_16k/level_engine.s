@@ -253,34 +253,36 @@ pad_x:
 	stx	PF2							; 3
 
 ; 14
-
+	lda	POINTER_COLOR						; 3
+	bne	pointer_color_override					; 2/3
 	lda	LEVEL_HAND_COLOR	;				; 3
+pointer_color_override:
 	sta	COLUP0		; set pointer color (sprite0)		; 3
-; 20
+; 25
 	lda	level_overlay_colors					; 4+
 	sta	COLUP1		; set secret color (sprite1)		; 3
-; 27
+; 32
 	lda	#NUSIZ_DOUBLE_SIZE|NUSIZ_MISSILE_WIDTH_8		; 2
 	sta	NUSIZ0							; 3
 	lda	#NUSIZ_QUAD_SIZE|NUSIZ_MISSILE_WIDTH_4			; 2
 	sta	NUSIZ1							; 3
-; 37
+; 42
 	lda	#0							; 2
 	tay			; current block 			; 2
 	sty	CTRLPF		; no_reflect				; 3
-; 44
+; 49
 	lda	LEVEL_BACKGROUND_COLOR		;			; 3
 	sta	COLUBK		; set background color			; 3
-; 50
+; 55
 	lda	#$FF		; ??					; 2
 	sta	GRP1							; 3
-; 55
+; 60
 ;	lda	level_colors	; load level color in advance		; 4
-; 59
-	ldx	#0		; init hand visibility			; 2
-; 61
-	stx	VBLANK		; turn on beam				; 3
 ; 64
+	ldx	#0		; init hand visibility			; 2
+; 66
+	stx	VBLANK		; turn on beam				; 3
+; 69
 	sta	WSYNC							; 3
 
 
