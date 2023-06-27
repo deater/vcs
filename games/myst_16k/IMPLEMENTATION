@@ -83,6 +83,24 @@ Decompression:
 		Otherwise the screen glitches horribly
 
 
+Clickable/Grabbable/Action Items:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	Specify the range of the screen to be grabbable in the level data
+
+	Note, the x-coords are 0-159 not 0-39 as you might expect
+
+	If things are clicked, 
+		Levels 0..7 = assume it's a marker switch and handle
+		Levels 8..11 = assume it's a book and handle
+	TODO:
+		alternate things:
+			if button in fireplace?
+			if it's a red/blue page?
+			if it's the clock puzzle?
+			if it's a door open/close?
+			if it's a book on the bookshelf?
+				
+
 
 Book Implementation:
 ~~~~~~~~~~~~~~~~~~~~

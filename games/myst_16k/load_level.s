@@ -171,8 +171,8 @@ level_bank_and_high:
 	.byte	(2<<5) | (>clock_close_s_data_zx02)	; 6 = clock_close_s
 	.byte	(1<<5) | (>dock_n_data_zx02)		; 7 = dock_n
 
-	.byte	(0<<5) | (>red_book_close_data_zx02)	; 8 = red_book_close
-	.byte	(0<<5) | (>blue_book_close_data_zx02)	; 9 = blue_book_close
+	.byte	(2<<5) | (>red_book_close_data_zx02)	; 8 = red_book_close
+	.byte	(2<<5) | (>blue_book_close_data_zx02)	; 9 = blue_book_close
 	.byte	$FF					; 10 = green_book_close
 	.byte	(0<<5) | (>arrival_n_data_zx02)		; 11 = arrival_n
 
