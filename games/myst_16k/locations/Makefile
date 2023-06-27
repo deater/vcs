@@ -8,7 +8,7 @@ all:	level_locations.inc
 
 level_locations.inc:	\
 	rom_bank0.bin rom_bank1.bin rom_bank2.bin \
-	rom_bank3.bin rom_bank4.bin $(CALC_ADDRESS)
+	rom_bank3.bin rom_bank4.bin rom_bank5.bin $(CALC_ADDRESS)
 	$(CALC_ADDRESS) -a 0x1000 -s arrival_n_data_zx02 rom_bank0.lst > level_locations.inc
 	$(CALC_ADDRESS) -a 0x1000 -s arrival_e_data_zx02 rom_bank0.lst >> level_locations.inc
 	$(CALC_ADDRESS) -a 0x1000 -s clock_s_data_zx02 rom_bank0.lst >> level_locations.inc
@@ -57,6 +57,8 @@ level_locations.inc:	\
 	$(CALC_ADDRESS) -a 0x1000 -s rocket_s_data_zx02 rom_bank4.lst >> level_locations.inc
 	$(CALC_ADDRESS) -a 0x1000 -s pool_s_data_zx02 rom_bank4.lst >> level_locations.inc
 	$(CALC_ADDRESS) -a 0x1000 -s you_win_data_zx02 rom_bank4.lst >> level_locations.inc
+	$(CALC_ADDRESS) -a 0x1000 -s steps_e_data_zx02 rom_bank5.lst >> level_locations.inc
+
 
 ###
 
@@ -128,6 +130,16 @@ rom_bank4.o:	rom_bank4.s \
 	trapped_data.zx02 dock_s_data.zx02 dentist_e_data.zx02 \
 	rocket_s_data.zx02 pool_s_data.zx02 you_win_data.zx02
 	ca65 -o rom_bank4.o rom_bank4.s -l rom_bank4.lst
+
+###
+
+rom_bank5.bin:	rom_bank5.o
+	ld65 -o rom_bank5.bin rom_bank5.o -C $(LINKER_SCRIPT)/atari2600_1000.inc
+
+rom_bank5.o:	rom_bank5.s \
+	steps_e_data.zx02
+	ca65 -o rom_bank5.o rom_bank5.s -l rom_bank5.lst
+
 
 
 ###
@@ -432,6 +444,13 @@ pool_s_data.inc:	pool_s_bg.png pool_s_overlay.png
 steps_s_data.inc:	steps_s_bg.png steps_s_overlay.png
 	$(PNG2PF) -4 -n steps_s -b 0x02 steps_s_bg.png - > steps_s_data.inc
 	$(PNG2OVERLAY) -4 -o -n steps_s steps_s_overlay.png - >> steps_s_data.inc
+
+###
+
+steps_e_data.inc:	steps_e_bg.png steps_e_overlay.png
+	$(PNG2PF) -4 -n steps_e -b 0x28 steps_e_bg.png - > steps_e_data.inc
+	$(PNG2OVERLAY) -4 -o -n steps_e steps_e_overlay.png - >> steps_e_data.inc
+
 
 
 
@@ -992,6 +1011,18 @@ steps_s_data.bin:	steps_s_data.o
 
 steps_s_data.o:	steps_s_data.s steps_s_data.inc
 	ca65 -o steps_s_data.o steps_s_data.s -l steps_s_data.lst
+
+###
+
+steps_e_data.zx02:	steps_e_data.bin
+	$(ZX02) -f steps_e_data.bin steps_e_data.zx02
+
+steps_e_data.bin:	steps_e_data.o
+	ld65 -o steps_e_data.bin steps_e_data.o -C $(LINKER_SCRIPT)/atari2600_f000.inc
+
+steps_e_data.o:	steps_e_data.s steps_e_data.inc
+	ca65 -o steps_e_data.o steps_e_data.s -l steps_e_data.lst
+
 
 
 

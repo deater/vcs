@@ -218,6 +218,8 @@ level_bank_and_high:
 	.byte	(4<<5) | (>pool_s_data_zx02)		; 47 = pool_s
 	.byte	(4<<5) | (>you_win_data_zx02)		; 48 = you_win
 
+	.byte	(5<<5) | (>steps_e_data_zx02)		; 49 = steps_e
+
 level_compress_data_low:
 	.byte	<gear_n_data_zx02			; 0
 	.byte	<dentist_n_data_zx02			; 1
@@ -270,4 +272,5 @@ level_compress_data_low:
 	.byte	<rocket_s_data_zx02
 	.byte	<pool_s_data_zx02
 	.byte	<you_win_data_zx02
+	.byte	<steps_e_data_zx02
 
