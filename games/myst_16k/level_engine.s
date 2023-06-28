@@ -636,7 +636,7 @@ waited_enough_level:
 	;====================================
 	; reset input countdown for debounce
 
-	lda	#20
+	lda	#12
 	sta	INPUT_COUNTDOWN
 
 	;======================

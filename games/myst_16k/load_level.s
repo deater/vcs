@@ -146,7 +146,7 @@ level_bank_and_high:
 	.byte	(3<<5) | (>library_se_data_zx02)	; 35 = library_se
 	.byte	(3<<5) | (>burnt_book_data_zx02)	; 36 = burnt_book
 	.byte	(3<<5) | (>imager_e_data_zx02)		; 37 = imager_e
-	.byte	$FF	; placeholder
+	.byte	(5<<5) | (>shack_n_data_zx02)		; 38 = shack_n
 	.byte	(3<<5) | (>inside_fireplace_data_zx02)	; 39 = inside_fireplace
 
 	.byte	(4<<5) | (>dni_n_data_zx02)		; 40 = dni_n
@@ -202,7 +202,7 @@ level_compress_data_low:
 	.byte	<library_se_data_zx02
 	.byte	<burnt_book_data_zx02
 	.byte	<imager_e_data_zx02
-	.byte	$FF
+	.byte	<shack_n_data_zx02
 	.byte	<inside_fireplace_data_zx02
 	.byte	<dni_n_data_zx02
 	.byte	<dni_e_data_zx02

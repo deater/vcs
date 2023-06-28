@@ -1,3 +1,24 @@
+TODO before release:
+	+ hint
+		+ grabbable book
+		+ close/open door
+		+ up elevator
+		+ clue
+	+ clock puzzle
+		+ the actual puzzle
+		+ way to raise/lower path
+	+ fireplace puzzle
+	+ green book
+		+ put animated atrus in it
+	+ after-win scenario
+		+ can use myst linking book
+		+ warp to library ceiling?
+		+ brother books destroyed?
+
+
+
+
+
 overlay proposal?
 
 	Steal bit from bank/high.  Will have to add the $1000 manually to

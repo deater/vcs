@@ -10,7 +10,7 @@
 .byte 24,32			; YMAX/YMIN of grab area
 .byte $FF			; center destination
 .byte LOCATION_SHACK_S		; left destination
-.byte $FF			; right destination
+.byte LOCATION_SHACK_N		; right destination
 .byte $00,$00			; unused
 
 .include "shack_w_data.inc"
