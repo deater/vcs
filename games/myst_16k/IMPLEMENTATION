@@ -91,16 +91,20 @@ Clickable/Grabbable/Action Items:
 
 	If things are clicked, 
 		Levels 0..7 = assume it's a marker switch and handle
-		Levels 8..11 = assume it's a book and handle
-	TODO:
-		alternate things:
-			if button in fireplace?
-			if it's a red/blue page?
-			if it's the clock puzzle?
-			if it's a door open/close?
-			if it's a book on the bookshelf?
-				
+		Levels 8..11 = assume it's a book location and handle
+			TODO:
+				red_book_close: handle page vs not
+				blue_book_close: handle page vs not
+				behind_fireplace: handle page vs not
 
+	TODO:
+		other locations:
+			inside_fireplace:	button in fireplace
+			clock_s:		going to puzzle
+			library_nw:		door open
+			library_ne:		door close
+			library_n:		grab book
+			atrus:			end game
 
 Book Implementation:
 ~~~~~~~~~~~~~~~~~~~~
