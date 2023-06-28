@@ -78,8 +78,10 @@ green_book_data.bin:	green_book_data.o
 green_book_data.o:	green_book_data.inc
 	ca65 -o green_book_data.o green_book_data.inc
 
-green_book_data.inc:	green_book_edge.png
+green_book_data.inc:	green_book_edge.png green_book_overlay1.png green_book_overlay2.png
 	$(PNG2OVERLAY) -4 -c -n green green_book_edge.png - > green_book_data.inc
+	$(PNG2OVERLAY) -4 -n green_overlay1 green_book_overlay1.png - >> green_book_data.inc
+	$(PNG2OVERLAY) -4 -n green_overlay2 green_book_overlay2.png - >> green_book_data.inc
 
 ###
 
