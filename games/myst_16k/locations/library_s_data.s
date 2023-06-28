@@ -8,8 +8,8 @@
 .byte 0,$00			; coarse/fine of missile0 (vertical line)
 .byte $00,$00			; XMAX/XMIN of grab area
 .byte $00,$00			; YMAX/YMIN of grab area
-.byte LOCATION_LIBRARY_SE	; left destination
 .byte LOCATION_HILLTOP_S	; center destination
+.byte LOCATION_LIBRARY_SE	; left destination
 .byte LOCATION_LIBRARY_SW	; right destination
 .byte $00,$00			; unused
 

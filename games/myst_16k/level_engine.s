@@ -633,26 +633,34 @@ waited_enough_level:
 	lda	INPT4			; check if joystick button pressed
 	bmi	done_check_level_input
 
+	;====================================
 	; reset input countdown for debounce
-	lda	#10
+
+	lda	#20
 	sta	INPUT_COUNTDOWN
 
+	;======================
 	; button was pressed
+
 	lda	POINTER_GRABBING	; secial case if grabbing
 	bne	clicked_grab
 
 	lda	POINTER_TYPE
+	and	#$3			; map page and point (fwd) to same
+	tax
 
-	cmp	#POINTER_TYPE_LEFT
-	beq	clicked_left
+	cpx	#POINTER_TYPE_GRAB	; special case if grabbing
+	beq	clicked_grab
 
-	cmp	#POINTER_TYPE_RIGHT
-	beq	clicked_right
+	lda	LEVEL_CENTER_DEST,X
 
-	; default, if page or point, is go forward
+	bmi	done_check_level_input	; if $FF then ignore
 
-;	cmp	#POINTER_TYPE_POINT
-	bne	clicked_forward
+	;=====================
+	; start new level
+
+	sta	CURRENT_LOCATION
+	jmp	load_new_level
 
 
 clicked_grab:			; process of elimination
@@ -693,27 +701,6 @@ done_check_level_input:
 
 	jmp	level_frame
 
-
-clicked_forward:
-
-	lda	LEVEL_CENTER_DEST
-	bmi	done_check_level_input
-	jmp	start_new_level
-
-clicked_left:
-	lda	LEVEL_LEFT_DEST
-	bmi	done_check_level_input
-	jmp	start_new_level
-
-clicked_right:
-	lda	LEVEL_RIGHT_DEST
-	bmi	done_check_level_input
-;	jmp	start_new_level
-
-
-start_new_level:
-	sta	CURRENT_LOCATION
-	jmp	load_new_level
 
 
 powers_of_two:

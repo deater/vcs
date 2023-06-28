@@ -150,11 +150,13 @@ Level Data description:
 	5	2	x-coord of missile0 overlay (vertical line)
 	7	2	XMAX/XMIN of action grab area
 	9	2	YMAX/YMIN of action grab area
-	11	1	destination if click on left-facing hand ($FF=none)
-	12	1	destination if click on forward hand
-	13	1	destination if click on right-facing hand
+	12	1	destination if click on forward hand      ($FF=none)
+	11	1	destination if click on left-facing hand  ($FF=none)
+	13	1	destination if click on right-facing hand ($FF=none)
 	14	2	unused for now ($00)
 
+	it's center/left/right rather than l/c/r to save 13 bytes
+		in the movement code
 
 	Description of the images:
 		standard Atari VCS asymmetric display
