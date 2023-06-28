@@ -646,11 +646,8 @@ waited_enough_level:
 	bne	clicked_grab
 
 	lda	POINTER_TYPE
-	and	#$3			; map page and point (fwd) to same
+	and	#$3			; map "page" and "point (fwd)" to same
 	tax
-
-	cpx	#POINTER_TYPE_GRAB	; special case if grabbing
-	beq	clicked_grab
 
 	lda	LEVEL_CENTER_DEST,X
 
@@ -663,9 +660,12 @@ waited_enough_level:
 	jmp	load_new_level
 
 
-clicked_grab:			; process of elimination
+
+
 	;==========================
 	; clicked grab
+	;==========================
+clicked_grab:
 	ldx	CURRENT_LOCATION
 	cpx	#8			; if level >8 not switch
 	bcc	handle_switch

@@ -99,65 +99,6 @@ copy_zp_loop:
 
 .include "locations/level_locations.inc"
 
-.if 0
-level_bank_lookup:
-	.byte	1			; 0 = gear_n
-	.byte	1			; 1 = dentist_n
-	.byte	2			; 2 = rocket_close_n
-	.byte	2			; 3 = pool_n
-	.byte	2			; 4 = shack_w
-	.byte	2			; 5 = cabin_e
-	.byte	2			; 6 = clock_close_s
-	.byte	1			; 7 = dock_n
-
-	.byte	2			; 8 = red_book_close
-	.byte	2			; 9 = blue_book_close
-	.byte	$FF			; 10 = green_book_close
-	.byte	0			; 11 = arrival_n
-
-	.byte	0			; 12 = clock_s
-	.byte	0			; 13 = rocket_n
-	.byte	0			; 14 = hilltop_w
-	.byte	0			; 15 = imager_w
-	.byte	0			; 16 = hilltop_s
-	.byte	0			; 17 = hilltop_n
-	.byte	0			; 18 = hilltop_e
-	.byte	0			; 19 = arrival_e
-	.byte	0			; 20 = clock_n
-
-	.byte	1			; 21 = shortsteps_w
-	.byte	1			; 22 = library_n
-	.byte	1			; 23 = gear_s
-	.byte	1			; 24 = library_s
-	.byte	1			; 25 = arrival_s
-	.byte	1			; 26 = arrival_w
-	.byte	1			; 27 = hill_w
-
-	.byte	2			; 28 = library_w
-	.byte	2			; 29 = library_e
-	.byte	2			; 30 = steps_s
-
-	.byte	3			; 31 = shack_s
-	.byte	3			; 32 = cabin_path_s
-	.byte	3			; 33 = cabin_path_n
-	.byte	3			; 34 = library_sw
-	.byte	3			; 35 = library_se
-	.byte	3			; 36 = burnt_book
-	.byte	3			; 37 = imager_e
-	.byte	3			; 38 = behind_fireplace
-	.byte	3			; 39 = inside_fireplace
-
-	.byte	4			; 40 = dni_n
-	.byte	4			; 41 = dni_e
-	.byte	4			; 42 = atrus_e
-	.byte	4			; 43 = trapped
-	.byte	4			; 44 = dock_s
-	.byte	4			; 45 = dentist_e
-	.byte	4			; 46 = rocket_s
-	.byte	4			; 47 = pool_s
-;	.byte	4			; 48 = you_win_s
-.endif
-
 
 level_bank_and_high:
 	; Marker switch locations are 0..7 to make code slightly easier
@@ -173,7 +114,7 @@ level_bank_and_high:
 
 	.byte	(2<<5) | (>red_book_close_data_zx02)	; 8 = red_book_close
 	.byte	(2<<5) | (>blue_book_close_data_zx02)	; 9 = blue_book_close
-	.byte	$FF					; 10 = green_book_close
+	.byte	(3<<5) | (>behind_fireplace_data_zx02)	; 10 = behind_fireplace
 	.byte	(0<<5) | (>arrival_n_data_zx02)		; 11 = arrival_n
 
 	.byte	(0<<5) | (>clock_s_data_zx02)		; 12 = clock_s
@@ -205,7 +146,7 @@ level_bank_and_high:
 	.byte	(3<<5) | (>library_se_data_zx02)	; 35 = library_se
 	.byte	(3<<5) | (>burnt_book_data_zx02)	; 36 = burnt_book
 	.byte	(3<<5) | (>imager_e_data_zx02)		; 37 = imager_e
-	.byte	(3<<5) | (>behind_fireplace_data_zx02)	; 38 = behind_fireplace
+	.byte	$FF	; placeholder
 	.byte	(3<<5) | (>inside_fireplace_data_zx02)	; 39 = inside_fireplace
 
 	.byte	(4<<5) | (>dni_n_data_zx02)		; 40 = dni_n
@@ -232,7 +173,7 @@ level_compress_data_low:
 
 	.byte	<red_book_close_data_zx02		; 8
 	.byte	<blue_book_close_data_zx02		; 9
-	.byte	$FF					; 10
+	.byte	<behind_fireplace_data_zx02		; 10
 	.byte	<arrival_n_data_zx02			; 11
 
 	.byte	<clock_s_data_zx02
@@ -261,7 +202,7 @@ level_compress_data_low:
 	.byte	<library_se_data_zx02
 	.byte	<burnt_book_data_zx02
 	.byte	<imager_e_data_zx02
-	.byte	<behind_fireplace_data_zx02
+	.byte	$FF
 	.byte	<inside_fireplace_data_zx02
 	.byte	<dni_n_data_zx02
 	.byte	<dni_e_data_zx02

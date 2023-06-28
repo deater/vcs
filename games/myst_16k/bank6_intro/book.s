@@ -607,7 +607,15 @@ book_clicked:
 	bcc	exit_no_link_noise	; brother book, just exit
 
 green_book:
-	; TODO
+	lda	POINTER_TYPE
+	cmp	#POINTER_TYPE_GRAB
+	bne	exit_no_link_noise
+
+	; we clicked in window
+
+	lda	#LOCATION_DNI_N
+	sta	LINK_DESTINATION
+	bne	exit_yes_link		; bra
 
 
 myst_book:
@@ -648,3 +656,5 @@ blue_book_data_zx02:
 .incbin "blue_book_data.zx02"
 green_book_data_zx02:
 .incbin "green_book_data.zx02"
+
+.include "../locations.inc"
