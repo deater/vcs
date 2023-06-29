@@ -725,9 +725,19 @@ powers_of_two:
 
 grab_dest_l:
 	.byte	<(grab_atrus-1)
+	.byte	<(grab_fireplace-1)
+	.byte	<(grab_clock-1)
+	.byte	<(grab_bookshelf-1)
+	.byte	<(grab_close_painting-1)
+	.byte	<(grab_open_painting-1)
 
 grab_dest_h:
 	.byte	>(grab_atrus-1)
+	.byte	>(grab_fireplace-1)
+	.byte	>(grab_clock-1)
+	.byte	>(grab_bookshelf-1)
+	.byte	>(grab_close_painting-1)
+	.byte	>(grab_open_painting-1)
 
 	;=========================
 	; giving atrus the page
@@ -759,3 +769,32 @@ trapped_with_atrus:
 	; else, trapped
 	lda	#LOCATION_TRAPPED
 	jmp	start_new_level
+
+
+	; grabbed the puzzle in the fireplace
+grab_fireplace:
+	lda	#LOCATION_LIBRARY_NW
+	jmp	start_new_level
+
+	; grabbed the clock
+grab_clock:
+	jmp	done_check_level_input
+
+	; grabbed the bookshelf
+grab_bookshelf:
+	jmp	done_check_level_input
+
+	; grabbed close door painting
+grab_close_painting:
+	lda	#0
+	beq	common_painting
+
+	; grabbed open door painting
+grab_open_painting:
+	lda	#1
+common_painting:
+	sta	DOOR_OPEN
+	ldy	#SFX_RUMBLE		; play sound
+	sty	SFX_PTR
+
+	jmp	done_check_level_input
