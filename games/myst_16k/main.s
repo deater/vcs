@@ -57,8 +57,8 @@ clear_loop:
 	jsr	do_book
 
 	; DEBUG
-	lda	#$FF
-	sta	SWITCH_STATUS
+;	lda	#$FF
+;	sta	SWITCH_STATUS
 
 
 	;==============================
