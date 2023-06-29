@@ -624,7 +624,7 @@ were_going_to_dni:
 	bne	exit_yes_link		; bra
 
 were_going_to_library:
-	lda	#LOCATION_LIBRARY_N
+	lda	#LOCATION_LIBRARY_UP
 	sta	LINK_DESTINATION
 	bne	exit_yes_link		; bra
 

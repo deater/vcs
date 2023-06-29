@@ -59,8 +59,7 @@ level_locations.inc:	\
 	$(CALC_ADDRESS) -a 0x1000 -s you_win_data_zx02 rom_bank4.lst >> level_locations.inc
 	$(CALC_ADDRESS) -a 0x1000 -s steps_e_data_zx02 rom_bank5.lst >> level_locations.inc
 	$(CALC_ADDRESS) -a 0x1000 -s shack_n_data_zx02 rom_bank5.lst >> level_locations.inc
-
-
+	$(CALC_ADDRESS) -a 0x1000 -s library_up_data_zx02 rom_bank5.lst >> level_locations.inc
 
 ###
 
@@ -139,7 +138,7 @@ rom_bank5.bin:	rom_bank5.o
 	ld65 -o rom_bank5.bin rom_bank5.o -C $(LINKER_SCRIPT)/atari2600_1000.inc
 
 rom_bank5.o:	rom_bank5.s \
-	steps_e_data.zx02 shack_n_data.zx02
+	steps_e_data.zx02 shack_n_data.zx02 library_up_data.zx02
 	ca65 -o rom_bank5.o rom_bank5.s -l rom_bank5.lst
 
 
@@ -344,6 +343,13 @@ you_win_data.inc:	you_win_bg.png blank_overlay.png
 library_n_data.inc:	library_n_bg.png library_n_overlay.png
 	$(PNG2PF) -4 -n library_n -b 0x00 library_n_bg.png - > library_n_data.inc
 	$(PNG2OVERLAY) -4 -o -n library_n library_n_overlay.png - >> library_n_data.inc
+
+###
+
+library_up_data.inc:	library_up_bg.png library_up_overlay.png
+	$(PNG2PF) -4 -n library_up -b 0xFE library_up_bg.png - > library_up_data.inc
+	$(PNG2OVERLAY) -4 -o -n library_up library_up_overlay.png - >> library_up_data.inc
+
 
 ###
 
@@ -836,6 +842,18 @@ library_n_data.bin:	library_n_data.o
 
 library_n_data.o:	library_n_data.s library_n_data.inc
 	ca65 -o library_n_data.o library_n_data.s -l library_n_data.lst
+
+###
+
+library_up_data.zx02:	library_up_data.bin
+	$(ZX02) -f library_up_data.bin library_up_data.zx02
+
+library_up_data.bin:	library_up_data.o
+	ld65 -o library_up_data.bin library_up_data.o -C $(LINKER_SCRIPT)/atari2600_f000.inc
+
+library_up_data.o:	library_up_data.s library_up_data.inc
+	ca65 -o library_up_data.o library_up_data.s -l library_up_data.lst
+
 
 ###
 

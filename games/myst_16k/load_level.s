@@ -168,7 +168,7 @@ level_bank_and_high:
 	.byte	(4<<5) | (>you_win_data_zx02)		; 50 = you_win
 
 	.byte	(5<<5) | (>steps_e_data_zx02)		; 51 = steps_e
-	.byte	$FF					; 52 = library_up
+	.byte	(5<<5) | (>library_up_data_zx02)	; 52 = library_up
 
 
 level_compress_data_low:
@@ -232,4 +232,4 @@ level_compress_data_low:
 	.byte	<you_win_data_zx02			; 50 = you_win
 
 	.byte	<steps_e_data_zx02			; 51 = steps_e
-	.byte	$FF					; 52 = library_up
+	.byte	<library_up_data_zx02			; 52 = library_up

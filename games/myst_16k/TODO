@@ -1,3 +1,7 @@
+sound:
+	rumbling noise for when we mess with tower rotation
+		and doors opening/closing
+
 overlay patching:
 	+ atrus
 		patch white page to 0 if finished game
