@@ -9,8 +9,8 @@
 .byte $00,$00			; XMAX/XMIN of grab area
 .byte $00,$00			; YMAX/YMIN of grab area
 .byte LOCATION_BURNT_BOOK	; center destination
-.byte LOCATION_LIBRARY_W	; left destination
-.byte LOCATION_LIBRARY_E	; right destination
+.byte LOCATION_LIBRARY_NW	; left destination
+.byte LOCATION_LIBRARY_NE	; right destination
 .byte $00,$00			; unused
 
 .include "library_n_data.inc"

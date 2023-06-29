@@ -127,8 +127,8 @@ level_bank_and_high:
 	.byte	(3<<5) | (>inside_fireplace_data_zx02)	; 13 = inside_fireplace
 	.byte	(0<<5) | (>clock_s_data_zx02)		; 14 = clock_s
 	.byte	(1<<5) | (>library_n_data_zx02)		; 15 = library_n
-	.byte	$FF					; 16 = library_nw
-	.byte	$FF					; 17 = library_ne
+	.byte	(5<<5) | (>library_nw_data_zx02)	; 16 = library_nw
+	.byte	(5<<5) | (>library_ne_data_zx02)	; 17 = library_ne
 
 	.byte	(0<<5) | (>rocket_n_data_zx02)		; 18 = rocket_n
 	.byte	(0<<5) | (>hilltop_w_data_zx02)		; 19 = hilltop_w
@@ -190,8 +190,8 @@ level_compress_data_low:
 	.byte	<inside_fireplace_data_zx02		; 13 = inside_fireplace
 	.byte	<clock_s_data_zx02			; 14 = clock_s
 	.byte	<library_n_data_zx02			; 15 = library_n
-	.byte	$FF					; 16 = library_nw
-	.byte	$FF					; 17 = library_ne
+	.byte	<library_nw_data_zx02			; 16 = library_nw
+	.byte	<library_ne_data_zx02			; 17 = library_ne
 
 	.byte	<rocket_n_data_zx02			; 18 = rocket_n
 	.byte	<hilltop_w_data_zx02			; 19 = hilltop_w
