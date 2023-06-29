@@ -655,7 +655,7 @@ waited_enough_level:
 
 	;=====================
 	; start new level
-
+start_new_level:
 	sta	CURRENT_LOCATION
 	jmp	load_new_level
 
@@ -669,8 +669,24 @@ clicked_grab:
 	ldx	CURRENT_LOCATION
 	cpx	#8			; if level >8 not switch
 	bcc	handle_switch
-	cpx	#11
-	bcs	done_check_level_input	; if level>11 not book
+	cpx	#13
+	bcc	handle_book	; if level>8 && <13 then book
+
+	; otherwise, special grab
+
+	sec
+	txa
+	sbc	#13			; get offset
+	tax
+
+	; set up jump table fakery
+handle_special:
+	lda	grab_dest_h,X
+	pha
+	lda	grab_dest_l,X
+	pha
+	rts				; jump to location
+
 
 handle_book:
 
@@ -706,3 +722,14 @@ done_check_level_input:
 powers_of_two:
 .byte	$01,$02,$04,$08, $10,$20,$40,$80
 
+
+grab_dest_l:
+	.byte	<(grab_atrus-1)
+
+grab_dest_h:
+	.byte	>(grab_atrus-1)
+
+grab_atrus:
+
+	lda	#LOCATION_TRAPPED
+	jmp	start_new_level
