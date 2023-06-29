@@ -773,7 +773,7 @@ trapped_with_atrus:
 
 	; grabbed the puzzle in the fireplace
 grab_fireplace:
-	lda	#LOCATION_LIBRARY_NW
+	lda	#LOCATION_BEHIND_FIREPLACE
 	jmp	start_new_level
 
 	; grabbed the clock
