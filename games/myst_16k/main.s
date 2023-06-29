@@ -97,7 +97,7 @@ do_book:
 
 
 	.include "sfx_data.inc"
-.align $100 ; temporary
+;.align $100 ; temporary
 	.include "sprite_data.inc"
 
 ; e7 signature for MAME */

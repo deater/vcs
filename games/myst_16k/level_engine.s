@@ -669,14 +669,14 @@ clicked_grab:
 	ldx	CURRENT_LOCATION
 	cpx	#8			; if level >8 not switch
 	bcc	handle_switch
-	cpx	#13
-	bcc	handle_book	; if level>8 && <13 then book
+	cpx	#12
+	bcc	handle_book	; if level>8 && <12 then book
 
 	; otherwise, special grab
 
 	sec
 	txa
-	sbc	#13			; get offset
+	sbc	#12			; get offset
 	tax
 
 	; set up jump table fakery
@@ -729,7 +729,33 @@ grab_dest_l:
 grab_dest_h:
 	.byte	>(grab_atrus-1)
 
+	;=========================
+	; giving atrus the page
 grab_atrus:
+	lda	WHITE_PAGE_COUNT
+	beq	havent_given_page_yet
 
+	; myst linking book instead
+	jmp	handle_book
+
+havent_given_page_yet:
+	; if have white page, goto good ending
+	lda	POINTER_COLOR
+	cmp	#POINTER_COLOR_WHITE
+	bne	trapped_with_atrus
+
+	; "good" ending
+trapped_on_myst:
+
+	; give white page to atrus
+	inc	WHITE_PAGE_COUNT
+	lda	#0
+	sta	POINTER_COLOR
+
+	lda	#LOCATION_YOU_WIN
+	jmp	start_new_level
+
+trapped_with_atrus:
+	; else, trapped
 	lda	#LOCATION_TRAPPED
 	jmp	start_new_level

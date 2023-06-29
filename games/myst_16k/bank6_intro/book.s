@@ -595,17 +595,19 @@ book_keep_going:
 	jmp	book_frame
 
 book_clicked:
-	; if 0..1 any click stays same place
-	; if 2 grab links, click backs off
-	; if 3 grab links
+	; WHICH_BOOK = CURRENT_LOCATION - 8
+	; if 0..1 (red/blue) any click stays same place
+	; if 2/4 (green / dni myst book) grab links, click backs off
+	; if 3 (myst book start game) grab links
 
-	lda	WHICH_BOOK
-	cmp	#3
-	beq	myst_book
+	ldx	WHICH_BOOK
+	cpx	#3
+	beq	myst_book_start_game
 
-	cmp	#2
+	cpx	#2
 	bcc	exit_no_link_noise	; brother book, just exit
 
+	; books where you link or back off
 green_book:
 	lda	POINTER_TYPE
 	cmp	#POINTER_TYPE_GRAB
@@ -613,12 +615,21 @@ green_book:
 
 	; we clicked in window
 
+	cpx	#4
+	beq	were_going_to_library
+
+were_going_to_dni:
 	lda	#LOCATION_DNI_N
 	sta	LINK_DESTINATION
 	bne	exit_yes_link		; bra
 
+were_going_to_library:
+	lda	#LOCATION_LIBRARY_N
+	sta	LINK_DESTINATION
+	bne	exit_yes_link		; bra
 
-myst_book:
+	; start of game, so no way to back off
+myst_book_start_game:
 	lda	POINTER_TYPE
 	cmp	#POINTER_TYPE_GRAB
 	bne	book_keep_going
@@ -641,11 +652,13 @@ book_data_l:
 	.byte <blue_book_data_zx02
 	.byte <green_book_data_zx02
 	.byte <myst_book_data_zx02
+	.byte <myst_book_data_zx02
 
 book_data_h:
 	.byte >red_book_data_zx02
 	.byte >blue_book_data_zx02
 	.byte >green_book_data_zx02
+	.byte >myst_book_data_zx02
 	.byte >myst_book_data_zx02
 
 myst_book_data_zx02:

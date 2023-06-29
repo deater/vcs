@@ -1,3 +1,12 @@
+overlay patching:
+	+ atrus
+		patch white page to 0 if finished game
+	+ behind_fireplace
+		patch red or blue page if it's been taken
+	+ red_book_close / blue_book_close
+		patch page out if taken
+
+
 TODO before release:
 	+ hint
 		+ grabbable book
