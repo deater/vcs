@@ -13,7 +13,7 @@
 
 
 .include "../zp.inc"
-;.include "../locations.inc"
+.include "../locations.inc"
 
 
 fireplace:
@@ -38,22 +38,9 @@ clear_loop:
 	;=========================
 	; load level
 	;=========================
-	; load level data for CURRENT_LOCATION
-	;	put in RAM starting at $1000
-	;	also update 16-bytes of ZP level data
 
-load_level:
+	.include "load_level.s"
 
-	;=================================
-	; copy first 16 bytes to zero page
-
-	ldy	#15							; 2
-copy_zp_loop:
-	lda	level_data,Y					; 4+
-	sta	LEVEL_DATA,Y						; 5
-
-	dey								; 2
-	bpl	copy_zp_loop						; 2/3
 
 
 	lda	#LOCATION_INSIDE_FIREPLACE
@@ -74,14 +61,13 @@ load_new_level:
 .include "../adjust_sprite.s"
 .include "../sprite_data.inc"
 
+.include "../zx02_optim.s"
 
-.align $100
-level_data:
-.include "../locations/inside_fireplace_data.s"
+level_data_compressed:
+.incbin "../locations/inside_fireplace_data.zx02"
 
 .segment "IRQ_VECTORS"
 	.word fireplace	; NMI
 	.word fireplace	; RESET
 	.word fireplace	; IRQ
-
 

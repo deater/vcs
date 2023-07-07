@@ -6,7 +6,7 @@
 ;	due to limitations of kernel
 
 
-;	level_data		= $1400
+	level_data		= $1400
         level_colors            = level_data+$10	;$1410
         level_playfield0_left   = level_data+$40	;$1440
         level_playfield1_left   = level_data+$70	;$1470
@@ -531,7 +531,7 @@ done_playfield:
 	;===========================
 	;===========================
 
-	ldx	#24
+	ldx	#23
 	jsr	common_overscan
 
 	;==================================
@@ -540,6 +540,20 @@ done_playfield:
 	lda	#$0							; 2
 	sta	ENAM0		; disable missile 0			; 3
 	sta	WSYNC
+
+
+	;=======================================
+	; fireplace stuff
+
+	lda	#$88
+	sta	level_playfield1_left-$400+23
+	sta	level_playfield1_left-$400+24
+	sta	level_playfield1_left-$400+25
+
+
+
+	sta	WSYNC
+
 
 	;==================================
 	; overscan 28, update sound

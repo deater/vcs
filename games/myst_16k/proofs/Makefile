@@ -1,6 +1,6 @@
 LINKER_SCRIPT = ../../../linker_script
 
-all:	clock.bin fireplace.bin
+all:	clock.bin fireplace.e7
 
 ###
 
@@ -13,10 +13,29 @@ clock.o:	clock.s clock_sprites.inc
 ###
 
 fireplace.bin:	fireplace.o
-	ld65 -o fireplace.bin fireplace.o -C $(LINKER_SCRIPT)/atari2600_f000.inc
+	ld65 -o fireplace.bin fireplace.o -C $(LINKER_SCRIPT)/atari2600_1a00.inc
 
-fireplace.o:	fireplace.s
+fireplace.o:	fireplace.s level_engine.s load_level.s
 	ca65 -o fireplace.o fireplace.s -l fireplace.lst
+
+
+###
+
+fireplace.e7:	fireplace_e7.o
+	ld65 -o fireplace.e7 fireplace_e7.o -C $(LINKER_SCRIPT)/atari2600_e7.inc
+
+fireplace_e7.o: fireplace_e7.s fireplace.bin \
+	zero.bin zero2.bin
+	ca65 -o fireplace_e7.o fireplace_e7.s
+
+###
+
+zero.bin:	
+	dd if=/dev/zero of=zero.bin bs=1k count=2
+
+zero2.bin:	
+	dd if=/dev/zero of=zero2.bin bs=256 count=2
+
 
 
 ###
