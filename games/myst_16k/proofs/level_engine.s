@@ -531,7 +531,7 @@ done_playfield:
 	;===========================
 	;===========================
 
-	ldx	#23
+	ldx	#8
 	jsr	common_overscan
 
 	;==================================
@@ -545,60 +545,62 @@ done_playfield:
 	;=======================================
 	; fireplace stuff
 
-	lda	#$FF
-	sta	FIREPLACE_ROW1
+	; try to be as short as possible (offloading other work elsewhere)
+	; as we are severely size constrained
 
-	lda	FIREPLACE_ROW1
-	sta	TEMP1
+	; must be in main ROM as we modify the playfield data in RAM
 
-	and	#$1
-	tax
-	lda	fireplace_lookup_reverse,X
-	and	#$0F
-	ora	#$E0		; restore vertical line
-	sta	level_playfield2_right-$400+23
-	sta	level_playfield2_right-$400+24
-	sta	level_playfield2_right-$400+25
+update_fireplace:
+; 0
+	tsx								; 2
+	stx	TITLE_COLOR			; save stack		; 3
+; 5
+	ldx	#FIREPLACE_C0_R0		; point stack to data	; 2
+	txs								; 2
+; 9
+	ldx	#4				; X is column		; 2
+; 11
 
-	ror	TEMP1
-	lda	TEMP1
-	and	#$3
-	tax
-	lda	fireplace_lookup_normal,X
-	sta	level_playfield1_right-$400+23
-	sta	level_playfield1_right-$400+24
-	sta	level_playfield1_right-$400+25
+update_fireplace_loop_col:
 
-	ror	TEMP1
-	ror	TEMP1
-	lda	TEMP1
-	and	#$2
-	tax
-	lda	fireplace_lookup_reverse,X
-	sta	level_playfield0_right-$400+23
-	sta	level_playfield0_right-$400+24
-	sta	level_playfield0_right-$400+25
+	lda	playfield_locations_l,X		; get adress for column	; 4
+	sta	INL				; into (INL)		; 3
+	lda	playfield_locations_h,X					; 4
+	sta	INH							; 3
+	ldy	#0							; 2
 
-	ror	TEMP1
-	lda	TEMP1
-	and	#$3
-	tax
-	lda	fireplace_lookup_reverse,X
-	sta	level_playfield2_left-$400+23
-	sta	level_playfield2_left-$400+24
-	sta	level_playfield2_left-$400+25
+; 16
 
-.if 0
-	lda	TEMP1
-	ror
-	ror
-	and	#$3
-	tax
-	lda	fireplace_lookup_normal,X
-	sta	level_playfield1_left-$400+23
-	sta	level_playfield1_left-$400+24
-	sta	level_playfield1_left-$400+25
-.endif
+
+update_fireplace_loop_row:
+
+	pla					; load value		; 4
+
+	; store 3 copies then skip
+
+	sta	(INL),Y							; 6
+	iny								; 2
+	sta	(INL),Y							; 6
+	iny								; 2
+	sta	(INL),Y							; 6
+	iny								; 2
+	iny								; 2
+;  30
+
+	cpy	#24				; 4*6			; 2
+	bne	update_fireplace_loop_row				; 2/3
+
+	dex					; next column		; 2
+	bpl	update_fireplace_loop_col				; 2/3
+
+	ldx	TITLE_COLOR						; 3
+	txs								; 2
+
+; 11 + -1 + 5 + ( (16 + 5 + (30+5)*6 -1 ) * 5)
+; 15 + (20 + 35*6)*5
+; 15 + (230) * 5
+; 15 + 1150 = 1165 cycles = 15.3 scanlines
+
 
 	sta	WSYNC
 
@@ -868,4 +870,18 @@ fireplace_lookup_normal:
 
 fireplace_lookup_reverse:
 	.byte $88,$F8,$8F,$88
+
+playfield_locations_l:
+	.byte <(level_playfield1_left-$400+23)
+	.byte <(level_playfield2_left-$400+23)
+	.byte <(level_playfield0_right-$400+23)
+	.byte <(level_playfield1_right-$400+23)
+	.byte <(level_playfield2_right-$400+23)
+
+playfield_locations_h:
+	.byte >(level_playfield1_left-$400+23)
+	.byte >(level_playfield2_left-$400+23)
+	.byte >(level_playfield0_right-$400+23)
+	.byte >(level_playfield1_right-$400+23)
+	.byte >(level_playfield2_right-$400+23)
 

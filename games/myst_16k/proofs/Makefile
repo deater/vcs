@@ -15,7 +15,7 @@ clock.o:	clock.s clock_sprites.inc
 fireplace.bin:	fireplace.o
 	ld65 -o fireplace.bin fireplace.o -C $(LINKER_SCRIPT)/atari2600_1a00.inc
 
-fireplace.o:	fireplace.s level_engine.s load_level.s
+fireplace.o:	fireplace.s level_engine.s load_level.s ../zp.inc
 	ca65 -o fireplace.o fireplace.s -l fireplace.lst
 
 
