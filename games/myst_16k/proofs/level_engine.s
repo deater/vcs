@@ -545,6 +545,13 @@ done_playfield:
 	;=======================================
 	; fireplace stuff
 
+
+fireplace_update = $1000
+
+	lda	E7_SET_BANK6
+	jsr	fireplace_update
+	sta	E7_SET_BANK7_RAM
+
 	; try to be as short as possible (offloading other work elsewhere)
 	; as we are severely size constrained
 
@@ -555,7 +562,8 @@ update_fireplace:
 	tsx								; 2
 	stx	TITLE_COLOR			; save stack		; 3
 ; 5
-	ldx	#FIREPLACE_C0_R0		; point stack to data	; 2
+	ldx	#(FIREPLACE_C0_R0-1)		; point stack to data	; 2
+						; -1 as pla incs first?
 	txs								; 2
 ; 9
 	ldx	#4				; X is column		; 2

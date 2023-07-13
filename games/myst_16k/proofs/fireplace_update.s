@@ -1,11 +1,11 @@
+fireplace_update:
 
-	;=======================================
-	; fireplace stuff
+	ldy	#5			; row
 
-	lda	#$FF
-	sta	FIREPLACE_ROW1
+fireplace_update_loop:
+	lda	FIREPLACE_ROW1,Y
+	eor	#$FF			; temp hack
 
-	lda	FIREPLACE_ROW1
 	sta	TEMP1
 
 	and	#$1
@@ -13,18 +13,14 @@
 	lda	fireplace_lookup_reverse,X
 	and	#$0F
 	ora	#$E0		; restore vertical line
-	sta	level_playfield2_right-$400+23
-	sta	level_playfield2_right-$400+24
-	sta	level_playfield2_right-$400+25
+	sta	FIREPLACE_C0_R0,Y
 
 	ror	TEMP1
 	lda	TEMP1
 	and	#$3
 	tax
 	lda	fireplace_lookup_normal,X
-	sta	level_playfield1_right-$400+23
-	sta	level_playfield1_right-$400+24
-	sta	level_playfield1_right-$400+25
+	sta	FIREPLACE_C1_R0,Y
 
 	ror	TEMP1
 	ror	TEMP1
@@ -32,32 +28,31 @@
 	and	#$2
 	tax
 	lda	fireplace_lookup_reverse,X
-	sta	level_playfield0_right-$400+23
-	sta	level_playfield0_right-$400+24
-	sta	level_playfield0_right-$400+25
+	sta	FIREPLACE_C2_R0,Y
 
 	ror	TEMP1
 	lda	TEMP1
 	and	#$3
 	tax
 	lda	fireplace_lookup_reverse,X
-	sta	level_playfield2_left-$400+23
-	sta	level_playfield2_left-$400+24
-	sta	level_playfield2_left-$400+25
+	sta	FIREPLACE_C3_R0,Y
 
-.if 0
 	lda	TEMP1
 	ror
 	ror
 	and	#$3
 	tax
 	lda	fireplace_lookup_normal,X
-	sta	level_playfield1_left-$400+23
-	sta	level_playfield1_left-$400+24
-	sta	level_playfield1_left-$400+25
-.endif
+	sta	FIREPLACE_C4_R0,Y
 
-	sta	WSYNC
+	dey
+	bpl	fireplace_update_loop
 
+	rts
 
+fireplace_lookup_normal:
+        .byte $FF,$F1,$1F,$11
+;       .byte $88,$8F,$F8,$FF
 
+fireplace_lookup_reverse:
+        .byte $88,$F8,$8F,$88
