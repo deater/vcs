@@ -8,12 +8,17 @@ fireplace_update_loop:
 
 	sta	TEMP1
 
+	; bit 0 (rightmost)
+
 	and	#$1
+	asl
 	tax
 	lda	fireplace_lookup_reverse,X
 	and	#$0F
 	ora	#$E0		; restore vertical line
 	sta	FIREPLACE_C0_R0,Y
+
+	; bit 2+1
 
 	ror	TEMP1
 	lda	TEMP1
@@ -22,13 +27,17 @@ fireplace_update_loop:
 	lda	fireplace_lookup_normal,X
 	sta	FIREPLACE_C1_R0,Y
 
+	; bit 3
+
 	ror	TEMP1
 	ror	TEMP1
 	lda	TEMP1
-	and	#$2
+	and	#$1
 	tax
 	lda	fireplace_lookup_reverse,X
 	sta	FIREPLACE_C2_R0,Y
+
+	; bit 5+4
 
 	ror	TEMP1
 	lda	TEMP1
@@ -36,6 +45,8 @@ fireplace_update_loop:
 	tax
 	lda	fireplace_lookup_reverse,X
 	sta	FIREPLACE_C3_R0,Y
+
+	; bit 7+6
 
 	lda	TEMP1
 	ror
@@ -52,7 +63,6 @@ fireplace_update_loop:
 
 fireplace_lookup_normal:
         .byte $FF,$F1,$1F,$11
-;       .byte $88,$8F,$F8,$FF
 
 fireplace_lookup_reverse:
-        .byte $88,$F8,$8F,$88
+        .byte $FF,$8F,$F8,$88

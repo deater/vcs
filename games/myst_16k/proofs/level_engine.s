@@ -845,8 +845,22 @@ trapped_with_atrus:
 
 	; grabbed the puzzle in the fireplace
 grab_fireplace:
-	lda	#LOCATION_BEHIND_FIREPLACE
-	jmp	start_new_level
+;	lda	#LOCATION_BEHIND_FIREPLACE
+;	jmp	start_new_level
+
+	sec
+	lda	#137
+	sbc	POINTER_X
+	lsr
+	lsr
+	lsr
+	lsr
+	tax
+	lda	powers_of_two,X
+	eor	FIREPLACE_ROW1
+	sta	FIREPLACE_ROW1
+
+	jmp	done_check_level_input
 
 	; grabbed the clock
 grab_clock:
