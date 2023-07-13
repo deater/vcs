@@ -620,6 +620,7 @@ update_fireplace_loop_row:
 
 	lda	#0							; 2
 	sta	POINTER_GRABBING					; 3
+	sta	WAS_CLICKED
 
 	sta	WSYNC
 
@@ -848,18 +849,26 @@ grab_fireplace:
 ;	lda	#LOCATION_BEHIND_FIREPLACE
 ;	jmp	start_new_level
 
-	sec
-	lda	#137
-	sbc	POINTER_X
-	lsr
-	lsr
-	lsr
-	lsr
-	tax
-	lda	powers_of_two,X
-	eor	FIREPLACE_ROW1
-	sta	FIREPLACE_ROW1
+;	sec
+;	lda	POINTER_Y
+;	sbc	#23
+;	lsr
+;	lsr
+;	tax
 
+;	sec
+;	lda	#135
+;	sbc	POINTER_X
+;	lsr
+;	lsr
+;	lsr
+;	lsr
+;	tay
+;	lda	powers_of_two,Y
+;	eor	FIREPLACE_ROW1,X
+;	sta	FIREPLACE_ROW1,X
+
+	inc	WAS_CLICKED
 	jmp	done_check_level_input
 
 	; grabbed the clock

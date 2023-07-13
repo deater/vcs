@@ -1,10 +1,73 @@
 fireplace_update:
 
+	; grabbed the puzzle in the fireplace
+
+	lda	WAS_CLICKED
+	beq	no_grab_fireplace
+
+was_grab_fireplace:
+
+	lda	POINTER_X
+	cmp	#136
+	bcs	no_grab_fireplace		; too far to right
+
+	cmp	#5				; is a button, skip ahead
+	bcs	not_fireplace_button
+
+	; correct answer
+	; C3 6B A3 93 CC FA
+
+	ldx	#0
+	stx	FIREPLACE_CORRECT
+check_fireplace_loop:
+	lda	FIREPLACE_ROW1,X
+	cmp	fireplace_solution,X
+	bne	not_the_combination
+	inc	FIREPLACE_CORRECT
+not_the_combination:
+	inx
+	cpx	#6
+	bne	check_fireplace_loop
+
+	beq	no_grab_fireplace	; bra
+
+
+not_fireplace_button:
+
+	sec						; 2
+	lda	POINTER_Y				; 
+	sbc	#23
+	lsr
+	lsr
+	tax
+
+	sec
+	lda	#135
+	sbc	POINTER_X
+	lsr
+	lsr
+	lsr
+	lsr
+	tay
+	lda	powers_of_two,Y
+	eor	FIREPLACE_ROW1,X
+	sta	FIREPLACE_ROW1,X
+
+
+;	ldy	#SFX_CLICK
+;	sty	SFX_PTR
+
+no_grab_fireplace:
+
+
+
+	; update background data
+
 	ldy	#5			; row
 
 fireplace_update_loop:
 	lda	FIREPLACE_ROW1,Y
-	eor	#$FF			; temp hack
+;	eor	#$FF			; temp hack
 
 	sta	TEMP1
 
@@ -66,3 +129,11 @@ fireplace_lookup_normal:
 
 fireplace_lookup_reverse:
         .byte $FF,$8F,$F8,$88
+
+
+; FIXME: use common one
+powers_of_two:
+.byte   $01,$02,$04,$08, $10,$20,$40,$80
+
+fireplace_solution:
+.byte	$C3,$6B,$A3,$93,$CC,$FA
