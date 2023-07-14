@@ -128,6 +128,8 @@ cleft_playfield0_right:
 	.byte $00
 	.byte $00
 
+.if 0
+
 ;=============================
 ; sound data
 ;=============================
@@ -152,7 +154,7 @@ sfx_cv:
 	.byte   $3A,$38,$36,$38,$3A,$3C,$3A,$38
 	.byte   $3A,$3C,$3E,$3C,$3A, $E4,$E6,$EA
 	.byte   $E8,$E6,$E4,$3A,$3c,$3d,$3e,$3e	; link
+.endif
 
 SFX_CLICK	=       sfx_click-sfx_start-1
 SFX_LINK	=       sfx_link-sfx_start-1
-
