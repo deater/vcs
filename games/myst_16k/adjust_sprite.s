@@ -7,6 +7,13 @@
 ;	compute horizontal fine adjust
 ;	assume sprite width of 8
 
+
+; this is a hack, you can really only position to 15 granularity
+;	because each CPU clock is 3 TIA clocks and that means
+;	we can only do multiple of 3 (15 is closest)
+
+; This code acts as if you can do the full 16 as the math is easier
+
 pointer_moved_horizontally:
 	clc								; 2
 	lda	POINTER_X						; 3

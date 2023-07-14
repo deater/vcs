@@ -20,9 +20,11 @@ was_grab_fireplace:
 	cmp	#136							; 2
 	bcs	no_grab_fireplace	; too far to right		; 2/3
 ; 21
-	cmp	#5			; is a button, skip ahead	; 2
+	cmp	#9			; is a button, skip ahead	; 2
 	bcs	not_fireplace_button					; 2/3
 
+	cmp	#5			; less likely to press
+	bcs	no_grab_fireplace	; button by mistake
 
 fireplace_button:
 ; 25
@@ -48,8 +50,25 @@ not_fireplace_button:
 
 	; calculate column
 
+	; minimum is 5?
+
+	;					should be
+	; $5 - $15 = 7		5 - 21         127 - 112
+	; $16-$25  = 6		22 - 37	       111 - 96
+	; $7c-$8b  = 0		123 - 139	15  - 0
+
+	; $5, $16, $27, $38, $49, $5A, $6B, $7C
+
+	; 0123456789012345678901234567890123456789
+	; MMMM*** *** *** *** *** *** *** ***MMMMM
+
+	; hand=10 wide
+	; 7 = 16-31, -2, 14-29	4 - 19
+	; 6 = 32-47, -2, 30-45	20- 35
+	;...
+	; 0 = 128-143, -2, 126-141  116-131
 	sec						; 2
-	lda	#135					; 2
+	lda	#136					; 2
 	sbc	POINTER_X				; 3
 	lsr						; 2
 	lsr						; 2

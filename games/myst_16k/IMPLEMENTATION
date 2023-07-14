@@ -321,3 +321,23 @@ updated version:
 
 	scanlines		= 4 + 10 = 14
 
+
+fireplace puzzle co-ords
+~~~~~~~~~~~~~~~~~~~~~~~~
+ To position things on screen is difficult.  You set a sprite's X-position
+	by writing to a register, but since the TIA clock is 3x the CPU
+	clock you can only set this at multiples of 3 (usually if you use
+	a loop to do this you can only really do this at 5 cpu cycle
+	granularity, or 15 TIA cycle granularity).  You can ajdust after
+	the fact to -7/+8.
+
+  Simple code will ``cheat'' and divide by 16 as close enough (easy to do
+	with shifts) though it means your position on screen in relation
+	to the playfield will be offset a bit from the actual co-ords
+
+  Maybe not a big deal... until the fireplace puzzle and trying to click
+	on playfield positions.
+
+  The proper solution is to have a div-15 routine (not easy on 6502).
+	There is some code floating around that was reverse-engineered
+	from the "river raid" game that is compact and convenient.

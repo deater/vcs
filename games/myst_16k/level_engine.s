@@ -717,8 +717,15 @@ level_done_update_pointer:
 	lda	EXIT_FIREPLACE
 	beq	fireplace_irrelevant
 
-	; reset to 0
-	dec	EXIT_FIREPLACE
+	; reset to 0 (EXIT_FIREPLACE plus the fireplace values)
+	lda	#0
+	ldx	#6
+reset_fireplace_loop:
+	sta	FIREPLACE_ROW1,X
+	dex
+	bpl	reset_fireplace_loop
+
+	sta	WSYNC		; make timing work for the branches below
 
 	lda	FIREPLACE_CORRECT
 	beq	go_behind
