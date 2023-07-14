@@ -535,8 +535,8 @@ done_playfield:
 	cmp	#LOCATION_INSIDE_FIREPLACE
 	beq	handle_fireplace
 
-	; otherwise 24
-	ldx	#24
+	; otherwise 23
+	ldx	#23
 	jsr	common_overscan
 	jmp	done_special_cases
 
@@ -549,13 +549,12 @@ handle_fireplace:
 
 	; skip proper number of scanlines
 
-	ldx	#15
+	ldx	#14
 	jsr	common_overscan
 
 	lda	E7_SET_BANK6
 	jsr	fireplace_update
 	sta	E7_SET_BANK7_RAM
-
 
 	;==========================================
 	; update the puzzle playfield if it changed
@@ -583,16 +582,17 @@ do_update_fireplace:
 	asl								; 2
 	asl								; 2
 	sta	SAVED_ROW		; put row offset in Y		; 3
-; 12
+; 13
 
 	ldx	#4			; X is column			; 2
-; 14
+; 15
 
 update_fireplace_loop_col:
 
-	lda	playfield_locations_l,X		; get adress for column	; 4
+; 0 (loop)
+	lda	playfield_locations_l,X		; get adress for column	; 4+
 	sta	INL				; into (INL)		; 3
-	lda	playfield_locations_h,X					; 4
+	lda	playfield_locations_h,X					; 4+
 	sta	INH							; 3
 ; 14
 	ldy	SAVED_ROW						; 3
@@ -612,9 +612,12 @@ update_fireplace_loop_col:
 	bpl	update_fireplace_loop_col				; 2/3
 ; 48
 
+
+; total = (48*5)-1 + 15 = 255 / 76 = 3.3 scanlines
+
 done_update_fireplace:
 
-        sta     WSYNC
+	sta	WSYNC
 
 
 
@@ -704,11 +707,11 @@ level_done_update_pointer:
 
         sta     WSYNC
 
-	;==================================
-	;==================================
-	; overscan 30, handle button press
-	;==================================
-	;==================================
+	;====================================
+	;====================================
+	; overscan 29, handle fireplace exit
+	;====================================
+	;====================================
 
 	; 00 = no, FF=yes
 	lda	EXIT_FIREPLACE
@@ -723,16 +726,20 @@ level_done_update_pointer:
 	lda	#LOCATION_LIBRARY_NW
 	bne	start_new_level		; bra
 go_behind:
-;	ldy	#SFX_RUMBLE
-;	sty	SFX_PTR
+	ldy	#SFX_RUMBLE
+	sty	SFX_PTR
 
 	lda	#LOCATION_BEHIND_FIREPLACE
 	bne	start_new_level		; bra
 
 fireplace_irrelevant:
+	sta	WSYNC
 
-	;=========================
-	; actually check
+	;==================================
+	;==================================
+	; overscan 30, handle button press
+	;==================================
+	;==================================
 
 	lda	INPUT_COUNTDOWN						; 3
 	beq	waited_enough_level					; 2/3
@@ -902,7 +909,7 @@ grab_fireplace:
 ;	jmp	start_new_level
 
 	inc	WAS_CLICKED
-	jmp	done_check_level_input
+	bne	done_check_level_input
 
 	; grabbed the clock
 grab_clock:

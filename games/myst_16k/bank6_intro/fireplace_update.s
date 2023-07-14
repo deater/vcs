@@ -67,7 +67,7 @@ not_fireplace_button:
 	ldy	#SFX_CLICK				; 2
 	sty	SFX_PTR					; 3
 
-	jmp	extra_delay
+	jmp	extra_delay				; 3
 
 ; 76
 
@@ -177,18 +177,13 @@ not_the_combination:
 	dex							; 2
 	bpl	check_fireplace_loop				; 2/3
 
-	rts
+	rts							; 6
 
 fireplace_lookup_normal:
         .byte $FF,$F1,$1F,$11
 
 fireplace_lookup_reverse:
         .byte $FF,$8F,$F8,$88
-
-
-; FIXME: use common one
-;powers_of_two:
-;.byte   $01,$02,$04,$08, $10,$20,$40,$80
 
 fireplace_solution:
 .byte	$C3,$6B,$A3,$93,$CC,$FA
