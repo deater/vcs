@@ -31,16 +31,17 @@ zero2.bin:
 ###
 
 main.bin:	main.o
-	ld65 -o main.bin main.o -C $(LINKER_SCRIPT)/atari2600_1a00.inc
+	ld65 -o main.bin main.o -C $(LINKER_SCRIPT)/atari2600_1a00_e7.inc
 
 main.o:	main.s zp.inc \
 	load_level.s level_engine.s \
 	hand_motion.s hand_copy.s adjust_sprite.s common_routines.s \
-	sound_update.s zx02_optim.s \
+	zx02_optim.s \
 	locations/level_locations.inc
 	echo "book_common = 0 " > rom_bank6_routines.inc
 	echo "do_intro = 0 " >> rom_bank6_routines.inc
 	echo "fireplace_update = 0 " >> rom_bank6_routines.inc
+	echo "update_sound = 0 " >> rom_bank6_routines.inc
 	ca65 -o main.o main.s -l main.lst
 	$(CALC_ADDRESS) -a 0x1A00 -s common_overscan main.lst > common_routines.inc
 	$(CALC_ADDRESS) -a 0x1A00 -s common_delay_scanlines main.lst >> common_routines.inc
@@ -54,10 +55,13 @@ main.o:	main.s zp.inc \
 	$(CALC_ADDRESS) -a 0x1A00 -s sfx_link main.lst >> common_routines.inc
 	$(CALC_ADDRESS) -a 0x1A00 -s sfx_click main.lst >> common_routines.inc
 	$(CALC_ADDRESS) -a 0x1A00 -s sfx_start main.lst >> common_routines.inc
+	$(CALC_ADDRESS) -a 0x1A00 -s sfx_cv main.lst >> common_routines.inc
+	$(CALC_ADDRESS) -a 0x1A00 -s sfx_f main.lst >> common_routines.inc
 	cd bank6_intro && make
 	$(CALC_ADDRESS) -a 0x1000 -s book_common bank6_intro/rom_bank6.lst > rom_bank6_routines.inc
 	$(CALC_ADDRESS) -a 0x1000 -s do_intro bank6_intro/rom_bank6.lst >> rom_bank6_routines.inc
 	$(CALC_ADDRESS) -a 0x1000 -s fireplace_update bank6_intro/rom_bank6.lst >> rom_bank6_routines.inc
+	$(CALC_ADDRESS) -a 0x1000 -s update_sound bank6_intro/rom_bank6.lst >> rom_bank6_routines.inc
 	ca65 -o main.o main.s -l main.lst
 
 ###

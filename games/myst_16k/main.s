@@ -85,7 +85,7 @@ load_new_level:
 	.include "common_routines.s"
 	.include "hand_motion.s"
 	.include "hand_copy.s"
-	.include "sound_update.s"
+;	.include "sound_update.s"
 	.include "zx02_optim.s"
 
 
@@ -103,6 +103,9 @@ do_book:
 ; e7 signature for MAME */
 ; this is LDA $FFE5
 ;.byte $ad, $e5, $ff
+
+.segment "BANKSWITCH"
+	.byte $00
 
 .segment "IRQ_VECTORS"
 	.word myst	; NMI

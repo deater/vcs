@@ -624,18 +624,19 @@ done_update_fireplace:
 done_special_cases:
 	lda	#$0							; 2
 	sta	ENAM0		; disable missile 0			; 3
+	sta	POINTER_GRABBING					; 3
+	sta	WAS_CLICKED						; 3
+
 	sta	WSYNC
 
 	;==================================
 	; overscan 28, update sound
 
+	lda	E7_SET_BANK6						; 3
 	jsr	update_sound		; 56 cycles?
+	lda	E7_SET_BANK7_RAM					; 3
 
-	lda	#0							; 2
-	sta	POINTER_GRABBING					; 3
-	sta	WAS_CLICKED
-
-	sta	WSYNC
+	sta	WSYNC							; 3
 
 	;==================================
 	; overscan 29, update pointer
@@ -708,6 +709,30 @@ level_done_update_pointer:
 	; overscan 30, handle button press
 	;==================================
 	;==================================
+
+	; 00 = no, FF=yes
+	lda	EXIT_FIREPLACE
+	beq	fireplace_irrelevant
+
+	; reset to 0
+	dec	EXIT_FIREPLACE
+
+	lda	FIREPLACE_CORRECT
+	beq	go_behind
+
+	lda	#LOCATION_LIBRARY_NW
+	bne	start_new_level		; bra
+go_behind:
+;	ldy	#SFX_RUMBLE
+;	sty	SFX_PTR
+
+	lda	#LOCATION_BEHIND_FIREPLACE
+	bne	start_new_level		; bra
+
+fireplace_irrelevant:
+
+	;=========================
+	; actually check
 
 	lda	INPUT_COUNTDOWN						; 3
 	beq	waited_enough_level					; 2/3
