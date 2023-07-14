@@ -559,15 +559,15 @@ fireplace_update = $1000
 
 update_fireplace:
 ; 0
-	tsx								; 2
-	stx	TITLE_COLOR			; save stack		; 3
-; 5
-	ldx	#(FIREPLACE_C0_R0-1)		; point stack to data	; 2
-						; -1 as pla incs first?
-	txs								; 2
-; 9
+
+	lda	FIREPLACE_CHANGED					; 3
+	bmi	done_update_fireplace					; 2/3
+
+	asl
+	asl
+	sta	SAVED_ROW		; put row offset in Y
+
 	ldx	#4				; X is column		; 2
-; 11
 
 update_fireplace_loop_col:
 
@@ -575,14 +575,10 @@ update_fireplace_loop_col:
 	sta	INL				; into (INL)		; 3
 	lda	playfield_locations_h,X					; 4
 	sta	INH							; 3
-	ldy	#0							; 2
 
-; 16
+	ldy	SAVED_ROW
 
-
-update_fireplace_loop_row:
-
-	pla					; load value		; 4
+	lda	FIREPLACE_C0_R0,X		; load proper column
 
 	; store 3 copies then skip
 
@@ -591,24 +587,16 @@ update_fireplace_loop_row:
 	sta	(INL),Y							; 6
 	iny								; 2
 	sta	(INL),Y							; 6
-	iny								; 2
-	iny								; 2
-;  30
-
-	cpy	#24				; 4*6			; 2
-	bne	update_fireplace_loop_row				; 2/3
 
 	dex					; next column		; 2
 	bpl	update_fireplace_loop_col				; 2/3
 
-	ldx	TITLE_COLOR						; 3
-	txs								; 2
 
-; 11 + -1 + 5 + ( (16 + 5 + (30+5)*6 -1 ) * 5)
-; 15 + (20 + 35*6)*5
-; 15 + (230) * 5
-; 15 + 1150 = 1165 cycles = 15.3 scanlines
+; original
+; 11 -1 + 5 + ( (16 + 5 + (30+5)*6 -1 ) * 5) = 1165 cycles= 15.3 scanlines
 
+
+done_update_fireplace:
 
 	sta	WSYNC
 
@@ -848,25 +836,6 @@ trapped_with_atrus:
 grab_fireplace:
 ;	lda	#LOCATION_BEHIND_FIREPLACE
 ;	jmp	start_new_level
-
-;	sec
-;	lda	POINTER_Y
-;	sbc	#23
-;	lsr
-;	lsr
-;	tax
-
-;	sec
-;	lda	#135
-;	sbc	POINTER_X
-;	lsr
-;	lsr
-;	lsr
-;	lsr
-;	tay
-;	lda	powers_of_two,Y
-;	eor	FIREPLACE_ROW1,X
-;	sta	FIREPLACE_ROW1,X
 
 	inc	WAS_CLICKED
 	jmp	done_check_level_input

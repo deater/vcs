@@ -1,5 +1,8 @@
 fireplace_update:
 
+	lda	#$FF
+	sta	FIREPLACE_CHANGED
+
 	; grabbed the puzzle in the fireplace
 
 	lda	WAS_CLICKED
@@ -34,12 +37,19 @@ not_the_combination:
 
 not_fireplace_button:
 
+
+	; calculate row
+
 	sec						; 2
-	lda	POINTER_Y				; 
-	sbc	#23
-	lsr
-	lsr
-	tax
+	lda	POINTER_Y				; 3
+	sbc	#23					; 2
+	lsr						; 2
+	lsr						; 2
+	tax						; 2
+
+	stx	FIREPLACE_CHANGED
+
+	; calculate column
 
 	sec
 	lda	#135
@@ -63,9 +73,11 @@ no_grab_fireplace:
 
 	; update background data
 
-	ldy	#5			; row
+;	ldy	#5			; row
 
-fireplace_update_loop:
+	ldy	FIREPLACE_CHANGED
+
+;fireplace_update_loop:
 	lda	FIREPLACE_ROW1,Y
 ;	eor	#$FF			; temp hack
 
@@ -79,7 +91,7 @@ fireplace_update_loop:
 	lda	fireplace_lookup_reverse,X
 	and	#$0F
 	ora	#$E0		; restore vertical line
-	sta	FIREPLACE_C0_R0,Y
+	sta	FIREPLACE_C4_R0
 
 	; bit 2+1
 
@@ -88,7 +100,7 @@ fireplace_update_loop:
 	and	#$3
 	tax
 	lda	fireplace_lookup_normal,X
-	sta	FIREPLACE_C1_R0,Y
+	sta	FIREPLACE_C3_R0
 
 	; bit 3
 
@@ -98,7 +110,7 @@ fireplace_update_loop:
 	and	#$1
 	tax
 	lda	fireplace_lookup_reverse,X
-	sta	FIREPLACE_C2_R0,Y
+	sta	FIREPLACE_C2_R0
 
 	; bit 5+4
 
@@ -107,7 +119,7 @@ fireplace_update_loop:
 	and	#$3
 	tax
 	lda	fireplace_lookup_reverse,X
-	sta	FIREPLACE_C3_R0,Y
+	sta	FIREPLACE_C1_R0
 
 	; bit 7+6
 
@@ -117,10 +129,10 @@ fireplace_update_loop:
 	and	#$3
 	tax
 	lda	fireplace_lookup_normal,X
-	sta	FIREPLACE_C4_R0,Y
+	sta	FIREPLACE_C0_R0
 
-	dey
-	bpl	fireplace_update_loop
+;	dey
+;	bpl	fireplace_update_loop
 
 	rts
 
