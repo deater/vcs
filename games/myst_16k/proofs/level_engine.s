@@ -531,7 +531,7 @@ done_playfield:
 	;===========================
 	;===========================
 
-	ldx	#8
+	ldx	#18
 	jsr	common_overscan
 
 	;==================================
@@ -552,22 +552,37 @@ fireplace_update = $1000
 	jsr	fireplace_update
 	sta	E7_SET_BANK7_RAM
 
+
+	;==========================================
+	; update the puzzle playfield if it changed
+	;
 	; try to be as short as possible (offloading other work elsewhere)
 	; as we are severely size constrained
-
+	;
 	; must be in main ROM as we modify the playfield data in RAM
+	;
+	; this takes 4 scanlines
 
 update_fireplace:
 ; 0
 
 	lda	FIREPLACE_CHANGED					; 3
-	bmi	done_update_fireplace					; 2/3
+	bpl	do_update_fireplace					; 2/3
+; 5
+	ldx	#3
+	jsr	common_delay_scanlines
 
-	asl
-	asl
-	sta	SAVED_ROW		; put row offset in Y
+	jmp	done_update_fireplace
+
+do_update_fireplace:
+; 6
+	asl								; 2
+	asl								; 2
+	sta	SAVED_ROW		; put row offset in Y		; 3
+; 12
 
 	ldx	#4				; X is column		; 2
+; 14
 
 update_fireplace_loop_col:
 
@@ -575,10 +590,11 @@ update_fireplace_loop_col:
 	sta	INL				; into (INL)		; 3
 	lda	playfield_locations_h,X					; 4
 	sta	INH							; 3
-
-	ldy	SAVED_ROW
-
-	lda	FIREPLACE_C0_R0,X		; load proper column
+; 14
+	ldy	SAVED_ROW						; 3
+; 17
+	lda	FIREPLACE_C0_R0,X		; load proper column	; 4
+; 21
 
 	; store 3 copies then skip
 
@@ -587,10 +603,14 @@ update_fireplace_loop_col:
 	sta	(INL),Y							; 6
 	iny								; 2
 	sta	(INL),Y							; 6
+; 43
 
 	dex					; next column		; 2
 	bpl	update_fireplace_loop_col				; 2/3
+; 48
 
+; new
+; 15-1+((5*48)) = 254 = 3.3 scanlines
 
 ; original
 ; 11 -1 + 5 + ( (16 + 5 + (30+5)*6 -1 ) * 5) = 1165 cycles= 15.3 scanlines

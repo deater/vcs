@@ -296,7 +296,7 @@ original proof of concept:
 
 	zero page		= 6+30
 
-	scanlines		= 25
+	scanlines		= 15+10 = 25
 
 Original solution had the 6 bytes holding the data, but complex code
 to split the bit pattern up into the 5 playfield values, and finally
@@ -308,4 +308,16 @@ page and PLA to auto-increment load.  Very slow.
 Thought was to only update the playfield for the block that changed, not
 all 30 areas each time.
 
+
+updated version:
+
+	fireplace_update	= $A0
+	main			= $2B	(226-1fb)
+	lookup_table		= $12
+	--------------------------------
+				= $DD = 221 bytes
+
+	zero page		= 6+5 = 11
+
+	scanlines		= 4 + 10 = 14
 
