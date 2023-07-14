@@ -18,3 +18,4 @@ do_intro:
 
 .include "intro_data.inc"
 
+.include "fireplace_update.s"

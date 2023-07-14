@@ -40,6 +40,7 @@ main.o:	main.s zp.inc \
 	locations/level_locations.inc
 	echo "book_common = 0 " > rom_bank6_routines.inc
 	echo "do_intro = 0 " >> rom_bank6_routines.inc
+	echo "fireplace_update = 0 " >> rom_bank6_routines.inc
 	ca65 -o main.o main.s -l main.lst
 	$(CALC_ADDRESS) -a 0x1A00 -s common_overscan main.lst > common_routines.inc
 	$(CALC_ADDRESS) -a 0x1A00 -s common_delay_scanlines main.lst >> common_routines.inc
@@ -49,9 +50,11 @@ main.o:	main.s zp.inc \
 	$(CALC_ADDRESS) -a 0x1A00 -s pointer_moved_horizontally main.lst >> common_routines.inc
 	$(CALC_ADDRESS) -a 0x1A00 -s do_book main.lst >> common_routines.inc
 	$(CALC_ADDRESS) -a 0x1A00 -s zx02_full_decomp main.lst >> common_routines.inc
+	$(CALC_ADDRESS) -a 0x1A00 -s powers_of_two main.lst >> common_routines.inc
 	cd bank6_intro && make
 	$(CALC_ADDRESS) -a 0x1000 -s book_common bank6_intro/rom_bank6.lst > rom_bank6_routines.inc
 	$(CALC_ADDRESS) -a 0x1000 -s do_intro bank6_intro/rom_bank6.lst >> rom_bank6_routines.inc
+	$(CALC_ADDRESS) -a 0x1000 -s fireplace_update bank6_intro/rom_bank6.lst >> rom_bank6_routines.inc
 	ca65 -o main.o main.s -l main.lst
 
 ###

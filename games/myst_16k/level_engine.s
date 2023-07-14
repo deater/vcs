@@ -7,15 +7,15 @@
 
 
 	level_data		= $1400
-        level_colors            = $1410
-        level_playfield0_left   = $1440
-        level_playfield1_left   = $1470
-        level_playfield2_left   = $14A0
-        level_playfield0_right  = $14D0
-        level_playfield1_right  = $1500
-        level_playfield2_right  = $1530
-        level_overlay_colors    = $1560
-        level_overlay_sprite    = $1590
+        level_colors            = level_data+$10	; $1410
+        level_playfield0_left   = level_data+$40	; $1440
+        level_playfield1_left   = level_data+$70	; $1470
+        level_playfield2_left   = level_data+$A0	; $14A0
+        level_playfield0_right  = level_data+$D0	; $14D0
+        level_playfield1_right  = level_data+$100	; $1500
+        level_playfield2_right  = level_data+$130	; $1530
+        level_overlay_colors    = level_data+$160	; $1560
+        level_overlay_sprite    = level_data+$190	; $1590
 
         level_overlay_colors_write    = $1160
         level_overlay_sprite_write    = $1190
@@ -531,12 +531,97 @@ done_playfield:
 	;===========================
 	;===========================
 
+	lda	CURRENT_LOCATION
+	cmp	#LOCATION_INSIDE_FIREPLACE
+	beq	handle_fireplace
+
+	; otherwise 24
 	ldx	#24
 	jsr	common_overscan
+	jmp	done_special_cases
+
+
 
 	;==================================
-	; overscan 27, general stuff
+	; handle fireplace
+	;==================================
+handle_fireplace:
 
+	; skip proper number of scanlines
+
+	ldx	#15
+	jsr	common_overscan
+
+	lda	E7_SET_BANK6
+	jsr	fireplace_update
+	sta	E7_SET_BANK7_RAM
+
+
+	;==========================================
+	; update the puzzle playfield if it changed
+	;
+	; try to be as short as possible (offloading other work elsewhere)
+	; as we are severely size constrained
+	;
+	; must be in main ROM as we modify the playfield data in RAM
+	;
+	; this takes 4 scanlines
+
+update_fireplace:
+
+; 0
+	lda	FIREPLACE_CHANGED					; 3
+	bpl	do_update_fireplace					; 2/3
+; 5
+	ldx	#3
+	jsr	common_delay_scanlines
+
+	jmp	done_update_fireplace
+
+do_update_fireplace:
+; 6
+	asl								; 2
+	asl								; 2
+	sta	SAVED_ROW		; put row offset in Y		; 3
+; 12
+
+	ldx	#4			; X is column			; 2
+; 14
+
+update_fireplace_loop_col:
+
+	lda	playfield_locations_l,X		; get adress for column	; 4
+	sta	INL				; into (INL)		; 3
+	lda	playfield_locations_h,X					; 4
+	sta	INH							; 3
+; 14
+	ldy	SAVED_ROW						; 3
+; 17
+	lda	FIREPLACE_C0_R0,X		; load proper column	; 4
+; 21
+
+	; store 3 lines
+
+	sta	(INL),Y							; 6
+	iny								; 2
+	sta	(INL),Y							; 6
+	iny								; 2
+	sta	(INL),Y							; 6
+; 43
+	dex					; next column		; 2
+	bpl	update_fireplace_loop_col				; 2/3
+; 48
+
+done_update_fireplace:
+
+        sta     WSYNC
+
+
+
+
+	;==================================
+	; overscan 24 (27?), general stuff
+done_special_cases:
 	lda	#$0							; 2
 	sta	ENAM0		; disable missile 0			; 3
 	sta	WSYNC
@@ -548,6 +633,7 @@ done_playfield:
 
 	lda	#0							; 2
 	sta	POINTER_GRABBING					; 3
+	sta	WAS_CLICKED
 
 	sta	WSYNC
 
@@ -722,6 +808,20 @@ done_check_level_input:
 powers_of_two:
 .byte	$01,$02,$04,$08, $10,$20,$40,$80
 
+playfield_locations_l:
+	.byte <(level_playfield1_left-$400+23)
+	.byte <(level_playfield2_left-$400+23)
+	.byte <(level_playfield0_right-$400+23)
+	.byte <(level_playfield1_right-$400+23)
+	.byte <(level_playfield2_right-$400+23)
+
+playfield_locations_h:
+	.byte >(level_playfield1_left-$400+23)
+	.byte >(level_playfield2_left-$400+23)
+	.byte >(level_playfield0_right-$400+23)
+	.byte >(level_playfield1_right-$400+23)
+	.byte >(level_playfield2_right-$400+23)
+
 
 grab_dest_l:
 	.byte	<(grab_atrus-1)
@@ -773,8 +873,11 @@ trapped_with_atrus:
 
 	; grabbed the puzzle in the fireplace
 grab_fireplace:
-	lda	#LOCATION_BEHIND_FIREPLACE
-	jmp	start_new_level
+;	lda	#LOCATION_BEHIND_FIREPLACE
+;	jmp	start_new_level
+
+	inc	WAS_CLICKED
+	jmp	done_check_level_input
 
 	; grabbed the clock
 grab_clock:
