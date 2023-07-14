@@ -1,14 +1,16 @@
+.include "../../../vcs.inc"
+
 fireplace_update:
 
 	; clear this so we only redraw in main if changed
 ; 0
-	lda	#$FF							; 2
-	sta	FIREPLACE_CHANGED					; 3
-	lda	#$00							; 2
-	sta	EXIT_FIREPLACE						; 3
+	ldy	#$FF							; 2
+	sty	FIREPLACE_CHANGED					; 3
+	iny								; 2
+	sty	EXIT_FIREPLACE						; 3
 
 ; 10
-	; grabbed the puzzle in the fireplace last frame
+	; check if clicked the puzzle in the fireplace last frame
 
 	lda	WAS_CLICKED						; 2
 	beq	no_grab_fireplace					; 2/3
@@ -41,6 +43,7 @@ not_fireplace_button:
 	lsr						; 2
 	tax						; 2
 
+	; used when updating screen
 	stx	FIREPLACE_CHANGED			; 3
 ; 42
 
@@ -54,7 +57,7 @@ not_fireplace_button:
 	lsr						; 2
 	lsr						; 2
 	tay						; 2
-
+; 59
 	; update matrix
 
 	lda	powers_of_two,Y				; 4
@@ -68,10 +71,15 @@ not_fireplace_button:
 	nop
 	lda	$80
 
+	jmp	extra_delay
 
 ; 76
 
 no_grab_fireplace:
+	sta	WSYNC
+extra_delay:
+	sta	WSYNC
+
 ; 15 / 22 / 33 / 76
 
 
@@ -142,8 +150,13 @@ update_fireplace_row:
 	lda	fireplace_lookup_normal,Y			; 4
 	sta	FIREPLACE_C0_R0					; 3
 ; 101
+	jmp	skipped_most
 
 done_update_fireplace_row:
+	sta	WSYNC
+	sta	WSYNC
+skipped_most:
+
 
 	;=================================
 	; check for correct answer
