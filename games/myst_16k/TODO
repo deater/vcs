@@ -1,3 +1,8 @@
+locations:
+	use the new "position" code so that the locations only need
+	one co-ord for missile and sprite1 location.
+
+
 sound:
 	rumbling noise for when we mess with tower rotation
 		and doors opening/closing

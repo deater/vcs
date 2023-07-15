@@ -236,6 +236,7 @@ wait_le_sp0:
 
 ; 3 (from HMOVE)			; NEEDED?
 	ldx	#0			; current scanline?		; 2
+	stx	GRP0
 	stx	PF0			; disable playfield		; 3
 	stx	PF1							; 3
 	stx	PF2							; 3
@@ -716,7 +717,7 @@ reset_fireplace_loop:
 	sta	WSYNC		; make timing work for the branches below
 
 	lda	FIREPLACE_CORRECT
-	beq	go_behind
+	bmi	go_behind
 
 	lda	#LOCATION_LIBRARY_NW
 	bne	start_new_level		; bra
