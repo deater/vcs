@@ -46,15 +46,11 @@ level_frame:
 
 ; in VBLANK scanline 0
 
-	ldx	#23
-le_vblank_loop:
-	sta	WSYNC
-	dex
-	bne	le_vblank_loop
-
+	ldx	#22
+	jsr	common_delay_scanlines
 
 	;=============================
-	; now at VBLANK scanline 23
+	; now at VBLANK scanline 22
 	;=============================
 	; copy in hand sprite
 	; takes 4 scanlines
@@ -63,7 +59,7 @@ le_vblank_loop:
 ; 6
 
 	;=============================
-	; now at VBLANK scanline 27
+	; now at VBLANK scanline 26
 	;=============================
 	; 4 scanlines of handling input
 
@@ -71,7 +67,7 @@ le_vblank_loop:
 ; 6
 
 	;=======================
-	; now scanline 31
+	; now scanline 30
 	;========================
 	; increment frame
 	; setup missile0 location
@@ -98,7 +94,7 @@ no_missile0:
 	sta	WSYNC							; 3
 
 	;=======================
-	; now scanline 32
+	; now scanline 31
 	;========================
 	; increment frame
 	; setup missile0 location
@@ -117,7 +113,7 @@ really_no_missile0:
 
 
 	;=============================
-	; now VBLANK scanline 33
+	; now VBLANK scanline 32
 	;=============================
 	; do some init
 
@@ -163,13 +159,14 @@ done_flip_switch:
 	sta	WSYNC
 
 	;=======================
-	; now VBLANK scanline 34
+	; now VBLANK scanline 33
 	;=======================
 
 	;====================================================
 	; set up sprite1 (overlay) to be at proper X position
 	;====================================================
 	; now in setup scanline 0
+
 
 ; 0
 	nop								; 2
@@ -195,7 +192,7 @@ qpad_x:
 	sta	WSYNC
 
 	;======================================
-	; now vblank 35
+	; now vblank 34
 	;=======================================
 	; update pointer horizontal position
 	;=======================================
@@ -208,31 +205,22 @@ qpad_x:
 					;				57
 
 	;=========================================
-	; now vblank 36
+	; now vblank 35,36
 	;==========================================
-	; set up sprite to be at proper X position
+	; set up sprite0 to be at proper X position
 	;==========================================
 ; 0
-	; we can do this here and the sprite will be drawn as a long
-	; vertical column
-	; later we only enable it for the lines we want
+	lda	POINTER_X						; 3
+	ldx	#POS_SPRITE0						; 2
+	jsr	set_pos_x						;6+62
+; 73
+	sta	WSYNC							; 3
+; 76
 
-	ldx	#0		; sprite 0 display nothing		; 2
-	stx	GRP0		; (FIXME: this already set?)		; 3
+wait_le_sp0:
+	dey								; 2
+	bpl	wait_le_sp0	; 5-cycle loop (15 TIA color clocks)	; 2/3
 
-	ldx	POINTER_X_COARSE	;				; 3
-	inx			;					; 2
-	inx			;					; 2
-; 12
-
-pad_x:
-	dex			;					; 2
-	bne	pad_x		;					; 2/3
-				;===========================================
-				;	12-1+5*(coarse_x+2)
-;
-
-	; beam is at proper place
 	sta	RESP0							; 3
 
 	sta	WSYNC							; 3
@@ -940,3 +928,4 @@ common_painting:
 	sty	SFX_PTR
 
 	jmp	done_check_level_input
+

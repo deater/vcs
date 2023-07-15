@@ -341,3 +341,10 @@ fireplace puzzle co-ords
   The proper solution is to have a div-15 routine (not easy on 6502).
 	There is some code floating around that was reverse-engineered
 	from the "river raid" game that is compact and convenient.
+
+
+optimizing using fancier position code
+
+book:
+	before:	$355 (book clicked)
+	after:  $349 (book clicked)

@@ -18,25 +18,25 @@ pointer_moved_horizontally:
 	clc								; 2
 	lda	POINTER_X						; 3
 ; 5
-	pha								; 3
+;	pha								; 3
 	adc	#8							; 2
 	sta	POINTER_X_END						; 3
-	pla								; 4
+;	pla								; 4
 ; 17
 	; spritex DIV 16
 
-	lsr								; 2
-	lsr								; 2
-	lsr								; 2
-	lsr								; 2
-	sta	POINTER_X_COARSE					; 3
+;	lsr								; 2
+;	lsr								; 2
+;	lsr								; 2
+;	lsr								; 2
+;	sta	POINTER_X_COARSE					; 3
 ; 28
 	; apply fine adjust
-	lda	POINTER_X						; 3
-	and	#$0f							; 2
-	tax								; 2
-	lda	fine_adjust_table,X					; 4+
-	sta	HMP0							; 3
+;	lda	POINTER_X						; 3
+;	and	#$0f							; 2
+;	tax								; 2
+;	lda	fine_adjust_table,X					; 4+
+;	sta	HMP0							; 3
 	rts								; 6
 ; 48
 
@@ -59,8 +59,8 @@ pointer_moved_vertically:
 
 
 ; values for adjusting sprite offsets
-fine_adjust_table:
+;fine_adjust_table:
         ; left
-        .byte $70,$60,$50,$40,$30,$20,$10,$00
+ ;       .byte $70,$60,$50,$40,$30,$20,$10,$00
         ; right -1 ... -8
-        .byte $F0,$E0,$D0,$C0,$B0,$A0,$90,$80
+  ;      .byte $F0,$E0,$D0,$C0,$B0,$A0,$90,$80

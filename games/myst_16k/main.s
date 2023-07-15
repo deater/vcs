@@ -81,11 +81,11 @@ load_new_level:
 	;===========================
 
 	.include "load_level.s"
+	.include "position.s"
 	.include "adjust_sprite.s"
 	.include "common_routines.s"
 	.include "hand_motion.s"
 	.include "hand_copy.s"
-;	.include "sound_update.s"
 	.include "zx02_optim.s"
 
 

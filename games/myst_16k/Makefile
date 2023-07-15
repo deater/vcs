@@ -34,7 +34,7 @@ main.bin:	main.o
 	ld65 -o main.bin main.o -C $(LINKER_SCRIPT)/atari2600_1a00_e7.inc
 
 main.o:	main.s zp.inc \
-	load_level.s level_engine.s \
+	load_level.s level_engine.s position.s \
 	hand_motion.s hand_copy.s adjust_sprite.s common_routines.s \
 	zx02_optim.s \
 	locations/level_locations.inc
@@ -57,6 +57,7 @@ main.o:	main.s zp.inc \
 	$(CALC_ADDRESS) -a 0x1A00 -s sfx_start main.lst >> common_routines.inc
 	$(CALC_ADDRESS) -a 0x1A00 -s sfx_cv main.lst >> common_routines.inc
 	$(CALC_ADDRESS) -a 0x1A00 -s sfx_f main.lst >> common_routines.inc
+	$(CALC_ADDRESS) -a 0x1A00 -s set_pos_x main.lst >> common_routines.inc
 	cd bank6_intro && make
 	$(CALC_ADDRESS) -a 0x1000 -s book_common bank6_intro/rom_bank6.lst > rom_bank6_routines.inc
 	$(CALC_ADDRESS) -a 0x1000 -s do_intro bank6_intro/rom_bank6.lst >> rom_bank6_routines.inc

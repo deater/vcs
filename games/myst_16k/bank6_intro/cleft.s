@@ -30,10 +30,11 @@ cleft_frame_loop:
 	;=============================
 
 	ldx	#33							; 2
-vcleft_loop:
-	sta	WSYNC							; 3
-	dex								; 2
-	bne	vcleft_loop						; 2/3
+	jsr	common_delay_scanlines
+;vcleft_loop:
+;	sta	WSYNC							; 3
+;	dex								; 2
+;	bne	vcleft_loop						; 2/3
 
 ; 4
 	;==============================

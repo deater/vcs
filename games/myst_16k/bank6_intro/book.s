@@ -74,15 +74,12 @@ book_frame:
 
 	; in VBLANK scanline 0
 
-	ldx	#24
-book_vblank_loop:
-	sta	WSYNC
-	dex
-	bne	book_vblank_loop
+	ldx	#22
+	jsr	common_delay_scanlines
 
 
 	;=============================
-	; now at VBLANK scanline 24
+	; vblank scanline 22
 	;=============================
 	; copy in hand sprite
 	; takes 4 scanlines
@@ -92,7 +89,7 @@ book_vblank_loop:
 ; 6
 
 	;=============================
-	; now at VBLANK scanline 28
+	; vblank scnaline 26
 	;=============================
 	; 4 scanlines of handling input
 
@@ -101,10 +98,12 @@ book_vblank_loop:
 ; 6
 
 	;=======================
-	; now scanline 32
-	;========================
-	; increment frame
-	; setup missile (left edge of book)
+	; vblank scanline 30
+	;=======================
+	; inc frame
+	; setup missile1 (left edge of book)
+	; setup missile0 (spine of book)
+
 ; 6
 	inc	FRAME							; 5
 ; 11
@@ -116,7 +115,7 @@ bzpad_x:
 
 
 ; 27
-	sta	RESM1		; adjust missile location for		; 3
+	sta	RESM1		; adjust missile1 location for		; 3
 				; left edge of book
 
 ; 30
@@ -128,11 +127,15 @@ bzpad_x:
 	sta	RESM0		; adjust missile0 location		; 3
 				; for spine of book
 ; 47
+	lda	#$60		; fine tune missile1 (book edge)	; 2
+	sta	HMM1							; 3
+; 52
+
 	sta	WSYNC							; 3
 
 
 	;=============================
-	; now VBLANK scanline 33
+	; now VBLANK scanline 31
 	;=============================
 	; do some init
 ; 0
@@ -167,9 +170,9 @@ done_update_animation:
 
 	sta	WSYNC
 
-	;======================
-	; now VBLANK scanline 34
-	;======================
+	;========================
+	; VBLANK scanline 32+33
+	;========================
 
 	;==========================================
 	; set up sprite1 to be at proper X position
@@ -177,68 +180,54 @@ done_update_animation:
 	; this is the right hand part of book
 
 ; 0
-	ldx	#0		; sprite 1 display nothing		2
-	stx	GRP1		; (FIXME: this already set?)		3
-; 5
-	ldx	#6		;					3
-	inx			;					2
-	inx			;					2
-; 12
-zpad_x:
-	dex			;					2
-	bne	zpad_x		;					2/3
-				;===========================================
-				;	5*(6+2)-1 = 39
-				; FIXME: describe better what's going on
+	lda	#96							; 2
+	ldx	#POS_SPRITE1						; 2
+	jsr	set_pos_x						;6+62
+; 72
+	sta	WSYNC		;					; 3
+; 75
 
-; 51
-	; beam is at proper place
-	sta	RESP1							; 3
-; 54
-	lda	#$60		; fine tune missile1 (book edge)	; 2
-	sta	HMM1							; 3
-; 59
-	lda	#$40		; fine tune sprite1 (book page)		; 2
-	sta	HMP1							; 3
-; 64
+wait_book_sp1:
+	dey								; 2
+	bpl	wait_book_sp1      ; 5-cycle loop (15 TIA color clocks)	; 2/3
+
+	sta	RESP1							; 4
+
+
 	sta	WSYNC
 
 	;======================================
-	; now vblank 35
+	; vblank 34
 	;=======================================
 	; update pointer horizontal position
 	;=======================================
 
 	; do this separately as too long to fit in with left/right code
 
-	jsr	pointer_moved_horizontally	;			6+48
+	jsr	pointer_moved_horizontally	;			6+16
 	sta	WSYNC			;				3
 					;====================================
-					;				57
+					;				35
 
 	;=========================================
-	; now vblank 36
+	; vblank 35,36
 	;==========================================
-	; set up sprite to be at proper X position
+	; set up pointer (sprite0) to be at proper X position
 	;==========================================
+
 ; 0
-	ldx	#0		; sprite 0 display nothing		2
-	stx	GRP0		; (FIXME: this already set?)		3
-; 5
-	ldx	POINTER_X_COARSE	;				3
-	inx			;					2
-	inx			;					2
-; 12
+	lda	POINTER_X						; 3
+	ldx	#POS_SPRITE0						; 2
+	jsr	set_pos_x						;6+62
+; 73
+	sta	WSYNC		;					; 3
+; 76
 
-zzpad_x:
-	dex			;					2
-	bne	zzpad_x		;					2/3
-				;===========================================
-				;	5*(coarse_x+2)-1
-;
+wait_book_sp0:
+	dey								; 2
+	bpl	wait_book_sp0      ; 5-cycle loop (15 TIA color clocks)	; 2/3
 
-	; beam is at proper place
-	sta	RESP0							; 3
+	sta	RESP0							; 4
 
 	sta	WSYNC							; 3
 	sta	HMOVE		; adjust fine tune, must be after WSYNC	; 3
@@ -528,10 +517,6 @@ book_done_playfield:
 	sta	COLUPF		; color black				; 3
 ; 14
 	sta	WSYNC
-	sta	WSYNC
-	sta	WSYNC
-	sta	WSYNC
-
 
 	;===========================
 	;===========================
@@ -539,17 +524,13 @@ book_done_playfield:
 	;===========================
 	;===========================
 
-	ldx	#23
+	ldx	#27
 	jsr	common_overscan
-
-	;==================================
-	; overscan 26, unused
-
-	sta	WSYNC
 
 	;==================================
 	; overscan 27+28, update sound
 
+	; why is this disabled?
 ;	jsr	update_sound
 
 	sta	WSYNC
