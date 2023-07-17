@@ -46,11 +46,8 @@ level_frame:
 
 ; in VBLANK scanline 0
 
-	ldx	#23
-le_vblank_loop:
-	sta	WSYNC
-	dex
-	bne	le_vblank_loop
+	ldx	#22
+	jsr	common_delay_scanlines
 
 
 	;=============================
@@ -208,32 +205,23 @@ qpad_x:
 					;				57
 
 	;=========================================
-	; now vblank 36
+	; now vblank 35,36
 	;==========================================
 	; set up sprite to be at proper X position
 	;==========================================
 ; 0
-	; we can do this here and the sprite will be drawn as a long
-	; vertical column
-	; later we only enable it for the lines we want
 
-	ldx	#0		; sprite 0 display nothing		; 2
-	stx	GRP0		; (FIXME: this already set?)		; 3
+	lda	POINTER_X
+	ldx	#POS_SPRITE0
+	jsr	set_pos_x
 
-	ldx	POINTER_X_COARSE	;				; 3
-	inx			;					; 2
-	inx			;					; 2
-; 12
+	sta	WSYNC
 
-pad_x:
-	dex			;					; 2
-	bne	pad_x		;					; 2/3
-				;===========================================
-				;	12-1+5*(coarse_x+2)
-;
+wait_le_sp0:
+	dey
+	bpl	wait_le_sp0
 
-	; beam is at proper place
-	sta	RESP0							; 3
+	sta	RESP0
 
 	sta	WSYNC							; 3
 	sta	HMOVE		; adjust fine tune, must be after WSYNC	; 3
@@ -248,6 +236,7 @@ pad_x:
 
 ; 3 (from HMOVE)			; NEEDED?
 	ldx	#0			; current scanline?		; 2
+	stx	GRP0
 	stx	PF0			; disable playfield		; 3
 	stx	PF1							; 3
 	stx	PF2							; 3

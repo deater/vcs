@@ -143,7 +143,7 @@ rom_bank5.bin:	rom_bank5.o
 
 rom_bank5.o:	rom_bank5.s \
 	steps_e_data.zx02 shack_n_data.zx02 library_up_data.zx02 \
-	library_nw_data.zx02 library_ne_data.zx02
+	library_nw_data.zx02 library_ne_data.zx02 clock_puzzle_data.zx02
 	ca65 -o rom_bank5.o rom_bank5.s -l rom_bank5.lst
 
 
@@ -185,6 +185,13 @@ clock_n_data.inc:	clock_n_bg.png clock_n_overlay.png
 clock_close_s_data.inc:	clock_close_s_bg.png clock_close_s_overlay.png
 	$(PNG2PF) -4 -n clock_close_s -b 0x02 clock_close_s_bg.png - > clock_close_s_data.inc
 	$(PNG2OVERLAY) -4 -o -n clock_close_s clock_close_s_overlay.png - >> clock_close_s_data.inc
+
+###
+
+clock_puzzle_data.inc:	clock_puzzle_bg.png clock_puzzle_overlay.png
+	$(PNG2PF) -4 -n clock_puzzle -b 0x02 clock_puzzle_bg.png - > clock_puzzle_data.inc
+	$(PNG2OVERLAY) -4 -o -n clock_puzzle clock_puzzle_overlay.png - >> clock_puzzle_data.inc
+
 
 ###
 
@@ -558,6 +565,19 @@ clock_close_s_data.bin:	clock_close_s_data.o
 
 clock_close_s_data.o:	clock_close_s_data.s clock_close_s_data.inc
 	ca65 -o clock_close_s_data.o clock_close_s_data.s -l clock_close_s_data.lst
+
+
+###
+
+clock_puzzle_data.zx02:	clock_puzzle_data.bin
+	$(ZX02) -f clock_puzzle_data.bin clock_puzzle_data.zx02
+
+clock_puzzle_data.bin:	clock_puzzle_data.o
+	ld65 -o clock_puzzle_data.bin clock_puzzle_data.o -C $(LINKER_SCRIPT)/atari2600_f000.inc
+
+clock_puzzle_data.o:	clock_puzzle_data.s clock_puzzle_data.inc
+	ca65 -o clock_puzzle_data.o clock_puzzle_data.s -l clock_puzzle_data.lst
+
 
 
 ###

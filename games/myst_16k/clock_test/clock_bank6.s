@@ -2,6 +2,6 @@
 .include "../zp.inc"
 .include "../locations.inc"
 
-.include "fireplace_update.s"
+.include "clock_update.s"
 
 

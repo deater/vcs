@@ -59,7 +59,9 @@ load_new_level:
 .include "../sound_update.s"
 .include "../sfx_data.inc"
 .include "../adjust_sprite.s"
+.include "../position.s"
 .include "../sprite_data.inc"
+
 
 .include "../zx02_optim.s"
 
