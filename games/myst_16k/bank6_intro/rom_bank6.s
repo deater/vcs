@@ -18,6 +18,6 @@ do_intro:
 
 .include "intro_data.inc"
 
-.include "sound_update.s"
+.include "../sound_update.s"
 .include "fireplace_update.s"
 

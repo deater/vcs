@@ -51,6 +51,6 @@ zero2.bin:
 ###
 
 clean:	
-	rm -f *~ *.o *.lst clock.bin fireplace.bin
+	rm -f *~ *.o *.lst *.bin *.e7
 
 

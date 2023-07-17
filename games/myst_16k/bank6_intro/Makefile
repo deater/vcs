@@ -24,7 +24,7 @@ rom_bank6.bin:	rom_bank6.o
 rom_bank6.o:	rom_bank6.s \
 	title.s cleft.s book.s \
 	fireplace_update.s \
-	sound_update.s \
+	../sound_update.s \
 	myst_book_data.zx02 \
 	red_book_data.zx02 \
 	green_book_data.zx02 \
