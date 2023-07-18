@@ -15,6 +15,7 @@ rom5_locations.inc:	rom_bank5.bin $(CALC_ADDRESS)
 	$(CALC_ADDRESS) -a 0x1000 -s library_nw_data_zx02 rom_bank5.lst >> rom5_locations.inc
 	$(CALC_ADDRESS) -a 0x1000 -s library_ne_data_zx02 rom_bank5.lst >> rom5_locations.inc
 	$(CALC_ADDRESS) -a 0x1000 -s clock_puzzle_data_zx02 rom_bank5.lst >> rom5_locations.inc
+	$(CALC_ADDRESS) -a 0x1000 -s clock_update rom_bank5.lst >> rom5_locations.inc
 
 
 

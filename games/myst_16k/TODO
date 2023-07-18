@@ -1,3 +1,8 @@
+
+fix bounds on pointer since we adjusted things
+	can go off end
+
+
 locations:
 	use the new "position" code so that the locations only need
 	one co-ord for missile and sprite1 location.

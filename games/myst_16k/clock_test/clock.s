@@ -65,7 +65,7 @@ load_new_level:
 .include "../zx02_optim.s"
 
 level_data_compressed:
-.incbin "../locations/clock_puzzle_data.zx02"
+.incbin "../bank5_clock/clock_puzzle_data.zx02"
 
 .segment "IRQ_VECTORS"
 	.word fireplace	; NMI

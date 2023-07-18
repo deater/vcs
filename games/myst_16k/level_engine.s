@@ -524,11 +524,51 @@ done_playfield:
 	cmp	#LOCATION_INSIDE_FIREPLACE
 	beq	handle_fireplace
 
+	cmp	#LOCATION_CLOCK_PUZZLE
+	beq	handle_clock_puzzle
+
 	; otherwise 23
 	ldx	#23
 	jsr	common_overscan
 	jmp	done_special_cases
 
+
+	;==================================
+	; handle clock_puzzle
+	;==================================
+handle_clock_puzzle:
+
+	; skip proper number of scanlines
+
+	ldx	#14
+	jsr	common_overscan
+
+	lda	E7_SET_BANK5
+	jsr	clock_update
+	sta	E7_SET_BANK7_RAM
+
+	;==========================================
+	; update the clockface if it changed
+
+update_clock_face:
+; 0
+
+	ldx	#8							; 2
+update_clock_loop:
+
+	lda	CLOCKFACE_0,X						; 4
+	sta	level_overlay_sprite_write+8,X				; 5
+
+	dex								; 2
+	bpl	update_clock_loop					; 2/3
+
+; (9*14)-1 = 129??
+
+done_update_clock:
+
+        sta     WSYNC
+
+	jmp	done_special_cases
 
 
 	;==================================
@@ -901,22 +941,21 @@ trapped_with_atrus:
 	jmp	start_new_level
 
 
+	; grabbed the clock puzzle
+grab_clock_puzzle:
+;	jmp	done_check_level_input
+
 	; grabbed the puzzle in the fireplace
 grab_fireplace:
-;	lda	#LOCATION_BEHIND_FIREPLACE
-;	jmp	start_new_level
-
 	inc	WAS_CLICKED
-	bne	done_check_level_input
+	bne	done_check_level_input		; bra
 
 	; grabbed the clock
 grab_clock:
 	lda	#LOCATION_CLOCK_PUZZLE
 	jmp	start_new_level
 
-	; grabbed the clock puzzle
-grab_clock_puzzle:
-	jmp	done_check_level_input
+
 
 	; grabbed the bookshelf
 grab_bookshelf:
