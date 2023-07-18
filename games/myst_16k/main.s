@@ -9,6 +9,8 @@
 .include "zp.inc"
 .include "locations.inc"
 
+.include "locations/level_locations.inc"
+.include "bank5_clock/rom5_locations.inc"
 .include "rom_bank6_routines.inc"
 
 	;==============================

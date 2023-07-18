@@ -97,8 +97,6 @@ copy_zp_loop:
 
 	rts
 
-.include "locations/level_locations.inc"
-
 
 level_bank_and_high:
 

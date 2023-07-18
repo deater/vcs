@@ -14,7 +14,7 @@ myst.o:	myst.s main.bin \
 	locations/rom_bank2.bin \
 	locations/rom_bank3.bin \
 	locations/rom_bank4.bin \
-	locations/rom_bank5.bin \
+	bank5_clock/rom_bank5.bin \
 	bank6_intro/rom_bank6.bin \
 	zero.bin zero2.bin
 	ca65 -o myst.o myst.s
@@ -37,6 +37,7 @@ main.o:	main.s zp.inc \
 	load_level.s level_engine.s position.s \
 	hand_motion.s hand_copy.s adjust_sprite.s common_routines.s \
 	zx02_optim.s \
+	bank5_clock/rom5_locations.inc \
 	locations/level_locations.inc
 	echo "book_common = 0 " > rom_bank6_routines.inc
 	echo "do_intro = 0 " >> rom_bank6_routines.inc
@@ -67,17 +68,7 @@ main.o:	main.s zp.inc \
 
 ###
 
-#rom_bank6_routines.inc:	intro/rom_bank6.bin
-#	echo "book_common = 0 " > rom_bank6_routines.inc
-#	echo "do_intro = 0 " >> rom_bank6_routines.inc
-
-
-
-#intro/rom_bank6.bin:
-#	cd intro && make
-
-
-####
+###
 
 clean:	
 	rm -f *~ *.o *.lst myst.rom common_routines.inc
