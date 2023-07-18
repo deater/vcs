@@ -1,79 +1,75 @@
 .include "../../../vcs.inc"
 
+; optimization history
+
+;	E9 -- original code
+;	E2 -- after removing some unneeded stuff
+;	D9 -- make hand movement single path rather than two
+
 clock_update:
 
 	; clear this so we only redraw in main if changed
 ; 0
-	ldy	#$FF							; 2
-	sty	FIREPLACE_CHANGED					; 3
-	iny								; 2
+	ldy	#0							; 2
 	sty	EXIT_FIREPLACE						; 3
 
-; 10
-	; check if clicked the puzzle in the fireplace last frame
+; 5
+	; check if clicked the puzzle in the last frame
 
 	lda	WAS_CLICKED						; 2
 	beq	no_grab_clock						; 2/3
 
 was_grab_clock:
-; 14
-
+; 9
 	; check if button
 
 	lda	POINTER_X						; 3
 	cmp	#105							; 2
-;	bcs	no_grab_clock		; too far to right		; 2/3
-; 21
-;	cmp	#5			; is a button, skip ahead	; 2
 	bcc	not_clock_button					; 2/3
 
 
 clock_button:
-; 25
+; 16
 	inc	EXIT_FIREPLACE						; 5
 	bne	no_grab_clock			; bra			; 3
 
 not_clock_button:
 
-; 26
+; 17
 
 	; see if left or right valve
 
-	lda	POINTER_X				; 3
-	cmp	#80
-	bcs	clock_right_valve
+	; POINTER_X already in A
+	ldx	#0			; default to left		; 2
+	cmp	#80							; 2
+	bcs	clock_right_valve					; 2/3
 
 clock_left_valve:
-	inc	CLOCK_MINUTES
-	sec
-	lda	CLOCK_MINUTES
-	sbc	#12
-	bmi	done_clock_adjust
-	sta	CLOCK_MINUTES
-	jmp	done_clock_adjust
+	inx								; 2
 
 clock_right_valve:
-	inc	CLOCK_HOURS
-	sec
-	lda	CLOCK_HOURS
-	sbc	#12
-	bmi	done_clock_adjust
-	sta	CLOCK_HOURS
+
+; 14/15
+	inc	CLOCK_HOURS,X						; 6
+	sec								; 2
+	lda	CLOCK_HOURS,X						; 4
+	sbc	#12							; 2
+; 28/29
+	bmi	done_clock_adjust					; 2/3
+	sta	CLOCK_HOURS,X						; 4
 
 done_clock_adjust:
 
-;	ldy	#SFX_CLICK				; 2
-;	sty	SFX_PTR					; 3
+;	ldy	#SFX_CLICK						; 2
+;	sty	SFX_PTR							; 3
 
 	nop
 	lda	$80
 
-; 76
-
 no_grab_clock:
-	sta	WSYNC
+	sta	WSYNC							; 3
 
-; 15 / 22 / 33 / 76
+; 13 / 24 / 44 worst case
 
 
 	;==========================
