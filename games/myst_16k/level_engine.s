@@ -858,6 +858,7 @@ grab_dest_l:
 	.byte	<(grab_bookshelf-1)
 	.byte	<(grab_close_painting-1)
 	.byte	<(grab_open_painting-1)
+	.byte	<(grab_clock_puzzle-1)
 
 grab_dest_h:
 	.byte	>(grab_atrus-1)
@@ -866,6 +867,7 @@ grab_dest_h:
 	.byte	>(grab_bookshelf-1)
 	.byte	>(grab_close_painting-1)
 	.byte	>(grab_open_painting-1)
+	.byte	>(grab_clock_puzzle-1)
 
 	;=========================
 	; giving atrus the page
@@ -909,6 +911,11 @@ grab_fireplace:
 
 	; grabbed the clock
 grab_clock:
+	lda	#LOCATION_CLOCK_PUZZLE
+	jmp	start_new_level
+
+	; grabbed the clock puzzle
+grab_clock_puzzle:
 	jmp	done_check_level_input
 
 	; grabbed the bookshelf
