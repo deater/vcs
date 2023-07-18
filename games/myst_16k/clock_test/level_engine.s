@@ -532,80 +532,34 @@ done_playfield:
 
 
 	;=======================================
-	; fireplace stuff
+	; clock stuff
 
 
-fireplace_update = $1000
+clock_update = $1000
 
 	lda	E7_SET_BANK6
-	jsr	fireplace_update
+	jsr	clock_update
 	sta	E7_SET_BANK7_RAM
 
 
 	;==========================================
-	; update the puzzle playfield if it changed
-	;
-	; try to be as short as possible (offloading other work elsewhere)
-	; as we are severely size constrained
-	;
-	; must be in main ROM as we modify the playfield data in RAM
-	;
-	; this takes 4 scanlines
+	; update the clockface if it changed
 
-update_fireplace:
+update_clock_face:
 ; 0
 
-	lda	FIREPLACE_CHANGED					; 3
-	bpl	do_update_fireplace					; 2/3
-; 5
-	ldx	#3
-	jsr	common_delay_scanlines
+	ldx	#8							; 2
+update_clock_loop:
 
-	jmp	done_update_fireplace
+	lda	CLOCKFACE_0,X						; 4
+	sta	level_overlay_sprite_write+8,X				; 5
 
-do_update_fireplace:
-; 6
-	asl								; 2
-	asl								; 2
-	sta	SAVED_ROW		; put row offset in Y		; 3
-; 12
+	dex								; 2
+	bpl	update_clock_loop					; 2/3
 
-	ldx	#4				; X is column		; 2
-; 14
+; (9*14)-1 = 129??
 
-update_fireplace_loop_col:
-
-	lda	playfield_locations_l,X		; get adress for column	; 4
-	sta	INL				; into (INL)		; 3
-	lda	playfield_locations_h,X					; 4
-	sta	INH							; 3
-; 14
-	ldy	SAVED_ROW						; 3
-; 17
-	lda	FIREPLACE_C0_R0,X		; load proper column	; 4
-; 21
-
-	; store 3 copies then skip
-
-	sta	(INL),Y							; 6
-	iny								; 2
-	sta	(INL),Y							; 6
-	iny								; 2
-	sta	(INL),Y							; 6
-; 43
-
-	dex					; next column		; 2
-	bpl	update_fireplace_loop_col				; 2/3
-; 48
-
-; new
-; 15-1+((5*48)) = 254 = 3.3 scanlines
-
-; original
-; 11 -1 + 5 + ( (16 + 5 + (30+5)*6 -1 ) * 5) = 1165 cycles= 15.3 scanlines
-
-
-done_update_fireplace:
+done_update_clock:
 
 	sta	WSYNC
 
@@ -873,24 +827,5 @@ common_painting:
 	jmp	done_check_level_input
 
 
-fireplace_lookup_normal:
-	.byte $FF,$F1,$1F,$11
-;	.byte $88,$8F,$F8,$FF
 
-fireplace_lookup_reverse:
-	.byte $88,$F8,$8F,$88
-
-playfield_locations_l:
-	.byte <(level_playfield1_left-$400+23)
-	.byte <(level_playfield2_left-$400+23)
-	.byte <(level_playfield0_right-$400+23)
-	.byte <(level_playfield1_right-$400+23)
-	.byte <(level_playfield2_right-$400+23)
-
-playfield_locations_h:
-	.byte >(level_playfield1_left-$400+23)
-	.byte >(level_playfield2_left-$400+23)
-	.byte >(level_playfield0_right-$400+23)
-	.byte >(level_playfield1_right-$400+23)
-	.byte >(level_playfield2_right-$400+23)
 

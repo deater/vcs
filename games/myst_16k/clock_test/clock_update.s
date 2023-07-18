@@ -44,22 +44,21 @@ not_clock_button:
 	bcs	clock_right_valve
 
 clock_left_valve:
+	inc	CLOCK_MINUTES
+	sec
+	lda	CLOCK_MINUTES
+	sbc	#12
+	bmi	done_clock_adjust
+	sta	CLOCK_MINUTES
+	jmp	done_clock_adjust
+
+clock_right_valve:
 	inc	CLOCK_HOURS
 	sec
 	lda	CLOCK_HOURS
 	sbc	#12
 	bmi	done_clock_adjust
 	sta	CLOCK_HOURS
-	jmp	done_clock_adjust
-
-clock_right_valve:
-	inc	CLOCK_MINUTES
-
-	sec
-	lda	CLOCK_MINUTES
-	sbc	#12
-	bmi	done_clock_adjust
-	sta	CLOCK_MINUTES
 
 done_clock_adjust:
 
@@ -78,19 +77,50 @@ no_grab_clock:
 
 
 	;==========================
-	; update clock if changed
+	; update clock
 
 update_clock_face:
 
-; 0
-	ldx	FIREPLACE_CHANGED				; 3
-	bmi	done_update_clock_face			; 2/3
 
 ; 5
+	lda	CLOCK_MINUTES
+	asl
+	asl
+	asl
+	clc
+	adc	CLOCK_MINUTES
+	tay
+	ldx	#0
+copy_clock_loop:
+	lda	clock_12,Y
+	sta	CLOCKFACE_0,X
+	inx
+	iny
+	cpx	#9
+	bne	copy_clock_loop
+
+
+	lda	CLOCK_HOURS
+	asl
+	asl
+	asl
+	clc
+	adc	CLOCK_HOURS
+	tay
+
+	ldx	#1
+copy_clock_hours:
+	lda	clock_12+1,Y
+	and	#$1C
+	ora	CLOCKFACE_0,X
+	sta	CLOCKFACE_0,X
+	inx
+	iny
+	cpx	#8
+	bne	copy_clock_hours
 
 
 done_update_clock_face:
-	sta	WSYNC
 	sta	WSYNC
 skipped_most:
 
@@ -114,4 +144,44 @@ clock_wrong:
 	stx	FIREPLACE_CORRECT				; 3
 
 	rts
+
+
+clock_12:
+	.byte $08,$08,$08,$08,$08
+	.byte $00,$00,$00,$00
+clock_1:
+	.byte $00,$04,$04,$08,$08
+	.byte $00,$00,$00,$00
+clock_2:
+	.byte $00,$00,$02,$04,$08
+	.byte $00,$00,$00,$00
+clock_3:
+	.byte $00,$00,$00,$00,$0E
+	.byte $00,$00,$00,$00
+clock_4:
+	.byte $00,$00,$00,$00,$08
+	.byte $04,$02,$00,$00
+clock_5:
+	.byte $00,$00,$00,$00,$08
+	.byte $08,$04,$04,$00
+clock_6:
+	.byte $00,$00,$00,$00,$08
+	.byte $08,$08,$08,$08
+clock_7:
+	.byte $00,$00,$00,$00,$08
+	.byte $08,$10,$10,$00
+clock_8:
+	.byte $00,$00,$00,$00,$08
+	.byte $10,$20,$00,$00
+clock_9:
+	.byte $00,$00,$00,$00,$38
+	.byte $00,$00,$00,$00
+clock_10:
+	.byte $00,$00,$20,$10,$08
+	.byte $00,$00,$00,$00
+clock_11:
+	.byte $00,$10,$10,$08,$08
+	.byte $00,$00,$00,$00
+
+
 
