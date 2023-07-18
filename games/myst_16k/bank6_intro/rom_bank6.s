@@ -17,7 +17,7 @@ do_intro:
 .align $100
 
 .include "intro_data.inc"
-
+.include "../sfx_data.inc"
 .include "../sound_update.s"
 .include "fireplace_update.s"
 

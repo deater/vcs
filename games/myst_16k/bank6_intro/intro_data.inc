@@ -156,5 +156,5 @@ sfx_cv:
 	.byte   $E8,$E6,$E4,$3A,$3c,$3d,$3e,$3e	; link
 .endif
 
-SFX_CLICK	=       sfx_click-sfx_start-1
-SFX_LINK	=       sfx_link-sfx_start-1
+;SFX_CLICK	=       sfx_click-sfx_start-1
+;SFX_LINK	=       sfx_link-sfx_start-1

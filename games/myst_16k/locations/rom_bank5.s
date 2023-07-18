@@ -8,3 +8,5 @@ library_nw_data_zx02:
 .incbin "library_nw_data.zx02"
 library_ne_data_zx02:
 .incbin "library_ne_data.zx02"
+clock_puzzle_data_zx02:
+.incbin "clock_puzzle_data.zx02"

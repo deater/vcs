@@ -147,3 +147,8 @@ POS_MISSILE0	=	2
 POS_MISSILE1	=	3
 POS_BALL	=	4
 
+; need to manually change if mess with sounds
+SFX_RUMBLE	=	$2
+SFX_CLICK	=	$5
+SFX_LINK	=	$22
+

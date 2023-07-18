@@ -62,6 +62,7 @@ level_locations.inc:	\
 	$(CALC_ADDRESS) -a 0x1000 -s library_up_data_zx02 rom_bank5.lst >> level_locations.inc
 	$(CALC_ADDRESS) -a 0x1000 -s library_nw_data_zx02 rom_bank5.lst >> level_locations.inc
 	$(CALC_ADDRESS) -a 0x1000 -s library_ne_data_zx02 rom_bank5.lst >> level_locations.inc
+	$(CALC_ADDRESS) -a 0x1000 -s clock_puzzle_data_zx02 rom_bank5.lst >> level_locations.inc
 
 
 

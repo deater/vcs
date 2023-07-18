@@ -96,7 +96,7 @@ do_book:
 	jmp	book_common
 
 
-	.include "sfx_data.inc"
+;	.include "sfx_data.inc"
 ;.align $100 ; temporary
 	.include "sprite_data.inc"
 
