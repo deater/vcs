@@ -348,3 +348,23 @@ optimizing using fancier position code
 book:
 	before:	$355 (book clicked)
 	after:  $349 (book clicked)
+
+
+cleverness in clock face code:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++ notice almost duplicate inc hours / inc minutes code, instead set
+	X=0 or X=1 and used indexed instructions in increment and
+	overflow at 12 code
++ Sprite code.  Copy 9 byte clockface sprite into overlay.
+	12x9 = 108 bytes of sprites for minute hand (and potentially hour hand)
+	cheat a bit and crudely truncate the minute hand to be hour hand
+
+	instead of multiplying by 9 to get to proper sprite, use table lookup
+	using (IN),Y addressing.  Table small enough we only need low
+	byte of index in table.
+
+	Now that it's an index we can move around the sprites so that same
+	values overlap.  Save 32 bytes by overlapping.  Could maybe do better.
++ compare if clock right.  "proper" way to check two values is compares
+	and branches.  But since it's essentialy at 16-bit number, just
+	subtract and see if 0?  would that work?
