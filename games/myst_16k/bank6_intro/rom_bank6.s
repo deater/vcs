@@ -20,4 +20,3 @@ do_intro:
 .include "../sfx_data.inc"
 .include "../sound_update.s"
 .include "fireplace_update.s"
-

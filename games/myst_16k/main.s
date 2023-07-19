@@ -88,6 +88,9 @@ load_new_level:
 	.include "common_routines.s"
 	.include "hand_motion.s"
 	.include "hand_copy.s"
+
+	.include "sprite_data.inc"
+
 	.include "zx02_optim.s"
 
 
@@ -98,9 +101,6 @@ do_book:
 	jmp	book_common
 
 
-;	.include "sfx_data.inc"
-;.align $100 ; temporary
-	.include "sprite_data.inc"
 
 ; e7 signature for MAME */
 ; this is LDA $FFE5

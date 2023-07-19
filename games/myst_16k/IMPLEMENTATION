@@ -368,3 +368,11 @@ cleverness in clock face code:
 + compare if clock right.  "proper" way to check two values is compares
 	and branches.  But since it's essentialy at 16-bit number, just
 	subtract and see if 0?  would that work?
+
+
+weird bugs
+~~~~~~~~~~
+	had code that did a RTS back to $1EE9, however on 6502
+	does a dummy load of address $1FE9 which was is an E7
+	bank switch location.  hard to debug
+
