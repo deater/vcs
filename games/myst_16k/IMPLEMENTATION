@@ -372,7 +372,7 @@ cleverness in clock face code:
 
 weird bugs
 ~~~~~~~~~~
-	had code that did a RTS back to $1EE9, however on 6502
-	does a dummy load of address $1FE9 which was is an E7
-	bank switch location.  hard to debug
+	had code that did a BCS back to $1EE9 from page $1F
+	on 6502 this will do a phantom load of address $1FE9
+	which is an E7 bank switch location.  hard to debug
 
