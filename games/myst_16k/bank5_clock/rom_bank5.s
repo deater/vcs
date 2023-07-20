@@ -13,3 +13,6 @@ clock_puzzle_data_zx02:
 
 .include "../zp.inc"
 .include "clock_update.s"
+
+hint_data_zx02:
+.incbin "hint_data.zx02"
