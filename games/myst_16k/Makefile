@@ -35,7 +35,7 @@ main.bin:	main.o
 
 main.o:	main.s zp.inc \
 	load_level.s level_engine.s position.s \
-	hand_motion.s hand_copy.s adjust_sprite.s common_routines.s \
+	hand_update.s adjust_sprite.s common_routines.s \
 	zx02_optim.s \
 	bank5_clock/rom5_locations.inc \
 	locations/level_locations.inc
@@ -47,8 +47,9 @@ main.o:	main.s zp.inc \
 	$(CALC_ADDRESS) -a 0x1A00 -s common_overscan main.lst > common_routines.inc
 	$(CALC_ADDRESS) -a 0x1A00 -s common_delay_scanlines main.lst >> common_routines.inc
 	$(CALC_ADDRESS) -a 0x1A00 -s common_vblank main.lst >> common_routines.inc
-	$(CALC_ADDRESS) -a 0x1A00 -s hand_copy main.lst >> common_routines.inc
-	$(CALC_ADDRESS) -a 0x1A00 -s hand_motion main.lst >> common_routines.inc
+#	$(CALC_ADDRESS) -a 0x1A00 -s hand_copy main.lst >> common_routines.inc
+#	$(CALC_ADDRESS) -a 0x1A00 -s hand_motion main.lst >> common_routines.inc
+	$(CALC_ADDRESS) -a 0x1A00 -s hand_update main.lst >> common_routines.inc
 	$(CALC_ADDRESS) -a 0x1A00 -s pointer_moved_horizontally main.lst >> common_routines.inc
 	$(CALC_ADDRESS) -a 0x1A00 -s do_book main.lst >> common_routines.inc
 	$(CALC_ADDRESS) -a 0x1A00 -s zx02_full_decomp main.lst >> common_routines.inc

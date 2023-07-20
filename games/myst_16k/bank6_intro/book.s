@@ -74,7 +74,7 @@ book_frame:
 
 	; in VBLANK scanline 0
 
-	ldx	#22
+	ldx	#24
 	jsr	common_delay_scanlines
 
 
@@ -82,9 +82,11 @@ book_frame:
 	; vblank scanline 22
 	;=============================
 	; copy in hand sprite
-	; takes 4 scanlines
+	; takes 6 scanlines
 
-	jsr	hand_copy
+	jsr	hand_update
+
+;	jsr	hand_copy
 
 ; 6
 
@@ -93,7 +95,7 @@ book_frame:
 	;=============================
 	; 4 scanlines of handling input
 
-	jsr	hand_motion
+;	jsr	hand_motion
 
 ; 6
 
