@@ -8,7 +8,7 @@
 	; originally these were separate routines called back to back
 	; we merged them to save some room
 	;=============================
-	; takes X scalines total
+	; takes 6 scalines total
 
 hand_update:
 
@@ -50,8 +50,7 @@ hand_copy_loop:
 	;	around 3.3 scanlines
 	sta	WSYNC
 
-;	rts
-; 6
+
 ;hand_motion:
 
 	;=============================
@@ -73,7 +72,6 @@ left_pressed:
 	dec	POINTER_X		; move sprite left		; 5
 
 after_check_left:
-;	sta	WSYNC			;				; 3
 					;	============================
 					;	 		6 / 13 / 17
 
@@ -98,11 +96,10 @@ after_check_left:
 
 	dec	POINTER_Y		; move sprite up		; 5
 
-	jsr	pointer_moved_vertically	; 			; 6+16
 after_check_up:
 	sta	WSYNC			; 				; 3
 					;	===============================
-					; 			28 / 35 / 61
+					; 			28 / 35 / 39
 
 
 
@@ -123,7 +120,6 @@ after_check_up:
 ; 14
 	inc	POINTER_X		; move sprite right		; 5
 after_check_right:
-;	sta	WSYNC			;				; 3
 					;	===========================
 					; 			8 / 15 / 19
 
@@ -143,11 +139,24 @@ after_check_right:
 	bne	after_check_down	;				; 2/3
 ; 33
 	inc	POINTER_Y		; move sprite down		; 5
-	jsr	pointer_moved_vertically	;			; 6+16
 after_check_down:
-	sta	WSYNC			;				; 3
 					;	==============================
-					; 			30 / 37 / 53
+					; 			27 / 34 / 38
+
+	;====================================
+	; always adjust this every frame
+
+;pointer_moved_vertically:
+	clc								; 2
+	lda     POINTER_Y						; 3
+	adc     #16     ; pointer height				; 2
+	sta     POINTER_Y_END						; 3
+
+; 48 worst case
+
+	; wait
+
+	sta	WSYNC			;				; 3
 
 
 	rts								; 6
