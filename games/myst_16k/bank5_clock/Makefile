@@ -17,9 +17,7 @@ rom5_locations.inc:	rom_bank5.bin $(CALC_ADDRESS)
 	$(CALC_ADDRESS) -a 0x1000 -s clock_puzzle_data_zx02 rom_bank5.lst >> rom5_locations.inc
 	$(CALC_ADDRESS) -a 0x1000 -s clock_update rom_bank5.lst >> rom5_locations.inc
 	$(CALC_ADDRESS) -a 0x1000 -s hint_data_zx02 rom_bank5.lst >> rom5_locations.inc
-
-
-
+	$(CALC_ADDRESS) -a 0x1000 -s elevator_s_data_zx02 rom_bank5.lst >> rom5_locations.inc
 
 ###
 
@@ -33,7 +31,7 @@ rom_bank5.o:	rom_bank5.s \
 	../zp.inc ../../../vcs.inc \
 	steps_e_data.zx02 shack_n_data.zx02 library_up_data.zx02 \
 	library_nw_data.zx02 library_ne_data.zx02 clock_puzzle_data.zx02 \
-	hint_data.zx02
+	hint_data.zx02 elevator_s_data.zx02
 	ca65 -o rom_bank5.o rom_bank5.s -l rom_bank5.lst
 
 
@@ -42,6 +40,12 @@ rom_bank5.o:	rom_bank5.s \
 clock_puzzle_data.inc:	clock_puzzle_bg.png clock_puzzle_overlay.png
 	$(PNG2PF) -4 -n clock_puzzle -b 0x02 clock_puzzle_bg.png - > clock_puzzle_data.inc
 	$(PNG2OVERLAY) -4 -o -n clock_puzzle clock_puzzle_overlay.png - >> clock_puzzle_data.inc
+
+###
+
+elevator_s_data.inc:	elevator_s_bg.png elevator_s_overlay.png
+	$(PNG2PF) -4 -n elevator_s -b 0x00 elevator_s_bg.png - > elevator_s_data.inc
+	$(PNG2OVERLAY) -4 -o -n elevator_s elevator_s_overlay.png - >> elevator_s_data.inc
 
 ###
 
@@ -92,6 +96,18 @@ clock_puzzle_data.bin:	clock_puzzle_data.o
 
 clock_puzzle_data.o:	clock_puzzle_data.s clock_puzzle_data.inc
 	ca65 -o clock_puzzle_data.o clock_puzzle_data.s -l clock_puzzle_data.lst
+
+###
+
+elevator_s_data.zx02:	elevator_s_data.bin
+	$(ZX02) -f elevator_s_data.bin elevator_s_data.zx02
+
+elevator_s_data.bin:	elevator_s_data.o
+	ld65 -o elevator_s_data.bin elevator_s_data.o -C $(LINKER_SCRIPT)/atari2600_f000.inc
+
+elevator_s_data.o:	elevator_s_data.s elevator_s_data.inc
+	ca65 -o elevator_s_data.o elevator_s_data.s -l elevator_s_data.lst
+
 
 ###
 

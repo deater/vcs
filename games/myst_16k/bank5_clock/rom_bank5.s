@@ -16,3 +16,5 @@ clock_puzzle_data_zx02:
 
 hint_data_zx02:
 .incbin "hint_data.zx02"
+elevator_s_data_zx02:
+.incbin "elevator_s_data.zx02"
