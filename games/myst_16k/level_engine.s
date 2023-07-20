@@ -46,30 +46,21 @@ level_frame:
 
 ; in VBLANK scanline 0
 
-	ldx	#24
+	ldx	#25
 	jsr	common_delay_scanlines
 
 	;=============================
-	; now at VBLANK scanline 22
+	; now at VBLANK scanline 23
 	;=============================
 	; copy in hand sprite
 	; takes 6 scanlines
 
 	jsr	hand_update
 
-;	jsr	hand_copy
-; 6
-
-	;=============================
-	; now at VBLANK scanline 26
-	;=============================
-	; 4 scanlines of handling input
-
-;	jsr	hand_motion
 ; 6
 
 	;=======================
-	; now scanline 30
+	; now scanline 29
 	;========================
 	; increment frame
 	; setup missile0 location
@@ -96,7 +87,7 @@ no_missile0:
 	sta	WSYNC							; 3
 
 	;=======================
-	; now scanline 31
+	; now scanline 30
 	;========================
 	; increment frame
 	; setup missile0 location
@@ -115,7 +106,7 @@ really_no_missile0:
 
 
 	;=============================
-	; now VBLANK scanline 32
+	; now VBLANK scanline 31
 	;=============================
 	; do some init
 
@@ -161,7 +152,7 @@ done_flip_switch:
 	sta	WSYNC
 
 	;=======================
-	; now VBLANK scanline 33
+	; now VBLANK scanline 34
 	;=======================
 
 	;====================================================
@@ -193,18 +184,6 @@ qpad_x:
 
 	sta	WSYNC
 
-	;======================================
-	; now vblank 34
-	;=======================================
-	; update pointer horizontal position
-	;=======================================
-
-	; do this separately as too long to fit in with left/right code
-
-	jsr	pointer_moved_horizontally	;			6+48
-	sta	WSYNC			;				3
-					;====================================
-					;				57
 
 	;=========================================
 	; now vblank 35,36

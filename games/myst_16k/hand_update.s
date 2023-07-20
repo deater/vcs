@@ -154,6 +154,14 @@ after_check_down:
 
 ; 48 worst case
 
+;pointer_moved_horizontally:
+	clc								; 2
+	lda	POINTER_X						; 3
+	adc	#8							; 2
+	sta	POINTER_X_END						; 3
+
+; 58 worst case
+
 	; wait
 
 	sta	WSYNC			;				; 3

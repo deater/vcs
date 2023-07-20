@@ -74,33 +74,22 @@ book_frame:
 
 	; in VBLANK scanline 0
 
-	ldx	#24
+	ldx	#25
 	jsr	common_delay_scanlines
 
 
 	;=============================
-	; vblank scanline 22
+	; vblank scanline 23
 	;=============================
 	; copy in hand sprite
 	; takes 6 scanlines
 
 	jsr	hand_update
 
-;	jsr	hand_copy
-
-; 6
-
-	;=============================
-	; vblank scnaline 26
-	;=============================
-	; 4 scanlines of handling input
-
-;	jsr	hand_motion
-
 ; 6
 
 	;=======================
-	; vblank scanline 30
+	; vblank scanline 29
 	;=======================
 	; inc frame
 	; setup missile1 (left edge of book)
@@ -137,7 +126,7 @@ bzpad_x:
 
 
 	;=============================
-	; now VBLANK scanline 31
+	; now VBLANK scanline 30
 	;=============================
 	; do some init
 ; 0
@@ -173,7 +162,7 @@ done_update_animation:
 	sta	WSYNC
 
 	;========================
-	; VBLANK scanline 32+33
+	; VBLANK scanline 33+34
 	;========================
 
 	;==========================================
@@ -197,19 +186,6 @@ wait_book_sp1:
 
 
 	sta	WSYNC
-
-	;======================================
-	; vblank 34
-	;=======================================
-	; update pointer horizontal position
-	;=======================================
-
-	; do this separately as too long to fit in with left/right code
-
-	jsr	pointer_moved_horizontally	;			6+16
-	sta	WSYNC			;				3
-					;====================================
-					;				35
 
 	;=========================================
 	; vblank 35,36

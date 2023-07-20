@@ -84,7 +84,6 @@ load_new_level:
 
 	.include "load_level.s"
 	.include "position.s"
-	.include "adjust_sprite.s"
 	.include "common_routines.s"
 	.include "hand_update.s"
 
