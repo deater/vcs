@@ -79,7 +79,7 @@ book_frame:
 
 
 	;=============================
-	; vblank scanline 23
+	; vblank scanline 25
 	;=============================
 	; copy in hand sprite
 	; takes 6 scanlines
@@ -89,7 +89,7 @@ book_frame:
 ; 6
 
 	;=======================
-	; vblank scanline 29
+	; vblank scanline 31
 	;=======================
 	; inc frame
 	; setup missile1 (left edge of book)
@@ -126,7 +126,7 @@ bzpad_x:
 
 
 	;=============================
-	; now VBLANK scanline 30
+	; now VBLANK scanline 32
 	;=============================
 	; do some init
 ; 0

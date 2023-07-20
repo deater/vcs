@@ -50,7 +50,7 @@ level_frame:
 	jsr	common_delay_scanlines
 
 	;=============================
-	; now at VBLANK scanline 23
+	; now at VBLANK scanline 25
 	;=============================
 	; copy in hand sprite
 	; takes 6 scanlines
@@ -60,7 +60,7 @@ level_frame:
 ; 6
 
 	;=======================
-	; now scanline 29
+	; now scanline 31
 	;========================
 	; increment frame
 	; setup missile0 location
@@ -87,7 +87,7 @@ no_missile0:
 	sta	WSYNC							; 3
 
 	;=======================
-	; now scanline 30
+	; now scanline 32
 	;========================
 	; increment frame
 	; setup missile0 location
@@ -106,7 +106,7 @@ really_no_missile0:
 
 
 	;=============================
-	; now VBLANK scanline 31
+	; now VBLANK scanline 33
 	;=============================
 	; do some init
 
