@@ -46,11 +46,11 @@ level_frame:
 
 ; in VBLANK scanline 0
 
-	ldx	#22
+	ldx	#20
 	jsr	common_delay_scanlines
 
 	;=============================
-	; now at VBLANK scanline 23
+	; now at VBLANK scanline 20
 	;=============================
 	; copy in hand sprite
 	; takes 6 scanlines
@@ -60,7 +60,7 @@ level_frame:
 ; 6
 
 	;=======================
-	; now scanline 29,30,31
+	; now scanline 26,27,28
 	;========================
 	; setup missile0 location
 
@@ -83,9 +83,10 @@ le_do_missile0:
 no_missile0:
 
 	;=============================
-	; now VBLANK scanline 32
+	; now VBLANK scanline 29
 	;=============================
 	; do some init
+	; handle marker switches
 
 	inc	FRAME							; 5
 
@@ -128,61 +129,55 @@ switch_off:
 done_flip_switch:
 	sta	WSYNC
 
-	;=======================
-	; now VBLANK scanline 33
-	;=======================
+	;=============================
+	; now VBLANK scanline 30,31,32
+	;=============================
 
 	;====================================================
 	; set up sprite1 (overlay) to be at proper X position
 	;====================================================
-	; now in setup scanline 0
+
+	lda	LEVEL_OVERLAY_COARSE					; 3
+	ldx	#POS_SPRITE1						; 2
+	jsr	set_pos_x						;6+...
 
 
 ; 0
-	nop								; 2
-	nop								; 2
+;	nop								; 2
+;	nop								; 2
 ; 4
-	ldx	LEVEL_OVERLAY_COARSE					; 3
-	inx			;					; 2
-	inx			;					; 2
+;	ldx	LEVEL_OVERLAY_COARSE					; 3
+;	inx			;					; 2
+;	inx			;					; 2
 ; 11
-qpad_x:
-	dex			;					; 2
-	bne	qpad_x		;					; 2/3
+;qpad_x:
+;	dex			;					; 2
+;	bne	qpad_x		;					; 2/3
 				;===========================================
 				;	(5*COASRE+2)-1
 
 	; beam is at proper place
-	sta	RESP1							; 3
+;	sta	RESP1							; 3
 
-	lda	LEVEL_OVERLAY_FINE	; fine adjust overlay		; 3
-	sta	HMP1							; 3
+;	lda	LEVEL_OVERLAY_FINE	; fine adjust overlay		; 3
+;	sta	HMP1							; 3
 
 
-	sta	WSYNC
+;	sta	WSYNC
 
 
 	;=========================================
-	; now vblank 34,35,36
+	; now vblank 33,34,35
 	;==========================================
 	; set up sprite0 to be at proper X position
 	;==========================================
-; 0
+; 6
 	lda	POINTER_X						; 3
 	ldx	#POS_SPRITE0						; 2
 	jsr	set_pos_x						;6+...
 
 ; 6
 
-; 73
-;	sta	WSYNC							; 3
-; 76
-
-;wait_le_sp0:
-;	dey								; 2
-;	bpl	wait_le_sp0	; 5-cycle loop (15 TIA color clocks)	; 2/3
-
-;	sta	RESP0							; 3
 
 	;==========================================
 	; now vblank 36
