@@ -1,3 +1,5 @@
++ why does it glitch when going to rocket_close?
+
 + use vblank routine in book.s to save bytes
 + make code to setup timer for decode common
 + migrate all levels to new format

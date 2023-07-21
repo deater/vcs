@@ -4,7 +4,7 @@
 
 .byte $22			; color of pointer (sprite0)
 .byte $F4,$00			; background color, background color2
-.byte 62			; overlay (sprite1) X location
+.byte 63			; overlay (sprite1) X location
 .byte LOCATION_ROCKET_CLOSE_N	; center destination
 .byte LOCATION_ROCKET_S		; left destination
 .byte LOCATION_ROCKET_S		; right destination

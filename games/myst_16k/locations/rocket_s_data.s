@@ -4,7 +4,7 @@
 
 .byte $22			; color of pointer (sprite0)
 .byte $02,$02			; background color, background color2
-.byte 105			; overlay (sprite1) coarse/fine
+.byte 111			; overlay (sprite1) coarse/fine
 .byte LOCATION_HILLTOP_E	; center destination
 .byte LOCATION_ROCKET_N		; left destination
 .byte LOCATION_ROCKET_N		; right destination
