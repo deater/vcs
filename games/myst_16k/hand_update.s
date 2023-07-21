@@ -83,12 +83,12 @@ after_check_left:
 	;===========================
 ; 17 (worst case)
 
-	lda	POINTER_Y		;				; 3
+	lda	POINTER_Y		; bounds check			; 3
 	cmp	#1			;				; 2
-	beq	after_check_up		;				; 2/3
+	bcc	after_check_up		;				; 2/3
 
 ; 24
-	lda	#$10			; check up			; 2
+	lda	#$10			; check joystick up		; 2
 	bit	SWCHA			;				; 3
 	bne	after_check_up		;				; 2/3
 
@@ -111,10 +111,10 @@ after_check_up:
 
 ; 0
 	lda	POINTER_X_END		;				; 3
-	cmp	#155			;				; 2
+	cmp	#150			;				; 2
 	bcs	after_check_right	;				; 2/3
 ; 7
-	lda	#$80			; check right			; 2
+	lda	#$80			; check joystick right		; 2
 	bit	SWCHA			;				; 3
 	bne	after_check_right	;				; 2/3
 ; 14

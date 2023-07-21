@@ -55,7 +55,9 @@ skipIny:
 	eor	#$07	; sets offset for 6 + HMPx			; 2
 ; 38 / 35
 
-mult_16:
+	sta	WSYNC
+
+;mult_16:
 	asl             						; 2
 	asl             						; 2
 	asl             						; 2
@@ -69,18 +71,21 @@ set_pos_x2:
 	iny								; 2
 	iny								; 2
 ; 56
-	rts
+;	rts
 ; 62
 
+
+	sta	WSYNC							; 3
+
+wait_pos:
+	dey								; 2
+	bpl	wait_pos	; 5-cycle loop (15 TIA color clocks)	; 2/3
+
+	sta	RESP0,X           					; 4
 
 	; can't use this on edge of screen as the rts 6 cycles
 	; can cause us to cross a scanline
 
-;	sta	WSYNC							; 3
+	sta	WSYNC
 
-;wait_pos:
-;	dey								; 2
-;	bpl	wait_pos	; 5-cycle loop (15 TIA color clocks)	; 2/3
-
-;	sta	RESP0,X           					; 4
-;	rts								; 6
+	rts								; 6

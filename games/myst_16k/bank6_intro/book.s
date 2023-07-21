@@ -1,3 +1,7 @@
+; Implement the linking book...
+
+.include "../locations.inc"
+
 	book_edge_colors 	= E7_256B_READ_ADDR
 	page1_colors		= E7_256B_READ_ADDR+48
 	page1_sprite		= E7_256B_READ_ADDR+96
@@ -74,12 +78,12 @@ book_frame:
 
 	; in VBLANK scanline 0
 
-	ldx	#25
+	ldx	#22
 	jsr	common_delay_scanlines
 
 
 	;=============================
-	; vblank scanline 25
+	; vblank scanline 22
 	;=============================
 	; copy in hand sprite
 	; takes 6 scanlines
@@ -89,7 +93,7 @@ book_frame:
 ; 6
 
 	;=======================
-	; vblank scanline 31
+	; vblank scanline 28
 	;=======================
 	; inc frame
 	; setup missile1 (left edge of book)
@@ -126,7 +130,7 @@ bzpad_x:
 
 
 	;=============================
-	; now VBLANK scanline 32
+	; now VBLANK scanline 29
 	;=============================
 	; do some init
 ; 0
@@ -161,9 +165,9 @@ done_update_animation:
 
 	sta	WSYNC
 
-	;========================
-	; VBLANK scanline 33+34
-	;========================
+	;=========================
+	; VBLANK scanline 30+31+32
+	;=========================
 
 	;==========================================
 	; set up sprite1 to be at proper X position
@@ -173,39 +177,25 @@ done_update_animation:
 ; 0
 	lda	#96							; 2
 	ldx	#POS_SPRITE1						; 2
-	jsr	set_pos_x						;6+62
-; 72
-	sta	WSYNC		;					; 3
-; 75
-
-wait_book_sp1:
-	dey								; 2
-	bpl	wait_book_sp1      ; 5-cycle loop (15 TIA color clocks)	; 2/3
-
-	sta	RESP1							; 4
-
-
-	sta	WSYNC
+	jsr	set_pos_x						;6+...
+; 6
 
 	;=========================================
-	; vblank 35,36
+	; vblank 33,34,35
 	;==========================================
 	; set up pointer (sprite0) to be at proper X position
 	;==========================================
 
-; 0
+; 6
 	lda	POINTER_X						; 3
 	ldx	#POS_SPRITE0						; 2
-	jsr	set_pos_x						;6+62
-; 73
-	sta	WSYNC		;					; 3
-; 76
+	jsr	set_pos_x						;6+...
 
-wait_book_sp0:
-	dey								; 2
-	bpl	wait_book_sp0      ; 5-cycle loop (15 TIA color clocks)	; 2/3
+; 6
 
-	sta	RESP0							; 4
+	;=========================================
+	; vblank 36
+	;==========================================
 
 	sta	WSYNC							; 3
 	sta	HMOVE		; adjust fine tune, must be after WSYNC	; 3
@@ -629,4 +619,4 @@ blue_book_data_zx02:
 green_book_data_zx02:
 .incbin "green_book_data.zx02"
 
-.include "../locations.inc"
+

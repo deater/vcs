@@ -46,11 +46,11 @@ level_frame:
 
 ; in VBLANK scanline 0
 
-	ldx	#25
+	ldx	#22
 	jsr	common_delay_scanlines
 
 	;=============================
-	; now at VBLANK scanline 25
+	; now at VBLANK scanline 23
 	;=============================
 	; copy in hand sprite
 	; takes 6 scanlines
@@ -60,53 +60,30 @@ level_frame:
 ; 6
 
 	;=======================
-	; now scanline 31
+	; now scanline 29,30,31
 	;========================
-	; increment frame
 	; setup missile0 location
-; 6
-	lda	$80				; nop3			; 3
-	ldx	LEVEL_MISSILE0_COARSE					; 3
-	beq	no_missile0						; 2/3
-; 14
-mlevel_pad:
-	dex								; 2
-	bne	mlevel_pad	; (X*5)-1 = 14				; 2/3
 
-		; 9 = (8*5)-1 = 39 + 14 = 53
-		; 10 = (9*5)-1 = 44 + 14 = 58
-		; 11 = (10*5)-1 = 49 + 14 =64
+	lda	LEVEL_MISSILE0_COARSE
+	bne	le_do_missile0
 
-; 64 max
-	sta	RESM0							; 3
-; 67
+	sta	WSYNC
+	sta	WSYNC
+	sta	WSYNC
+	beq	no_missile0	; bra
 
-; max=73
-
-no_missile0:
-	sta	WSYNC							; 3
-
-	;=======================
-	; now scanline 32
-	;========================
-	; increment frame
-	; setup missile0 location
-; 0
-	ldx	LEVEL_MISSILE0_COARSE					; 3
-	beq	really_no_missile0					; 2/3
-
+le_do_missile0:
 	ldx	#2			; enable missile		; 2
 	stx	ENAM0							; 3
+	ldx	#POS_MISSILE0
+	jsr	set_pos_x
 
-	lda	LEVEL_MISSILE0_FINE	; fine adjust overlay		; 3
-	sta	HMM0							; 3
+; 6
 
-really_no_missile0:
-	sta	WSYNC							; 3
-
+no_missile0:
 
 	;=============================
-	; now VBLANK scanline 33
+	; now VBLANK scanline 32
 	;=============================
 	; do some init
 
@@ -152,7 +129,7 @@ done_flip_switch:
 	sta	WSYNC
 
 	;=======================
-	; now VBLANK scanline 34
+	; now VBLANK scanline 33
 	;=======================
 
 	;====================================================
@@ -186,23 +163,31 @@ qpad_x:
 
 
 	;=========================================
-	; now vblank 35,36
+	; now vblank 34,35,36
 	;==========================================
 	; set up sprite0 to be at proper X position
 	;==========================================
 ; 0
 	lda	POINTER_X						; 3
 	ldx	#POS_SPRITE0						; 2
-	jsr	set_pos_x						;6+62
+	jsr	set_pos_x						;6+...
+
+; 6
+
 ; 73
-	sta	WSYNC							; 3
+;	sta	WSYNC							; 3
 ; 76
 
-wait_le_sp0:
-	dey								; 2
-	bpl	wait_le_sp0	; 5-cycle loop (15 TIA color clocks)	; 2/3
+;wait_le_sp0:
+;	dey								; 2
+;	bpl	wait_le_sp0	; 5-cycle loop (15 TIA color clocks)	; 2/3
 
-	sta	RESP0							; 3
+;	sta	RESP0							; 3
+
+	;==========================================
+	; now vblank 36
+	;==========================================
+
 
 	sta	WSYNC							; 3
 	sta	HMOVE		; adjust fine tune, must be after WSYNC	; 3
