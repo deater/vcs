@@ -64,7 +64,7 @@ level_frame:
 	;========================
 	; setup missile0 location
 
-	lda	LEVEL_MISSILE0_COARSE
+	lda	LEVEL_MISSILE0_X
 	bne	le_do_missile0
 
 	sta	WSYNC
@@ -137,7 +137,7 @@ done_flip_switch:
 	; set up sprite1 (overlay) to be at proper X position
 	;====================================================
 
-	lda	LEVEL_OVERLAY_COARSE					; 3
+	lda	LEVEL_OVERLAY_X						; 3
 	ldx	#POS_SPRITE1						; 2
 	jsr	set_pos_x						;6+...
 

@@ -1,3 +1,6 @@
++ use vblank routine in book.s to save bytes
++ make code to setup timer for decode common
++ migrate all levels to new format
 
 
 fix bounds on pointer since we adjusted things
