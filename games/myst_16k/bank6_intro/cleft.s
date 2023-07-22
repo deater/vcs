@@ -153,7 +153,7 @@ cleft_playfield_loop:
 	sta	PF0			;				; 3
 	; must write by CPU 22 [GPU 68]
 ; 15
-	lda	cleft_playfield2_left,X	;				; 4+
+	lda	cleft_playfield2_left-5,X	;			; 4+
 	sta	PF2			;				; 3
 	; must write by CPU 38 [GPU 116]
 ; 22
@@ -188,7 +188,7 @@ no_fall:
 
 
 ; 41
-	lda	cleft_playfield0_right,X	;			; 4+
+	lda	cleft_playfield0_right-5,X	;			; 4+
 	sta	PF0			;				; 3
 
 

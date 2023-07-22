@@ -14,7 +14,7 @@ do_intro:
 
 .include "book.s"
 
-.align $100
+;.align $100
 
 .include "intro_data.inc"
 .include "../sfx_data.inc"

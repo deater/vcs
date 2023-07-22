@@ -1,7 +1,5 @@
 falling_sprite:
 	.byte	$E0,$31,$1A,$1E,$FE,$1E,$0F,$05,$00
-;	.byte	$00,$05,$0F,$1E,$FE,$1E,$1A,$31,$E0
-
 
 title_playfield0_left:
 	.byte $30,$20,$60,$60,$60,$A0,$A0,$A0
@@ -12,6 +10,9 @@ title_playfield1_left:
 title_playfield2_left:
 	.byte $C6,$44,$44,$28,$28,$10,$10,$10
 	.byte $10,$10,$38
+
+.align $100
+
 title_playfield1_right:
 	.byte $78,$88,$80,$80,$C0,$60,$30,$18
 	.byte $08,$88,$F0
@@ -21,19 +22,20 @@ title_playfield2_right:
 
 
 cleft_colors:
-	.byte $00,$00,$00,$00,$00,$02,$02,$02
+	.byte $00,$00,$00,$00,$00, $02,$02,$02
 	.byte $02,$02,$02,$04,$A4,$A4,$A4,$A4
 	.byte $A4,$A6,$A6,$A8,$A8,$AC,$AE,$AE
 	.byte $AE,$AC,$AC,$AA,$A8,$A6,$A6,$A4
 	.byte $A4,$A4,$A4,$A4,$04,$04,$02,$02
-	.byte $02,$02,$00,$00,$00,$00,$00,$00
+	.byte $02,$02, $00,$00,$00,$00,$00,$00
 
 cleft_playfield2_left:
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
+;	.byte $00
+;	.byte $00
+;	.byte $00
+;	.byte $00
+;	.byte $00
+
 	.byte $80
 	.byte $80
 	.byte $80
@@ -69,21 +71,23 @@ cleft_playfield2_left:
 	.byte $C0
 	.byte $80
 	.byte $80
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
 	.byte $00
 	.byte $00
 
+;	.byte $00
+;	.byte $00
+;	.byte $00
+;	.byte $00
+;	.byte $00
+;	.byte $00
+
 cleft_playfield0_right:
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
+;	.byte $00
+;	.byte $00
+;	.byte $00
+;	.byte $00
+;	.byte $00
+
 	.byte $00
 	.byte $00
 	.byte $00
@@ -121,40 +125,12 @@ cleft_playfield0_right:
 	.byte $10
 	.byte $10
 	.byte $10
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
-	.byte $00
 
-.if 0
+;	.byte $00
+;	.byte $00
+;	.byte $00
+;	.byte $00
+;	.byte $00
+;	.byte $00
 
-;=============================
-; sound data
-;=============================
 
-;=========================================
-; sound effects
-; doesn't need to be aligned?
-
-sfx_f:
-sfx_start:
-	.byte	0, 31, 31
-sfx_click:
-	.byte   0 ,25,25,25,25
-	.byte   25,25,25,25,25,25,25,25
-	.byte   25,25,25,25,25 ,04,04,04
-	.byte	04,04,04,22,22,22,22,22		; link
-sfx_link:
-
-sfx_cv:
-	.byte   $00,$C3,$CF
-	.byte   $00,$32,$34,$36,$38
-	.byte   $3A,$38,$36,$38,$3A,$3C,$3A,$38
-	.byte   $3A,$3C,$3E,$3C,$3A, $E4,$E6,$EA
-	.byte   $E8,$E6,$E4,$3A,$3c,$3d,$3e,$3e	; link
-.endif
-
-;SFX_CLICK	=       sfx_click-sfx_start-1
-;SFX_LINK	=       sfx_link-sfx_start-1
