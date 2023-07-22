@@ -4,14 +4,17 @@
 	; title screen
 	;================================
 	; arrive here with unknown number of cycles
-
+do_title:
 
 	lda	#2			; disable VBLANK?
 	sta	VBLANK
 
-	lda	#0							; 2
-	sta	FRAME							; 3
-	sta	CTRLPF			; no-reflect			; 3
+	; are these needed?  intro starts after start of game
+	; where all zero page set to 0...
+
+;	lda	#0							; 2
+;	sta	FRAME			; reset frame			; 3
+;	sta	CTRLPF			; no-reflect			; 3
 
 	lda	#$20			; gold/brown			; 2
 	sta	TITLE_COLOR						; 3
@@ -30,16 +33,12 @@ title_frame_loop:
 	;=============================
 
 	ldx	#36							; 2
-vtitle_loop:
-	sta	WSYNC							; 3
-	dex								; 2
-	bne	vtitle_loop						; 2/3
-
-; 4
+	jsr	common_delay_scanlines
+; 10
 	;==============================
 	; VBLANK scanline 37 -- config
 	;==============================
-; 4
+; 10
 	inc	FRAME							; 5
 	lda	FRAME							; 3
 	and	#$f			; every 2/16 frame (~.5s)	; 2
@@ -47,7 +46,7 @@ vtitle_loop:
 	inc	TITLE_COLOR						; 5
 no_rotate_title:
 
-; 21
+; 27
 	ldy	#0							; 2
 	ldx	#0							; 2
 	stx	GRP0							; 3
@@ -57,7 +56,7 @@ no_rotate_title:
 	stx	PF0							; 3
 	stx	PF1							; 3
 	stx	PF2							; 3
-; 46
+; 53
 	sta	WSYNC
 
 

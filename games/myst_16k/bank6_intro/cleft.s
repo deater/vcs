@@ -8,14 +8,14 @@
 
 	lda	#0							; 2
 	sta	FRAME							; 3
-	sta	FALL_COUNT
+	sta	FALL_COUNT						; 3
 
 				; unmirrored playfield
 	lda	#CTRLPF_PFP	; playfield has priority over sprites	; 2
 	sta	CTRLPF							; 3
 
-	lda	#30
-	sta	INPUT_COUNTDOWN
+	lda	#30			; debounce			; 2
+	sta	INPUT_COUNTDOWN						; 3
 
 cleft_frame_loop:
 
@@ -31,24 +31,20 @@ cleft_frame_loop:
 
 	ldx	#33							; 2
 	jsr	common_delay_scanlines
-;vcleft_loop:
-;	sta	WSYNC							; 3
-;	dex								; 2
-;	bne	vcleft_loop						; 2/3
 
-; 4
+; 10
 	;==============================
 	; VBLANK scanline 34 -- frame
 	;==============================
-; 4
+; 10
 	inc	FRAME							; 5
-; 9
+; 15
 	lda	FRAME							; 3
 	and	#$3f							; 2
 	bne	not_a_second						; 2/3
-; 16
+; 22
 	inc	FALL_COUNT						; 5
-; 21
+; 27
 	; set up scale
 	lda	#$0							; 2
 	ldx	FALL_COUNT						; 3
@@ -137,13 +133,7 @@ done_second:
 	sta	PF1			; playfield 1 is always 0	; 3
 ; 54
 
-;	jmp	skip
 
-	; bit of a hack, can store 32B here?
-
-;.align $100
-
-skip:
 	;=============================================
 	;=============================================
 	; draw cleft playfield
@@ -168,26 +158,6 @@ cleft_playfield_loop:
 	; must write by CPU 38 [GPU 116]
 ; 22
 
-.if 0
-	;====================
-	; do the star effect
-
-	tya								; 2
-	and	#$f							; 2
-	bne	not8							; 2/3
-	lda	#2							; 2
-	jmp	done8							; 3
-not8:
-	lda	#0							; 2
-	nop								; 2
-done8:
-	sta	ENABL							; 3
-								;===========
-								; 14 / 12
-
-; 36
-	inc	TEMP1	; nop5						; 5
-.endif
 
 	;==================
 	; draw sprite

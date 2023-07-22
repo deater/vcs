@@ -262,19 +262,22 @@ done_update_animation:
 	; in playfield scanline 0
 	lda	#$00		; black					; 2
 	sta	COLUPF							; 3
-	sta	WSYNC
 
+	ldx	#4
+	jsr	common_delay_scanlines
+
+;	sta	WSYNC
 	; in playfield scanline 1
 
-	sta	WSYNC
+;	sta	WSYNC
 
 	; in playfield scanline 2
 
-	sta	WSYNC
+;	sta	WSYNC
 
 	; in playfield scanline 3
 
-	sta	WSYNC
+;	sta	WSYNC
 
 	;==========================
 	; grey line (4 lines)
@@ -469,10 +472,14 @@ book_done_playfield:
 	sta	ENAM1	; disable missile 1				; 3
 	sta	GRP1							; 3
 ; 23
-	sta	WSYNC
-	sta	WSYNC
-	sta	WSYNC
-	sta	WSYNC
+
+	ldx	#4
+	jsr	common_delay_scanlines
+
+;	sta	WSYNC
+;	sta	WSYNC
+;	sta	WSYNC
+;	sta	WSYNC
 
 
 	;==========================
@@ -618,5 +625,4 @@ blue_book_data_zx02:
 .incbin "blue_book_data.zx02"
 green_book_data_zx02:
 .incbin "green_book_data.zx02"
-
 
