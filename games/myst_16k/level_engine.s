@@ -832,8 +832,6 @@ done_check_level_input:
 
 	jmp	level_frame
 
-
-
 powers_of_two:
 .byte	$01,$02,$04,$08, $10,$20,$40,$80
 
@@ -855,7 +853,7 @@ playfield_locations_h:
 grab_dest_l:
 	.byte	<(grab_atrus-1)
 	.byte	<(grab_fireplace-1)
-	.byte	<(grab_clock-1)
+	.byte	<(grab_clock_controls-1)
 	.byte	<(grab_bookshelf-1)
 	.byte	<(grab_close_painting-1)
 	.byte	<(grab_open_painting-1)
@@ -864,7 +862,7 @@ grab_dest_l:
 grab_dest_h:
 	.byte	>(grab_atrus-1)
 	.byte	>(grab_fireplace-1)
-	.byte	>(grab_clock-1)
+	.byte	>(grab_clock_controls-1)
 	.byte	>(grab_bookshelf-1)
 	.byte	>(grab_close_painting-1)
 	.byte	>(grab_open_painting-1)
@@ -902,32 +900,43 @@ trapped_with_atrus:
 	jmp	start_new_level
 
 
+	;==========================
 	; grabbed the clock puzzle
+	;==========================
 grab_clock_puzzle:
 ;	jmp	done_check_level_input
 
-	; grabbed the puzzle in the fireplace
+	;==============================
+	; grabbed the fireplace puzzle
+	;==============================
 grab_fireplace:
 	inc	WAS_CLICKED
 	bne	done_check_level_input		; bra
 
-	; grabbed the clock
-grab_clock:
+	;============================
+	; grabbed the clock controls
+	;============================
+grab_clock_controls:
 	lda	#LOCATION_CLOCK_PUZZLE
 	jmp	start_new_level
 
 
-
+	;========================
 	; grabbed the bookshelf
+	;========================
 grab_bookshelf:
 	jmp	done_check_level_input
 
+	;==============================
 	; grabbed close door painting
+	;==============================
 grab_close_painting:
 	lda	#0
-	beq	common_painting
+	beq	common_painting		; bra
 
+	;==============================
 	; grabbed open door painting
+	;==============================
 grab_open_painting:
 	lda	#1
 common_painting:

@@ -204,5 +204,5 @@ steps_e_data.o:	steps_e_data.s steps_e_data.inc
 ###
 
 clean:	
-	rm -f *~ *.zx02 *.lst *.o *.bin
+	rm -f *~ *.zx02 *.lst *.o *.bin *.inc
 
