@@ -125,6 +125,8 @@ bzpad_x:
 	lda	#$60		; fine tune missile1 (book edge)	; 2
 	sta	HMM1							; 3
 ; 52
+	lda	#$E0		; fine tune missile1 (book edge)	; 2
+	sta	HMM0							; 3
 
 	sta	WSYNC							; 3
 

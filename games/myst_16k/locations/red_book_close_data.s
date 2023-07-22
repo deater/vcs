@@ -4,7 +4,7 @@
 
 .byte $22			; color of pointer (sprite0)
 .byte $00,$00			; background color, background color2
-.byte 68			; overlay (sprite1) coarse/fine
+.byte 75			; overlay (sprite1) coarse/fine
 .byte LOCATION_LIBRARY_W	; center destination
 .byte $FF			; left destination
 .byte $FF			; right destination
