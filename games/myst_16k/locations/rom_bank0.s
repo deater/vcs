@@ -18,3 +18,5 @@ arrival_e_data_zx02:
 .incbin "arrival_e_data.zx02"
 clock_n_data_zx02:
 .incbin "clock_n_data.zx02"
+
+rom0_end:

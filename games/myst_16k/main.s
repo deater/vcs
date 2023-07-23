@@ -85,9 +85,9 @@ load_new_level:
 	.include "load_level.s"
 	.include "position.s"
 	.include "common_routines.s"
-	.include "hand_update.s"
 
-	.include "sprite_data.inc"
+;	.include "hand_update.s"
+;	.include "sprite_data.inc"
 
 	.include "zx02_optim.s"
 

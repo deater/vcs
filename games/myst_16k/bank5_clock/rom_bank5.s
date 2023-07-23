@@ -1,3 +1,6 @@
+.include "../zp.inc"
+.include "../common_routines.inc"
+
 steps_e_data_zx02:
 .incbin "steps_e_data.zx02"
 shack_n_data_zx02:
@@ -11,12 +14,14 @@ library_ne_data_zx02:
 clock_puzzle_data_zx02:
 .incbin "clock_puzzle_data.zx02"
 
-.include "../zp.inc"
-.include "clock_update.s"
-
 hint_data_zx02:
 .incbin "hint_data.zx02"
 elevator_s_data_zx02:
 .incbin "elevator_s_data.zx02"
 elevator_n_data_zx02:
 .incbin "elevator_n_data.zx02"
+
+.include "clock_update.s"
+.include "../bank6_intro/fireplace_update.s"
+
+rom_bank5_end:

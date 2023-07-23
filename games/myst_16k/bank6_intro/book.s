@@ -88,7 +88,7 @@ book_frame:
 	; copy in hand sprite
 	; takes 6 scanlines
 
-	jsr	hand_update
+	jsr	pointer_update
 
 ; 6
 

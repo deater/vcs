@@ -17,3 +17,4 @@ pool_s_data_zx02:
 you_win_data_zx02:
 .incbin "you_win_data.zx02"
 
+rom_bank4_end:

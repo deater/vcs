@@ -19,4 +19,9 @@ do_intro:
 .include "intro_data.inc"
 .include "../sfx_data.inc"
 .include "../sound_update.s"
-.include "fireplace_update.s"
+;.include "fireplace_update.s"
+
+.include "../pointer_update.s"
+
+
+rom_bank6_end:

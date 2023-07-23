@@ -35,7 +35,7 @@ main.bin:	main.o
 
 main.o:	main.s zp.inc \
 	load_level.s level_engine.s position.s \
-	hand_update.s common_routines.s \
+	common_routines.s \
 	zx02_optim.s \
 	bank5_clock/rom5_locations.inc \
 	locations/level_locations.inc
@@ -43,28 +43,23 @@ main.o:	main.s zp.inc \
 	echo "do_intro = 0 " >> rom_bank6_routines.inc
 	echo "fireplace_update = 0 " >> rom_bank6_routines.inc
 	echo "update_sound = 0 " >> rom_bank6_routines.inc
+	echo "pointer_update = 0 " >> rom_bank6_routines.inc
 	ca65 -o main.o main.s -l main.lst
 	$(CALC_ADDRESS) -a 0x1A00 -s common_overscan main.lst > common_routines.inc
 	$(CALC_ADDRESS) -a 0x1A00 -s common_delay_scanlines main.lst >> common_routines.inc
 	$(CALC_ADDRESS) -a 0x1A00 -s common_vblank main.lst >> common_routines.inc
-#	$(CALC_ADDRESS) -a 0x1A00 -s hand_copy main.lst >> common_routines.inc
-#	$(CALC_ADDRESS) -a 0x1A00 -s hand_motion main.lst >> common_routines.inc
-	$(CALC_ADDRESS) -a 0x1A00 -s hand_update main.lst >> common_routines.inc
-#	$(CALC_ADDRESS) -a 0x1A00 -s pointer_moved_horizontally main.lst >> common_routines.inc
+#	$(CALC_ADDRESS) -a 0x1A00 -s hand_update main.lst >> common_routines.inc
 	$(CALC_ADDRESS) -a 0x1A00 -s do_book main.lst >> common_routines.inc
 	$(CALC_ADDRESS) -a 0x1A00 -s zx02_full_decomp main.lst >> common_routines.inc
 	$(CALC_ADDRESS) -a 0x1A00 -s powers_of_two main.lst >> common_routines.inc
-#	$(CALC_ADDRESS) -a 0x1A00 -s sfx_link main.lst >> common_routines.inc
-#	$(CALC_ADDRESS) -a 0x1A00 -s sfx_click main.lst >> common_routines.inc
-#	$(CALC_ADDRESS) -a 0x1A00 -s sfx_start main.lst >> common_routines.inc
-#	$(CALC_ADDRESS) -a 0x1A00 -s sfx_cv main.lst >> common_routines.inc
-#	$(CALC_ADDRESS) -a 0x1A00 -s sfx_f main.lst >> common_routines.inc
 	$(CALC_ADDRESS) -a 0x1A00 -s set_pos_x main.lst >> common_routines.inc
 	cd bank6_intro && make
+	cd bank5_clock && make
 	$(CALC_ADDRESS) -a 0x1000 -s book_common bank6_intro/rom_bank6.lst > rom_bank6_routines.inc
 	$(CALC_ADDRESS) -a 0x1000 -s do_intro bank6_intro/rom_bank6.lst >> rom_bank6_routines.inc
-	$(CALC_ADDRESS) -a 0x1000 -s fireplace_update bank6_intro/rom_bank6.lst >> rom_bank6_routines.inc
+	$(CALC_ADDRESS) -a 0x1000 -s pointer_update bank6_intro/rom_bank6.lst >> rom_bank6_routines.inc
 	$(CALC_ADDRESS) -a 0x1000 -s update_sound bank6_intro/rom_bank6.lst >> rom_bank6_routines.inc
+	$(CALC_ADDRESS) -a 0x1000 -s fireplace_update bank5_clock/rom_bank5.lst >> rom_bank6_routines.inc
 	ca65 -o main.o main.s -l main.lst
 
 ###

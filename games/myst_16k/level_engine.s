@@ -46,13 +46,13 @@ level_frame:
 
 ; in VBLANK scanline 0
 
-	ldx	#19
+	ldx	#18
 	jsr	common_delay_scanlines
 
 ; 10
 
 	;=============================
-	; now at VBLANK scanline 19
+	; now at VBLANK scanline 18
 	;=============================
 	; patch destination if needed
 
@@ -68,17 +68,30 @@ level_frame:
 no_center_patch:
 	sta	WSYNC
 
+	;=============================
+	; now at VBLANK scanline 19
+	;=============================
+	; patch overlay if needed
 
-.if 0
-	lda	#$00						; 3
-	ldy	#10						; 3
+	lda	LEVEL_CENTER_PATCH_COND				; 3
+	beq	no_overlay_patch				; 2/3
+
+	lda	#<(level_overlay_colors_write+33)
+	sta	INL
+	lda	#>(level_overlay_colors_write+33)
+	sta	INH
+
+	ldy	#12						; 3
+	lda	#$06						; 3
 patch_loop:
 	sta	(INL),Y						; 6
 	dey							; 2
 	bpl	patch_loop					; 2/3
 
 	; 6+(11*Y)-1
-.endif
+
+no_overlay_patch:
+	sta	WSYNC
 
 
 
@@ -88,9 +101,12 @@ patch_loop:
 	; copy in hand sprite
 	; takes 6 scanlines
 
-	jsr	hand_update
+	lda	E7_SET_BANK6
+	jsr	pointer_update
+	sta	E7_SET_BANK7_RAM
 
-; 6
+
+; 9
 
 	;=======================
 	; now scanline 26,27,28
@@ -575,7 +591,7 @@ handle_fireplace:
 	ldx	#14
 	jsr	common_overscan
 
-	lda	E7_SET_BANK6
+	lda	E7_SET_BANK5
 	jsr	fireplace_update
 	sta	E7_SET_BANK7_RAM
 

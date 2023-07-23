@@ -17,4 +17,5 @@ behind_fireplace_data_zx02:
 inside_fireplace_data_zx02:
 .incbin "inside_fireplace_data.zx02"
 
+rom_bank3_end:
 
