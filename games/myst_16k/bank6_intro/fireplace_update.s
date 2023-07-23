@@ -6,7 +6,7 @@ fireplace_update:
 	ldy	#$FF							; 2
 	sty	FIREPLACE_CHANGED					; 3
 	iny								; 2
-	sty	EXIT_FIREPLACE						; 3
+	sty	EXIT_PUZZLE						; 3
 
 ; 10
 	; check if clicked the puzzle in the fireplace last frame
@@ -28,7 +28,7 @@ was_grab_fireplace:
 
 fireplace_button:
 ; 25
-	inc	EXIT_FIREPLACE						; 5
+	inc	EXIT_PUZZLE						; 5
 	bne	no_grab_fireplace		; bra			; 3
 
 not_fireplace_button:

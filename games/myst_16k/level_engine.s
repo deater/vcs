@@ -46,8 +46,41 @@ level_frame:
 
 ; in VBLANK scanline 0
 
-	ldx	#20
+	ldx	#19
 	jsr	common_delay_scanlines
+
+; 10
+
+	;=============================
+	; now at VBLANK scanline 19
+	;=============================
+	; patch destination if needed
+
+	lda	LEVEL_CENTER_PATCH_COND				; 3
+	beq	no_center_patch					; 2/3
+
+	and	BARRIER_STATUS					; 3
+	beq	no_center_patch					; 2/3
+
+	lda	LEVEL_CENTER_PATCH_DEST				; 3
+	sta	LEVEL_CENTER_DEST				; 3
+
+no_center_patch:
+	sta	WSYNC
+
+
+.if 0
+	lda	#$00						; 3
+	ldy	#10						; 3
+patch_loop:
+	sta	(INL),Y						; 6
+	dey							; 2
+	bpl	patch_loop					; 2/3
+
+	; 6+(11*Y)-1
+.endif
+
+
 
 	;=============================
 	; now at VBLANK scanline 20
@@ -704,9 +737,19 @@ level_done_update_pointer:
 	;====================================
 
 	; 00 = no, FF=yes
-	lda	EXIT_FIREPLACE
+	lda	EXIT_PUZZLE
 	beq	fireplace_irrelevant
 
+	lda	CURRENT_LOCATION
+	cmp	#LOCATION_INSIDE_FIREPLACE
+	beq	fireplace_exit
+
+clock_exit:
+	dec	EXIT_PUZZLE
+	lda	#LOCATION_CLOCK_S
+	bne	start_new_level		; bra
+
+fireplace_exit:
 	; reset to 0 (EXIT_FIREPLACE plus the fireplace values)
 	lda	#0
 	ldx	#6
@@ -931,16 +974,19 @@ grab_bookshelf:
 	; grabbed close door painting
 	;==============================
 grab_close_painting:
-	lda	#0
-	beq	common_painting		; bra
+	lda	BARRIER_STATUS
+	ora	#BARRIER_LIBRARY_DOOR_CLOSED
+	bne	common_painting		; bra
 
 	;==============================
 	; grabbed open door painting
 	;==============================
 grab_open_painting:
-	lda	#1
+	lda	BARRIER_STATUS
+	and	#~BARRIER_LIBRARY_DOOR_CLOSED
+
 common_painting:
-	sta	DOOR_OPEN
+	sta	BARRIER_STATUS
 	ldy	#SFX_RUMBLE		; play sound
 	sty	SFX_PTR
 

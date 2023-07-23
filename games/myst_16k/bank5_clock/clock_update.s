@@ -14,7 +14,7 @@ clock_update:
 	; clear this so we only redraw in main if changed
 ; 0
 	ldx	#0							; 2
-	stx	EXIT_FIREPLACE						; 3
+	stx	EXIT_PUZZLE						; 3
 
 ; 5
 	; check if clicked the puzzle in the last frame
@@ -27,13 +27,34 @@ was_grab_clock:
 	; check if button
 
 	lda	POINTER_X						; 3
-	cmp	#105							; 2
+	cmp	#100		; $64 = 					; 2
 	bcc	not_clock_button					; 2/3
 
 
 clock_button:
 ; 16
-	inc	EXIT_FIREPLACE						; 5
+	;===========================
+	; button was pressed
+	;===========================
+
+	lda	CLOCK_CORRECT		; 0 if correct
+	bne	lower_clock_bridge
+raise_clock_bridge:
+	ldy	#SFX_RUMBLE
+	sty	SFX_PTR
+
+	lda	BARRIER_STATUS
+	ora	#BARRIER_CLOCK_BRIDGE_UP
+	bne	common_clock_bridge	; bra
+
+lower_clock_bridge:
+        lda     BARRIER_STATUS
+        and     #~BARRIER_CLOCK_BRIDGE_UP
+
+common_clock_bridge:
+        sta     BARRIER_STATUS
+
+	inc	EXIT_PUZZLE						; 5
 	bne	no_grab_clock			; bra			; 3
 
 not_clock_button:
@@ -45,7 +66,7 @@ not_clock_button:
 	; POINTER_X already in A
 	; X is 0 from earlier
 ;	ldx	#0			; default to left		; 2
-	cmp	#80							; 2
+	cmp	#76	; $4c						; 2
 	bcs	clock_right_valve					; 2/3
 
 clock_left_valve:
@@ -179,7 +200,7 @@ done_update_clock_face:
 	lda	#2
 	sbc	CLOCK_HOURS
 not_correct:
-	sta	FIREPLACE_CORRECT
+	sta	CLOCK_CORRECT
 
 	rts
 
