@@ -48,14 +48,14 @@ no_rotate_title:
 
 ; 27
 	ldy	#0							; 2
-	ldx	#0							; 2
-	stx	GRP0							; 3
-	stx	GRP1							; 3
-	stx	CTRLPF			; no-mirror			; 3
-	stx	VBLANK			; re-enable beam		; 3
-	stx	PF0							; 3
-	stx	PF1							; 3
-	stx	PF2							; 3
+;	ldx	#0							; 2
+	sty	GRP0							; 3
+	sty	GRP1							; 3
+	sty	CTRLPF			; no-mirror			; 3
+	sty	VBLANK			; re-enable beam		; 3
+	sty	PF0							; 3
+	sty	PF1							; 3
+	sty	PF2							; 3
 ; 53
 	sta	WSYNC
 
