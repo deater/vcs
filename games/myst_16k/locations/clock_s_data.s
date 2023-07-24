@@ -14,6 +14,7 @@
 .byte 45			; missile0 (vertical line) X location
 .byte BARRIER_CLOCK_BRIDGE_UP	; center dest patch condition
 .byte LOCATION_CLOCK_CLOSE_S	; center dest patch location
-.byte $00,$00			; unused
+.byte 1				; overlay patch type
+.byte $00			; unused
 
 .include "clock_s_data.inc"

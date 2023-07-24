@@ -46,13 +46,13 @@ level_frame:
 
 ; in VBLANK scanline 0
 
-	ldx	#18
+	ldx	#15
 	jsr	common_delay_scanlines
 
 ; 10
 
 	;=============================
-	; now at VBLANK scanline 18
+	; now at VBLANK scanline 15
 	;=============================
 	; patch destination if needed
 
@@ -68,32 +68,24 @@ level_frame:
 no_center_patch:
 	sta	WSYNC
 
-	;=============================
-	; now at VBLANK scanline 19
-	;=============================
+	;====================================
+	; now at VBLANK scanline 16,17,18,19
+	;====================================
 	; patch overlay if needed
+	; allow 4 scanlines
 
-	lda	LEVEL_CENTER_PATCH_COND				; 3
-	beq	no_overlay_patch				; 2/3
+check_overlay_patch:
+	lda	LEVEL_OVERLAY_PATCH_TYPE
+	beq	no_overlay_patch
 
-	lda	#<(level_overlay_colors_write+33)
-	sta	INL
-	lda	#>(level_overlay_colors_write+33)
-	sta	INH
-
-	ldy	#12						; 3
-	lda	#$06						; 3
-patch_loop:
-	sta	(INL),Y						; 6
-	dey							; 2
-	bpl	patch_loop					; 2/3
-
-	; 6+(11*Y)-1
+	jmp	handle_overlay_patch
 
 no_overlay_patch:
 	sta	WSYNC
-
-
+	sta	WSYNC
+	sta	WSYNC
+	sta	WSYNC
+done_overlay_patch:
 
 	;=============================
 	; now at VBLANK scanline 20
@@ -1008,3 +1000,60 @@ common_painting:
 
 	jmp	done_check_level_input
 
+
+	;===================================
+	;===================================
+	; handle overlay patch
+	;===================================
+	;===================================
+handle_overlay_patch:
+
+
+	; 4 cases
+	;	+ clock_s, bridge up or not (12 lines of color change)
+	;	+ library_n, door open or not ()
+	;	+ library_s, door open or not ()
+	;		16 lines of color change to 0x2
+	;		starting at 12
+	;	+ book_close (red/blue), clear page if gone
+	;	reach: book far, clear page if gone
+
+	; hack: always copy 16
+
+
+	lda	LEVEL_CENTER_PATCH_COND				; 3
+	and	BARRIER_STATUS
+	bne	do_the_patch					; 2/3
+	jmp	no_overlay_patch
+
+do_the_patch:
+	ldx	LEVEL_OVERLAY_PATCH_TYPE
+	dex
+	ldy	overlay_patch_start,X
+
+	lda	#<(level_overlay_colors_write)			; 2
+	sta	INL						; 3
+	lda	#>(level_overlay_colors_write)			; 2
+	sta	INH						; 3
+
+	lda	overlay_patch_color,X
+	ldx	#17						; 3
+patch_loop:
+	sta	(INL),Y						; 6
+	iny
+	dex							; 2
+	bpl	patch_loop					; 2/3
+
+	; 6+16+(11*Y)-1
+	; 12 = 153 = 3 scanlines
+	; 16 = 208 = 4 scanlines
+;no_overlay_patch:
+	sta	WSYNC
+
+	jmp	done_overlay_patch
+
+overlay_patch_start:
+	.byte 33,12,13
+
+overlay_patch_color:
+	.byte $4,$2,$0

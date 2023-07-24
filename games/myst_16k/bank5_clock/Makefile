@@ -34,7 +34,7 @@ rom_bank5.o:	rom_bank5.s \
 	steps_e_data.zx02 shack_n_data.zx02 library_up_data.zx02 \
 	library_nw_data.zx02 library_ne_data.zx02 clock_puzzle_data.zx02 \
 	hint_data.zx02 elevator_s_data.zx02 elevator_n_data.zx02 \
-	clock_update.s
+	clock_update.s ../fireplace_update.s
 	ca65 -o rom_bank5.o rom_bank5.s -l rom_bank5.lst
 
 

@@ -22,6 +22,6 @@ elevator_n_data_zx02:
 .incbin "elevator_n_data.zx02"
 
 .include "clock_update.s"
-.include "../bank6_intro/fireplace_update.s"
+.include "../fireplace_update.s"
 
 rom_bank5_end:

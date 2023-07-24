@@ -211,6 +211,7 @@ clock_hand_lookup:
 	.byte	 <clock_4,<clock_5,<clock_6,<clock_7
 	.byte	 <clock_8,<clock_9,<clock_10,<clock_11
 
+.align $100
 
 ; un-overlapped: 9*12 = 108 bytes
 ; overlapped in order:   88 bytes
