@@ -796,20 +796,24 @@ fireplace_irrelevant:
 
 waited_enough_level:
 
-	lda	INPT4			; check if joystick button pressed
-	bmi	done_check_level_input
+; 6
+	lda	INPT4			; check joystick button pressed	; 3
+	bmi	done_check_level_input					; 2/3
 
+; 11
 	;====================================
 	; reset input countdown for debounce
 
-	lda	#12
-	sta	INPUT_COUNTDOWN
-
+	lda	#12							; 2
+	sta	INPUT_COUNTDOWN						; 3
+; 16
 	;======================
 	; button was pressed
 
-	lda	POINTER_GRABBING	; secial case if grabbing
-	bne	clicked_grab
+	lda	POINTER_GRABBING	; secial case if grabbing	; 3
+	bne	clicked_grab						; 2/3
+
+; 21
 
 	lda	POINTER_TYPE
 	and	#$3			; map "page" and "point (fwd)" to same
@@ -832,27 +836,31 @@ start_new_level:
 	; clicked grab
 	;==========================
 clicked_grab:
-	ldx	CURRENT_LOCATION
-	cpx	#8			; if level >8 not switch
-	bcc	handle_switch
-	cpx	#12
-	bcc	handle_book	; if level>8 && <12 then book
-
+; 22
+	ldx	CURRENT_LOCATION					; 3
+	cpx	#8			; if level >8 not switch	; 2
+	bcc	handle_switch						; 2/3
+; 29
+	cpx	#12							; 2
+	bcc	handle_book	; if level>8 && <12 then book		; 2/3
+; 33
 	; otherwise, special grab
 
-	sec
-	txa
-	sbc	#12			; get offset
-	tax
+	sec								; 2
+	txa								; 2
+	sbc	#12			; get offset			; 2
+	tax								; 2
+
+; 41
 
 	; set up jump table fakery
 handle_special:
-	lda	grab_dest_h,X
-	pha
-	lda	grab_dest_l,X
-	pha
-	rts				; jump to location
-
+	lda	grab_dest_h,X						; 4+
+	pha								; 3
+	lda	grab_dest_l,X						; 4+
+	pha								; 3
+	rts				; jump to location		; 6
+; 61
 
 handle_book:
 
@@ -990,16 +998,22 @@ grab_close_painting:
 	; grabbed open door painting
 	;==============================
 grab_open_painting:
-	lda	BARRIER_STATUS
-	and	#~BARRIER_LIBRARY_DOOR_CLOSED
+; 61
+	lda	BARRIER_STATUS					; 3
+	and	#~BARRIER_LIBRARY_DOOR_CLOSED			; 2
+; 66
 
 common_painting:
-	sta	BARRIER_STATUS
-	ldy	#SFX_RUMBLE		; play sound
-	sty	SFX_PTR
+	sta	BARRIER_STATUS					; 3
+	ldy	#SFX_RUMBLE		; play sound		; 2
+	sty	SFX_PTR						; 3
+; 74
 
-	jmp	done_check_level_input
+;	bne	done_check_level_input	; bra			; 3
 
+	; above takes too long...
+
+	jmp	level_frame
 
 	;===================================
 	;===================================
