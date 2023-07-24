@@ -1000,7 +1000,7 @@ grab_close_painting:
 grab_open_painting:
 ; 61
 	lda	BARRIER_STATUS					; 3
-	and	#~BARRIER_LIBRARY_DOOR_CLOSED			; 2
+	and	#<(~BARRIER_LIBRARY_DOOR_CLOSED)		; 2
 ; 66
 
 common_painting:

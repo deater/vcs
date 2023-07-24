@@ -49,7 +49,7 @@ raise_clock_bridge:
 
 lower_clock_bridge:
         lda     BARRIER_STATUS
-        and     #~BARRIER_CLOCK_BRIDGE_UP
+        and     #<(~BARRIER_CLOCK_BRIDGE_UP)
 
 common_clock_bridge:
         sta     BARRIER_STATUS
