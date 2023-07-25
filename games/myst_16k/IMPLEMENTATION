@@ -11,33 +11,50 @@ ROM/RAM layout:
 	Fancy, but there in theory were games that used this mapper back
 	in the day (Burgertime being the most famous example).
 
-	$1000-$17FF (2k) one of six 2K ROM banks or 1K or RAM can be mapped here
+	address ranges
+	~~~~~~~~~~~~~~
+
+	$1000-$17FF (2k) one of six 2K ROM banks or 1K of RAM can be mapped here
+
+              When RAM enabled there's 1k available:
+                    $1000-$13FF used to write RAM
+		    $1400-$17FF used to read RAM
+		(this is a hack due to the ROM cartridge not having access
+			to the read/write line from the CPU)
+
 	$1800-$19FF (512B) one of four 256B RAM banks can be mapped here
+		$1800-$18FF is write
+		$1900-$19FF is read  
+
 	$1A00-$1FFF (1.5k) fixed as the last chunk of ROM
+
+	soft-switches
+	~~~~~~~~~~~~~
 
 	$1FE0 - $1FE6 selects bank 0 through 6 of the ROM into $1000-$17FF
 	$1FE7 enables 1K of the 2K RAM there instead
-              When RAM, enabled there's 1k available:
-                    $1000-$13FF used to write RAM
-		    $1400-$17FF used to read RAM
 
-	$1800-$19FF is also RAM (4 banks of 256B)
-		$1800-$18FF is write
-		$1900-$19FF is read  
-	$1FE8 - $1FEB selects which of four 256B banks
+	$1FE8 - $1FEB selects which of four 256B banks appear at $1800
 
-   Myst layout:
+	NOTE!  Watch out for 6502 phantom/dummy memory accesses which
+		can trigger the bank-switch behavior.  Especially 
+		likely to happen when running code in the $1EEx area
+
+
+   Myst cartridge layout:
+   ~~~~~~~~~~~~~~~~~~~~~~
 	ROM BANK0	-- level data
 	ROM BANK1	-- level data
 	ROM BANK2	-- level data
 	ROM BANK3	-- level data
 	ROM BANK4	-- level data
-	ROM BANK5	-- unused (will be level data)
-	ROM BANK6	-- title, intro and books?
+	ROM BANK5	-- level data / puzzle code
+	ROM BANK6	-- title, intro and book code
 	ROM BANK7	-- always mapped, engine and routines
 
   Having the E7 detected properly by emulators:
-	MAME checks for "lda $FFE5" somewhere in code? (double check this)
+	MAME checks for "lda $FFE7" (FFE5?) somewhere in the code?
+		 (double check this)
 	I'm setting $E7 in the IRQ vector (for reasons?)
 
 
@@ -47,10 +64,11 @@ Zero Page Layout (on VCS this is *all* of the stock RAM)
 	$80-$8F : various variables
 	$90-$9F : more variables
 	$A0-$AF : level data area
-	$B0-$BF : variables for ZX02 decompression
-	$C0-$DF : currently unused
+	$B0-$B9 : variables for ZX02 decompression
+	$BA-$C7 : fireplace puzzle
+	$C8-$DF : clock puzzle and misc variables
 	$E0-$EF	: holds sprite for current pointer (hand or page)
-	$F0-$FF : reserved for stack
+	$F0-$FF : we reserve this for stack
 
 
 Build Process
@@ -62,6 +80,14 @@ Build Process
 		including the files, including padding for the 512 bytes
 		that can't be accessed.  Probably could have written
 		a linker script to do this instead.
+
+	In the end we have a lot of circular dependencies as code running
+		in banks 5, 6 and always-there main ROM call back
+		and forth a lot.
+
+		Build system is a hack, it builds the main ROM with dummy
+		values for the globally visible symbols, then rebuilds
+		again after they've been resolved.
 
 
 Decompression:
@@ -81,6 +107,8 @@ Decompression:
 		glitches).  So we set up a timer to break up
 		the decompression across frames so we still sync.
 		Otherwise the screen glitches horribly
+		This still leads to some unfortunate flicker as the screen
+			blanks to all-black for 3 frames.
 
 
 Clickable/Grabbable/Action Items:
@@ -90,21 +118,13 @@ Clickable/Grabbable/Action Items:
 	Note, the x-coords are 0-159 not 0-39 as you might expect
 
 	If things are clicked, 
-		Levels 0..7 = assume it's a marker switch and handle
-		Levels 8..11 = assume it's a book location and handle
-			TODO:
-				red_book_close: handle page vs not
-				blue_book_close: handle page vs not
-				behind_fireplace: handle page vs not
-
-	TODO:
-		other locations:
-			inside_fireplace:	button in fireplace
-			clock_s:		going to puzzle
-			library_nw:		door open
-			library_ne:		door close
-			library_n:		grab book
-			atrus:			end game
+		Locations 0..7 = assume it's a marker switch and handle
+		Locations 8+ = assume you're grabbing something and handle
+			via a jump table
+		Note locations 8-12 or so are special, as they are also
+			book destinations, so the book code assumes it
+			can figure out which one by subtracting 8 from
+			the current location
 
 Book Implementation:
 ~~~~~~~~~~~~~~~~~~~~
@@ -127,12 +147,16 @@ Level Engine:
 	Copies 256 bytes of data (max we allow) to the $1800 RAM window
 
 		HAVE TO BE CAREFUL!  We always copy 256 bytes for
-		simplicity.  If area in RAM > $1700 the copy will
-		write out overlapping to $1800 which is where our copy
-		starts so it will corrupt things
+		simplicity.
 
-	Then it swaps in RAM to the lower 2k and decompresses from the
-		256 byte RAM to this area
+			!!!
+			If the ROM location starts at > $1700 the copy
+			will overflow into the $1800 range which is the
+			RAM-write area and this will corrupt things.
+			Avoid having location data starting above $1700
+
+	Next it swaps in 1K of RAM to the lower $1000 address space
+		and decompresses from the 256 byte RAM to this area
 
 	(ZX02 decompression is described in a bit more detail elsewhere
 		in this document)
@@ -140,8 +164,8 @@ Level Engine:
 	Finally the first 16 bytes with level info is copied to the zero
 		page
 
-	Why this crazy way of doing things?  Can't have ROM and the larger
-		RAM active at same time
+	Why this roundabout way of doing things?
+		Can't have ROM and the larger RAM active at same time
 
 
 
@@ -150,16 +174,19 @@ Level Data description:
 	Offset	Length	Description
 	0	1	color of pointer (sprite0)
 	1	2	background colors (primary, secondary)
-	3	2	x-coord of sprite1 overlay (coarse/fine)
-	5	2	x-coord of missile0 overlay (vertical line)
-	7	2	XMAX/XMIN of action grab area
-	9	2	YMAX/YMIN of action grab area
-	12	1	destination if click on forward hand      ($FF=none)
-	11	1	destination if click on left-facing hand  ($FF=none)
-	13	1	destination if click on right-facing hand ($FF=none)
-	14	2	unused for now ($00)
+	3	1	x-coord of sprite1 overlay
+	4	1	destination if click on forward hand      ($FF=none)
+	5	1	destination if click on left-facing hand  ($FF=none)
+	6	1	destination if click on right-facing hand ($FF=none)
+	7	2	XMAX/XMIN of action grab area (0=none)
+	9	2	YMAX/YMIN of action grab area (0=none)
+	11	1	x-coord of missile0 overlay (vertical line) (0=none)
+	12	1	alternate center destination barrier check (0 = none)
+	13	1	alternate center destination
+	14	1	overlay patch type
+	15	1	UNUSED
 
-	it's center/left/right rather than l/c/r to save 13 bytes
+	destination is center/left/right rather than l/c/r to save 13 bytes
 		in the movement code
 
 	Description of the images:
@@ -191,15 +218,6 @@ Level Data description:
         level_playfield2_right  = $1530
         level_overlay_colors    = $1560
         level_overlay_sprite    = $1590
-
-
-todo:
-
-	working on kernel for the fireplace puzzle.  Should be doable
-		not sure if will be small enough to fit
-
-	working on kernel for the clock puzzle.  Also not sure if
-		will fit
 
 
 Marker Switch Implementation
@@ -375,4 +393,11 @@ weird bugs
 	had code that did a BCS back to $1EE9 from page $1F
 	on 6502 this will do a phantom load of address $1FE9
 	which is an E7 bank switch location.  hard to debug
+
+
+TODO
+~~~~
+	describe alternate overlays (doors/bridges)
+
+	describe red/blue page code
 
