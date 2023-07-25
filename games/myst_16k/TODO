@@ -1,23 +1,23 @@
-+ why does it glitch when going to rocket_close?
+Fix all glitches:
++ Rocket close
++ Leaving fireplace
++ Entering clock_close
 
-+ use vblank routine in book.s to save bytes
-+ make code to setup timer for decode common
-+ migrate all levels to new format
+Fix Pointer Bounds:
++ At edges?
++ Bottom of screen.  This is tricky because in book Y is *2
+	but on rest it is *4
+
+Sound:
++ Fix linking book noise
+
+Out there:
++ More locations?  Dentist chair, generator room?
++ Click on tower rotation makes noise
+	Maybe even re-use clock sprites for rotating?
 
 
-fix bounds on pointer since we adjusted things
-	off the bottom problem is because book has Y pointer 2*
-	that of main
 
-
-locations:
-	use the new "position" code so that the locations only need
-	one co-ord for missile and sprite1 location.
-
-
-sound:
-	rumbling noise for when we mess with tower rotation
-		and doors opening/closing
 
 overlay patching:
 	+ atrus
@@ -29,20 +29,11 @@ overlay patching:
 
 
 TODO before release:
-	+ hint
-		+ grabbable book
-		+ close/open door
-		+ up elevator
-		+ clue
-	+ clock puzzle
-		+ the actual puzzle
-		+ way to raise/lower path
-	+ fireplace puzzle
-	+ green book
-		+ put animated atrus in it
+	+ books
+		+ grabbable red/blue pages
+		+ different message in book based on count
+		+ bad endings
 	+ after-win scenario
-		+ can use myst linking book
-		+ warp to library ceiling?
 		+ brother books destroyed?
 
 
@@ -58,36 +49,7 @@ overlay proposal?
 		same colors
 	Will it fit?
 
-TODO for less jumpy navigation:
-	north from shack
-	south at steps
-	south at dentist		* probably no room
-	bottom of short steps		* probably no room
-
-TODO clock puzzle
-	puzzle location
-	clock_s with bridge up (just an overlay skin?)
-
-	actual clock puzzle.  separate?  two sprites for hands?
-		up-down vs left-right, button
-
-TODO library
-	NW	door open
-	NE	door close
-	S	door close (alt overlay?)
-	book shelf close open
-	book shelf close closed
-	elevator
-	hint
-
-TODO fireplace puzzle
-
-
-
-reach goals:
-	ceiling of library
-	north from cabin
-	short steps other direction
+additional locations (reach goals):
 	inside dentist
 	inside generator
 	inside cabin
@@ -98,19 +60,12 @@ reach goals:
 	tower elevator
 	tower top
 
-todo puzzle:
-	somehow allow clock time puzzle
-	in tower show 2:40?
 
-
-allow picking up red/blue/white pages
+allow picking up red/blue pages
 
 modify red/blue books to have page plus ! symbol
 for atrus book, have white page plus ! at first, then with ?
 
-have 2:40 puzzle?  let you get to tower to see it?
-YOU WIN screen?
-lose screen
 
 combine the library locations somehow
 	a lot of overlap
@@ -145,7 +100,7 @@ Book:
 	better sprite animation of destination
 	better linking noise
 	pause when in the process of linking, maybe black screen
-	make generic so can use for other books?
+
 
 level_engine:
 
