@@ -40,8 +40,8 @@ rom2:
 182	cabin_e
 225	shack_w
 250	pool_n
-~~~~
-69
+		====
+		69 free
 
 
 rom3:
@@ -55,8 +55,8 @@ rom3:
 218 imager_e
 227 behind_fireplace
 122 inside_fireplace
-~~~~
-202
+		===
+		202 free
 
 rom4:
 ~~~~~
@@ -69,5 +69,29 @@ rom4:
 231 rocket_s
 236 pool_s
 202 you_win
-~~~~~~
-162
+		===
+		162 free
+
+rom5:
+~~~~~
+232 steps_e
+249 shack_n
+237 library_up
+208 library_nw
+205 library_ne
+123 clock_puzzle
+114 hint
+130 elevator_s
+161 elevator_n
+		===
+		4 free
+
+rom6:
+~~~~~
+		===
+		256+64 bytes free
+
+main:
+~~~~~
+		===
+		128 bytes free

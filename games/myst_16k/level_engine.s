@@ -846,18 +846,18 @@ clicked_grab:
 ; 33
 	; otherwise, special grab
 
-	sec								; 2
-	txa								; 2
-	sbc	#12			; get offset			; 2
-	tax								; 2
+;	sec								; 2
+;	txa								; 2
+;	sbc	#12			; get offset			; 2
+;	tax								; 2
 
 ; 41
 
 	; set up jump table fakery
 handle_special:
-	lda	grab_dest_h,X						; 4+
+	lda	grab_dest_h-12,X					; 4+
 	pha								; 3
-	lda	grab_dest_l,X						; 4+
+	lda	grab_dest_l-12,X					; 4+
 	pha								; 3
 	rts				; jump to location		; 6
 ; 61
