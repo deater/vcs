@@ -8,10 +8,11 @@
 .byte $FF			; center destination
 .byte LOCATION_LIBRARY_S	; left destination
 .byte LOCATION_LIBRARY_W	; right destination
-.byte $00,$00			; XMAX/XMIN of grab area
-.byte $00,$00			; YMAX/YMIN of grab area
+.byte 56,96			; XMAX/XMIN of grab area
+.byte 17,29			; YMAX/YMIN of grab area
 .byte 0				; missile0 (vertical line) X location
 .byte $00,$00			; unused
 .byte $00,$00			; unused
 
 .include "library_sw_data.inc"
+

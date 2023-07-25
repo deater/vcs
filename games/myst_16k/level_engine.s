@@ -841,34 +841,20 @@ clicked_grab:
 	cpx	#8			; if level >8 not switch	; 2
 	bcc	handle_switch						; 2/3
 ; 29
-	cpx	#12							; 2
-	bcc	handle_book	; if level>8 && <12 then book		; 2/3
-; 33
-	; otherwise, special grab
-
-;	sec								; 2
-;	txa								; 2
-;	sbc	#12			; get offset			; 2
-;	tax								; 2
-
-; 41
 
 	; set up jump table fakery
 handle_special:
-	lda	grab_dest_h-12,X					; 4+
+	lda	grab_dest_h-8,X						; 4+
 	pha								; 3
-	lda	grab_dest_l-12,X					; 4+
+	lda	grab_dest_l-8,X						; 4+
 	pha								; 3
 	rts				; jump to location		; 6
-; 61
+; 49
 
-handle_book:
 
-	jsr	do_book
-
-	jmp	load_new_level
 
 handle_switch:
+; 30
 	ldy	#SFX_CLICK		; play sound
 	sty	SFX_PTR
 
@@ -910,22 +896,35 @@ playfield_locations_h:
 
 
 grab_dest_l:
-	.byte	<(grab_atrus-1)
-	.byte	<(grab_fireplace-1)
-	.byte	<(grab_clock_controls-1)
-	.byte	<(grab_bookshelf-1)
-	.byte	<(grab_close_painting-1)
-	.byte	<(grab_open_painting-1)
-	.byte	<(grab_clock_puzzle-1)
+
+	.byte	<(grab_red_book-1)		; 8
+	.byte	<(grab_blue_book-1)		; 9
+	.byte	<(grab_green_book-1)		; 10
+
+	.byte	<(grab_atrus-1)			; 11
+	.byte	<(grab_tower_rotation-1)	; 12
+
+	.byte	<(grab_fireplace-1)		; 13
+	.byte	<(grab_clock_controls-1)	; 14
+	.byte	<(grab_close_painting-1)	; 15
+	.byte	<(grab_open_painting-1)		; 16
+	.byte	<(grab_clock_puzzle-1)		; 17
+	; grab_elevator?			; 18
 
 grab_dest_h:
-	.byte	>(grab_atrus-1)
-	.byte	>(grab_fireplace-1)
-	.byte	>(grab_clock_controls-1)
-	.byte	>(grab_bookshelf-1)
-	.byte	>(grab_close_painting-1)
-	.byte	>(grab_open_painting-1)
-	.byte	>(grab_clock_puzzle-1)
+	.byte	>(grab_red_book-1)		; 8
+	.byte	>(grab_blue_book-1)		; 9
+	.byte	>(grab_green_book-1)		; 10
+
+	.byte	>(grab_atrus-1)			; 11
+	.byte	>(grab_tower_rotation-1)	; 12
+
+	.byte	>(grab_fireplace-1)		; 13
+	.byte	>(grab_clock_controls-1)	; 14
+	.byte	>(grab_close_painting-1)	; 15
+	.byte	>(grab_open_painting-1)		; 16
+	.byte	>(grab_clock_puzzle-1)		; 17
+	; grab_elevator?			; 18
 
 	;=========================
 	; giving atrus the page
@@ -1015,6 +1014,19 @@ common_painting:
 
 	jmp	level_frame
 
+
+	;======================
+	; grab tower rotation
+	;======================
+	; FIXME: share code with above somehow
+grab_tower_rotation:
+	sta	BARRIER_STATUS					; 3
+	ldy	#SFX_RUMBLE		; play sound		; 2
+	sty	SFX_PTR						; 3
+
+	bne	done_check_level_input	; bra			; 3
+
+
 	;===================================
 	;===================================
 	; handle overlay patch
@@ -1071,3 +1083,18 @@ overlay_patch_start:
 
 overlay_patch_color:
 	.byte $4,$2,$0
+
+
+
+grab_red_book:
+grab_blue_book:
+grab_green_book:
+grab_atrus_book:
+
+; 49
+
+handle_book:
+
+	jsr	do_book
+
+	jmp	load_new_level

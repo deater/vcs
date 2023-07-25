@@ -606,11 +606,11 @@ exit_no_link_noise:
 
 
 book_data_l:
-	.byte <red_book_data_zx02
-	.byte <blue_book_data_zx02
-	.byte <green_book_data_zx02
-	.byte <myst_book_data_zx02
-	.byte <myst_book_data_zx02
+	.byte <red_book_data_zx02		; red
+	.byte <blue_book_data_zx02		; blue
+	.byte <green_book_data_zx02		; green
+	.byte <myst_book_data_zx02		; star void myst
+	.byte <myst_book_data_zx02		; atrus myst
 
 book_data_h:
 	.byte >red_book_data_zx02

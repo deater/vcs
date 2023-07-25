@@ -49,14 +49,14 @@ rom3:
 240 shack_s
 222 cabin_path_s
 254 cabin_path_n
-206 library_sw
+212 library_sw
 197 library_se
 160 burnt_book
 218 imager_e
 227 behind_fireplace
 122 inside_fireplace
 		===
-		202 free
+		196 free
 
 rom4:
 ~~~~~
