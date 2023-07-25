@@ -36,30 +36,50 @@ main.bin:	main.o
 main.o:	main.s zp.inc \
 	load_level.s level_engine.s position.s \
 	common_routines.s \
-	zx02_optim.s \
-	bank5_clock/rom5_locations.inc \
-	locations/level_locations.inc
+	zx02_optim.s
+#	bank5_clock/rom5_locations.inc \
+#	locations/level_locations.inc
+	cd locations && make
 	echo "book_common = 0 " > rom_bank6_routines.inc
 	echo "do_intro = 0 " >> rom_bank6_routines.inc
 	echo "fireplace_update = 0 " >> rom_bank6_routines.inc
 	echo "update_sound = 0 " >> rom_bank6_routines.inc
 	echo "pointer_update = 0 " >> rom_bank6_routines.inc
+	echo "hint_data_zx02 = 0 " > rom_bank5_routines.inc
+	echo "elevator_s_data_zx02 = 0 " >> rom_bank5_routines.inc
+	echo "elevator_n_data_zx02 = 0 " >> rom_bank5_routines.inc
+	echo "library_up_data_zx02 = 0 " >> rom_bank5_routines.inc
+	echo "steps_e_data_zx02 = 0 " >> rom_bank5_routines.inc
+	echo "shack_n_data_zx02 = 0 " >> rom_bank5_routines.inc
+	echo "clock_puzzle_data_zx02 = 0 " >> rom_bank5_routines.inc
+	echo "library_ne_data_zx02 = 0 " >> rom_bank5_routines.inc
+	echo "library_nw_data_zx02 = 0 " >> rom_bank5_routines.inc
+	echo "clock_update = 0 " >> rom_bank5_routines.inc
 	ca65 -o main.o main.s -l main.lst
 	$(CALC_ADDRESS) -a 0x1A00 -s common_overscan main.lst > common_routines.inc
 	$(CALC_ADDRESS) -a 0x1A00 -s common_delay_scanlines main.lst >> common_routines.inc
 	$(CALC_ADDRESS) -a 0x1A00 -s common_vblank main.lst >> common_routines.inc
-#	$(CALC_ADDRESS) -a 0x1A00 -s hand_update main.lst >> common_routines.inc
 	$(CALC_ADDRESS) -a 0x1A00 -s do_book main.lst >> common_routines.inc
 	$(CALC_ADDRESS) -a 0x1A00 -s zx02_full_decomp main.lst >> common_routines.inc
 	$(CALC_ADDRESS) -a 0x1A00 -s powers_of_two main.lst >> common_routines.inc
 	$(CALC_ADDRESS) -a 0x1A00 -s set_pos_x main.lst >> common_routines.inc
 	cd bank6_intro && make
-	cd bank5_clock && make
 	$(CALC_ADDRESS) -a 0x1000 -s book_common bank6_intro/rom_bank6.lst > rom_bank6_routines.inc
 	$(CALC_ADDRESS) -a 0x1000 -s do_intro bank6_intro/rom_bank6.lst >> rom_bank6_routines.inc
 	$(CALC_ADDRESS) -a 0x1000 -s pointer_update bank6_intro/rom_bank6.lst >> rom_bank6_routines.inc
 	$(CALC_ADDRESS) -a 0x1000 -s update_sound bank6_intro/rom_bank6.lst >> rom_bank6_routines.inc
-	$(CALC_ADDRESS) -a 0x1000 -s fireplace_update bank5_clock/rom_bank5.lst >> rom_bank6_routines.inc
+	cd bank5_clock && make
+	$(CALC_ADDRESS) -a 0x1000 -s hint_data_zx02 bank5_clock/rom_bank5.lst > rom_bank5_routines.inc
+	$(CALC_ADDRESS) -a 0x1000 -s elevator_s_data_zx02 bank5_clock/rom_bank5.lst >> rom_bank5_routines.inc
+	$(CALC_ADDRESS) -a 0x1000 -s elevator_n_data_zx02 bank5_clock/rom_bank5.lst >> rom_bank5_routines.inc
+	$(CALC_ADDRESS) -a 0x1000 -s library_up_data_zx02 bank5_clock/rom_bank5.lst >> rom_bank5_routines.inc
+	$(CALC_ADDRESS) -a 0x1000 -s steps_e_data_zx02 bank5_clock/rom_bank5.lst >> rom_bank5_routines.inc
+	$(CALC_ADDRESS) -a 0x1000 -s shack_n_data_zx02 bank5_clock/rom_bank5.lst >> rom_bank5_routines.inc
+	$(CALC_ADDRESS) -a 0x1000 -s clock_puzzle_data_zx02 bank5_clock/rom_bank5.lst >> rom_bank5_routines.inc
+	$(CALC_ADDRESS) -a 0x1000 -s library_ne_data_zx02 bank5_clock/rom_bank5.lst >> rom_bank5_routines.inc
+	$(CALC_ADDRESS) -a 0x1000 -s library_nw_data_zx02 bank5_clock/rom_bank5.lst >> rom_bank5_routines.inc
+	$(CALC_ADDRESS) -a 0x1000 -s clock_update bank5_clock/rom_bank5.lst >> rom_bank5_routines.inc
+	$(CALC_ADDRESS) -a 0x1000 -s fireplace_update bank5_clock/rom_bank5.lst >> rom_bank5_routines.inc
 	ca65 -o main.o main.s -l main.lst
 
 ###
@@ -67,7 +87,9 @@ main.o:	main.s zp.inc \
 ###
 
 clean:	
-	rm -f *~ *.o *.lst myst.rom common_routines.inc
+	rm -f *~ *.o *.lst myst.rom \
+		common_routines.inc \
+		rom_bank5_routines.inc rom_bank6_routines.inc
+	cd locations && make clean
+	cd bank5_clock && make clean
 	cd bank6_intro && make clean
-
-

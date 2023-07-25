@@ -4,21 +4,23 @@ PNG2PF = ../../../utils/png2pf
 PNG2OVERLAY = ../../../utils/png2overlay
 CALC_ADDRESS = ../utils/calc_address
 
-all:	rom5_locations.inc
+all:	rom_bank5.bin
+
+#all:	rom5_locations.inc
 
 ###
 
-rom5_locations.inc:	rom_bank5.bin $(CALC_ADDRESS)
-	$(CALC_ADDRESS) -a 0x1000 -s steps_e_data_zx02 rom_bank5.lst > rom5_locations.inc
-	$(CALC_ADDRESS) -a 0x1000 -s shack_n_data_zx02 rom_bank5.lst >> rom5_locations.inc
-	$(CALC_ADDRESS) -a 0x1000 -s library_up_data_zx02 rom_bank5.lst >> rom5_locations.inc
-	$(CALC_ADDRESS) -a 0x1000 -s library_nw_data_zx02 rom_bank5.lst >> rom5_locations.inc
-	$(CALC_ADDRESS) -a 0x1000 -s library_ne_data_zx02 rom_bank5.lst >> rom5_locations.inc
-	$(CALC_ADDRESS) -a 0x1000 -s clock_puzzle_data_zx02 rom_bank5.lst >> rom5_locations.inc
-	$(CALC_ADDRESS) -a 0x1000 -s clock_update rom_bank5.lst >> rom5_locations.inc
-	$(CALC_ADDRESS) -a 0x1000 -s hint_data_zx02 rom_bank5.lst >> rom5_locations.inc
-	$(CALC_ADDRESS) -a 0x1000 -s elevator_s_data_zx02 rom_bank5.lst >> rom5_locations.inc
-	$(CALC_ADDRESS) -a 0x1000 -s elevator_n_data_zx02 rom_bank5.lst >> rom5_locations.inc
+#rom5_locations.inc:	rom_bank5.bin $(CALC_ADDRESS)
+#	$(CALC_ADDRESS) -a 0x1000 -s steps_e_data_zx02 rom_bank5.lst > rom5_locations.inc
+#	$(CALC_ADDRESS) -a 0x1000 -s shack_n_data_zx02 rom_bank5.lst >> rom5_locations.inc
+#	$(CALC_ADDRESS) -a 0x1000 -s library_up_data_zx02 rom_bank5.lst >> rom5_locations.inc
+#	$(CALC_ADDRESS) -a 0x1000 -s library_nw_data_zx02 rom_bank5.lst >> rom5_locations.inc
+#	$(CALC_ADDRESS) -a 0x1000 -s library_ne_data_zx02 rom_bank5.lst >> rom5_locations.inc
+#	$(CALC_ADDRESS) -a 0x1000 -s clock_puzzle_data_zx02 rom_bank5.lst >> rom5_locations.inc
+#	$(CALC_ADDRESS) -a 0x1000 -s clock_update rom_bank5.lst >> rom5_locations.inc
+#	$(CALC_ADDRESS) -a 0x1000 -s hint_data_zx02 rom_bank5.lst >> rom5_locations.inc
+#	$(CALC_ADDRESS) -a 0x1000 -s elevator_s_data_zx02 rom_bank5.lst >> rom5_locations.inc
+#	$(CALC_ADDRESS) -a 0x1000 -s elevator_n_data_zx02 rom_bank5.lst >> rom5_locations.inc
 
 
 ###
