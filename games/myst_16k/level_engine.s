@@ -900,31 +900,33 @@ grab_dest_l:
 	.byte	<(grab_red_book-1)		; 8
 	.byte	<(grab_blue_book-1)		; 9
 	.byte	<(grab_green_book-1)		; 10
+	.byte	<(grab_green_book-1)		; 11
 
-	.byte	<(grab_atrus-1)			; 11
-	.byte	<(grab_tower_rotation-1)	; 12
+	.byte	<(grab_atrus-1)			; 12
+	.byte	<(grab_tower_rotation-1)	; 13
 
-	.byte	<(grab_fireplace-1)		; 13
-	.byte	<(grab_clock_controls-1)	; 14
-	.byte	<(grab_close_painting-1)	; 15
-	.byte	<(grab_open_painting-1)		; 16
-	.byte	<(grab_clock_puzzle-1)		; 17
-	; grab_elevator?			; 18
+	.byte	<(grab_fireplace-1)		; 14
+	.byte	<(grab_clock_controls-1)	; 15
+	.byte	<(grab_close_painting-1)	; 16
+	.byte	<(grab_open_painting-1)		; 17
+	.byte	<(grab_clock_puzzle-1)		; 18
+	; grab_elevator?			; 19
 
 grab_dest_h:
 	.byte	>(grab_red_book-1)		; 8
 	.byte	>(grab_blue_book-1)		; 9
 	.byte	>(grab_green_book-1)		; 10
+	.byte	<(grab_green_book-1)		; 11
 
-	.byte	>(grab_atrus-1)			; 11
-	.byte	>(grab_tower_rotation-1)	; 12
+	.byte	>(grab_atrus-1)			; 12
+	.byte	>(grab_tower_rotation-1)	; 13
 
-	.byte	>(grab_fireplace-1)		; 13
-	.byte	>(grab_clock_controls-1)	; 14
-	.byte	>(grab_close_painting-1)	; 15
-	.byte	>(grab_open_painting-1)		; 16
-	.byte	>(grab_clock_puzzle-1)		; 17
-	; grab_elevator?			; 18
+	.byte	>(grab_fireplace-1)		; 14
+	.byte	>(grab_clock_controls-1)	; 15
+	.byte	>(grab_close_painting-1)	; 16
+	.byte	>(grab_open_painting-1)		; 17
+	.byte	>(grab_clock_puzzle-1)		; 18
+	; grab_elevator?			; 19
 
 	;=========================
 	; giving atrus the page
@@ -1087,9 +1089,22 @@ overlay_patch_color:
 
 
 grab_red_book:
+	lda	#POINTER_COLOR_RED
+	bne	common_book_grab
+
 grab_blue_book:
+	lda	#POINTER_COLOR_BLUE
+
+common_book_grab:
+	ldx	POINTER_X
+	cpx	#96
+	bcc	handle_book		; if to left, clicked on book
+
+	sta	POINTER_COLOR
+	jmp	done_check_level_input
+
 grab_green_book:
-grab_atrus_book:
+
 
 ; 49
 
