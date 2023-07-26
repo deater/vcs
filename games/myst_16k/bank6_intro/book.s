@@ -495,7 +495,7 @@ book_done_playfield:
 	;===========================
 	;===========================
 
-	ldx	#27
+	ldx	#29
 	jsr	common_overscan
 
 	;==================================
@@ -504,28 +504,42 @@ book_done_playfield:
 	; why is this disabled?
 ;	jsr	update_sound
 
-	sta	WSYNC
-	sta	WSYNC
+;	sta	WSYNC
+;	sta	WSYNC
 
 	;==================================
 	; overscan 29, update pointer
 
-	lda	#POINTER_TYPE_POINT					; 2
-	sta	POINTER_TYPE						; 3
+	ldx	POINTER_X
+	ldy	POINTER_Y
 
-	lda	POINTER_X						; 3
-	cmp	#88
+	lda	#POINTER_TYPE_POINT					; 2
+;	sta	POINTER_TYPE						; 3
+
+;	lda	POINTER_X						; 3
+	cpx	#88
 	bcc	not_in_window
-	cmp	#128
+	cpx	#128
 	bcs	not_in_window
-	lda	POINTER_Y
-	cmp	#35
+;	lda	POINTER_Y
+	cpy	#35
 	bcs	not_in_window
-	cmp	#8
+	cpy	#8
 	bcc	not_in_window
+
 	lda	#POINTER_TYPE_GRAB
-	sta	POINTER_TYPE
+
+	ldy	POINTER_COLOR
+	beq	pointer_not_page
+	lda	#POINTER_TYPE_PAGE
+pointer_not_page:
+
+;	bne	pointer_not_page	; bra
 not_in_window:
+
+
+	sta	POINTER_TYPE
+
 	sta	WSYNC
 
 	;==================================
