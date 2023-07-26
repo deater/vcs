@@ -14,7 +14,7 @@
 .byte $00,$00			; YMAX/YMIN of grab area
 .byte BARRIER_LIBRARY_DOOR_CLOSED	; condition
 .byte LOCATION_ELEVATOR_N	; new dest
-.byte 3
+.byte OVERLAY_PATCH_BARRIER|3	; patch behavior
 .byte $00
 ;.byte $00,$00			; unused
 ;.byte $00,$00			; unused

@@ -1035,36 +1035,82 @@ grab_tower_rotation:
 	;===================================
 	;===================================
 handle_overlay_patch:
+	; LEVEL_OVERLAY_PATCH_TYPE in A and flags still set...
+
+	; 3 cases:
+	;	OVERLAY_PATCH_BARRIER		$80 + offset
+	;		clock_s (bridge)		1
+	;		library_n (bookshelf)		2
+	;		library_s (door to outside)	3
+	;	OVERLAY_PATCH_LIBRARY_PAGE	$40
+	;		red_book_close (red book)
+	;		blue_book_close (blue book)
+	;		library_w (red book far)
+	;		library_e (blue book far)
+	;	OVERLAY_PATCH_FIREPLACE		$20
+	;		behind_fireplace (red/blue pages)
+
+	bmi	do_overlay_patch_barrier
+
+do_overlay_patch_library_page:
+
+	lda	LEVEL_OVERLAY_PATCH_TYPE
+	and	#$1
+	tax
+	lda	RED_PAGES_TAKEN,X
+	and	#OCTAGON_PAGE
+	beq	all_done_overlay_patch
+
+; close (22-34) far (22-28)
+; FIXME: for far start higher up, otherwise breaks shelf lip
+
+	lda	#<(level_overlay_sprite)			; 2
+	sta	INL						; 3
+	lda	#>(level_overlay_sprite)			; 2
+	sta	INH						; 3
+
+	lda	#<(level_overlay_sprite_write)			; 2
+	sta	OUTL						; 3
+	lda	#>(level_overlay_sprite_write)			; 2
+	sta	OUTH						; 3
 
 
-	; 4 cases
-	;	+ clock_s, bridge up or not (12 lines of color change)
-	;	+ library_n, door open or not ()
-	;	+ library_s, door open or not ()
-	;		16 lines of color change to 0x2
-	;		starting at 12
-	;	+ book_close (red/blue), clear page if gone
-	;	reach: book far, clear page if gone
+	ldy	#22						; 2
+	ldx	#12						; 2
+page_patch_loop:
+	lda	(INL),Y						; 5+
+	and	#$f8						; 2
+	sta	(OUTL),Y					; 6
+	iny							; 2
+	dex							; 2
+	bpl	page_patch_loop					; 2/3
 
-	; hack: always copy 16
+	bmi	all_done_overlay_patch	; bra
+	; 6+14+(20*X)-1
+	;	x=12 so 260
 
 
+
+
+do_overlay_patch_barrier:
 	lda	LEVEL_CENTER_PATCH_COND				; 3
 	and	BARRIER_STATUS
 	bne	do_the_patch					; 2/3
 	jmp	no_overlay_patch
 
 do_the_patch:
-	ldx	LEVEL_OVERLAY_PATCH_TYPE
-	dex
-	ldy	overlay_patch_start,X
+	lda	LEVEL_OVERLAY_PATCH_TYPE
+	and	#$f
+	tax
+;	dex
+	ldy	overlay_patch_start-1,X
 
 	lda	#<(level_overlay_colors_write)			; 2
 	sta	INL						; 3
 	lda	#>(level_overlay_colors_write)			; 2
 	sta	INH						; 3
 
-	lda	overlay_patch_color,X
+	lda	overlay_patch_color-1,X
 	ldx	#17						; 3
 patch_loop:
 	sta	(INL),Y						; 6
@@ -1075,7 +1121,8 @@ patch_loop:
 	; 6+16+(11*Y)-1
 	; 12 = 153 = 3 scanlines
 	; 16 = 208 = 4 scanlines
-;no_overlay_patch:
+
+all_done_overlay_patch:
 	sta	WSYNC
 
 	jmp	done_overlay_patch
@@ -1113,10 +1160,10 @@ common_book_grab:
 	cpy	#92			; $5c = 92
 	bcc	handle_book		; if to left, clicked on book
 
-	ora	#OCTOGON_PAGE
+	ora	#OCTAGON_PAGE
 	pha
 
-	lda	#OCTOGON_PAGE		; mark page taken
+	lda	#OCTAGON_PAGE		; mark page taken
 	ora	RED_PAGES_TAKEN,X
 	sta	RED_PAGES_TAKEN,X
 

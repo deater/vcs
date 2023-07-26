@@ -14,7 +14,7 @@
 .byte 0				; missile0 (vertical line) X location
 .byte BARRIER_LIBRARY_DOOR_CLOSED	; condition
 .byte $FF			; new dest
-.byte 2				;
+.byte OVERLAY_PATCH_BARRIER|2	;
 .byte $00			; unused
 
 .include "library_s_data.inc"
