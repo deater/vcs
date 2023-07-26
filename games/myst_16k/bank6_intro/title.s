@@ -19,6 +19,9 @@ do_title:
 	lda	#$20			; gold/brown			; 2
 	sta	TITLE_COLOR						; 3
 
+	lda	#$24	; skip this?
+	sta	LEVEL_HAND_COLOR	; hand color for book
+					; should be $24, $20 is close?
 
 title_frame_loop:
 
@@ -104,16 +107,14 @@ title_playfield_loop:
 	sta	PF2			;				; 3
 	; must write by CPU 38 [GPU 116]
 ; 32
-
-
 	inc	TITLE_COLOR		; advance color			; 5
+; 37
 	nop								; 2
-
-; 39
+	nop								; 2
+; 41
 	lda	#0			; always zero			; 2
-	nop								; 2
 	sta	PF0			;				; 3
-
+; 46
 
 	; must write by CPU 49 [GPU 148]
 ; 46
@@ -178,16 +179,18 @@ done_loop:
 
 waited_enough:
 	lda	INPT4			; check if joystick button pressed
-	bpl	set_done_title
+;	bpl	set_done_title
+	bpl	done_title
 
 	lda	SWCHB			; check if reset
 	lsr				; put reset into carry
-	bcc	set_done_title
+;	bcc	set_done_title
+	bcc	done_title
 
-	jmp     done_check_input
+;	bcs	done_check_input	; bra
 
-set_done_title:
-	jmp	done_title
+;set_done_title:
+;	jmp	done_title
 done_check_input:
 
 	jmp	title_frame_loop

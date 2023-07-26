@@ -219,7 +219,12 @@ done_update_animation:
 
 	; setup hand sprite
 
-	lda	#$24		; middle orange				; 2
+;	lda	#$24		; middle orange				; 2
+
+	lda	POINTER_COLOR
+	bne	pointer_color_override
+	lda	LEVEL_HAND_COLOR
+pointer_color_override:
 	sta	COLUP0		; set hand color (sprite0)		; 3
 ; 19
 	lda	#$0C		; off white				; 2
@@ -233,15 +238,16 @@ done_update_animation:
 	ldy	#0		; Y=current block (scanline/4)		; 2
 ; 36
 
-	lda	#0							; 2
-	sta	VBLANK			; turn on beam			; 3
-	sta	POINTER_ON						; 3
+
 ; 44
 	lda	#CTRLPF_REF		; reflect playfield		; 2
 	sta	CTRLPF							; 3
 ; 49
 
-	lda	#0			; bg color			; 2
+	lda	#0							; 2
+	sta	VBLANK			; turn on beam			; 3
+	sta	POINTER_ON						; 3
+;	lda	#0			; bg color			; 2
 	sta	COLUBK							; 3
 ; 54
 	sta	WSYNC							; 3
@@ -268,18 +274,6 @@ done_update_animation:
 	ldx	#4
 	jsr	common_delay_scanlines
 
-;	sta	WSYNC
-	; in playfield scanline 1
-
-;	sta	WSYNC
-
-	; in playfield scanline 2
-
-;	sta	WSYNC
-
-	; in playfield scanline 3
-
-;	sta	WSYNC
 
 	;==========================
 	; grey line (4 lines)

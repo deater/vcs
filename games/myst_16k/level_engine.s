@@ -1086,21 +1086,48 @@ overlay_patch_start:
 overlay_patch_color:
 	.byte $4,$2,$0
 
+page_colors:
+	.byte POINTER_COLOR_RED,POINTER_COLOR_BLUE
 
 
+	;========================
+	; grab red book
+	;========================
 grab_red_book:
-	lda	#POINTER_COLOR_RED
-	bne	common_book_grab
+	lda	#HOLDING_RED_PAGE
+	ldx	#0
+	beq	common_book_grab
 
+	;========================
+	; grab blue book
+	;========================
 grab_blue_book:
-	lda	#POINTER_COLOR_BLUE
+	lda	#HOLDING_BLUE_PAGE
+	ldx	#1
 
+	;========================
+	; common_grab_book
+	;========================
 common_book_grab:
-	ldx	POINTER_X
-	cpx	#96
+	ldy	POINTER_X
+	cpy	#92			; $5c = 92
 	bcc	handle_book		; if to left, clicked on book
 
+	ora	#OCTOGON_PAGE
+	pha
+
+	lda	#OCTOGON_PAGE		; mark page taken
+	ora	RED_PAGES_TAKEN,X
+	sta	RED_PAGES_TAKEN,X
+
+	lda	page_colors,X		; set pointer color
 	sta	POINTER_COLOR
+
+	jsr	restore_page		; restore old page
+
+	pla
+	sta	HOLDING_PAGE
+
 	jmp	done_check_level_input
 
 grab_green_book:
@@ -1113,3 +1140,33 @@ handle_book:
 	jsr	do_book
 
 	jmp	load_new_level
+
+
+	;===========================
+	; if get new page need to put
+	; back current, if any
+restore_page:
+	ldx	#0
+	lda	HOLDING_PAGE
+	and	#$C0
+	beq	done_restore_page		; not holding page
+
+	cmp	#$C0
+	beq	restore_white_page
+
+	cmp	#HOLDING_RED_PAGE
+	beq	restore_page_common	; default is red
+
+	inx				; make it blue
+
+restore_page_common:
+	lda	HOLDING_PAGE
+	and	#$3F
+	eor	#$FF
+	and	RED_PAGES_TAKEN,X
+	sta	RED_PAGES_TAKEN,X
+
+restore_white_page:
+
+done_restore_page:
+	rts
