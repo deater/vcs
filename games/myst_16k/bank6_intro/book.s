@@ -571,7 +571,7 @@ book_clicked:
 	beq	myst_book_start_game
 
 	cpx	#2
-	bcc	exit_no_link_noise	; brother book, just exit
+	bcc	do_brother_book	; brother book
 
 	; books where you link or back off
 green_book:
@@ -612,6 +612,28 @@ exit_yes_link:
 exit_no_link_noise:
 	rts
 
+do_brother_book:
+
+	; three cases
+
+	; holding nothing: just exit
+
+	; holding wrong colored page: just exit
+
+	; holding right colored page:
+	;	increment page count
+	;	change pointer to normal
+	;	if page count=2 then game over
+
+
+	lda	POINTER_TYPE
+	cmp	#POINTER_TYPE_PAGE
+	bne	exit_brother_book
+
+	; we clicked in the window with 
+
+exit_brother_book:
+	rts
 
 book_data_l:
 	.byte <red_book_data_zx02		; red
