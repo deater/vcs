@@ -45,6 +45,7 @@ main.o:	main.s zp.inc \
 	echo "fireplace_update = 0 " >> rom_bank6_routines.inc
 	echo "update_sound = 0 " >> rom_bank6_routines.inc
 	echo "pointer_update = 0 " >> rom_bank6_routines.inc
+	echo "do_clicked_grab = 0 " >> rom_bank6_routines.inc
 	echo "hint_data_zx02 = 0 " > rom_bank5_routines.inc
 	echo "elevator_s_data_zx02 = 0 " >> rom_bank5_routines.inc
 	echo "elevator_n_data_zx02 = 0 " >> rom_bank5_routines.inc
@@ -63,11 +64,15 @@ main.o:	main.s zp.inc \
 	$(CALC_ADDRESS) -a 0x1A00 -s zx02_full_decomp main.lst >> common_routines.inc
 	$(CALC_ADDRESS) -a 0x1A00 -s powers_of_two main.lst >> common_routines.inc
 	$(CALC_ADDRESS) -a 0x1A00 -s set_pos_x main.lst >> common_routines.inc
+	$(CALC_ADDRESS) -a 0x1A00 -s load_new_level main.lst >> common_routines.inc
+	$(CALC_ADDRESS) -a 0x1A00 -s start_new_level main.lst >> common_routines.inc
+	$(CALC_ADDRESS) -a 0x1A00 -s done_check_level_input main.lst >> common_routines.inc
 	cd bank6_intro && make
 	$(CALC_ADDRESS) -a 0x1000 -s book_common bank6_intro/rom_bank6.lst > rom_bank6_routines.inc
 	$(CALC_ADDRESS) -a 0x1000 -s do_intro bank6_intro/rom_bank6.lst >> rom_bank6_routines.inc
 	$(CALC_ADDRESS) -a 0x1000 -s pointer_update bank6_intro/rom_bank6.lst >> rom_bank6_routines.inc
 	$(CALC_ADDRESS) -a 0x1000 -s update_sound bank6_intro/rom_bank6.lst >> rom_bank6_routines.inc
+	$(CALC_ADDRESS) -a 0x1000 -s do_clicked_grab bank6_intro/rom_bank6.lst >> rom_bank6_routines.inc
 	cd bank5_clock && make
 	$(CALC_ADDRESS) -a 0x1000 -s hint_data_zx02 bank5_clock/rom_bank5.lst > rom_bank5_routines.inc
 	$(CALC_ADDRESS) -a 0x1000 -s elevator_s_data_zx02 bank5_clock/rom_bank5.lst >> rom_bank5_routines.inc

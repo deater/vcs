@@ -23,5 +23,6 @@ do_intro:
 
 .include "../pointer_update.s"
 
+.include "../handle_grab.s"
 
 rom_bank6_end:

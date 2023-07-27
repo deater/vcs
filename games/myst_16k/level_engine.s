@@ -801,6 +801,9 @@ waited_enough_level:
 	; start new level
 start_new_level:
 	sta	CURRENT_LOCATION
+
+	lda	E7_SET_BANK7_RAM					; 3
+
 	jmp	load_new_level
 
 
@@ -810,43 +813,48 @@ start_new_level:
 	; clicked grab
 	;==========================
 clicked_grab:
+	lda	E7_SET_BANK6						; 3
+	jmp	do_clicked_grab
+
+
 ; 22
-	ldx	CURRENT_LOCATION					; 3
-	cpx	#8			; if level >8 not switch	; 2
-	bcc	handle_switch						; 2/3
+;	ldx	CURRENT_LOCATION					; 3
+;	cpx	#8			; if level >8 not switch	; 2
+;	bcc	handle_switch						; 2/3
 ; 29
 
 	; set up jump table fakery
-handle_special:
-	lda	grab_dest_h-8,X						; 4+
-	pha								; 3
-	lda	grab_dest_l-8,X						; 4+
-	pha								; 3
-	rts				; jump to location		; 6
+;handle_special:
+;	lda	grab_dest_h-8,X						; 4+
+;	pha								; 3
+;	lda	grab_dest_l-8,X						; 4+
+;	pha								; 3
+;	rts				; jump to location		; 6
 ; 49
 
 
 
-handle_switch:
+;handle_switch:
 ; 30
-	ldy	#SFX_CLICK		; play sound
-	sty	SFX_PTR
+;	ldy	#SFX_CLICK		; play sound
+;	sty	SFX_PTR
 
 	; toggle switch
-	lda	powers_of_two,X
-	eor	SWITCH_STATUS
-	sta	SWITCH_STATUS
+;	lda	powers_of_two,X
+;	eor	SWITCH_STATUS
+;	sta	SWITCH_STATUS
 
 	; Switch to white page if switch from $FF to $7F
 
-	cmp	#$7f
-	bne	done_check_level_input
+;	cmp	#$7f
+;	bne	done_check_level_input
 
-	lda	#POINTER_COLOR_WHITE
-	sta	POINTER_COLOR
+;	lda	#POINTER_COLOR_WHITE
+;	sta	POINTER_COLOR
+
 
 done_check_level_input:
-
+	lda	E7_SET_BANK7_RAM					; 3
 	sta	WSYNC
 
 	jmp	level_frame
@@ -869,138 +877,138 @@ playfield_locations_h:
 	.byte >(level_playfield2_right-$400+23)
 
 
-grab_dest_l:
+;grab_dest_l:
 
-	.byte	<(grab_red_book-1)		; 8
-	.byte	<(grab_blue_book-1)		; 9
-	.byte	<(grab_green_book-1)		; 10
-	.byte	<(grab_green_book-1)		; 11
+;	.byte	<(grab_red_book-1)		; 8
+;	.byte	<(grab_blue_book-1)		; 9
+;	.byte	<(grab_green_book-1)		; 10
+;	.byte	<(grab_green_book-1)		; 11
 
-	.byte	<(grab_atrus-1)			; 12
-	.byte	<(grab_tower_rotation-1)	; 13
+;	.byte	<(grab_atrus-1)			; 12
+;	.byte	<(grab_tower_rotation-1)	; 13
 
-	.byte	<(grab_fireplace-1)		; 14
-	.byte	<(grab_clock_controls-1)	; 15
-	.byte	<(grab_close_painting-1)	; 16
-	.byte	<(grab_open_painting-1)		; 17
-	.byte	<(grab_clock_puzzle-1)		; 18
+;	.byte	<(grab_fireplace-1)		; 14
+;	.byte	<(grab_clock_controls-1)	; 15
+;	.byte	<(grab_close_painting-1)	; 16
+;	.byte	<(grab_open_painting-1)		; 17
+;	.byte	<(grab_clock_puzzle-1)		; 18
 	; grab_elevator?			; 19
 
-grab_dest_h:
-	.byte	>(grab_red_book-1)		; 8
-	.byte	>(grab_blue_book-1)		; 9
-	.byte	>(grab_green_book-1)		; 10
-	.byte	<(grab_green_book-1)		; 11
+;grab_dest_h:
+;	.byte	>(grab_red_book-1)		; 8
+;	.byte	>(grab_blue_book-1)		; 9
+;	.byte	>(grab_green_book-1)		; 10
+;	.byte	<(grab_green_book-1)		; 11
 
-	.byte	>(grab_atrus-1)			; 12
-	.byte	>(grab_tower_rotation-1)	; 13
+;	.byte	>(grab_atrus-1)			; 12
+;	.byte	>(grab_tower_rotation-1)	; 13
 
-	.byte	>(grab_fireplace-1)		; 14
-	.byte	>(grab_clock_controls-1)	; 15
-	.byte	>(grab_close_painting-1)	; 16
-	.byte	>(grab_open_painting-1)		; 17
-	.byte	>(grab_clock_puzzle-1)		; 18
-	; grab_elevator?			; 19
+;	.byte	>(grab_fireplace-1)		; 14
+;	.byte	>(grab_clock_controls-1)	; 15
+;	.byte	>(grab_close_painting-1)	; 16
+;	.byte	>(grab_open_painting-1)		; 17
+;	.byte	>(grab_clock_puzzle-1)		; 18
+;	; grab_elevator?			; 19
 
 	;=========================
 	; giving atrus the page
-grab_atrus:
-	lda	WHITE_PAGE_COUNT
-	beq	havent_given_page_yet
+;grab_atrus:
+;	lda	WHITE_PAGE_COUNT
+;	beq	havent_given_page_yet
 
 	; myst linking book instead
-	jmp	handle_book
+;	jmp	handle_book
 
-havent_given_page_yet:
+;havent_given_page_yet:
 	; if have white page, goto good ending
-	lda	POINTER_COLOR
-	cmp	#POINTER_COLOR_WHITE
-	bne	trapped_with_atrus
+;	lda	POINTER_COLOR
+;	cmp	#POINTER_COLOR_WHITE
+;	bne	trapped_with_atrus
 
 	; "good" ending
-trapped_on_myst:
+;trapped_on_myst:
 
 	; give white page to atrus
-	inc	WHITE_PAGE_COUNT
-	lda	#0
-	sta	POINTER_COLOR
+;	inc	WHITE_PAGE_COUNT
+;	lda	#0
+;	sta	POINTER_COLOR
 
-	lda	#LOCATION_YOU_WIN
-	jmp	start_new_level
+;	lda	#LOCATION_YOU_WIN
+;	jmp	start_new_level
 
-trapped_with_atrus:
+;trapped_with_atrus:
 	; else, trapped
-	lda	#LOCATION_TRAPPED
-	jmp	start_new_level
+;	lda	#LOCATION_TRAPPED
+;	jmp	start_new_level
 
 
 	;==========================
 	; grabbed the clock puzzle
 	;==========================
-grab_clock_puzzle:
-;	jmp	done_check_level_input
+;grab_clock_puzzle:
+;;	jmp	done_check_level_input
 
 	;==============================
 	; grabbed the fireplace puzzle
 	;==============================
-grab_fireplace:
-	inc	WAS_CLICKED
-	bne	done_check_level_input		; bra
+;grab_fireplace:
+;	inc	WAS_CLICKED
+;	bne	done_check_level_input		; bra
 
 	;============================
 	; grabbed the clock controls
 	;============================
-grab_clock_controls:
-	lda	#LOCATION_CLOCK_PUZZLE
-	jmp	start_new_level
+;grab_clock_controls:
+;	lda	#LOCATION_CLOCK_PUZZLE
+;	jmp	start_new_level
 
 
 	;========================
 	; grabbed the bookshelf
 	;========================
-grab_bookshelf:
-	jmp	done_check_level_input
+;grab_bookshelf:
+;	jmp	done_check_level_input
 
 	;==============================
 	; grabbed close door painting
 	;==============================
-grab_close_painting:
-	lda	BARRIER_STATUS
-	ora	#BARRIER_LIBRARY_DOOR_CLOSED
-	bne	common_painting		; bra
+;grab_close_painting:
+;	lda	BARRIER_STATUS
+;	ora	#BARRIER_LIBRARY_DOOR_CLOSED
+;	bne	common_painting		; bra
 
 	;==============================
 	; grabbed open door painting
 	;==============================
-grab_open_painting:
+;grab_open_painting:
 ; 61
-	lda	BARRIER_STATUS					; 3
-	and	#<(~BARRIER_LIBRARY_DOOR_CLOSED)		; 2
+;	lda	BARRIER_STATUS					; 3
+;	and	#<(~BARRIER_LIBRARY_DOOR_CLOSED)		; 2
 ; 66
 
 common_painting:
-	sta	BARRIER_STATUS					; 3
-	ldy	#SFX_RUMBLE		; play sound		; 2
-	sty	SFX_PTR						; 3
+;	sta	BARRIER_STATUS					; 3
+;	ldy	#SFX_RUMBLE		; play sound		; 2
+;	sty	SFX_PTR						; 3
 ; 74
 
-;	bne	done_check_level_input	; bra			; 3
+;;	bne	done_check_level_input	; bra			; 3
 
 	; above takes too long...
 
-	jmp	level_frame
+;	jmp	level_frame
 
 
 	;======================
 	; grab tower rotation
 	;======================
 	; FIXME: share code with above somehow
-grab_tower_rotation:
-	sta	BARRIER_STATUS					; 3
-	ldy	#SFX_RUMBLE		; play sound		; 2
-	sty	SFX_PTR						; 3
+;grab_tower_rotation:
+;	sta	BARRIER_STATUS					; 3
+;	ldy	#SFX_RUMBLE		; play sound		; 2
+;	sty	SFX_PTR						; 3
 
-	bne	done_check_level_input	; bra			; 3
+;	bne	done_check_level_input	; bra			; 3
 
 
 	;===================================
@@ -1064,8 +1072,6 @@ page_patch_loop:
 	;	x=12 so 260
 
 
-
-
 do_overlay_patch_barrier:
 	lda	LEVEL_CENTER_PATCH_COND				; 3
 	and	BARRIER_STATUS
@@ -1107,56 +1113,56 @@ overlay_patch_start:
 overlay_patch_color:
 	.byte $4,$2,$0
 
-page_colors:
-	.byte POINTER_COLOR_RED,POINTER_COLOR_BLUE
+;page_colors:
+;	.byte POINTER_COLOR_RED,POINTER_COLOR_BLUE
 
 
 	;========================
 	; grab red book
 	;========================
-grab_red_book:
-	lda	#HOLDING_RED_PAGE
-	ldx	#0
-	beq	common_book_grab
+;grab_red_book:
+;	lda	#HOLDING_RED_PAGE
+;	ldx	#0
+;	beq	common_book_grab
 
 	;========================
 	; grab blue book
 	;========================
-grab_blue_book:
-	lda	#HOLDING_BLUE_PAGE
-	ldx	#1
+;grab_blue_book:
+;	lda	#HOLDING_BLUE_PAGE
+;	ldx	#1
 
 	;========================
 	; common_grab_book
 	;========================
-common_book_grab:
-	ldy	POINTER_X
-	cpy	#92			; $5c = 92
-	bcc	handle_book		; if to left, clicked on book
+;common_book_grab:
+;	ldy	POINTER_X
+;	cpy	#92			; $5c = 92
+;	bcc	handle_book		; if to left, clicked on book
 
-	ora	#OCTAGON_PAGE
-	pha
+;	ora	#OCTAGON_PAGE
+;	pha
 
-	lda	#OCTAGON_PAGE		; mark page taken
-	ora	RED_PAGES_TAKEN,X
-	sta	RED_PAGES_TAKEN,X
+;	lda	#OCTAGON_PAGE		; mark page taken
+;	ora	RED_PAGES_TAKEN,X
+;	sta	RED_PAGES_TAKEN,X
 
-	lda	page_colors,X		; set pointer color
-	sta	POINTER_COLOR
+;	lda	page_colors,X		; set pointer color
+;	sta	POINTER_COLOR
 
-	jsr	restore_page		; restore old page
+;	jsr	restore_page		; restore old page
 
-	pla
-	sta	HOLDING_PAGE
+;	pla
+;	sta	HOLDING_PAGE
 
-	jmp	done_check_level_input
+;	jmp	done_check_level_input
 
-grab_green_book:
+;grab_green_book:
 
 
 ; 49
 
-handle_book:
+;handle_book:
 	;===========================
 	; handle book being clicked
 	;===========================
@@ -1168,71 +1174,71 @@ handle_book:
 
 	; X has red/blue already
 
-	lda	POINTER_TYPE
-	cmp	#POINTER_TYPE_PAGE
-	bne	really_do_book
+;	lda	POINTER_TYPE
+;	cmp	#POINTER_TYPE_PAGE
+;	bne	really_do_book
 
-	lda	HOLDING_PAGE
-	rol
-	rol
-	rol
-	and	#$3
-	eor	#$3
-;	beq	really_do_book
-	stx	TEMP2
-	cmp	TEMP2
-	bne	really_do_book
+;	lda	HOLDING_PAGE
+;	rol
+;	rol
+;	rol
+;	and	#$3
+;	eor	#$3
+;;	beq	really_do_book
+;	stx	TEMP2
+;	cmp	TEMP2
+;	bne	really_do_book
 
-put_page_in_book:
+;put_page_in_book:
 
-	inc	RED_PAGE_COUNT,X
+;	inc	RED_PAGE_COUNT,X
 
-	lda	#0
-	sta	HOLDING_PAGE
-	sta	POINTER_COLOR
+;	lda	#0
+;	sta	HOLDING_PAGE
+;	sta	POINTER_COLOR
 
-	lda	RED_PAGE_COUNT,X
-	cmp	#2
-	bne	still_more_pages
+;	lda	RED_PAGE_COUNT,X
+;	cmp	#2
+;	bne	still_more_pages
 
-	ldy	#LOCATION_TRAPPED
-	sty	CURRENT_LOCATION
-	jmp	load_new_level
+;	ldy	#LOCATION_TRAPPED
+;	sty	CURRENT_LOCATION
+;	jmp	load_new_level
 
-still_more_pages:
-	jmp	done_check_level_input
+;still_more_pages:
+;	jmp	done_check_level_input
 
-really_do_book:
-	jsr	do_book
+;really_do_book:
+;	jsr	do_book
 
-	jmp	load_new_level
+;	jmp	load_new_level
 
 
 	;===========================
 	; if get new page need to put
 	; back current, if any
-restore_page:
-	ldx	#0
-	lda	HOLDING_PAGE
-	and	#$C0
-	beq	done_restore_page		; not holding page
+;restore_page:
+;	ldx	#0
+;	lda	HOLDING_PAGE
+;	and	#$C0
+;	beq	done_restore_page		; not holding page
 
-	cmp	#$C0
-	beq	restore_white_page
+;	cmp	#$C0
+;	beq	restore_white_page
 
-	cmp	#HOLDING_RED_PAGE
-	beq	restore_page_common	; default is red
+;	cmp	#HOLDING_RED_PAGE
+;	beq	restore_page_common	; default is red
 
-	inx				; make it blue
+;	inx				; make it blue
 
-restore_page_common:
-	lda	HOLDING_PAGE
-	and	#$3F
-	eor	#$FF
-	and	RED_PAGES_TAKEN,X
-	sta	RED_PAGES_TAKEN,X
+;restore_page_common:
+;	lda	HOLDING_PAGE
+;	and	#$3F
+;	eor	#$FF
+;	and	RED_PAGES_TAKEN,X
+;	sta	RED_PAGES_TAKEN,X
 
-restore_white_page:
-
-done_restore_page:
-	rts
+;restore_white_page:
+;
+;done_restore_page:
+;	rts
