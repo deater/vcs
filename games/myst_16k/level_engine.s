@@ -173,38 +173,12 @@ done_flip_switch:
 	;=============================
 	; now VBLANK scanline 30,31,32
 	;=============================
-
-	;====================================================
 	; set up sprite1 (overlay) to be at proper X position
 	;====================================================
 
 	lda	LEVEL_OVERLAY_X						; 3
 	ldx	#POS_SPRITE1						; 2
 	jsr	set_pos_x						;6+...
-
-
-; 0
-;	nop								; 2
-;	nop								; 2
-; 4
-;	ldx	LEVEL_OVERLAY_COARSE					; 3
-;	inx			;					; 2
-;	inx			;					; 2
-; 11
-;qpad_x:
-;	dex			;					; 2
-;	bne	qpad_x		;					; 2/3
-				;===========================================
-				;	(5*COASRE+2)-1
-
-	; beam is at proper place
-;	sta	RESP1							; 3
-
-;	lda	LEVEL_OVERLAY_FINE	; fine adjust overlay		; 3
-;	sta	HMP1							; 3
-
-
-;	sta	WSYNC
 
 
 	;=========================================
@@ -1183,7 +1157,52 @@ grab_green_book:
 ; 49
 
 handle_book:
+	;===========================
+	; handle book being clicked
+	;===========================
+	; three cases
+	;	1. holding no page (goto do_book)
+	;	2. holding page of different color (goto do_book)
+	;	3. holding page of same color (make noise, inc count)
+	;		if page count==2 then game over
 
+	; X has red/blue already
+
+	lda	POINTER_TYPE
+	cmp	#POINTER_TYPE_PAGE
+	bne	really_do_book
+
+	lda	HOLDING_PAGE
+	rol
+	rol
+	rol
+	and	#$3
+	eor	#$3
+;	beq	really_do_book
+	stx	TEMP2
+	cmp	TEMP2
+	bne	really_do_book
+
+put_page_in_book:
+
+	inc	RED_PAGE_COUNT,X
+
+	lda	#0
+	sta	HOLDING_PAGE
+	sta	POINTER_COLOR
+
+	lda	RED_PAGE_COUNT,X
+	cmp	#2
+	bne	still_more_pages
+
+	ldy	#LOCATION_TRAPPED
+	sty	CURRENT_LOCATION
+	jmp	load_new_level
+
+still_more_pages:
+	jmp	done_check_level_input
+
+really_do_book:
 	jsr	do_book
 
 	jmp	load_new_level

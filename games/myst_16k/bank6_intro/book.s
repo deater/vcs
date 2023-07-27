@@ -609,30 +609,8 @@ exit_yes_link:
 	ldy	LINK_DESTINATION
 	sty	CURRENT_LOCATION
 
-exit_no_link_noise:
-	rts
-
 do_brother_book:
-
-	; three cases
-
-	; holding nothing: just exit
-
-	; holding wrong colored page: just exit
-
-	; holding right colored page:
-	;	increment page count
-	;	change pointer to normal
-	;	if page count=2 then game over
-
-
-	lda	POINTER_TYPE
-	cmp	#POINTER_TYPE_PAGE
-	bne	exit_brother_book
-
-	; we clicked in the window with 
-
-exit_brother_book:
+exit_no_link_noise:
 	rts
 
 book_data_l:
