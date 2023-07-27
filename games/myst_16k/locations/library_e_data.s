@@ -14,7 +14,7 @@
 .byte 0				; missile0 (vertical line) X location
 .byte $00                       ; patch cond
 .byte $00                       ; patch dest
-.byte OVERLAY_PATCH_LIBRARY_PAGE; overlay patch type
+.byte OVERLAY_PATCH_LIBRARY_PAGE|1; overlay patch type
 .byte $00                       ; unused
 
 
