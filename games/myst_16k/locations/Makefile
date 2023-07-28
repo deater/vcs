@@ -41,24 +41,24 @@ level_locations.inc:	\
 	$(CALC_ADDRESS) -a 0x1000 -s cabin_path_n_data_zx02 rom_bank2.lst >> level_locations.inc
 	$(CALC_ADDRESS) -a 0x1000 -s arrival_e_data_zx02 rom_bank3.lst >> level_locations.inc
 	$(CALC_ADDRESS) -a 0x1000 -s clock_close_s_data_zx02 rom_bank3.lst >> level_locations.inc
-	$(CALC_ADDRESS) -a 0x1000 -s shack_s_data_zx02 rom_bank3.lst >> level_locations.inc
 	$(CALC_ADDRESS) -a 0x1000 -s cabin_path_s_data_zx02 rom_bank3.lst >> level_locations.inc
 	$(CALC_ADDRESS) -a 0x1000 -s library_se_data_zx02 rom_bank3.lst >> level_locations.inc
 	$(CALC_ADDRESS) -a 0x1000 -s library_sw_data_zx02 rom_bank3.lst >> level_locations.inc
 	$(CALC_ADDRESS) -a 0x1000 -s imager_e_data_zx02 rom_bank3.lst >> level_locations.inc
 	$(CALC_ADDRESS) -a 0x1000 -s behind_fireplace_data_zx02 rom_bank3.lst >> level_locations.inc
-	$(CALC_ADDRESS) -a 0x1000 -s inside_fireplace_data_zx02 rom_bank3.lst >> level_locations.inc
-	$(CALC_ADDRESS) -a 0x1000 -s dni_n_data_zx02 rom_bank4.lst >> level_locations.inc
+	$(CALC_ADDRESS) -a 0x1000 -s dni_n_data_zx02 rom_bank3.lst >> level_locations.inc
+	$(CALC_ADDRESS) -a 0x1000 -s shack_n_data_zx02 rom_bank3.lst >> level_locations.inc
+	$(CALC_ADDRESS) -a 0x1000 -s pool_s_data_zx02 rom_bank3.lst >> level_locations.inc
+	$(CALC_ADDRESS) -a 0x1000 -s shack_s_data_zx02 rom_bank4.lst >> level_locations.inc
+	$(CALC_ADDRESS) -a 0x1000 -s inside_fireplace_data_zx02 rom_bank4.lst >> level_locations.inc
 	$(CALC_ADDRESS) -a 0x1000 -s dni_e_data_zx02 rom_bank4.lst >> level_locations.inc
 	$(CALC_ADDRESS) -a 0x1000 -s atrus_e_data_zx02 rom_bank4.lst >> level_locations.inc
 	$(CALC_ADDRESS) -a 0x1000 -s trapped_data_zx02 rom_bank4.lst >> level_locations.inc
 	$(CALC_ADDRESS) -a 0x1000 -s dock_s_data_zx02 rom_bank4.lst >> level_locations.inc
 	$(CALC_ADDRESS) -a 0x1000 -s dentist_e_data_zx02 rom_bank4.lst >> level_locations.inc
 	$(CALC_ADDRESS) -a 0x1000 -s rocket_s_data_zx02 rom_bank4.lst >> level_locations.inc
-	$(CALC_ADDRESS) -a 0x1000 -s pool_s_data_zx02 rom_bank4.lst >> level_locations.inc
 	$(CALC_ADDRESS) -a 0x1000 -s you_win_data_zx02 rom_bank4.lst >> level_locations.inc
 #	$(CALC_ADDRESS) -a 0x1000 -s steps_e_data_zx02 rom_bank5.lst >> level_locations.inc
-#	$(CALC_ADDRESS) -a 0x1000 -s shack_n_data_zx02 rom_bank5.lst >> level_locations.inc
 #	$(CALC_ADDRESS) -a 0x1000 -s library_up_data_zx02 rom_bank5.lst >> level_locations.inc
 #	$(CALC_ADDRESS) -a 0x1000 -s library_nw_data_zx02 rom_bank5.lst >> level_locations.inc
 #	$(CALC_ADDRESS) -a 0x1000 -s library_ne_data_zx02 rom_bank5.lst >> level_locations.inc
@@ -121,12 +121,11 @@ rom_bank3.bin:	rom_bank3.o
 	ld65 -o rom_bank3.bin rom_bank3.o -C $(LINKER_SCRIPT)/atari2600_1000.inc
 
 rom_bank3.o:	rom_bank3.s \
-	shack_s_data.zx02 \
 	arrival_e_data.zx02 clock_close_s_data.zx02 \
-	cabin_path_s_data.zx02 \
+	cabin_path_s_data.zx02 pool_s_data.zx02 \
 	library_se_data.zx02 library_sw_data.zx02 \
-	imager_e_data.zx02 \
-	behind_fireplace_data.zx02 inside_fireplace_data.zx02
+	imager_e_data.zx02 dni_n_data.zx02 shack_n_data.zx02 \
+	behind_fireplace_data.zx02
 	ca65 -o rom_bank3.o rom_bank3.s -l rom_bank3.lst
 
 ###
@@ -135,9 +134,11 @@ rom_bank4.bin:	rom_bank4.o
 	ld65 -o rom_bank4.bin rom_bank4.o -C $(LINKER_SCRIPT)/atari2600_1000.inc
 
 rom_bank4.o:	rom_bank4.s \
-	dni_n_data.zx02 dni_e_data.zx02 atrus_e_data.zx02 \
+	shack_s_data.zx02 \
+	dni_e_data.zx02 atrus_e_data.zx02 \
 	trapped_data.zx02 dock_s_data.zx02 dentist_e_data.zx02 \
-	rocket_s_data.zx02 pool_s_data.zx02 you_win_data.zx02
+	rocket_s_data.zx02 \
+	you_win_data.zx02 inside_fireplace_data.zx02
 	ca65 -o rom_bank4.o rom_bank4.s -l rom_bank4.lst
 
 ###

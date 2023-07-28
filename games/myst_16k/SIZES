@@ -47,41 +47,41 @@ rom3:
 ~~~~~
 clock_close_s	120
 arrival_e	106
-shack_s		240
 cabin_path_s	222
 library_sw	212
 library_se	197
 imager_e	218
-behind_fireplace	228
-inside_fireplace	122
+behind_fireplace228
+pool_s		236
+shack_n		249
+dni_n		254
 		===
-		681 = 383 bytes free
+		7fa = 6 bytes free
 
 rom4:
 ~~~~~
-254 dni_n
-254 dni_e
-218 atrus_e
-138 trapped
-186 dock_s
-167 dentist_e
-231 rocket_s
-236 pool_s
-202 you_win
+inside_fireplace122
+shack_s		240
+dni_e		254
+atrus_e		218
+trapped		138
+dock_s		186
+dentist_e	167
+rocket_s	231
+you_win		202
 		===
-		162 free
+		6de = 290 free
 
 rom5:
 ~~~~~
-232 steps_e
-249 shack_n
-237 library_up
-208 library_nw
-205 library_ne
-123 clock_puzzle
-114 hint
-130 elevator_s
-161 elevator_n
+steps_e		232
+library_up	237
+library_nw	208
+library_ne	205
+clock_puzzle	123
+hint		114
+elevator_s	130
+elevator_n	161
 		===
 		4 free
 

@@ -123,7 +123,7 @@ level_bank_and_high:
 
 	; Other locations you can "grab"
 	.byte	(3<<5) | (>library_sw_data_zx02)	; 13 = library_sw
-	.byte	(3<<5) | (>inside_fireplace_data_zx02)	; 14 = inside_fireplace
+	.byte	(4<<5) | (>inside_fireplace_data_zx02)	; 14 = inside_fireplace
 	.byte	(0<<5) | (>clock_s_data_zx02)		; 15 = clock_s
 	.byte	(5<<5) | (>library_nw_data_zx02)	; 16 = library_nw
 	.byte	(5<<5) | (>library_ne_data_zx02)	; 17 = library_ne
@@ -149,21 +149,21 @@ level_bank_and_high:
 	.byte	(2<<5) | (>library_w_data_zx02)		; 35 = library_w
 	.byte	(2<<5) | (>library_e_data_zx02)		; 36 = library_e
 	.byte	(1<<5) | (>steps_s_data_zx02)		; 37 = steps_s
-	.byte	(3<<5) | (>shack_s_data_zx02)		; 38 = shack_s
+	.byte	(4<<5) | (>shack_s_data_zx02)		; 38 = shack_s
 	.byte	(3<<5) | (>cabin_path_s_data_zx02)	; 39 = cabin_path_s
 	.byte	(2<<5) | (>cabin_path_n_data_zx02)	; 40 = cabin_path_n
 
 	.byte	(3<<5) | (>library_se_data_zx02)	; 41 = library_se
 	.byte	(2<<5) | (>burnt_book_data_zx02)	; 42 = burnt_book
 	.byte	(3<<5) | (>imager_e_data_zx02)		; 43 = imager_e
-	.byte	(5<<5) | (>shack_n_data_zx02)		; 44 = shack_n
-	.byte	(4<<5) | (>dni_n_data_zx02)		; 45 = dni_n
+	.byte	(3<<5) | (>shack_n_data_zx02)		; 44 = shack_n
+	.byte	(3<<5) | (>dni_n_data_zx02)		; 45 = dni_n
 	.byte	(4<<5) | (>dni_e_data_zx02)		; 46 = dni_e
 	.byte	(4<<5) | (>trapped_data_zx02)		; 47 = trapped
 	.byte	(4<<5) | (>dock_s_data_zx02)		; 48 = dock_s
 	.byte	(4<<5) | (>dentist_e_data_zx02)		; 49 = dentist_e
 	.byte	(4<<5) | (>rocket_s_data_zx02)		; 50 = rocket_s
-	.byte	(4<<5) | (>pool_s_data_zx02)		; 51 = pool_s
+	.byte	(3<<5) | (>pool_s_data_zx02)		; 51 = pool_s
 	.byte	(4<<5) | (>you_win_data_zx02)		; 52 = you_win
 
 	.byte	(5<<5) | (>steps_e_data_zx02)		; 53 = steps_e

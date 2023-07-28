@@ -5,6 +5,7 @@ Things to finish:
 + fix all glithces
 + fix pointer bounds on bottom of screen
    This is tricky because in book Y is *2 but on rest it is *4
++ door open, play different sound for when opening vs already open
 
 Sound:
 + Fix linking book noise

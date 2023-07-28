@@ -1,5 +1,5 @@
-dni_n_data_zx02:
-.incbin "dni_n_data.zx02"
+;dni_n_data_zx02:
+;.incbin "dni_n_data.zx02"
 dni_e_data_zx02:
 .incbin "dni_e_data.zx02"
 atrus_e_data_zx02:
@@ -12,9 +12,13 @@ dentist_e_data_zx02:
 .incbin "dentist_e_data.zx02"
 rocket_s_data_zx02:
 .incbin "rocket_s_data.zx02"
-pool_s_data_zx02:
-.incbin "pool_s_data.zx02"
+;pool_s_data_zx02:
+;.incbin "pool_s_data.zx02"
 you_win_data_zx02:
 .incbin "you_win_data.zx02"
+inside_fireplace_data_zx02:
+.incbin "inside_fireplace_data.zx02"
+shack_s_data_zx02:
+.incbin "shack_s_data.zx02"
 
 rom_bank4_end:
