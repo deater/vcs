@@ -58,6 +58,8 @@ level_locations.inc:	\
 	$(CALC_ADDRESS) -a 0x1000 -s dentist_e_data_zx02 rom_bank4.lst >> level_locations.inc
 	$(CALC_ADDRESS) -a 0x1000 -s rocket_s_data_zx02 rom_bank4.lst >> level_locations.inc
 	$(CALC_ADDRESS) -a 0x1000 -s you_win_data_zx02 rom_bank4.lst >> level_locations.inc
+	$(CALC_ADDRESS) -a 0x1000 -s hint_data_zx02 rom_bank4.lst >> level_locations.inc
+	$(CALC_ADDRESS) -a 0x1000 -s elevator_n_data_zx02 rom_bank4.lst >> level_locations.inc
 #	$(CALC_ADDRESS) -a 0x1000 -s steps_e_data_zx02 rom_bank5.lst >> level_locations.inc
 #	$(CALC_ADDRESS) -a 0x1000 -s library_up_data_zx02 rom_bank5.lst >> level_locations.inc
 #	$(CALC_ADDRESS) -a 0x1000 -s library_nw_data_zx02 rom_bank5.lst >> level_locations.inc
@@ -137,7 +139,7 @@ rom_bank4.o:	rom_bank4.s \
 	shack_s_data.zx02 \
 	dni_e_data.zx02 atrus_e_data.zx02 \
 	trapped_data.zx02 dock_s_data.zx02 dentist_e_data.zx02 \
-	rocket_s_data.zx02 \
+	rocket_s_data.zx02 hint_data.zx02 elevator_n_data.zx02 \
 	you_win_data.zx02 inside_fireplace_data.zx02
 	ca65 -o rom_bank4.o rom_bank4.s -l rom_bank4.lst
 
@@ -256,6 +258,12 @@ dentist_e_data.inc:	dentist_e_bg.png dentist_e_overlay.png
 
 ###
 
+elevator_n_data.inc:	elevator_n_bg.png elevator_n_overlay.png
+	$(PNG2PF) -4 -n elevator_n -b 0x00 elevator_n_bg.png - > elevator_n_data.inc
+	$(PNG2OVERLAY) -4 -o -n elevator_n elevator_n_overlay.png - >> elevator_n_data.inc
+
+###
+
 hilltop_w_data.inc:	hilltop_w_bg.png hilltop_w_overlay.png
 	$(PNG2PF) -4 -n hilltop_w -b 0x00 hilltop_w_bg.png - > hilltop_w_data.inc
 	$(PNG2OVERLAY) -4 -o -n hilltop_w hilltop_w_overlay.png - >> hilltop_w_data.inc
@@ -285,6 +293,12 @@ hill_w_data.inc:	hill_w_bg.png hill_w_overlay.png
 	$(PNG2PF) -4 -n hill_w -b 0x02 hill_w_bg.png - > hill_w_data.inc
 	$(PNG2OVERLAY) -4 -o -n hill_w hill_w_overlay.png - >> hill_w_data.inc
 
+
+###
+
+hint_data.inc:	hint_bg.png hint_overlay.png
+	$(PNG2PF) -4 -n hint -b 0x00 hint_bg.png - > hint_data.inc
+	$(PNG2OVERLAY) -4 -o -n hint hint_overlay.png - >> hint_data.inc
 
 ###
 
@@ -687,9 +701,16 @@ dentist_e_data.bin:	dentist_e_data.o
 dentist_e_data.o:	dentist_e_data.s dentist_e_data.inc
 	ca65 -o dentist_e_data.o dentist_e_data.s -l dentist_e_data.lst
 
+####
 
+elevator_n_data.zx02:	elevator_n_data.bin
+	$(ZX02) -f elevator_n_data.bin elevator_n_data.zx02
 
+elevator_n_data.bin:	elevator_n_data.o
+	ld65 -o elevator_n_data.bin elevator_n_data.o -C $(LINKER_SCRIPT)/atari2600_f000.inc
 
+elevator_n_data.o:	elevator_n_data.s elevator_n_data.inc
+	ca65 -o elevator_n_data.o elevator_n_data.s -l elevator_n_data.lst
 
 ###
 
@@ -747,6 +768,19 @@ hill_w_data.bin:	hill_w_data.o
 
 hill_w_data.o:	hill_w_data.s hill_w_data.inc
 	ca65 -o hill_w_data.o hill_w_data.s -l hill_w_data.lst
+
+###
+
+hint_data.zx02:	hint_data.bin
+	$(ZX02) -f hint_data.bin hint_data.zx02
+
+hint_data.bin:	hint_data.o
+	ld65 -o hint_data.bin hint_data.o -C $(LINKER_SCRIPT)/atari2600_f000.inc
+
+hint_data.o:	hint_data.s hint_data.inc
+	ca65 -o hint_data.o hint_data.s -l hint_data.lst
+
+
 
 ###
 
@@ -1130,6 +1164,8 @@ steps_e_data.bin:	steps_e_data.o
 steps_e_data.o:	steps_e_data.s steps_e_data.inc
 	ca65 -o steps_e_data.o steps_e_data.s -l steps_e_data.lst
 
+
+###
 
 
 

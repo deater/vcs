@@ -62,15 +62,17 @@ rom4:
 ~~~~~
 inside_fireplace122
 shack_s		240
-dni_e		254
 atrus_e		218
 trapped		138
 dock_s		186
 dentist_e	167
 rocket_s	231
 you_win		202
+hint		114
+elevator_n	161
+dni_e		254
 		===
-		6de = 290 free
+		7f1 = 14 bytes free
 
 rom5:
 ~~~~~
@@ -79,11 +81,10 @@ library_up	237
 library_nw	208
 library_ne	205
 clock_puzzle	123
-hint		114
 elevator_s	130
-elevator_n	161
+
 		===
-		4 free
+		4 free +256 (align)
 
 rom6:
 ~~~~~
