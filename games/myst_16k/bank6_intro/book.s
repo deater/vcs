@@ -577,7 +577,7 @@ book_clicked:
 green_book:
 	lda	POINTER_TYPE
 	cmp	#POINTER_TYPE_GRAB
-	bne	exit_no_link_noise
+	bcc	exit_no_link_noise	; should hangle GRAB+PAGE
 
 	; we clicked in window
 

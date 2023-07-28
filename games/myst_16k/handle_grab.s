@@ -30,6 +30,11 @@ handle_special:
 ; 49
 
 
+	;===============================
+	;===============================
+	; handle switch
+	;===============================
+	;===============================
 
 handle_switch:
 ; 30
@@ -47,6 +52,9 @@ handle_switch:
 	cmp	#$7f							; 2
 	bne	done_handle_grab					; 2/3
 ; 49
+
+	jsr	restore_page
+
 	lda	#POINTER_COLOR_WHITE					; 2
 	sta	POINTER_COLOR						; 3
 ; 54

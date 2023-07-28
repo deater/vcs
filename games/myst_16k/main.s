@@ -60,7 +60,7 @@ clear_loop:
 
 	; DEBUG
 ;	lda	#$FF
-;	sta	SWITCH_STATUS
+	dec	SWITCH_STATUS
 
 
 	;==============================
@@ -82,14 +82,13 @@ load_new_level:
 	; common routines
 	;===========================
 
+	.include "zx02_optim.s"
+
 	.include "load_level.s"
 	.include "position.s"
 	.include "common_routines.s"
 
-;	.include "hand_update.s"
-;	.include "sprite_data.inc"
 
-	.include "zx02_optim.s"
 
 
 do_book:
