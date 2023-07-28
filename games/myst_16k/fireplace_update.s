@@ -184,7 +184,8 @@ skipped_most:
 
 	; answer is $FF if match?
 
-	ldx	#5						; 2
+	ldx	#0
+;	ldx	#5						; 2
 	stx	FIREPLACE_CORRECT				; 3
 ; 5
 check_fireplace_loop:
@@ -192,9 +193,9 @@ check_fireplace_loop:
 	cmp	fireplace_solution,X				; 4
 
 	; debug
-	nop
-	nop
-;	bne	not_the_combination				; 2/3
+;	nop
+;	nop
+	bne	not_the_combination				; 2/3
 	dec	FIREPLACE_CORRECT				; 5
 not_the_combination:
 	dex							; 2

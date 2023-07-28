@@ -67,7 +67,10 @@ done_handle_grab:
 
 
 	;=========================
+	;=========================
 	; giving atrus the page
+	;=========================
+	;=========================
 grab_atrus:
 ; 49
 	lda	WHITE_PAGE_COUNT
@@ -82,7 +85,13 @@ havent_given_page_yet:
 	cmp	#POINTER_COLOR_WHITE
 	bne	trapped_with_atrus
 
+	;=========================
 	; "good" ending
+	;=========================
+	; TODO: destroy book pages
+	;	put count high?
+	;	change the erase mask to $00 not $f8
+
 trapped_on_myst:
 
 	; give white page to atrus
@@ -110,7 +119,7 @@ grab_clock_puzzle:
 	;==============================
 grab_fireplace:
 ; 49
-	inc	WAS_CLICKED						; 5
+	inc	WAS_CLICKED		; set flag to handle later	; 5
 	bne	done_handle_grab		; bra			; 3
 ; 57
 
@@ -172,7 +181,7 @@ grab_tower_rotation:
 grab_red_book:
 	lda	#HOLDING_RED_PAGE
 	ldx	#0
-	beq	common_book_grab
+	beq	common_red_blue_book_grab
 
 	;========================
 	; grab blue book
@@ -182,25 +191,36 @@ grab_blue_book:
 	ldx	#1
 
 	;========================
-	; common_grab_book
+	; common_red_blue_book_grab
 	;========================
-common_book_grab:
+common_red_blue_book_grab:
+	ldy	#OCTAGON_PAGE
+	sty	CURRENT_PAGE
+
 	ldy	POINTER_X
 	cpy	#92			; $5c = 92
 	bcc	handle_book		; if to left, clicked on book
+
+	;========================
+	; common_grab_book
+	;========================
+	; A is HOLDING_RED_PAGE/HOLDING_BLUE_PAGE here
+	; and X should reflect that
+
+common_grab_book:
 
 	; need to make sure page is gone permanently
 	sta	TEMP1
 
 	lda	RED_PAGES_TAKEN,X
-	and	#OCTAGON_PAGE
+	and	CURRENT_PAGE
 	bne	done_handle_grab
 
 	lda	TEMP1
-	ora	#OCTAGON_PAGE
+	ora	CURRENT_PAGE
 	pha
 
-	lda	#OCTAGON_PAGE		; mark page taken
+	lda	CURRENT_PAGE		; mark page taken
 	ora	RED_PAGES_TAKEN,X
 	sta	RED_PAGES_TAKEN,X
 
@@ -214,8 +234,28 @@ common_book_grab:
 
 	jmp	done_handle_grab
 
+	;========================
+	; grab green book
+	;========================
 grab_green_book:
+	ldy	#FINAL_PAGE
+	sty	CURRENT_PAGE
 
+	ldy	POINTER_Y
+	cpy	#24			;
+	bcc	handle_book		; if above, clicked on book
+
+	cpy	#37
+	bcs	green_book_red_page
+green_book_blue_page:
+	lda	#HOLDING_BLUE_PAGE
+	ldx	#1
+	bne	common_grab_book
+
+green_book_red_page:
+	lda	#HOLDING_RED_PAGE
+	ldx	#0
+	beq	common_grab_book
 
 ; 49
 
@@ -263,7 +303,6 @@ still_more_pages:
 	jmp	done_handle_grab
 
 really_do_book:
-;	jsr	do_book
 
 	jsr	book_common
 
@@ -271,6 +310,10 @@ really_do_book:
 	jmp	start_new_level
 
 
+	;===========================
+	;===========================
+	; restore page
+	;===========================
 	;===========================
 	; if get new page need to put
 	; back current, if any
@@ -312,7 +355,7 @@ grab_dest_l:
 	.byte	<(grab_red_book-1)		; 8
 	.byte	<(grab_blue_book-1)		; 9
 	.byte	<(grab_green_book-1)		; 10
-	.byte	<(grab_green_book-1)		; 11
+	.byte	<(grab_green_book-1)		; 11	placeholder
 
 	.byte	<(grab_atrus-1)			; 12
 	.byte	<(grab_tower_rotation-1)	; 13
@@ -328,7 +371,7 @@ grab_dest_h:
 	.byte	>(grab_red_book-1)		; 8
 	.byte	>(grab_blue_book-1)		; 9
 	.byte	>(grab_green_book-1)		; 10
-	.byte	<(grab_green_book-1)		; 11
+	.byte	>(grab_green_book-1)		; 11	placeholder
 
 	.byte	>(grab_atrus-1)			; 12
 	.byte	>(grab_tower_rotation-1)	; 13

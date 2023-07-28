@@ -55,7 +55,7 @@ HOLDING_PAGE	=	$9E
 	HOLDING_RED_PAGE        = $80
         HOLDING_BLUE_PAGE       = $40
         HOLDING_WHITE_PAGE      = $C0
-
+CURRENT_PAGE	=	$9F
 
 
 
