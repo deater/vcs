@@ -862,7 +862,53 @@ handle_overlay_patch:
 	;	OVERLAY_PATCH_FIREPLACE		$20
 	;		behind_fireplace (red/blue pages)
 
+	bit	LEVEL_OVERLAY_PATCH_TYPE
 	bmi	do_overlay_patch_barrier
+	bvs	do_overlay_patch_library_page
+
+do_overlay_patch_fireplace:
+
+	lda	#<(level_overlay_sprite_write)			; 2
+	sta	OUTL						; 3
+	lda	#>(level_overlay_sprite_write)			; 2
+	sta	OUTH						; 3
+
+check_fireplace_patch_red:
+	lda	RED_PAGES_TAKEN
+	and	#FINAL_PAGE
+	beq	check_fireplace_patch_blue
+
+do_fireplace_patch_red:
+	ldy	#39						; 2
+	ldx	#7						; 2
+	lda	#0
+fireplace_page_patch_red_loop:
+	sta	(OUTL),Y					; 6
+	iny							; 2
+	dex							; 2
+	bpl	fireplace_page_patch_red_loop			; 2/3
+
+check_fireplace_patch_blue:
+	lda	BLUE_PAGES_TAKEN
+	and	#FINAL_PAGE
+	beq	all_done_overlay_patch
+
+do_fireplace_patch_blue_loop:
+	ldy	#29						; 2
+	ldx	#7						; 2
+	lda	#0
+fireplace_page_patch_blue_loop:
+	sta	(OUTL),Y					; 6
+	iny							; 2
+	dex							; 2
+	bpl	fireplace_page_patch_blue_loop			; 2/3
+
+	bmi	all_done_overlay_patch	; bra
+
+	; 6+14+(20*X)-1
+	;	x=12 so 260
+
+
 
 do_overlay_patch_library_page:
 
@@ -900,6 +946,8 @@ page_patch_loop:
 	bmi	all_done_overlay_patch	; bra
 	; 6+14+(20*X)-1
 	;	x=12 so 260
+
+
 
 
 do_overlay_patch_barrier:

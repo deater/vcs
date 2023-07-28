@@ -212,13 +212,13 @@ common_grab_book:
 	; need to make sure page is gone permanently
 	sta	TEMP1
 
-	lda	RED_PAGES_TAKEN,X
-	and	CURRENT_PAGE
-	bne	done_handle_grab
+	lda	RED_PAGES_TAKEN,X	; get current page taken status
+	and	CURRENT_PAGE		; check if it is taken
+	bne	done_handle_grab	; if it is we can't grab it
 
-	lda	TEMP1
-	ora	CURRENT_PAGE
-	pha
+	lda	TEMP1			; get hold_red/hold_blue
+	ora	CURRENT_PAGE		; set page taken
+	pha				; save for later
 
 	lda	CURRENT_PAGE		; mark page taken
 	ora	RED_PAGES_TAKEN,X
