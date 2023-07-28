@@ -30,33 +30,32 @@ pool_n		250
 
 rom2:
 ~~~~~
-arrival_e	106
+
 shortsteps_w	240
 library_w	236
 library_e	231
-red_book_close	162
-blue_book_close	162
-clock_close_s	120
+red_book_close	164
+blue_book_close	164
 rocket_close_n	180
 cabin_e		182
 shack_w		225
+burnt_book	160
+cabin_path_n	254
 		====
-		738 = 200 bytes free
-
-
+		7F4 = 12 bytes free
 rom3:
 ~~~~~
+clock_close_s	120
+arrival_e	106
 shack_s		240
 cabin_path_s	222
-cabin_path_n	254
 library_sw	212
 library_se	197
-burnt_book	160
 imager_e	218
 behind_fireplace	228
 inside_fireplace	122
 		===
-		196 free
+		681 = 383 bytes free
 
 rom4:
 ~~~~~

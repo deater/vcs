@@ -29,22 +29,22 @@ level_locations.inc:	\
 	$(CALC_ADDRESS) -a 0x1000 -s hill_w_data_zx02 rom_bank1.lst >> level_locations.inc
 	$(CALC_ADDRESS) -a 0x1000 -s dentist_n_data_zx02 rom_bank1.lst >> level_locations.inc
 	$(CALC_ADDRESS) -a 0x1000 -s pool_n_data_zx02 rom_bank1.lst >> level_locations.inc
-	$(CALC_ADDRESS) -a 0x1000 -s arrival_e_data_zx02 rom_bank2.lst >> level_locations.inc
 	$(CALC_ADDRESS) -a 0x1000 -s library_w_data_zx02 rom_bank2.lst >> level_locations.inc
 	$(CALC_ADDRESS) -a 0x1000 -s library_e_data_zx02 rom_bank2.lst >> level_locations.inc
 	$(CALC_ADDRESS) -a 0x1000 -s red_book_close_data_zx02 rom_bank2.lst >> level_locations.inc
 	$(CALC_ADDRESS) -a 0x1000 -s blue_book_close_data_zx02 rom_bank2.lst >> level_locations.inc
 	$(CALC_ADDRESS) -a 0x1000 -s shortsteps_w_data_zx02 rom_bank2.lst >> level_locations.inc
-	$(CALC_ADDRESS) -a 0x1000 -s clock_close_s_data_zx02 rom_bank2.lst >> level_locations.inc
 	$(CALC_ADDRESS) -a 0x1000 -s rocket_close_n_data_zx02 rom_bank2.lst >> level_locations.inc
 	$(CALC_ADDRESS) -a 0x1000 -s cabin_e_data_zx02 rom_bank2.lst >> level_locations.inc
 	$(CALC_ADDRESS) -a 0x1000 -s shack_w_data_zx02 rom_bank2.lst >> level_locations.inc
+	$(CALC_ADDRESS) -a 0x1000 -s burnt_book_data_zx02 rom_bank2.lst >> level_locations.inc
+	$(CALC_ADDRESS) -a 0x1000 -s cabin_path_n_data_zx02 rom_bank2.lst >> level_locations.inc
+	$(CALC_ADDRESS) -a 0x1000 -s arrival_e_data_zx02 rom_bank3.lst >> level_locations.inc
+	$(CALC_ADDRESS) -a 0x1000 -s clock_close_s_data_zx02 rom_bank3.lst >> level_locations.inc
 	$(CALC_ADDRESS) -a 0x1000 -s shack_s_data_zx02 rom_bank3.lst >> level_locations.inc
 	$(CALC_ADDRESS) -a 0x1000 -s cabin_path_s_data_zx02 rom_bank3.lst >> level_locations.inc
-	$(CALC_ADDRESS) -a 0x1000 -s cabin_path_n_data_zx02 rom_bank3.lst >> level_locations.inc
 	$(CALC_ADDRESS) -a 0x1000 -s library_se_data_zx02 rom_bank3.lst >> level_locations.inc
 	$(CALC_ADDRESS) -a 0x1000 -s library_sw_data_zx02 rom_bank3.lst >> level_locations.inc
-	$(CALC_ADDRESS) -a 0x1000 -s burnt_book_data_zx02 rom_bank3.lst >> level_locations.inc
 	$(CALC_ADDRESS) -a 0x1000 -s imager_e_data_zx02 rom_bank3.lst >> level_locations.inc
 	$(CALC_ADDRESS) -a 0x1000 -s behind_fireplace_data_zx02 rom_bank3.lst >> level_locations.inc
 	$(CALC_ADDRESS) -a 0x1000 -s inside_fireplace_data_zx02 rom_bank3.lst >> level_locations.inc
@@ -106,12 +106,13 @@ rom_bank2.bin:	rom_bank2.o
 	ld65 -o rom_bank2.bin rom_bank2.o -C $(LINKER_SCRIPT)/atari2600_1000.inc
 
 rom_bank2.o:	rom_bank2.s \
+	burnt_book_data.zx02 \
+	cabin_path_n_data.zx02 \
 	shortsteps_w_data.zx02 \
 	library_w_data.zx02 library_e_data.zx02 \
 	red_book_close_data.zx02 blue_book_close_data.zx02 \
-	clock_close_s_data.zx02 \
 	rocket_close_n_data.zx02 cabin_e_data.zx02 \
-	shack_w_data.zx02 arrival_e_data.zx02
+	shack_w_data.zx02
 	ca65 -o rom_bank2.o rom_bank2.s -l rom_bank2.lst
 
 ###
@@ -121,9 +122,10 @@ rom_bank3.bin:	rom_bank3.o
 
 rom_bank3.o:	rom_bank3.s \
 	shack_s_data.zx02 \
-	cabin_path_s_data.zx02 cabin_path_n_data.zx02 \
+	arrival_e_data.zx02 clock_close_s_data.zx02 \
+	cabin_path_s_data.zx02 \
 	library_se_data.zx02 library_sw_data.zx02 \
-	burnt_book_data.zx02 imager_e_data.zx02 \
+	imager_e_data.zx02 \
 	behind_fireplace_data.zx02 inside_fireplace_data.zx02
 	ca65 -o rom_bank3.o rom_bank3.s -l rom_bank3.lst
 
