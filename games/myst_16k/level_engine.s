@@ -870,6 +870,9 @@ handle_overlay_patch:
 	;==================================
 	; patch fireplace page
 	;==================================
+	; FIXME: combine the two routines
+	; FIXME: top line of page should be $18 not $1C
+	; FIXME: can remove the pages from the background to save a few bytes
 
 do_overlay_patch_fireplace:
 

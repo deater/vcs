@@ -1,4 +1,4 @@
-; Myst title
+; Myst title screen
 
 	;================================
 	; title screen
@@ -51,17 +51,19 @@ no_rotate_title:
 
 ; 27
 	ldy	#0							; 2
-;	ldx	#0							; 2
-	sty	GRP0							; 3
-	sty	GRP1							; 3
 	sty	CTRLPF			; no-mirror			; 3
 	sty	VBLANK			; re-enable beam		; 3
-	sty	PF0							; 3
-	sty	PF1							; 3
-	sty	PF2							; 3
-; 53
-	sta	WSYNC
 
+; all of these should be 0 coming in?
+;	sty	PF0							; 3
+;	sty	PF1							; 3
+;	sty	PF2							; 3
+;	sty	GRP0							; 3
+;	sty	GRP1							; 3
+
+; 50
+	sta	WSYNC
+; 53
 
 	;=============================================
 	;=============================================
@@ -179,21 +181,16 @@ done_loop:
 
 waited_enough:
 	lda	INPT4			; check if joystick button pressed
-;	bpl	set_done_title
 	bpl	done_title
 
 	lda	SWCHB			; check if reset
 	lsr				; put reset into carry
-;	bcc	set_done_title
 	bcc	done_title
 
-;	bcs	done_check_input	; bra
-
-;set_done_title:
-;	jmp	done_title
 done_check_input:
 
-	jmp	title_frame_loop
+;	jmp	title_frame_loop
+	bcs	title_frame_loop
 
 done_title:
 

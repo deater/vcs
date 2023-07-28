@@ -469,13 +469,8 @@ book_done_playfield:
 	sta	GRP1							; 3
 ; 23
 
-	ldx	#4
+	ldx	#4				; delay 4 lines
 	jsr	common_delay_scanlines
-
-;	sta	WSYNC
-;	sta	WSYNC
-;	sta	WSYNC
-;	sta	WSYNC
 
 
 	;==========================

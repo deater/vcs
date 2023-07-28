@@ -1,23 +1,10 @@
 Things to finish:
-+ In fireplace, instead of only clear to 0, clear to 
-	0 or color
-+ Inside book changes based on red/blue count
-
-
-After winning:
-+ Move red/white/pages so you can't get them anymore
-+ Erase brothers books
-
-
-Fix all glitches:
-+ Rocket close
-+ Leaving fireplace
-+ Entering clock_close
-
-Fix Pointer Bounds:
-+ At edges?
-+ Bottom of screen.  This is tricky because in book Y is *2
-	but on rest it is *4
++ red/blue inside book overlay changes based on red/blue count
++ after winning: red/blue/white/pages so you can't get them anymore
++ after winning: erase brothers books
++ fix all glithces
++ fix pointer bounds on bottom of screen
+   This is tricky because in book Y is *2 but on rest it is *4
 
 Sound:
 + Fix linking book noise
@@ -41,14 +28,7 @@ overlay patching:
 
 TODO before release:
 	+ books
-		+ grabbable red/blue pages
 		+ different message in book based on count
-		+ bad endings
-	+ after-win scenario
-		+ brother books destroyed?
-
-
-
 
 
 overlay proposal?
@@ -77,27 +57,12 @@ allow picking up red/blue pages
 modify red/blue books to have page plus ! symbol
 for atrus book, have white page plus ! at first, then with ?
 
-
-combine the library locations somehow
-	a lot of overlap
 maybe alternate overlay, a reserved byte said which alternate overlay
 	in a table to load in from ROM and use instead
 
 copy overlay to RAM
 	have way to load alternate overlay (for path opening, books)
 	
-
-End, if room:
-	Have all three pages.  Change hand color to match (Even though
-		messes up the tree)
-	Have book be configurable, edge be red/blue/green as appropriate.
-	brother/atrus overlay?  decompress to 256 byte RAM?
-
-	glitch out if you give wronge page?
-	Atrus screen have picture of page and question mark?
-
-
-
 Intro:
 
 Title:
