@@ -140,7 +140,8 @@ rom_bank4.o:	rom_bank4.s \
 	dni_e_data.zx02 atrus_e_data.zx02 \
 	trapped_data.zx02 dock_s_data.zx02 dentist_e_data.zx02 \
 	rocket_s_data.zx02 hint_data.zx02 elevator_n_data.zx02 \
-	you_win_data.zx02 inside_fireplace_data.zx02
+	you_win_data.zx02 inside_fireplace_data.zx02 \
+	inside_dentist_data.zx02 inside_elevator_data.zx02
 	ca65 -o rom_bank4.o rom_bank4.s -l rom_bank4.lst
 
 ###
@@ -311,6 +312,19 @@ imager_w_data.inc:	imager_w_bg.png imager_w_overlay.png
 imager_e_data.inc:	imager_e_bg.png imager_e_overlay.png
 	$(PNG2PF) -n imager_e -b 0x00 imager_e_bg.png - > imager_e_data.inc
 	$(PNG2OVERLAY) -o -n imager_e imager_e_overlay.png - >> imager_e_data.inc
+
+###
+
+inside_dentist_data.inc:	inside_dentist_bg.png inside_dentist_overlay.png
+	$(PNG2PF) -4 -n inside_dentist -b 0x0a inside_dentist_bg.png - > inside_dentist_data.inc
+	$(PNG2OVERLAY) -4 -o -b 190 -n inside_dentist inside_dentist_overlay.png - >> inside_dentist_data.inc
+
+###
+
+inside_elevator_data.inc:	inside_elevator_bg.png inside_elevator_overlay.png
+	$(PNG2PF) -4 -n inside_elevator -b 226 inside_elevator_bg.png - > inside_elevator_data.inc
+	$(PNG2OVERLAY) -4 -o -b 190 -n inside_elevator inside_elevator_overlay.png - >> inside_elevator_data.inc
+
 
 ###
 
@@ -803,6 +817,30 @@ imager_e_data.bin:	imager_e_data.o
 
 imager_e_data.o:	imager_e_data.s imager_e_data.inc
 	ca65 -o imager_e_data.o imager_e_data.s -l imager_e_data.lst
+
+###
+
+inside_dentist_data.zx02:	inside_dentist_data.bin
+	$(ZX02) -f inside_dentist_data.bin inside_dentist_data.zx02
+
+inside_dentist_data.bin:	inside_dentist_data.o
+	ld65 -o inside_dentist_data.bin inside_dentist_data.o -C $(LINKER_SCRIPT)/atari2600_f000.inc
+
+inside_dentist_data.o:	inside_dentist_data.s inside_dentist_data.inc
+	ca65 -o inside_dentist_data.o inside_dentist_data.s -l inside_dentist_data.lst
+
+###
+
+inside_elevator_data.zx02:	inside_elevator_data.bin
+	$(ZX02) -f inside_elevator_data.bin inside_elevator_data.zx02
+
+inside_elevator_data.bin:	inside_elevator_data.o
+	ld65 -o inside_elevator_data.bin inside_elevator_data.o -C $(LINKER_SCRIPT)/atari2600_f000.inc
+
+inside_elevator_data.o:	inside_elevator_data.s inside_elevator_data.inc
+	ca65 -o inside_elevator_data.o inside_elevator_data.s -l inside_elevator_data.lst
+
+
 
 
 
