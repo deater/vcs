@@ -51,10 +51,10 @@ no_rotate_title:
 
 ; 27
 	ldy	#0							; 2
-	sty	CTRLPF			; no-mirror			; 3
 	sty	VBLANK			; re-enable beam		; 3
 
 ; all of these should be 0 coming in?
+;	sty	CTRLPF			; no-mirror			; 3
 ;	sty	PF0							; 3
 ;	sty	PF1							; 3
 ;	sty	PF2							; 3
@@ -74,15 +74,15 @@ no_rotate_title:
 	; need to race beam to draw other half of playfield
 
 
-
-
 	; first we have 17*4 blank lines
 	ldx	#67
 	jsr	common_delay_scanlines
 ; 10
-	ldx	#0			; reset scanlines		; 2
 
-	sta	WSYNC
+	; the above routine sets X to 0 for free
+;	ldx	#0			; reset scanlines		; 2
+
+	sta	WSYNC			; need next line to start at 0
 
 	;===================================
 	; actual main title kernel
@@ -190,7 +190,7 @@ waited_enough:
 done_check_input:
 
 ;	jmp	title_frame_loop
-	bcs	title_frame_loop
+	bcs	title_frame_loop	; bra
 
 done_title:
 
