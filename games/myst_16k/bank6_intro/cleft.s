@@ -10,10 +10,6 @@
 	sta	FRAME							; 3
 	sta	FALL_COUNT						; 3
 
-				; unmirrored playfield
-	lda	#CTRLPF_PFP	; playfield has priority over sprites	; 2
-	sta	CTRLPF							; 3
-
 	lda	#30			; debounce			; 2
 	sta	INPUT_COUNTDOWN						; 3
 
@@ -34,8 +30,10 @@ cleft_frame_loop:
 
 ; 10
 	;==============================
-	; VBLANK scanline 34 -- frame
+	; VBLANK scanline 34,35,36
 	;==============================
+	; handle falling sprite
+
 ; 10
 	inc	FRAME							; 5
 ; 15
@@ -101,21 +99,24 @@ done_second:
 	; VBLANK scanline 37 -- config
 	;==============================
 ; 0
-	nop
-	nop
-; 4
-	inc	TEMP1
-;	inc	FRAME							; 5
+	nop								; 2
+	nop								; 2
+	inc	TEMP1	; nop5						; 5
 ; 9
-	ldy	#0							; 2
-	ldx	#0							; 2
+	ldy	#0			; init Y for later		; 2
+	ldx	#0			; init X for later		; 2
 	stx	GRP0							; 3
-	stx	GRP1							; 3
-	stx	CTRLPF							; 3
+	stx	PF1			; playfield 1 is always 0	; 3
 	stx	VBLANK			; re-enable beam		; 3
-; 25
-	lda	#$2			; enable ball (for stars)	; 2
+; 22
+
+;	stx	GRP1			; always 0 from start
+;	stx	CTRLPF			; always 0 from start
+
+; 22
+	lda	#$2		; enable ball (for stars)		; 2
 	sta	ENABL							; 3
+	sta	COLUP0		; also sprite0 color dark grey		; 3
 ; 30
 	sta	RESBL			; set ball location		; 3
 	lda	#$70							; 2
@@ -124,14 +125,6 @@ done_second:
 	lda	$80		; nop3 CRITICAL TIMING			; 3
 	sta	RESP0							; 3
 ; 44	(MUST BE 44)
-
-	lda	#$02		; sprite0 (falling) color		; 2
-	sta	COLUP0							; 3
-; 49
-
-	lda	#0							; 2
-	sta	PF1			; playfield 1 is always 0	; 3
-; 54
 
 
 	;=============================================
@@ -255,17 +248,19 @@ done_cleft_playfield:
 waited_enough_cleft:
 ; +13
 	lda	INPT4			; check if joystick button	; 3
-	bpl	set_done_cleft						; 2/3
+;	bpl	set_done_cleft						; 2/3
+	bpl	done_cleft
 ; +18
 	lda	SWCHB			; check if reset		; 3
 	lsr				; put reset into carry		; 2
-	bcc	set_done_cleft						; 2/3
+;	bcc	set_done_cleft						; 2/3
+	bcc	done_cleft
 ; +25
-	bcs	done_check_cleft_input	; bra				; 3
+;	bcs	done_check_cleft_input	; bra				; 3
 
-set_done_cleft:
+;set_done_cleft:
 ; + 19/26
-	jmp	done_cleft
+;	jmp	done_cleft
 done_check_cleft_input:
 
 	; hit here if we're staying

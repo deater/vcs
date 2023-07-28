@@ -99,5 +99,7 @@ blue_book_data.inc:	blue_book_edge.png \
 ###
 
 clean:	
-	rm -f *~ *.zx02 *.lst rom_bank6_routines.inc *.o *.bin
+	rm -f *~ *.zx02 *.lst rom_bank6_routines.inc *.o *.bin \
+		red_book_data.inc blue_book_data.inc \
+		green_book_data.inc myst_book_data.inc
 
