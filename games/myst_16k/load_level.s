@@ -105,7 +105,7 @@ level_bank_and_high:
 	.byte	(1<<5) | (>gear_n_data_zx02)		; 0 = gear_n
 	.byte	(1<<5) | (>dentist_n_data_zx02)		; 1 = dentist_n
 	.byte	(2<<5) | (>rocket_close_n_data_zx02)	; 2 = rocket_close_n
-	.byte	(2<<5) | (>pool_n_data_zx02)		; 3 = pool_n
+	.byte	(1<<5) | (>pool_n_data_zx02)		; 3 = pool_n
 	.byte	(2<<5) | (>shack_w_data_zx02)		; 4 = shack_w
 	.byte	(2<<5) | (>cabin_e_data_zx02)		; 5 = cabin_e
 	.byte	(2<<5) | (>clock_close_s_data_zx02)	; 6 = clock_close_s
@@ -137,18 +137,18 @@ level_bank_and_high:
 	.byte	(0<<5) | (>hilltop_s_data_zx02)		; 24 = hilltop_s
 	.byte	(0<<5) | (>hilltop_n_data_zx02)		; 25 = hilltop_n
 	.byte	(0<<5) | (>hilltop_e_data_zx02)		; 26 = hilltop_e
-	.byte	(0<<5) | (>arrival_e_data_zx02)		; 27 = arrival_e
+	.byte	(2<<5) | (>arrival_e_data_zx02)		; 27 = arrival_e
 	.byte	(0<<5) | (>clock_n_data_zx02)		; 28 = clock_n
-	.byte	(1<<5) | (>shortsteps_w_data_zx02)	; 29 = shortsteps_w
+	.byte	(2<<5) | (>shortsteps_w_data_zx02)	; 29 = shortsteps_w
 	.byte	(1<<5) | (>gear_s_data_zx02)		; 30 = gear_s
 	.byte	(1<<5) | (>library_s_data_zx02)		; 31 = library_s
-	.byte	(1<<5) | (>arrival_s_data_zx02)		; 32 = arrival_s
+	.byte	(0<<5) | (>arrival_s_data_zx02)		; 32 = arrival_s
 	.byte	(1<<5) | (>arrival_w_data_zx02)		; 33 = arrival_w
 	.byte	(1<<5) | (>hill_w_data_zx02)		; 34 = hill_w
 
 	.byte	(2<<5) | (>library_w_data_zx02)		; 35 = library_w
 	.byte	(2<<5) | (>library_e_data_zx02)		; 36 = library_e
-	.byte	(2<<5) | (>steps_s_data_zx02)		; 37 = steps_s
+	.byte	(1<<5) | (>steps_s_data_zx02)		; 37 = steps_s
 	.byte	(3<<5) | (>shack_s_data_zx02)		; 38 = shack_s
 	.byte	(3<<5) | (>cabin_path_s_data_zx02)	; 39 = cabin_path_s
 	.byte	(3<<5) | (>cabin_path_n_data_zx02)	; 40 = cabin_path_n

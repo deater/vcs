@@ -8,53 +8,53 @@ imager_w	252
 hilltop_s	199
 hilltop_n	205
 hilltop_e	201
-arrival_e	106
+arrival_s	149
 clock_n		252
 	===============
-		50 bytes free
+		7fa = 6 bytes free
 
 rom1:
 ~~~~~
-shortsteps_w	240
+steps_s		238
 dock_n		242
 library_n	247
 gear_n		169
 gear_s		156
 library_s	211
-arrival_s	149
 arrival_w	195
 dentist_n	134
 hill_w		199
+pool_n		250
 		=====
-		102 free
+		7f9 = 7 bytes free
 
 rom2:
 ~~~~~
-232	library_w
-228	library_e
-162	red_book_close
-162	blue_book_close
-238	steps_s
-120	clock_close_s
-180	rocket_close_n
-182	cabin_e
-225	shack_w
-250	pool_n
+arrival_e	106
+shortsteps_w	240
+library_w	236
+library_e	231
+red_book_close	162
+blue_book_close	162
+clock_close_s	120
+rocket_close_n	180
+cabin_e		182
+shack_w		225
 		====
-		69 free
+		738 = 200 bytes free
 
 
 rom3:
 ~~~~~
-240 shack_s
-222 cabin_path_s
-254 cabin_path_n
-212 library_sw
-197 library_se
-160 burnt_book
-218 imager_e
-227 behind_fireplace
-122 inside_fireplace
+shack_s		240
+cabin_path_s	222
+cabin_path_n	254
+library_sw	212
+library_se	197
+burnt_book	160
+imager_e	218
+behind_fireplace	228
+inside_fireplace	122
 		===
 		196 free
 

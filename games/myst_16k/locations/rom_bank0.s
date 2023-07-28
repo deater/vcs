@@ -14,8 +14,8 @@ hilltop_n_data_zx02:
 .incbin "hilltop_n_data.zx02"
 hilltop_e_data_zx02:
 .incbin "hilltop_e_data.zx02"
-arrival_e_data_zx02:
-.incbin "arrival_e_data.zx02"
+arrival_s_data_zx02:
+.incbin "arrival_s_data.zx02"
 clock_n_data_zx02:
 .incbin "clock_n_data.zx02"
 
