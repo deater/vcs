@@ -181,6 +181,14 @@ common_book_grab:
 	cpy	#92			; $5c = 92
 	bcc	handle_book		; if to left, clicked on book
 
+	; need to make sure page is gone permanently
+	sta	TEMP1
+
+	lda	RED_PAGES_TAKEN,X
+	and	#OCTAGON_PAGE
+	bne	done_handle_grab
+
+	lda	TEMP1
 	ora	#OCTAGON_PAGE
 	pha
 
@@ -227,16 +235,6 @@ handle_book:
 	and	#$C0
 	cmp	which_book,X
 	bne	really_do_book
-
-;	rol
-;	rol
-;	rol
-;	and	#$3
-;	eor	#$3
-;	beq	really_do_book
-;	stx	TEMP2
-;	cmp	TEMP2
-;	bne	really_do_book
 
 put_page_in_book:
 
