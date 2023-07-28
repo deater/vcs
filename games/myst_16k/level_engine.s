@@ -866,6 +866,11 @@ handle_overlay_patch:
 	bmi	do_overlay_patch_barrier
 	bvs	do_overlay_patch_library_page
 
+
+	;==================================
+	; patch fireplace page
+	;==================================
+
 do_overlay_patch_fireplace:
 
 	lda	#<(level_overlay_sprite_write)			; 2
@@ -876,12 +881,18 @@ do_overlay_patch_fireplace:
 check_fireplace_patch_red:
 	lda	RED_PAGES_TAKEN
 	and	#FINAL_PAGE
-	beq	check_fireplace_patch_blue
+	bne	do_fireplace_patch_red_not_there
 
+do_fireplace_patch_red_there:
+	lda	#$1C
+	bne	do_fireplace_patch_red
+	; do BIT trick?
+do_fireplace_patch_red_not_there:
+	lda	#0
 do_fireplace_patch_red:
 	ldy	#39						; 2
 	ldx	#7						; 2
-	lda	#0
+
 fireplace_page_patch_red_loop:
 	sta	(OUTL),Y					; 6
 	iny							; 2
@@ -891,12 +902,18 @@ fireplace_page_patch_red_loop:
 check_fireplace_patch_blue:
 	lda	BLUE_PAGES_TAKEN
 	and	#FINAL_PAGE
-	beq	all_done_overlay_patch
+	bne	do_fireplace_patch_blue_not_there
 
-do_fireplace_patch_blue_loop:
+do_fireplace_patch_blue_there:
+	lda	#$1C
+	bne	do_fireplace_patch_blue
+	; do BIT trick?
+do_fireplace_patch_blue_not_there:
+	lda	#0
+
+do_fireplace_patch_blue:
 	ldy	#29						; 2
 	ldx	#7						; 2
-	lda	#0
 fireplace_page_patch_blue_loop:
 	sta	(OUTL),Y					; 6
 	iny							; 2
@@ -909,8 +926,13 @@ fireplace_page_patch_blue_loop:
 	;	x=12 so 260
 
 
+	;==================================
+	; patch library page
+	;==================================
 
 do_overlay_patch_library_page:
+
+	; check if page still there
 
 	lda	LEVEL_OVERLAY_PATCH_TYPE
 	and	#$1
@@ -947,8 +969,9 @@ page_patch_loop:
 	; 6+14+(20*X)-1
 	;	x=12 so 260
 
-
-
+	;==================================
+	; patch barrier
+	;==================================
 
 do_overlay_patch_barrier:
 	lda	LEVEL_CENTER_PATCH_COND				; 3
@@ -960,7 +983,6 @@ do_the_patch:
 	lda	LEVEL_OVERLAY_PATCH_TYPE
 	and	#$f
 	tax
-;	dex
 	ldy	overlay_patch_start-1,X
 
 	lda	#<(level_overlay_colors_write)			; 2
