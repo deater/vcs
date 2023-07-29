@@ -19,8 +19,10 @@ rom_bank6.o:	rom_bank6.s \
 	../pointer_update.s \
 	myst_book_data.zx02 \
 	red_book_data.zx02 \
+	red_book_data2.zx02 \
 	green_book_data.zx02 \
 	blue_book_data.zx02 \
+	blue_book_data2.zx02 \
 	intro_data.inc ../zp.inc ../../../vcs.inc
 	ca65 -o rom_bank6.o rom_bank6.s -l rom_bank6.lst
 
@@ -56,10 +58,30 @@ red_book_data.o:	red_book_data.inc
 
 red_book_data.inc:	red_book_edge.png \
 	red_book_overlay1.png \
-	red_book_overlay2.png
+	red_book_overlay3.png
 	$(PNG2OVERLAY) -4 -c -n red red_book_edge.png - > red_book_data.inc
 	$(PNG2OVERLAY) -4 -n red_overlay1 red_book_overlay1.png - >> red_book_data.inc
-	$(PNG2OVERLAY) -4 -n red_overlay2 red_book_overlay2.png - >> red_book_data.inc
+	$(PNG2OVERLAY) -4 -n red_overlay3 red_book_overlay3.png - >> red_book_data.inc
+
+####
+
+red_book_data2.zx02:	red_book_data2.bin
+	$(ZX02) -f red_book_data2.bin red_book_data2.zx02
+
+red_book_data2.bin:	red_book_data2.o
+	ld65 -o red_book_data2.bin red_book_data2.o -C $(LINKER_SCRIPT)/atari2600_f000_noirq.inc
+
+red_book_data2.o:	red_book_data2.inc
+	ca65 -o red_book_data2.o red_book_data2.inc
+
+red_book_data2.inc:	red_book_edge.png \
+	red_book_overlay1.png \
+	red_book_overlay4.png
+	$(PNG2OVERLAY) -4 -c -n red red_book_edge.png - > red_book_data2.inc
+	$(PNG2OVERLAY) -4 -n red_overlay1 red_book_overlay1.png - >> red_book_data2.inc
+	$(PNG2OVERLAY) -4 -n red_overlay4 red_book_overlay4.png - >> red_book_data2.inc
+
+
 
 ###
 
@@ -90,10 +112,29 @@ blue_book_data.o:	blue_book_data.inc
 
 blue_book_data.inc:	blue_book_edge.png \
 	blue_book_overlay1.png \
-	blue_book_overlay2.png
+	blue_book_overlay3.png
 	$(PNG2OVERLAY) -4 -c -n blue blue_book_edge.png - > blue_book_data.inc
 	$(PNG2OVERLAY) -4 -n blue_overlay1 blue_book_overlay1.png - >> blue_book_data.inc
-	$(PNG2OVERLAY) -4 -n blue_overlay2 blue_book_overlay2.png - >> blue_book_data.inc
+	$(PNG2OVERLAY) -4 -n blue_overlay3 blue_book_overlay3.png - >> blue_book_data.inc
+
+###
+
+blue_book_data2.zx02:	blue_book_data2.bin
+	$(ZX02) -f blue_book_data2.bin blue_book_data2.zx02
+
+blue_book_data2.bin:	blue_book_data2.o
+	ld65 -o blue_book_data2.bin blue_book_data2.o -C $(LINKER_SCRIPT)/atari2600_f000_noirq.inc
+
+blue_book_data2.o:	blue_book_data2.inc
+	ca65 -o blue_book_data2.o blue_book_data2.inc
+
+blue_book_data2.inc:	blue_book_edge.png \
+	blue_book_overlay1.png \
+	blue_book_overlay4.png
+	$(PNG2OVERLAY) -4 -c -n blue blue_book_edge.png - > blue_book_data2.inc
+	$(PNG2OVERLAY) -4 -n blue_overlay1 blue_book_overlay1.png - >> blue_book_data2.inc
+	$(PNG2OVERLAY) -4 -n blue_overlay4 blue_book_overlay4.png - >> blue_book_data2.inc
+
 
 
 ###
@@ -101,5 +142,6 @@ blue_book_data.inc:	blue_book_edge.png \
 clean:	
 	rm -f *~ *.zx02 *.lst rom_bank6_routines.inc *.o *.bin \
 		red_book_data.inc blue_book_data.inc \
+		red_book_data2.inc blue_book_data2.inc \
 		green_book_data.inc myst_book_data.inc
 
