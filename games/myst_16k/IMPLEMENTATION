@@ -130,8 +130,21 @@ Book Implementation:
 ~~~~~~~~~~~~~~~~~~~~
 	Common routines for drawing books as there are many of them
 
-	Extra code for drawing people inside of books, not totally complete
+	Alternate between two images.  This allows animation, or
+		the static effect in the portraits.
 
+	Data is compressed.  Because the code lives in BANK6 the
+		decompressed data has to live in the 256-byte bank.
+
+	There's 48 bytes of data for the edge of book colors
+	There's 2*48 bytes of data for overlay1 (sprite+colors)
+	There's 2*48 bytes of data for overlay2 (sprite+colors)
+
+	This is a bit wasteful as especially for the red/blue pages
+		there's a lot of common data.  However it would be tricky
+		to have separate top and bottom overlays combined so
+		I've given up on that for now despite it taking up a big
+		chunk of ROM.
 
 
 Level Engine:
