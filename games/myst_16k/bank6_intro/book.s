@@ -630,4 +630,7 @@ blue_book_data_zx02:
 .incbin "blue_book_data.zx02"
 green_book_data_zx02:
 .incbin "green_book_data.zx02"
-
+red_book2_data_zx02:
+.incbin "red_book_data2.zx02"
+blue_book2_data_zx02:
+.incbin "blue_book_data2.zx02"

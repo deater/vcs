@@ -38,15 +38,25 @@ clear_loop:
 
 
 	;==============================
-	; Run intro (ROM bank 6)
+	; Run intro
 	;==============================
 
-	sta	E7_SET_BANK6		; intro is in rom bank6
+	;=============================
+	; first run title (MYST logo)
+
+	; title is now in BANK5
+
+	sta	E7_SET_BANK5		; title is in rom bank6
 	sta	E7_SET_256_BANK0	; not necessary?
+	jsr	do_title
 
-	; this shows the MYST logo as well as the cleft
+	;=============================
+	; then run cleft
 
-	jsr	do_intro
+	; cleft is in BANK6
+
+	sta	E7_SET_BANK6		; cleft is in rom bank6
+	jsr	do_cleft
 
 	;==============================
 	; Show book (ROM bank 6)
@@ -58,8 +68,10 @@ clear_loop:
 
 	jsr	do_book
 
+	;==========================
 	; DEBUG
-;	lda	#$FF
+	;	makes getting white page easier
+
 	dec	SWITCH_STATUS
 
 

@@ -23,7 +23,7 @@ rom_bank6.o:	rom_bank6.s \
 	green_book_data.zx02 \
 	blue_book_data.zx02 \
 	blue_book_data2.zx02 \
-	intro_data.inc ../zp.inc ../../../vcs.inc
+	cleft_data.inc ../zp.inc ../../../vcs.inc
 	ca65 -o rom_bank6.o rom_bank6.s -l rom_bank6.lst
 
 ###

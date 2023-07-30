@@ -640,7 +640,7 @@ done_special_cases:
 	;==================================
 	; overscan 28, update sound
 
-	lda	E7_SET_BANK6						; 3
+	lda	E7_SET_BANK5						; 3
 	jsr	update_sound		; 56 cycles?
 	lda	E7_SET_BANK7_RAM					; 3
 

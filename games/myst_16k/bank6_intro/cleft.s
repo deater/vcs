@@ -5,7 +5,7 @@
 	;================================
 	; arrive here with unknown number of cycles
 	; hopefully VBLANK=2 (beam is off)
-
+do_cleft:
 	lda	#0							; 2
 	sta	FRAME							; 3
 	sta	FALL_COUNT						; 3
@@ -272,3 +272,5 @@ done_cleft:
 ; +22/29
 	lda	#0							; 2
 	sta	ENABL			; disable ball			; 3
+
+	rts								; 6
