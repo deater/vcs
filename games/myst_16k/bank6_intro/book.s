@@ -27,16 +27,33 @@ book_common:
 ; 15
 	tax								; 2
 ; 17
+	cpx	#2							; 2
+	bcs	skip_page_adjust					; 2/3
+
+; 21
+	; if red/blue, adjust for page count
+	sta	TEMP1							; 3
+	lda	RED_PAGE_COUNT,X					; 4
+	asl								; 2
+	asl								; 2
+;	clc			; carry should be clear from asl
+	adc	RED_PAGE_COUNT,X					; 4
+	adc	TEMP1							; 3
+	tax								; 2
+; 41
+skip_page_adjust:
+
+
 	; decompress book data into RAM at $1800 write/ $1900 read
 
 	lda	#$1							; 2
 	sta	READ_WRITE_OFFSET					; 3
-; 22
+;
 	lda     book_data_l,X						; 4+
 	sta     ZX0_src							; 3
 	lda     book_data_h,X						; 4+
 	sta     ZX0_src_h						; 3
-; 36
+;
 
 
 	;======================
@@ -114,8 +131,8 @@ bzpad_x:
 				; left edge of book
 
 ; 30
-	inc	TEMP1							; 5
-	inc	TEMP1							; 5
+	inc	TEMP1		; nop5					; 5
+	inc	TEMP1		; nop5					; 5
 	nop								; 2
 	nop								; 2
 ; 44
@@ -213,7 +230,7 @@ done_update_animation:
 ; 3 (from HMOVE)
 	lda	#$0							; 2
 	sta	PF0			; disable playfield		; 3
-	sta	PF1							; 3
+	sta	PF1			; should not be necessary?	; 3
 	sta	PF2							; 3
 ; 14
 
@@ -244,11 +261,10 @@ pointer_color_override:
 	sta	CTRLPF							; 3
 ; 49
 
-	lda	#0							; 2
-	sta	VBLANK			; turn on beam			; 3
-	sta	POINTER_ON						; 3
-;	lda	#0			; bg color			; 2
-	sta	COLUBK							; 3
+;	lda	#0							; 2
+	sty	VBLANK			; turn on beam			; 3
+	sty	POINTER_ON						; 3
+	sty	COLUBK							; 3
 ; 54
 	sta	WSYNC							; 3
 
@@ -268,8 +284,10 @@ pointer_color_override:
 	;==========================
 
 	; in playfield scanline 0
-	lda	#$00		; black					; 2
-	sta	COLUPF							; 3
+
+	; should be set from earlier
+;	lda	#$00		; black					; 2
+;	sta	COLUPF							; 3
 
 	ldx	#4
 	jsr	common_delay_scanlines
@@ -509,14 +527,11 @@ book_done_playfield:
 	ldy	POINTER_Y
 
 	lda	#POINTER_TYPE_POINT					; 2
-;	sta	POINTER_TYPE						; 3
 
-;	lda	POINTER_X						; 3
 	cpx	#88
 	bcc	not_in_window
 	cpx	#128
 	bcs	not_in_window
-;	lda	POINTER_Y
 	cpy	#35
 	bcs	not_in_window
 	cpy	#8
@@ -528,8 +543,6 @@ book_done_playfield:
 	beq	pointer_not_page
 	lda	#POINTER_TYPE_PAGE
 pointer_not_page:
-
-;	bne	pointer_not_page	; bra
 not_in_window:
 
 
@@ -609,11 +622,13 @@ exit_no_link_noise:
 	rts
 
 book_data_l:
-	.byte <red_book_data_zx02		; red
-	.byte <blue_book_data_zx02		; blue
+	.byte <red_book_data_zx02		; red no pages
+	.byte <blue_book_data_zx02		; blue no pages
 	.byte <green_book_data_zx02		; green
 	.byte <myst_book_data_zx02		; star void myst
 	.byte <myst_book_data_zx02		; atrus myst
+	.byte <red_book_data2_zx02		; red one page
+	.byte <blue_book_data2_zx02		; blue one page
 
 book_data_h:
 	.byte >red_book_data_zx02
@@ -621,6 +636,8 @@ book_data_h:
 	.byte >green_book_data_zx02
 	.byte >myst_book_data_zx02
 	.byte >myst_book_data_zx02
+	.byte >red_book_data2_zx02
+	.byte >blue_book_data2_zx02
 
 myst_book_data_zx02:
 .incbin "myst_book_data.zx02"
@@ -630,7 +647,10 @@ blue_book_data_zx02:
 .incbin "blue_book_data.zx02"
 green_book_data_zx02:
 .incbin "green_book_data.zx02"
-red_book2_data_zx02:
+red_book_data2_zx02:
 .incbin "red_book_data2.zx02"
-blue_book2_data_zx02:
+blue_book_data2_zx02:
 .incbin "blue_book_data2.zx02"
+
+;book_page_adjust:
+;	.byte $00,$05

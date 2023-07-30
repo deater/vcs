@@ -66,7 +66,11 @@ clear_loop:
 	sty	CURRENT_LOCATION
 	sty	LINK_DESTINATION
 
-	jsr	do_book
+	; switch to bank 6
+	sta	E7_SET_BANK6
+
+	jsr	book_common
+
 
 	;==========================
 	; DEBUG
@@ -103,11 +107,11 @@ load_new_level:
 
 
 
-do_book:
+;do_book:
 	; switch to bank 6
-	sta	E7_SET_BANK6
+;	sta	E7_SET_BANK6
 
-	jmp	book_common
+;	jmp	book_common
 
 
 

@@ -45,7 +45,7 @@ main.o:	main.s zp.inc \
 	echo "fireplace_update = 0 " >> rom_bank6_routines.inc
 	echo "pointer_update = 0 " >> rom_bank6_routines.inc
 	echo "do_clicked_grab = 0 " >> rom_bank6_routines.inc
-	echo "elevator_s_data_zx02 = 0 " >> rom_bank5_routines.inc
+	echo "elevator_s_data_zx02 = 0 " > rom_bank5_routines.inc
 	echo "library_up_data_zx02 = 0 " >> rom_bank5_routines.inc
 	echo "steps_e_data_zx02 = 0 " >> rom_bank5_routines.inc
 	echo "clock_puzzle_data_zx02 = 0 " >> rom_bank5_routines.inc
