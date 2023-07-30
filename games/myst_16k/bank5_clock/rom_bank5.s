@@ -1,6 +1,10 @@
 .include "../zp.inc"
 .include "../common_routines.inc"
 
+.include "../../../vcs.inc"
+.include "../bank6_intro/title.s"
+.include "../bank6_intro/title_data.inc"
+
 steps_e_data_zx02:
 .incbin "steps_e_data.zx02"
 library_up_data_zx02:
@@ -19,8 +23,7 @@ elevator_s_data_zx02:
 .include "../sound_update.s"
 .include "../sfx_data.inc"
 
-.include "../bank6_intro/title.s"
-.include "../bank6_intro/title_data.inc"
+
 
 
 rom_bank5_end:
