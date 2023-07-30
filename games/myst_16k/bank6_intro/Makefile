@@ -14,7 +14,7 @@ rom_bank6.bin:	rom_bank6.o
 ###
 
 rom_bank6.o:	rom_bank6.s \
-	title.s cleft.s book.s \
+	cleft.s book.s \
 	../sound_update.s \
 	../pointer_update.s \
 	myst_book_data.zx02 \

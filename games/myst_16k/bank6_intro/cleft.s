@@ -44,26 +44,18 @@ cleft_frame_loop:
 	inc	FALL_COUNT						; 5
 ; 27
 	; set up scale
-	lda	#$0							; 2
-	ldx	FALL_COUNT						; 3
-	cpx	#4							; 2
-	bcs	scale3							; 2/3
-	cpx	#2							; 2
-	bcs	scale2							; 2/3
-scale1:
-	eor	#$5							; 2
-scale2:
-	eor	#$2							; 2
-scale3:
-	eor	#$7							; 2
-done_scale:
-	sta	NUSIZ0							; 3
-								; 22 worst case
-; 43
+	; note: this replaced some really clever code I had that
+	;	did some complex XOR action
 
-	lda	FALL_COUNT
-	cmp	#3
-	bcs	copy_book
+	ldx	FALL_COUNT						; 3
+	lda	fall_scale,X						; 4
+	sta	NUSIZ0							; 3
+
+; 34
+
+;	lda	FALL_COUNT						; 3
+	cpx	#3							; 2
+	bcs	copy_book						; 2/3
 
 	ldx	#0							; 2
 copy_falling_loop:
@@ -74,7 +66,7 @@ copy_falling_loop:
 	bne	copy_falling_loop					; 2/3
 	; 2+(15*8)-1 = 121
 
-	jmp	done_second
+	beq	done_second		; bra				; 3
 
 copy_book:
 
@@ -84,7 +76,7 @@ copy_book_loop:
 	sta	HAND_SPRITE,X
 	dex
 	bpl	copy_book_loop
-	bmi	two_a_second
+	bmi	two_a_second		; bra
 
 not_a_second:
 	sta	WSYNC
@@ -164,12 +156,12 @@ cleft_playfield_loop:
 	sta	GRP0							; 3
 	jmp	no_fall
 no_fall_delay_13:
-	nop
-	nop
+	nop								; 2
+	nop								; 2
 no_fall_delay_9:
-	lda	$80
-	lda	$80
-	lda	$80
+	nop								; 2
+	nop								; 2
+	inc	TEMP1		; nop5					; 5
 no_fall:
 
 								;============
@@ -248,19 +240,12 @@ done_cleft_playfield:
 waited_enough_cleft:
 ; +13
 	lda	INPT4			; check if joystick button	; 3
-;	bpl	set_done_cleft						; 2/3
 	bpl	done_cleft
 ; +18
 	lda	SWCHB			; check if reset		; 3
 	lsr				; put reset into carry		; 2
-;	bcc	set_done_cleft						; 2/3
 	bcc	done_cleft
-; +25
-;	bcs	done_check_cleft_input	; bra				; 3
 
-;set_done_cleft:
-; + 19/26
-;	jmp	done_cleft
 done_check_cleft_input:
 
 	; hit here if we're staying
@@ -274,3 +259,6 @@ done_cleft:
 	sta	ENABL			; disable ball			; 3
 
 	rts								; 6
+
+fall_scale:
+.byte 0,0,5,5,7,7
