@@ -207,6 +207,7 @@ open_door:
 common_door_change:
 ; 71 / 67
 	sta	BARRIER_STATUS						; 3
+ready_to_rumble:
 	ldy	#SFX_RUMBLE		; play sound			; 2
 	sty	SFX_PTR							; 3
 ; 65 / 75
@@ -218,15 +219,11 @@ common_door_change:
 	;======================
 	; grab tower rotation
 	;======================
-	; FIXME: share code with above somehow
+	; TODO: animation?  track rotation?
 grab_tower_rotation:
-; 49
-	sta	BARRIER_STATUS						; 3
-	ldy	#SFX_RUMBLE		; play sound			; 2
-	sty	SFX_PTR							; 3
-
-	bne	done_handle_grab	; bra				; 3
-
+; 55
+	jmp	ready_to_rumble						 ; 3
+; 58
 
 	;========================
 	; grab red book
