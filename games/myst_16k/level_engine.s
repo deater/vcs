@@ -519,20 +519,25 @@ handle_clock_puzzle:
 ; 12
 	; skip proper number of scanlines
 
-	ldx	#13
-	jsr	common_overscan
+	ldx	#13							; 2
+	jsr	common_overscan						; 6+...
 
-	lda	E7_SET_BANK5
-	jsr	clock_update
-	sta	E7_SET_BANK7_RAM
+; 10
+	lda	E7_SET_BANK5						; 3
+	jsr	clock_update						; 6+...
+; 19/23
+	sta	E7_SET_BANK7_RAM					; 3
+; 26
+
+;	sta	WSYNC
 
 	;==========================================
 	; update the clockface if it changed
 
 update_clock_face:
-; 0
-
+; 26
 	ldx	#8							; 2
+; 28
 update_clock_loop:
 
 	lda	CLOCKFACE_0,X						; 4
@@ -541,7 +546,7 @@ update_clock_loop:
 	dex								; 2
 	bpl	update_clock_loop					; 2/3
 
-; (9*14)-1 = 129??
+; 28+(9*14)-1 = 152
 
 done_update_clock:
 
@@ -557,7 +562,7 @@ handle_fireplace:
 ; 8
 	; skip proper number of scanlines
 
-	ldx	#13
+	ldx	#14
 	jsr	common_overscan
 
 	lda	E7_SET_BANK5
@@ -740,11 +745,13 @@ level_done_update_pointer:
 	beq	fireplace_exit						; 2/3
 
 ; 12
-
+	;===================
+	; exit clock puzzle
 clock_exit:
+	sta	WSYNC
 	dec	EXIT_PUZZLE						; 5
 	lda	#LOCATION_CLOCK_S					; 2
-	bne	start_new_level		; bra				; 3
+	bne	start_new_level_29	; bra				; 3
 ; 22
 
 fireplace_exit:
@@ -757,8 +764,9 @@ reset_fireplace_loop:
 	dex
 	bpl	reset_fireplace_loop
 
-	sta	WSYNC
-	sta	WSYNC		; make timing work for the branches below
+;	sta	WSYNC
+;	sta	WSYNC
+;	sta	WSYNC		; make timing work for the branches below
 				; as start new level must be called in
 				; overscan 30
 
@@ -766,13 +774,13 @@ reset_fireplace_loop:
 	bmi	go_behind						; 2/3
 
 	lda	#LOCATION_LIBRARY_NW					; 3
-	bne	start_new_level		; bra				; 3
+	bne	start_new_level_29	; bra				; 3
 go_behind:
 	ldy	#SFX_RUMBLE	; play sound				; 2
 	sty	SFX_PTR							; 3
 
 	lda	#LOCATION_BEHIND_FIREPLACE	; change location	; 2
-	bne	start_new_level		; bra				; 3
+	bne	start_new_level_29	; bra				; 3
 
 fireplace_irrelevant:
 ; 6

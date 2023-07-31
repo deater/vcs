@@ -17,6 +17,10 @@ Things to finish:
 + Clear atrus page question once game is finished
 	This could be a barrier issue
 
++ Put notes/disclaimer in the 256 bytes of "empty" ROM.
+	Hope this won't confuse emulators
+
+
 Sound:
 + Fix linking book noise
 

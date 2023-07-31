@@ -229,21 +229,26 @@ grab_tower_rotation:
 	; grab red book
 	;========================
 grab_red_book:
-	lda	#HOLDING_RED_PAGE
-	ldx	#0
-	beq	common_red_blue_book_grab
+; 55
+	lda	#HOLDING_RED_PAGE					; 2
+	ldx	#0							; 2
+	beq	common_red_blue_book_grab	; bra			; 3
+; 62
 
 	;========================
 	; grab blue book
 	;========================
 grab_blue_book:
-	lda	#HOLDING_BLUE_PAGE
-	ldx	#1
+; 55
+	lda	#HOLDING_BLUE_PAGE					; 2
+	ldx	#1							; 2
+; 59
 
 	;========================
 	; common_red_blue_book_grab
 	;========================
 common_red_blue_book_grab:
+; 62 (red) / 59 (blue)
 	ldy	#OCTAGON_PAGE
 	sty	CURRENT_PAGE
 

@@ -1,0 +1,60 @@
+
+IMPORTANT:
+This product contains trademarks and/or copyrighted works of Cyan.
+All rights reserved by Cyan.
+This product is not official and is not endorsed by Cyan. 
+
+
+A VMW Production
+by Vince `deater` Weaver, 2023
+
+Prolog:
+	A desperate man fleeing a dangerous situation falls
+	in a starry void.  He escapes by touching a magical
+	"linking" book that transports him away.  The book
+	continues falling and the man worries who might find it.
+
+Story:
+	You are the one who found the book!  Throwing caution
+	to the wind you touch the book and end up on Myst island.
+
+	On the island two brothers appear trapped inside books
+	of their own.  They are a bit evasive about how they
+	ended up in this situation.  The somewhat conniving
+	brother asks you to find red pages and put then in his book.
+	The somewhat unstable brother begs you to find blue pages
+	and put them in *his* book.
+
+	You solve puzzles and travel to four different fantastic worlds
+	(unfortunately not on this cartridge due to size limitations).
+	You bring back red and blue pages and put them in the brothers books.
+	They both want to be freed.  Who do you trust?
+
+	You also found a torn note while exploring that when put together
+	says:
+
+         MARKER SWIT  |  CH VAULT ACCESS
+                    |
+	       ISL  |  AND OF MYST
+
+   THE VAULT IS LOC  |  ATED IN VERY PLAIN VIEW ON
+     THE ISLAND OF M  |  YST AND ACCESS CAN BE
+      ACHIEVED VERY  |  EASILY IF THE SIMPLE
+ INSTRUCTIONS ARE  |  FOLLOWED.  FIRST, LOCATE
+EACH OF THE MARKER  |  SWITCHES ON THE ISLAND.
+ TURN EVERY ONE OF T  |  HESE SWITCHES TO THE
+"ON" POSITION.  TH  |  EN GO TO THE DOCK AND,
+AS A FINAL STEP, TU  |  RN THE MARKER SWITCH
+      THERE TO TH  |  E "OFF" POSITION.
+
+	This should be enough to finish your adventure!
+
+Use the joystick to move the pointer.
+The pointer will change to indicate if you can move forward, left, right, or
+	if an action is available.
+Click the button to move or do an action.
+
+If you appear stuck, carefully investigate the screen to see if there
+are action areas you are missing.
+
+Good Luck!
