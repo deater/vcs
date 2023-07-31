@@ -1,5 +1,6 @@
 ; LOCATION_IMAGER_W data
 
+.if 1
 .include "../locations.inc"
 
 .byte $22			; color of pointer (sprite0)
@@ -15,3 +16,6 @@
 .byte $00,$00			; unused
 
 .include "imager_w_data.inc"
+.endif
+
+;.include "inside_dentist_data.s"

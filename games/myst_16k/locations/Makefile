@@ -86,7 +86,8 @@ rom_bank0.o:	rom_bank0.s \
 	rocket_n_data.zx02 \
 	arrival_s_data.zx02 arrival_n_data.zx02 \
 	hilltop_n_data.zx02 hilltop_s_data.zx02 \
-	hilltop_e_data.zx02 hilltop_w_data.zx02 imager_w_data.zx02
+	hilltop_e_data.zx02 hilltop_w_data.zx02 imager_w_data.zx02 \
+	inside_dentist_data.zx02
 	ca65 -o rom_bank0.o rom_bank0.s -l rom_bank0.lst
 ###
 
