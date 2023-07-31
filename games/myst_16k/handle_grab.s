@@ -93,6 +93,12 @@ havent_given_page_yet:
 	;	change the erase mask to $00 not $f8
 
 trapped_on_myst:
+	; destroy the books
+	ldx	#$00
+	stx	LIBRARY_PAGE_MASK
+	dex	; $FF
+	stx	RED_PAGES_TAKEN
+	stx	BLUE_PAGES_TAKEN
 
 	; give white page to atrus
 	inc	WHITE_PAGE_COUNT

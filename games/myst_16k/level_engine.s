@@ -46,15 +46,15 @@ level_frame:
 
 ; in VBLANK scanline 0
 
-	ldx	#15
+	ldx	#14
 	jsr	common_delay_scanlines
 
 ; 10
 
-	;=============================
-	; now at VBLANK scanline 15
-	;=============================
-	; patch destination if needed
+	;===============================================
+	; now at VBLANK scanline 14
+	;===============================================
+	; patch center destination for barrier if needed
 
 	lda	LEVEL_CENTER_PATCH_COND				; 3
 	beq	no_center_patch					; 2/3
@@ -68,17 +68,18 @@ level_frame:
 no_center_patch:
 	sta	WSYNC
 
-	;====================================
-	; now at VBLANK scanline 16,17,18,19
-	;====================================
+	;======================================
+	; now at VBLANK scanline 15,16,17,18,19
+	;======================================
 	; patch overlay if needed
-	; allow 4 scanlines
+	; allow 5 scanlines
 
 check_overlay_patch:
-	lda	LEVEL_OVERLAY_PATCH_TYPE
-	beq	no_overlay_patch
+	lda	LEVEL_OVERLAY_PATCH_TYPE				; 3
+	beq	no_overlay_patch					; 2/3
 
-	jmp	handle_overlay_patch
+	jmp	handle_overlay_patch					; 3
+; 8
 
 no_overlay_patch:
 	sta	WSYNC
@@ -86,10 +87,11 @@ no_overlay_patch:
 	sta	WSYNC
 	sta	WSYNC
 done_overlay_patch:
+	sta	WSYNC
 
-	;=============================
-	; now at VBLANK scanline 20
-	;=============================
+	;==============================
+	; now at VBLANK scanline 20..25
+	;==============================
 	; copy in hand sprite
 	; takes 6 scanlines
 
@@ -846,6 +848,8 @@ playfield_locations_h:
 	; handle overlay patch
 	;===================================
 	;===================================
+	; should take 4 cycles?
+
 handle_overlay_patch:
 	; LEVEL_OVERLAY_PATCH_TYPE in A and flags still set...
 
@@ -862,71 +866,100 @@ handle_overlay_patch:
 	;	OVERLAY_PATCH_FIREPLACE		$20
 	;		behind_fireplace (red/blue pages)
 
-	bit	LEVEL_OVERLAY_PATCH_TYPE
-	bmi	do_overlay_patch_barrier
-	bvs	do_overlay_patch_library_page
+
+; 8
+
+	bit	LEVEL_OVERLAY_PATCH_TYPE				; 3
+	bmi	do_overlay_patch_barrier				; 2/3
+	bvs	do_overlay_patch_library_page				; 2/3
 
 
 	;==================================
 	; patch fireplace page
 	;==================================
+	; note: to handle having the pages disappear instantly w/o reload
+	;	we always draw the page, just changing the sprite value
 	; FIXME: combine the two routines
-	; FIXME: top line of page should be $18 not $1C
-	; FIXME: can remove the pages from the background to save a few bytes
+	; can we remove the pages from the overlay to save a few bytes?
+	;	not really, would still need something there to hold colors
 
 do_overlay_patch_fireplace:
-
+; 15
 	lda	#<(level_overlay_sprite_write)			; 2
 	sta	OUTL						; 3
 	lda	#>(level_overlay_sprite_write)			; 2
 	sta	OUTH						; 3
+; 25
+	ldx	#0						; 2
+	jsr	do_fireplace_patch				; 6+133
+; 166
+	ldx	#1						; 2
+	jsr	do_fireplace_patch				; 6+133
+; 307
 
-check_fireplace_patch_red:
-	lda	RED_PAGES_TAKEN
-	and	#FINAL_PAGE
-	bne	do_fireplace_patch_red_not_there
+;check_fireplace_patch_red:
+; 25
+;	lda	RED_PAGES_TAKEN					; 3
+;	and	#FINAL_PAGE					; 2
+;	bne	do_fireplace_patch_red_not_there		; 2/3
 
-do_fireplace_patch_red_there:
-	lda	#$1C
-	bne	do_fireplace_patch_red
+;do_fireplace_patch_red_there:
+; 32
+;	lda	#$1C						; 2
+;	bne	do_fireplace_patch_red	; bra			;
+;	.byte	$2C	; BIT trick				; 4
+
+;do_fireplace_patch_red_not_there:
+; 33
+;	lda	#0	; $00 A9 should be harmless to bit	; 2
+;do_fireplace_patch_red:
+; 38 / 35
+
+	; draw in reverse
+
+;	ldy	#46	; draw 7 lines at 39			; 2
+;	ldx	#6						; 2
+; 42 / 39
+
+;fireplace_page_patch_red_loop:
+;	sta	(OUTL),Y					; 6
+;	dey							; 2
+;	dex							; 2
+;	bpl	fireplace_page_patch_red_loop			; 2/3
+
+
+;	and	#$18		; bend page at top
+;	sta	(OUTL),Y
+
+
+
+;check_fireplace_patch_blue:
+;	lda	BLUE_PAGES_TAKEN
+;	and	#FINAL_PAGE
+;	bne	do_fireplace_patch_blue_not_there
+
+;do_fireplace_patch_blue_there:
+;	lda	#$1C
+;	bne	do_fireplace_patch_blue
 	; do BIT trick?
-do_fireplace_patch_red_not_there:
-	lda	#0
-do_fireplace_patch_red:
-	ldy	#39						; 2
-	ldx	#7						; 2
+;do_fireplace_patch_blue_not_there:
+;	lda	#0
 
-fireplace_page_patch_red_loop:
-	sta	(OUTL),Y					; 6
-	iny							; 2
-	dex							; 2
-	bpl	fireplace_page_patch_red_loop			; 2/3
+;do_fireplace_patch_blue:
+;	ldy	#29						; 2
+;	ldx	#7						; 2
+;fireplace_page_patch_blue_loop:
+;	sta	(OUTL),Y					; 6
+;	iny							; 2
+;	dex							; 2
+;	bpl	fireplace_page_patch_blue_loop			; 2/3
 
-check_fireplace_patch_blue:
-	lda	BLUE_PAGES_TAKEN
-	and	#FINAL_PAGE
-	bne	do_fireplace_patch_blue_not_there
+;	bmi	all_done_overlay_patch	; bra
 
-do_fireplace_patch_blue_there:
-	lda	#$1C
-	bne	do_fireplace_patch_blue
-	; do BIT trick?
-do_fireplace_patch_blue_not_there:
-	lda	#0
 
-do_fireplace_patch_blue:
-	ldy	#29						; 2
-	ldx	#7						; 2
-fireplace_page_patch_blue_loop:
-	sta	(OUTL),Y					; 6
-	iny							; 2
-	dex							; 2
-	bpl	fireplace_page_patch_blue_loop			; 2/3
+; 307 = 4 scanlines
 
-	bmi	all_done_overlay_patch	; bra
-
-	; 6+14+(20*X)-1
-	;	x=12 so 260
+	jmp	all_done_overlay_patch4
 
 
 	;==================================
@@ -935,47 +968,63 @@ fireplace_page_patch_blue_loop:
 
 do_overlay_patch_library_page:
 
+; 16
+	; load Y start
+	; close (20-34) far (14-28)
+	; for far start higher up, otherwise breaks shelf lip
+
+	lda	LEVEL_OVERLAY_PATCH_TYPE				; 3
+	and	#$2							; 2
+	lsr								; 2
+	tax								; 2
+	ldy	library_page_offset,X					; 4+
+
+; 29
+
 	; check if page still there
 
-	lda	LEVEL_OVERLAY_PATCH_TYPE
-	and	#$1
-	tax
-	lda	RED_PAGES_TAKEN,X
-	and	#OCTAGON_PAGE
-	beq	all_done_overlay_patch
+	lda	LEVEL_OVERLAY_PATCH_TYPE				; 3
+	and	#$1	; bit this specifies red/blue			; 2
+	tax								; 2
+	lda	RED_PAGES_TAKEN,X					; 4
+	and	#OCTAGON_PAGE						; 2
+; 42
+	beq	all_done_overlay_patch1					; 2/3
 
-; close (22-34) far (22-28)
-; FIXME: for far start higher up, otherwise breaks shelf lip
 
+
+; 44
 	lda	#<(level_overlay_sprite)			; 2
 	sta	INL						; 3
+	sta	OUTL		; same low offset		; 3
+; 52
+
 	lda	#>(level_overlay_sprite)			; 2
 	sta	INH						; 3
-
-	lda	#<(level_overlay_sprite_write)			; 2
-	sta	OUTL						; 3
 	lda	#>(level_overlay_sprite_write)			; 2
 	sta	OUTH						; 3
+; 62
 
+	ldx	#13						; 2
+; 64
 
-	ldy	#22						; 2
-	ldx	#12						; 2
 page_patch_loop:
 	lda	(INL),Y						; 5+
-	and	#$f8						; 2
+	and	LIBRARY_PAGE_MASK				; 3
 	sta	(OUTL),Y					; 6
 	iny							; 2
 	dex							; 2
 	bpl	page_patch_loop					; 2/3
 
 	bmi	all_done_overlay_patch	; bra
-	; 6+14+(20*X)-1
-	;	x=12 so 260
+	; 64+(21*(X+1))-1
+	;	x=13 so 357 = 4.7 scanlines (5 is 380)
 
 	;==================================
 	; patch barrier
 	;==================================
 
+; 14
 do_overlay_patch_barrier:
 	lda	LEVEL_CENTER_PATCH_COND				; 3
 	and	BARRIER_STATUS
@@ -1005,10 +1054,64 @@ patch_loop:
 	; 12 = 153 = 3 scanlines
 	; 16 = 208 = 4 scanlines
 
-all_done_overlay_patch:
+all_done_overlay_patch1:
 	sta	WSYNC
-
+all_done_overlay_patch2:
+	sta	WSYNC
+all_done_overlay_patch3:
+	sta	WSYNC
+all_done_overlay_patch4:
+	sta	WSYNC
+all_done_overlay_patch:
 	jmp	done_overlay_patch
+
+
+	;===========================
+	; do fireplace_patch
+	;===========================
+	; X = which one
+
+do_fireplace_patch:
+; 0
+	lda	RED_PAGES_TAKEN,X				; 4
+	and	#FINAL_PAGE					; 2
+	bne	do_fireplace_patch_not_there			; 2/3
+
+do_fireplace_patch_there:
+; 10
+	lda	#$1C						; 2
+;	bne	finally_do_fireplace_patch	; bra		;
+	.byte	$2C	; BIT trick				; 4
+
+do_fireplace_patch_not_there:
+; 11
+	lda	#0	; $00 A9 should be harmless to bit	; 2
+finally_do_fireplace_patch:
+; 16 / 13
+
+	; draw in reverse
+
+	ldy	fireplace_offset,X	; draw 7 lines at 39	; 4
+	ldx	#6						; 2
+; 22 / 29
+
+fireplace_page_patch_loop:
+	sta	(OUTL),Y					; 6
+	dey							; 2
+	dex							; 2
+	bpl	fireplace_page_patch_loop			; 2/3
+
+	; (7*13)-1 = 90
+
+; 112 / 119
+	and	#$18		; bend page at top		; 2
+	sta	(OUTL),Y					; 6
+; 120 / 127
+	rts
+; 126 / 133
+
+fireplace_offset:
+	.byte 46,36
 
 overlay_patch_start:
 	.byte 33,12,13
@@ -1016,3 +1119,5 @@ overlay_patch_start:
 overlay_patch_color:
 	.byte $4,$2,$0
 
+library_page_offset:
+	.byte 20,14

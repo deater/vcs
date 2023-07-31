@@ -202,6 +202,17 @@ Level Data description:
 	destination is center/left/right rather than l/c/r to save 13 bytes
 		in the movement code
 
+	alternate center:
+
+	overlay patch type:
+		one of three.  use top bits so BIT can set flags
+			for bmi/bvs
+
+		for library page, bottom bit indicates red/blue page,
+			next bit whether near/close (as that affects
+			where to start masking the overlay)
+
+
 	Description of the images:
 		standard Atari VCS asymmetric display
 		each line:	40 4-pixel wide bytes

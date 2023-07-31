@@ -84,14 +84,19 @@ clock_puzzle	123
 elevator_s	130
 
 		===
-		4 free +256 (align)
+		764 = 156 bytes free
 
 rom6:
 ~~~~~
 		===
-		256+64 bytes free
+		786 = 122 bytes free
 
 main:
 ~~~~~
 		===
-		128 bytes free
+		550 = 176 bytes free
+
+TODO:
+~~~~~
+inside_elevator = 167 bytes
+inside_dentist  = 236 bytes
