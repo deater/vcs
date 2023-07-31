@@ -258,12 +258,13 @@ common_red_blue_book_grab:
 	bcc	handle_book		; if to left, clicked on book	; 2/3
 
 	;========================
-	; common_grab_book
+	; common_grab_page
 	;========================
+	' picks up a red/blue page
 	; A is HOLDING_RED_PAGE/HOLDING_BLUE_PAGE here
 	; and X should reflect that
 
-common_grab_book:
+common_grab_page:
 ; 74 / 74
 	; need to make sure page is gone permanently
 	sta	TEMP1							; 3
@@ -313,14 +314,14 @@ green_book_blue_page:
 ; 66
 	lda	#HOLDING_BLUE_PAGE					; 2
 	ldx	#1							; 2
-	bne	common_grab_book	; bra				; 3
+	bne	common_grab_page	; bra				; 3
 ; 73
 
 green_book_red_page:
 ; 67
 	lda	#HOLDING_RED_PAGE					; 2
 	ldx	#0							; 2
-	beq	common_grab_book	; bra				; 3
+	beq	common_grab_page	; bra				; 3
 ; 74
 
 
