@@ -19,3 +19,4 @@
 .endif
 
 ;.include "inside_dentist_data.s"
+;.include "inside_elevator_data.s"
