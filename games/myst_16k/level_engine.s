@@ -505,8 +505,8 @@ done_playfield:
 	cmp	#LOCATION_CLOCK_PUZZLE					; 2
 	beq	handle_clock_puzzle					; 2/3
 ; 11
-	; otherwise 23
-	ldx	#23
+	; otherwise 22
+	ldx	#22
 	jsr	common_overscan
 	jmp	done_special_cases
 
@@ -519,7 +519,7 @@ handle_clock_puzzle:
 ; 12
 	; skip proper number of scanlines
 
-	ldx	#14
+	ldx	#13
 	jsr	common_overscan
 
 	lda	E7_SET_BANK5
@@ -557,7 +557,7 @@ handle_fireplace:
 ; 8
 	; skip proper number of scanlines
 
-	ldx	#14
+	ldx	#13
 	jsr	common_overscan
 
 	lda	E7_SET_BANK5
@@ -631,7 +631,7 @@ done_update_fireplace:
 
 
 	;============================
-	; overscan 24. general stuff
+	; overscan 23, general stuff
 	;============================
 done_special_cases:
 ; 3
@@ -643,7 +643,7 @@ done_special_cases:
 	sta	WSYNC
 
 	;==================================
-	; overscan 25, update sound
+	; overscan 24, update sound
 	;==================================
 
 	lda	E7_SET_BANK5						; 3
@@ -653,13 +653,13 @@ done_special_cases:
 	sta	WSYNC							; 3
 
 	;==================================
-	; overscan 26, update pointer
+	; overscan 25, update pointer
 	;==================================
 ;0
 	ldx	POINTER_X						; 3
 	ldy	POINTER_Y						; 3
 ; 6
-	; not needed as A=0 from above (where?)
+	; possibly not needed as A=0 from above (where?)
 	lda	#POINTER_TYPE_POINT					; 2
 ; 8
 	; first see if grabbing
@@ -727,7 +727,7 @@ level_done_update_pointer:
 
 	;==========================================
 	;==========================================
-	; overscan 27, handle fireplace /clock exit
+	; overscan 26, handle fireplace /clock exit
 	;==========================================
 	;==========================================
 ; 0
@@ -757,19 +757,22 @@ reset_fireplace_loop:
 	dex
 	bpl	reset_fireplace_loop
 
+	sta	WSYNC
 	sta	WSYNC		; make timing work for the branches below
+				; as start new level must be called in
+				; overscan 30
 
-	lda	FIREPLACE_CORRECT
-	bmi	go_behind
+	lda	FIREPLACE_CORRECT					; 3
+	bmi	go_behind						; 2/3
 
-	lda	#LOCATION_LIBRARY_NW
-	bne	start_new_level		; bra
+	lda	#LOCATION_LIBRARY_NW					; 3
+	bne	start_new_level		; bra				; 3
 go_behind:
-	ldy	#SFX_RUMBLE
-	sty	SFX_PTR
+	ldy	#SFX_RUMBLE	; play sound				; 2
+	sty	SFX_PTR							; 3
 
-	lda	#LOCATION_BEHIND_FIREPLACE
-	bne	start_new_level		; bra
+	lda	#LOCATION_BEHIND_FIREPLACE	; change location	; 2
+	bne	start_new_level		; bra				; 3
 
 fireplace_irrelevant:
 ; 6
@@ -777,20 +780,20 @@ fireplace_irrelevant:
 
 	;==================================
 	;==================================
-	; overscan 30, handle button press
+	; overscan 29, handle button press
 	;==================================
 	;==================================
 
 	lda	INPUT_COUNTDOWN						; 3
 	beq	waited_enough_level					; 2/3
 	dec	INPUT_COUNTDOWN						; 5
-	jmp	done_check_level_input					; 3
+	jmp	done_check_level_input_29				; 3
 
 waited_enough_level:
 
 ; 6
 	lda	INPT4			; check joystick button pressed	; 3
-	bmi	done_check_level_input					; 2/3
+	bmi	done_check_level_input_29				; 2/3
 
 ; 11
 	;====================================
@@ -807,34 +810,45 @@ waited_enough_level:
 
 ; 21
 
-	lda	POINTER_TYPE
-	and	#$3			; map "page" and "point (fwd)" to same
-	tax
+	lda	POINTER_TYPE						; 3
+	and	#$3		; "page" and "point (fwd)"		; 2
+				; pointers mean the same
+	tax								; 2
 
-	lda	LEVEL_CENTER_DEST,X
+	lda	LEVEL_CENTER_DEST,X					; 4
+; 32
+	bmi	done_check_level_input_29	; if $FF then ignore	; 2/3
 
-	bmi	done_check_level_input	; if $FF then ignore
 
-	;=====================
-	; start new level
+	;==========================================
+	; start new level (must happen overscan 30)
+	;==========================================
+	;
+
+start_new_level_29:
+	sta	WSYNC
 start_new_level:
-; 22
+
 	sta	CURRENT_LOCATION
-
 	lda	E7_SET_BANK7_RAM					; 3
-
 	jmp	load_new_level
-
-
 
 
 	;==========================
 	; clicked grab
 	;==========================
 clicked_grab:
+; 22
 	lda	E7_SET_BANK6		; moved to bank6		; 3
-	jmp	do_clicked_grab
+	jmp	do_clicked_grab						; 3
+; 28
 
+	;=======================================
+	; done checking input
+	;=======================================
+	; note this has to happen in overscan 30
+done_check_level_input_29:
+	sta	WSYNC
 done_check_level_input:
 	lda	E7_SET_BANK7_RAM					; 3
 	sta	WSYNC
