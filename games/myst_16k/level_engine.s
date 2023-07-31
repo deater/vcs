@@ -498,13 +498,13 @@ done_playfield:
 	;===========================
 	;===========================
 
-	lda	CURRENT_LOCATION
-	cmp	#LOCATION_INSIDE_FIREPLACE
-	beq	handle_fireplace
-
-	cmp	#LOCATION_CLOCK_PUZZLE
-	beq	handle_clock_puzzle
-
+	lda	CURRENT_LOCATION					; 3
+	cmp	#LOCATION_INSIDE_FIREPLACE				; 2
+	beq	handle_fireplace					; 2/3
+; 7
+	cmp	#LOCATION_CLOCK_PUZZLE					; 2
+	beq	handle_clock_puzzle					; 2/3
+; 11
 	; otherwise 23
 	ldx	#23
 	jsr	common_overscan
@@ -516,6 +516,7 @@ done_playfield:
 	;==================================
 handle_clock_puzzle:
 
+; 12
 	; skip proper number of scanlines
 
 	ldx	#14
@@ -553,7 +554,7 @@ done_update_clock:
 	; handle fireplace
 	;==================================
 handle_fireplace:
-
+; 8
 	; skip proper number of scanlines
 
 	ldx	#14
@@ -629,34 +630,38 @@ done_update_fireplace:
 
 
 
-	;==================================
-	; overscan 24 (27?), general stuff
+	;============================
+	; overscan 24. general stuff
+	;============================
 done_special_cases:
+; 3
 	lda	#$0							; 2
 	sta	ENAM0		; disable missile 0			; 3
 	sta	POINTER_GRABBING					; 3
 	sta	WAS_CLICKED						; 3
-
+; 13
 	sta	WSYNC
 
 	;==================================
-	; overscan 28, update sound
+	; overscan 25, update sound
+	;==================================
 
 	lda	E7_SET_BANK5						; 3
-	jsr	update_sound		; 56 cycles?
+	jsr	update_sound						; 50+6
 	lda	E7_SET_BANK7_RAM					; 3
-
+; 62
 	sta	WSYNC							; 3
 
 	;==================================
-	; overscan 29, update pointer
+	; overscan 26, update pointer
+	;==================================
 ;0
 	ldx	POINTER_X						; 3
 	ldy	POINTER_Y						; 3
-
-	; not needed as A=0 from above
-;	lda	#POINTER_TYPE_POINT
-
+; 6
+	; not needed as A=0 from above (where?)
+	lda	#POINTER_TYPE_POINT					; 2
+; 8
 	; first see if grabbing
 
 	cpx	LEVEL_GRAB_MINX						; 3
@@ -669,74 +674,84 @@ done_special_cases:
 	bcs	not_grabbing						; 2/3
 
 grabbing:
+; 28 worst case
 	lda	#POINTER_TYPE_GRAB					; 3
 	inc	POINTER_GRABBING					; 5
 ;	bne	level_done_update_pointer	; bra			; 3
-								; 26 worst case
-; 39
+								; 36 worst case
 
 not_grabbing:
-
+; 29 / 36 worst case
 	ldy	POINTER_COLOR		; if page skip pointer type 	; 3
 	beq	pointer_not_page					; 2/3
 	lda     #POINTER_TYPE_PAGE	; if color then page		; 2
 pointer_not_page:
+; 43 worse case
 
 	; need to do this to over-ride turn pointer if grabbing
 
-	ldy	POINTER_GRABBING
-	bne	level_done_update_pointer
+	ldy	POINTER_GRABBING					; 3
+	bne	level_done_update_pointer				; 2/3
 
+; 48 worst case
 
 	;==================================
 	; check if want left/right pointer
 
 	ldy	LEVEL_LEFT_DEST						; 3
 	bmi	level_not_left						; 2/3
+; 53
 
 	; POINTER_X is in X from way before
 
 	cpx	#32							; 2
 	bcs	level_not_left						; 2/3
+; 57
 	lda	#POINTER_TYPE_LEFT					; 2
 	jmp	level_done_update_pointer				; 3
 level_not_left:
-
+; 54 / 58
 	ldy	LEVEL_RIGHT_DEST					; 3
 	bmi	level_done_update_pointer				; 2/3
-
+; 63
 	cpx	#128							; 2
 	bcc	level_done_update_pointer				; 2/3
+; 67
 	lda	#POINTER_TYPE_RIGHT					; 2
 
 level_done_update_pointer:
+; 49 / 62 / 64 / 68 / 69
 	sta	POINTER_TYPE						; 3
-
+; 72
         sta     WSYNC
 
-	;====================================
-	;====================================
-	; overscan 29, handle fireplace exit
-	;====================================
-	;====================================
-
+	;==========================================
+	;==========================================
+	; overscan 27, handle fireplace /clock exit
+	;==========================================
+	;==========================================
+; 0
 	; 00 = no, FF=yes
-	lda	EXIT_PUZZLE
-	beq	fireplace_irrelevant
+	lda	EXIT_PUZZLE						; 3
+	beq	fireplace_irrelevant					; 2/3
+; 5
+	lda	CURRENT_LOCATION					; 3
+	cmp	#LOCATION_INSIDE_FIREPLACE				; 2
+	beq	fireplace_exit						; 2/3
 
-	lda	CURRENT_LOCATION
-	cmp	#LOCATION_INSIDE_FIREPLACE
-	beq	fireplace_exit
+; 12
 
 clock_exit:
-	dec	EXIT_PUZZLE
-	lda	#LOCATION_CLOCK_S
-	bne	start_new_level		; bra
+	dec	EXIT_PUZZLE						; 5
+	lda	#LOCATION_CLOCK_S					; 2
+	bne	start_new_level		; bra				; 3
+; 22
 
 fireplace_exit:
+; 13
 	; reset to 0 (EXIT_FIREPLACE plus the fireplace values)
-	lda	#0
-	ldx	#6
+	lda	#0							; 2
+	ldx	#6							; 2
 reset_fireplace_loop:
 	sta	FIREPLACE_ROW1,X
 	dex
@@ -757,6 +772,7 @@ go_behind:
 	bne	start_new_level		; bra
 
 fireplace_irrelevant:
+; 6
 	sta	WSYNC
 
 	;==================================
@@ -802,6 +818,7 @@ waited_enough_level:
 	;=====================
 	; start new level
 start_new_level:
+; 22
 	sta	CURRENT_LOCATION
 
 	lda	E7_SET_BANK7_RAM					; 3

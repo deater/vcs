@@ -94,7 +94,7 @@ rom6:
 main:
 ~~~~~
 		===
-		550 = 176 bytes free
+		560 = 160 bytes free
 
 TODO:
 ~~~~~

@@ -425,3 +425,11 @@ TODO
 
 	describe red/blue page code
 
+
+
+DEBUG
+~~~~~
+	+ to make it easier to get white page, set
+		uncomment the dec in main.s
+	+ to make the fireplace puzzle easier:
+		ldx in update_fireplace.s
