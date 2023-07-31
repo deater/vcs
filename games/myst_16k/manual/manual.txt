@@ -70,6 +70,9 @@ Hints:
 
 	How many marker switches are there?   (There are 8)
 
+	What's a marker switch?
+		(a brown box with a blue and yellow switch on top)
+
 	How do I turn these switches "on"?
 		(click on them.  When the blue handle is down
 			it is on, when it's up it's off)
