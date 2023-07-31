@@ -27,7 +27,7 @@ handle_special:
 	lda	grab_dest_l-8,X						; 4+
 	pha								; 3
 	rts				; jump to location		; 6
-; 49
+; 55
 
 
 	;===============================
@@ -42,25 +42,28 @@ handle_switch:
 	sty	SFX_PTR							; 3
 ; 41
 	; toggle switch
-	lda	powers_of_two,X						; 4+
-	eor	SWITCH_STATUS						; 3
+	lda	SWITCH_STATUS						; 3
+	tay			; save for comparison			; 2
+	eor	powers_of_two,X						; 4+
 	sta	SWITCH_STATUS						; 3
-; 51
+; 53
 
 	; Switch to white page if switch from $FF to $7F
-
-	cmp	#$7f							; 2
+	cpy	#$ff		; be sure all are set			; 2
 	bne	done_handle_grab_29					; 2/3
-; 55
+; 57
+	cmp	#$7f		; be sure it's dock one flipped		; 2
+	bne	done_handle_grab_29					; 2/3
+; 61
 
 	; handle white page
 
 	jsr	restore_page						; 6+40
-; 101
+; 107
 	lda	#POINTER_COLOR_WHITE					; 2
 	sta	POINTER_COLOR						; 3
 	bne	done_handle_grab		; bra			; 3
-; 109
+; 116
 
 	;=================================
 	; done handle grab
@@ -80,47 +83,58 @@ done_handle_grab:
 	;=========================
 	;=========================
 grab_atrus:
-; 49
-	lda	WHITE_PAGE_COUNT
-	beq	havent_given_page_yet
+; 55
+	lda	WHITE_PAGE_COUNT					; 3
+	beq	havent_given_page_yet					; 2/3
 
 	; myst linking book instead
-	jmp	handle_book
+; 60
+	sta	WSYNC							; 3
+	jmp	handle_book						; 3
 
 havent_given_page_yet:
+; 63
 	; if have white page, goto good ending
-	lda	POINTER_COLOR
-	cmp	#POINTER_COLOR_WHITE
-	bne	trapped_with_atrus
+	lda	POINTER_COLOR						; 3
+	cmp	#POINTER_COLOR_WHITE					; 2
+; 68
+	bne	trapped_with_atrus					; 2/3
 
 	;=========================
 	; "good" ending
 	;=========================
-	; TODO: destroy book pages
-	;	put count high?
-	;	change the erase mask to $00 not $f8
+	; destroy book pages/book (make erase mask $00 not $f8)
+	; make it so can't pick up pages
+; 70
 
 trapped_on_myst:
 	; destroy the books
-	ldx	#$00
-	stx	LIBRARY_PAGE_MASK
-	dex	; $FF
-	stx	RED_PAGES_TAKEN
-	stx	BLUE_PAGES_TAKEN
-
+	ldx	#$00							; 2
+	stx	LIBRARY_PAGE_MASK					; 3
+	dex				; $FF				; 2
+	stx	RED_PAGES_TAKEN						; 3
+	stx	BLUE_PAGES_TAKEN					; 3
+; 83
 	; give white page to atrus
-	inc	WHITE_PAGE_COUNT
-	lda	#0
-	sta	POINTER_COLOR
+	inc	WHITE_PAGE_COUNT					; 5
+	lda	#0			; drop page			; 2
+	sta	POINTER_COLOR						; 3
+; 93
 
-	lda	#LOCATION_YOU_WIN
-	jmp	start_new_level
+	lda	#LOCATION_YOU_WIN					; 2
+	jmp	start_new_level						; 3
+; 81
+
+	;================================
+	; no white page, trapped forever
+	;	in D'NI
 
 trapped_with_atrus:
 	; else, trapped
-	lda	#LOCATION_TRAPPED
-	jmp	start_new_level
-
+	lda	#LOCATION_TRAPPED					; 3
+; 74
+	jmp	start_new_level						; 3
+; 77?  This is cutting close but I guess OK?
 
 	;==========================
 	; grabbed the clock puzzle
