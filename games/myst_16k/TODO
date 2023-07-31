@@ -9,6 +9,7 @@ Things to finish:
 
 + fix all glithces
 -> Going to rocket close takes 60 extra scanlines?
+-> pick up page in library, glitches
 
 + fix pointer bounds on bottom of screen
    This is tricky because in book Y is *2 but on rest it is *4

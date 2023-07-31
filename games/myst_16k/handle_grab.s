@@ -249,12 +249,13 @@ grab_blue_book:
 	;========================
 common_red_blue_book_grab:
 ; 62 (red) / 59 (blue)
-	ldy	#OCTAGON_PAGE
-	sty	CURRENT_PAGE
-
-	ldy	POINTER_X
-	cpy	#92			; $5c = 92
-	bcc	handle_book		; if to left, clicked on book
+	ldy	#OCTAGON_PAGE						; 2
+	sty	CURRENT_PAGE						; 3
+; 67
+	ldy	POINTER_X						; 3
+	cpy	#92			; $5c = 92			; 2
+; 72
+	bcc	handle_book		; if to left, clicked on book	; 2/3
 
 	;========================
 	; common_grab_book
@@ -263,58 +264,68 @@ common_red_blue_book_grab:
 	; and X should reflect that
 
 common_grab_book:
-
+; 74 / 74
 	; need to make sure page is gone permanently
-	sta	TEMP1
+	sta	TEMP1							; 3
 
-	lda	RED_PAGES_TAKEN,X	; get current page taken status
-	and	CURRENT_PAGE		; check if it is taken
-	bne	done_handle_grab	; if it is we can't grab it
-
-	lda	TEMP1			; get hold_red/hold_blue
-	ora	CURRENT_PAGE		; set page taken
-	pha				; save for later
-
-	lda	CURRENT_PAGE		; mark page taken
-	ora	RED_PAGES_TAKEN,X
-	sta	RED_PAGES_TAKEN,X
-
-	lda	page_colors,X		; set pointer color
-	sta	POINTER_COLOR
-
-	jsr	restore_page		; restore old page
-
-	pla
-	sta	HOLDING_PAGE
-
-	jmp	done_handle_grab
+	lda	RED_PAGES_TAKEN,X	; get current page taken status	; 4
+	and	CURRENT_PAGE		; check if it is taken		; 3
+; 84
+	bne	done_handle_grab	; if it is we can't grab it	; 2/3
+; 86
+	lda	TEMP1			; get hold_red/hold_blue	; 3
+	ora	CURRENT_PAGE		; set page taken		; 3
+	pha				; save for later		; 3
+; 95
+	lda	CURRENT_PAGE		; mark page taken		; 3
+	ora	RED_PAGES_TAKEN,X					; 4
+	sta	RED_PAGES_TAKEN,X					; 4
+; 106
+	lda	page_colors,X		; set pointer color		; 4+
+	sta	POINTER_COLOR						; 3
+; 113
+	jsr	restore_page		; restore old page		;6+40
+; 159
+	pla								; 4
+	sta	HOLDING_PAGE						; 3
+; 166
+	jmp	done_handle_grab					; 3
 
 	;========================
 	; grab green book
 	;========================
+	; if top, handle book
+	; if bottom, check if it's red or blue page
 grab_green_book:
-	ldy	#FINAL_PAGE
-	sty	CURRENT_PAGE
+; 55
+	ldy	#FINAL_PAGE						; 2
+	sty	CURRENT_PAGE						; 3
+; 60
+	ldy	POINTER_Y						; 3
+	cpy	#24			;				; 2
+	bcc	handle_book		; if above, clicked on book	; 2/3
 
-	ldy	POINTER_Y
-	cpy	#24			;
-	bcc	handle_book		; if above, clicked on book
+; 62
+	cpy	#37							; 2
+	bcs	green_book_red_page					; 2/3
 
-	cpy	#37
-	bcs	green_book_red_page
 green_book_blue_page:
-	lda	#HOLDING_BLUE_PAGE
-	ldx	#1
-	bne	common_grab_book
+; 66
+	lda	#HOLDING_BLUE_PAGE					; 2
+	ldx	#1							; 2
+	bne	common_grab_book	; bra				; 3
+; 73
 
 green_book_red_page:
-	lda	#HOLDING_RED_PAGE
-	ldx	#0
-	beq	common_grab_book
+; 67
+	lda	#HOLDING_RED_PAGE					; 2
+	ldx	#0							; 2
+	beq	common_grab_book	; bra				; 3
+; 74
 
-; 49
 
 handle_book:
+; 75 (red/blue) / 65 (green)
 	;===========================
 	; handle book being clicked
 	;===========================
@@ -325,40 +336,44 @@ handle_book:
 	;		if page count==2 then game over
 
 	; X has red/blue already
-
-	lda	POINTER_TYPE
-	cmp	#POINTER_TYPE_PAGE
-	bne	really_do_book
+; 75
+	lda	POINTER_TYPE						; 3
+	cmp	#POINTER_TYPE_PAGE					; 2
+	bne	really_do_book						; 2/3
 
 	; need to compare to make sure red page in red book
 	;	or blue page in blue book
 	;		X had 0=red 1=blue
 	;		HOLDING_PAGE has $80 if red, $40 if blue
-	lda	HOLDING_PAGE
-	and	#$C0
-	cmp	which_book,X
-	bne	really_do_book
+; 82
+	lda	HOLDING_PAGE						; 3
+	and	#$C0							; 2
+	cmp	which_book,X						; 4
+; 91
+	bne	really_do_book						; 2/3
 
 put_page_in_book:
-
-	inc	RED_PAGE_COUNT,X
-
-	lda	#0
-	sta	HOLDING_PAGE
-	sta	POINTER_COLOR
-
-	lda	RED_PAGE_COUNT,X
-	cmp	#2
-	bne	still_more_pages
-
-	lda	#LOCATION_TRAPPED
+; 93
+	inc	RED_PAGE_COUNT,X					; 6
+; 99
+	lda	#0							; 2
+	sta	HOLDING_PAGE						; 3
+	sta	POINTER_COLOR						; 3
+; 107
+	lda	RED_PAGE_COUNT,X					; 4
+	cmp	#2							; 2
+; 113
+	bne	still_more_pages					; 2/3
+; 115
+	lda	#LOCATION_TRAPPED					; 3
 	jmp	start_new_level
 
 still_more_pages:
+; 116
 	jmp	done_handle_grab
 
 really_do_book:
-
+; 83 / 94
 	jsr	book_common
 
 	lda	CURRENT_LOCATION
@@ -373,6 +388,7 @@ really_do_book:
 	; if get new page need to put
 	; back current, if any
 restore_page:
+; 0
 	ldx	#0							; 2
 	lda	HOLDING_PAGE						; 3
 	and	#$C0							; 2
