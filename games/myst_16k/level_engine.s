@@ -859,10 +859,10 @@ handle_overlay_patch:
 	;		library_n (bookshelf)		2
 	;		library_s (door to outside)	3
 	;	OVERLAY_PATCH_LIBRARY_PAGE	$40
-	;		red_book_close (red book)
-	;		blue_book_close (blue book)
-	;		library_w (red book far)
-	;		library_e (blue book far)
+	;		red_book_close (red book)	0
+	;		blue_book_close (blue book)	1
+	;		library_w (red book far)	2
+	;		library_e (blue book far)	3
 	;	OVERLAY_PATCH_FIREPLACE		$20
 	;		behind_fireplace (red/blue pages)
 
@@ -896,66 +896,6 @@ do_overlay_patch_fireplace:
 	ldx	#1						; 2
 	jsr	do_fireplace_patch				; 6+133
 ; 307
-
-;check_fireplace_patch_red:
-; 25
-;	lda	RED_PAGES_TAKEN					; 3
-;	and	#FINAL_PAGE					; 2
-;	bne	do_fireplace_patch_red_not_there		; 2/3
-
-;do_fireplace_patch_red_there:
-; 32
-;	lda	#$1C						; 2
-;	bne	do_fireplace_patch_red	; bra			;
-;	.byte	$2C	; BIT trick				; 4
-
-;do_fireplace_patch_red_not_there:
-; 33
-;	lda	#0	; $00 A9 should be harmless to bit	; 2
-;do_fireplace_patch_red:
-; 38 / 35
-
-	; draw in reverse
-
-;	ldy	#46	; draw 7 lines at 39			; 2
-;	ldx	#6						; 2
-; 42 / 39
-
-;fireplace_page_patch_red_loop:
-;	sta	(OUTL),Y					; 6
-;	dey							; 2
-;	dex							; 2
-;	bpl	fireplace_page_patch_red_loop			; 2/3
-
-
-;	and	#$18		; bend page at top
-;	sta	(OUTL),Y
-
-
-
-;check_fireplace_patch_blue:
-;	lda	BLUE_PAGES_TAKEN
-;	and	#FINAL_PAGE
-;	bne	do_fireplace_patch_blue_not_there
-
-;do_fireplace_patch_blue_there:
-;	lda	#$1C
-;	bne	do_fireplace_patch_blue
-	; do BIT trick?
-;do_fireplace_patch_blue_not_there:
-;	lda	#0
-
-;do_fireplace_patch_blue:
-;	ldy	#29						; 2
-;	ldx	#7						; 2
-;fireplace_page_patch_blue_loop:
-;	sta	(OUTL),Y					; 6
-;	iny							; 2
-;	dex							; 2
-;	bpl	fireplace_page_patch_blue_loop			; 2/3
-
-;	bmi	all_done_overlay_patch	; bra
-
 
 ; 307 = 4 scanlines
 
@@ -1027,32 +967,36 @@ page_patch_loop:
 ; 14
 do_overlay_patch_barrier:
 	lda	LEVEL_CENTER_PATCH_COND				; 3
-	and	BARRIER_STATUS
+	and	BARRIER_STATUS					; 2
+; 19
 	bne	do_the_patch					; 2/3
-	jmp	no_overlay_patch
+	beq	all_done_overlay_patch1		; bra		; 3
 
 do_the_patch:
-	lda	LEVEL_OVERLAY_PATCH_TYPE
-	and	#$f
-	tax
-	ldy	overlay_patch_start-1,X
-
+; 22
+	lda	LEVEL_OVERLAY_PATCH_TYPE			; 3
+	and	#$f						; 2
+	tax							; 2
+	ldy	overlay_patch_start-1,X				; 4+
+; 33
 	lda	#<(level_overlay_colors_write)			; 2
 	sta	INL						; 3
 	lda	#>(level_overlay_colors_write)			; 2
 	sta	INH						; 3
-
-	lda	overlay_patch_color-1,X
+; 43
+	lda	overlay_patch_color-1,X				; 4+
 	ldx	#17						; 3
+; 50
 patch_loop:
 	sta	(INL),Y						; 6
-	iny
+	iny							; 2
 	dex							; 2
 	bpl	patch_loop					; 2/3
 
-	; 6+16+(11*Y)-1
-	; 12 = 153 = 3 scanlines
-	; 16 = 208 = 4 scanlines
+	; 50+(13*18)-1
+; 283 = 3.7 scalines
+	bmi	all_done_overlay_patch4		; bra		; 3
+
 
 all_done_overlay_patch1:
 	sta	WSYNC
