@@ -14,11 +14,11 @@
 
 do_clicked_grab:
 
-; 22
+; 28
 	ldx	CURRENT_LOCATION					; 3
 	cpx	#8			; if level >8 not switch	; 2
 	bcc	handle_switch						; 2/3
-; 29
+; 35
 
 	; set up jump table fakery
 handle_special:
@@ -37,31 +37,39 @@ handle_special:
 	;===============================
 
 handle_switch:
-; 30
+; 36
 	ldy	#SFX_CLICK		; play sound			; 2
 	sty	SFX_PTR							; 3
-; 35
+; 41
 	; toggle switch
 	lda	powers_of_two,X						; 4+
 	eor	SWITCH_STATUS						; 3
 	sta	SWITCH_STATUS						; 3
-; 45
+; 51
 
 	; Switch to white page if switch from $FF to $7F
 
 	cmp	#$7f							; 2
-	bne	done_handle_grab					; 2/3
-; 49
+	bne	done_handle_grab_29					; 2/3
+; 55
 
-	jsr	restore_page
+	; handle white page
 
+	jsr	restore_page						; 6+40
+; 101
 	lda	#POINTER_COLOR_WHITE					; 2
 	sta	POINTER_COLOR						; 3
-; 54
+	bne	done_handle_grab		; bra			; 3
+; 109
+
+	;=================================
+	; done handle grab
+	;=================================
+	; should we exit more directly?
+done_handle_grab_29:
+	sta	WSYNC
 
 done_handle_grab:
-
-	sta	WSYNC	 ;FIXME: should we?
 
 	jmp	done_check_level_input
 
@@ -324,31 +332,57 @@ really_do_book:
 	; if get new page need to put
 	; back current, if any
 restore_page:
-	ldx	#0
-	lda	HOLDING_PAGE
-	and	#$C0
-	beq	done_restore_page		; not holding page
+	ldx	#0							; 2
+	lda	HOLDING_PAGE						; 3
+	and	#$C0							; 2
+; 7
 
-	cmp	#$C0
-	beq	restore_white_page
+	beq	done_restore_page		; not holding page	; 2/3
+; 9
 
-	cmp	#HOLDING_RED_PAGE
-	beq	restore_page_common	; default is red
+	cmp	#$C0							; 2
+	beq	restore_white_page					; 2/3
 
-	inx				; make it blue
+; 13
+
+	cmp	#HOLDING_RED_PAGE					; 2
+	beq	restore_page_common	; default is red		; 2/3
+
+; 17
+	inx				; make it blue			; 2
+
+; 18/19
 
 restore_page_common:
-	lda	HOLDING_PAGE
-	and	#$3F
-	eor	#$FF
-	and	RED_PAGES_TAKEN,X
-	sta	RED_PAGES_TAKEN,X
+	lda	HOLDING_PAGE						; 3
+	and	#$3F							; 2
+	eor	#$FF							; 2
+	and	RED_PAGES_TAKEN,X					; 4
+	sta	RED_PAGES_TAKEN,X					; 4
+; 33/34
+restore_page_common_done:
+	rts								; 6
+; 39/40
 
-restore_white_page:
+	; try to equalize timing better to make cycle counting
+	; not as horrible
 
 done_restore_page:
-	rts
+; 10
+	nop
+	nop
 
+restore_white_page:
+; 14
+	jsr	restore_page_common_done	; nop12
+	nop	; 2
+	nop	; 2
+	nop	; 2
+	nop	; 2
+
+; 34
+	rts
+; 40
 which_book:
 	.byte $80,$40,$C0
 
@@ -371,7 +405,7 @@ grab_dest_l:
 	.byte	<(grab_close_painting-1)	; 16
 	.byte	<(grab_open_painting-1)		; 17
 	.byte	<(grab_clock_puzzle-1)		; 18
-	; grab_elevator?			; 19
+	.byte	$FF				; 19 elevator
 
 grab_dest_h:
 	.byte	>(grab_red_book-1)		; 8
@@ -387,4 +421,4 @@ grab_dest_h:
 	.byte	>(grab_close_painting-1)	; 16
 	.byte	>(grab_open_painting-1)		; 17
 	.byte	>(grab_clock_puzzle-1)		; 18
-	; grab_elevator?			; 19
+	.byte	$FF				; 19 elevator
