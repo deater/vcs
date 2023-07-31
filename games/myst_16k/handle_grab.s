@@ -260,7 +260,7 @@ common_red_blue_book_grab:
 	;========================
 	; common_grab_page
 	;========================
-	' picks up a red/blue page
+	; picks up a red/blue page
 	; A is HOLDING_RED_PAGE/HOLDING_BLUE_PAGE here
 	; and X should reflect that
 
