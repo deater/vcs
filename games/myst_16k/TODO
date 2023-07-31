@@ -1,20 +1,31 @@
 Things to finish:
-+ red/blue inside book overlay changes based on red/blue count
 + after winning: red/blue/white/pages so you can't get them anymore
-+ after winning: erase brothers books
+
++ fix bounds issues
+-> atrus make page acceptance cover the page graphic too
+
++ fix graphics issues
+-> winning screen right half is all zeros?
+
 + fix all glithces
+-> Going to rocket close takes 60 extra scanlines?
+
 + fix pointer bounds on bottom of screen
    This is tricky because in book Y is *2 but on rest it is *4
 + door open, play different sound for when opening vs already open
+
++ Clear atrus page question once game is finished
+	This could be a barrier issue
 
 Sound:
 + Fix linking book noise
 
 Out there:
 + More locations?  Dentist chair, generator room?
-+ Click on tower rotation makes noise
++ Tower rotation?
 	Maybe even re-use clock sprites for rotating?
 
+	
 
 
 

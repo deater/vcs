@@ -126,6 +126,8 @@ trapped_on_myst:
 ; 81
 
 	;================================
+	; "bad" ending
+	;================================
 	; no white page, trapped forever
 	;	in D'NI
 
@@ -140,53 +142,76 @@ trapped_with_atrus:
 	; grabbed the clock puzzle
 	;==========================
 grab_clock_puzzle:
-;	jmp	done_handle_grab
+
+	; fall through to fireplace
 
 	;==============================
 	; grabbed the fireplace puzzle
 	;==============================
 grab_fireplace:
-; 49
+; 55
 	inc	WAS_CLICKED		; set flag to handle later	; 5
-	bne	done_handle_grab		; bra			; 3
-; 57
-
-	;============================
-	; grabbed the clock controls
-	;============================
-grab_clock_controls:
-; 49
-	lda	#LOCATION_CLOCK_PUZZLE
-	jmp	start_new_level
+	bne	done_handle_grab_29	; bra				; 3
+; 63
 
 
 	;==============================
 	; grabbed close door painting
 	;==============================
 grab_close_painting:
-; 49
+; 55
+	lda	BARRIER_STATUS						; 3
+
+	; if open, make grind noise and close
+	; if already open, make beep
+	and	#BARRIER_LIBRARY_DOOR_CLOSED				; 2
+; 60
+	beq	close_door						; 2/3
+
+
+common_door_same:
+; 62 / 63
+	ldy	#SFX_CLICK		; play sound			; 2
+	sty	SFX_PTR							; 3
+; 67
+;	nop	; force cross scanline
+;
+	bne	done_handle_grab	; bra				; 3
+; 70
+
+
+close_door:
+; 63
 	lda	BARRIER_STATUS						; 3
 	ora	#BARRIER_LIBRARY_DOOR_CLOSED				; 2
-	bne	common_painting		; bra				; 3
+; 68
+	bne	common_door_change		; bra			; 3
 
 	;==============================
 	; grabbed open door painting
 	;==============================
 grab_open_painting:
-; 49
+; 55
+	lda	BARRIER_STATUS						; 3
+	and	#BARRIER_LIBRARY_DOOR_CLOSED				; 2
+; 60
+	beq	common_door_same					; 2/3
+
+
+open_door:
+; 62
 	lda	BARRIER_STATUS						; 3
 	and	#<(~BARRIER_LIBRARY_DOOR_CLOSED)			; 2
-; 54
+; 67
 
-common_painting:
-; 57 / 54
+common_door_change:
+; 71 / 67
 	sta	BARRIER_STATUS						; 3
 	ldy	#SFX_RUMBLE		; play sound			; 2
 	sty	SFX_PTR							; 3
-; 65
-
+; 65 / 75
 	bne	done_handle_grab	; bra				; 3
-; 68
+; 68 / 78
 
 
 
@@ -397,6 +422,31 @@ restore_white_page:
 ; 34
 	rts
 ; 40
+
+
+
+
+	;============================
+	; grabbed the clock controls
+	;============================
+grab_clock_controls:
+; 55
+	lda	#LOCATION_CLOCK_PUZZLE					; 2
+	jmp	start_new_level_29					; 3
+
+	;============================
+	; pushed the elevator button
+	;============================
+grab_elevator_button:
+; 55
+	lda	#LOCATION_HINT						; 2
+	jmp	start_new_level_29					; 3
+
+
+
+
+
+
 which_book:
 	.byte $80,$40,$C0
 
@@ -419,7 +469,7 @@ grab_dest_l:
 	.byte	<(grab_close_painting-1)	; 16
 	.byte	<(grab_open_painting-1)		; 17
 	.byte	<(grab_clock_puzzle-1)		; 18
-	.byte	$FF				; 19 elevator
+	.byte	<(grab_elevator_button-1)	; 19 elevator
 
 grab_dest_h:
 	.byte	>(grab_red_book-1)		; 8
@@ -435,4 +485,4 @@ grab_dest_h:
 	.byte	>(grab_close_painting-1)	; 16
 	.byte	>(grab_open_painting-1)		; 17
 	.byte	>(grab_clock_puzzle-1)		; 18
-	.byte	$FF				; 19 elevator
+	.byte	>(grab_elevator_button-1)	; 19 elevator
