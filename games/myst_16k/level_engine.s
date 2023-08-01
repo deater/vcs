@@ -246,10 +246,13 @@ pointer_color_override:
 ; 60
 ;	lda	level_colors	; load level color in advance		; 4
 ; 64
+
+	lda	#62							; 2
+	sta	SCREEN_Y_MAX						; 3
+; 65
 	ldx	#0		; init hand visibility			; 2
-; 66
 	stx	VBLANK		; turn on beam				; 3
-; 69
+; 70
 	sta	WSYNC							; 3
 
 

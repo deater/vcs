@@ -131,7 +131,8 @@ after_check_right:
 	; handle down being pressed
 ; 19
 	lda	POINTER_Y_END		;				; 3
-	cmp	#86			;				; 2
+	; 86 for book, 43 for rest
+	cmp	SCREEN_Y_MAX		;				; 2
 	bcs	after_check_down	;				; 2/3
 ; 26
 	lda	#$20			;				; 2
@@ -141,7 +142,7 @@ after_check_right:
 	inc	POINTER_Y		; move sprite down		; 5
 after_check_down:
 					;	==============================
-					; 			27 / 34 / 38
+					; 			28 / 35 / 39
 
 	;====================================
 	; always adjust this every frame

@@ -255,17 +255,19 @@ pointer_color_override:
 	ldy	#0		; Y=current block (scanline/4)		; 2
 ; 36
 
+	lda	#86			; set max Y position of pointer	; 2
+	sta	SCREEN_Y_MAX						; 3
 
-; 44
+; 41
 	lda	#CTRLPF_REF		; reflect playfield		; 2
 	sta	CTRLPF							; 3
-; 49
 
-;	lda	#0							; 2
+; 46
+
 	sty	VBLANK			; turn on beam			; 3
 	sty	POINTER_ON						; 3
 	sty	COLUBK							; 3
-; 54
+; 55
 	sta	WSYNC							; 3
 
 	;===========================================
