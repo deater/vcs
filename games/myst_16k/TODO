@@ -1,5 +1,8 @@
 Things to finish:
 
++ reset resets game
++ One of the others increases the loading time to reduce flicker?
+
 + Add one more delay in the grab code
 -> all for the page grab which takes 3 
 -> either that or optimize drop page
