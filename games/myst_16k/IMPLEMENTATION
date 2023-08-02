@@ -108,7 +108,19 @@ Decompression:
 		the decompression across frames so we still sync.
 		Otherwise the screen glitches horribly
 		This still leads to some unfortunate flicker as the screen
-			blanks to all-black for 3 frames.
+			blanks to all-black for ~3 frames.
+		
+		The way we do this is set up the 1024T timer to countdown
+		from (18-1) which is almost exactly 229 scanlines.
+		We set up VSYNC (our routine takes 4 cycles), 229,
+		then 29 for overscan which is 262.
+		We modify the code so the get_elias() routine that gets
+		called roughly once per scanline does a check to see if
+		the counter is down to 0 (or 1 to be safe as we can't
+		guarantee exactly) and then it finishes out a frame
+		and re-starts things.
+		When the compression is done we pad things until the
+		end of a frame.
 
 
 Clickable/Grabbable/Action Items:

@@ -1,5 +1,3 @@
-
-
 	;=========================
 	; load level
 	;=========================
@@ -11,19 +9,24 @@ load_level:
 
 	sta	WSYNC
 
-	;=====================
-	; set up in advance
-
+	;==========================
+	; set up load_level frame
+	;==========================
+	; setting this up might take multiple frames
+	; so we have to keep handling drawing the screen
+	; as if it were a drawing kernel
 
 	jsr	common_vblank
 
-	lda	#18
-	sta	T1024T
+	lda	#18		; this sets up timer for (18-1)*1024
+	sta	T1024T		; which is 229 scanlines and the decompress
+				; code will make sure we do the right thing
+				; at 262
 
 
 	; load in level number
 
-;	ldy	#2
+;	ldy	#2		; DEBUG
 
 	ldy	CURRENT_LOCATION
 
@@ -34,6 +37,9 @@ load_level:
 	; top 3 bits indicate bank 0..7
 
 	lda	level_bank_and_high,Y
+	sta	INH				; save for later
+
+	; get ROM bank (top 3 bits) into X
 	lsr
 	lsr
 	lsr
@@ -46,7 +52,7 @@ load_level:
 
 	lda	level_compress_data_low,Y
 	sta	INL
-	lda	level_bank_and_high,Y
+	lda	INH	; level_bank_and_high,Y
 	and	#$1f
 	sta	INH
 

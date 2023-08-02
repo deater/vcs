@@ -33,6 +33,8 @@
 ;	close to running out, we stop, carefully wait until the end
 ;	of the screen, properly do the work to show a valid (empty) screen,
 ;	then pick up again.
+; Problem: depends on get_elias() being called often
+;	on rocket_close data skips from 2 to 0
 
 ;zx0_ini_block:
 ;           .byte $00, $00, <comp_data, >comp_data, <out_addr, >out_addr, $80
@@ -40,13 +42,16 @@
 ;--------------------------------------------------
 ; Decompress ZX0 data (6502 optimized format)
 
-; Before calling, the T1024 timer is set up to
-;	count for 18 times, or 18432 cycles / 76 = 242.5 scanlines
-; Note we finish 3 scanlines short of 262 scanlines (so other code
-;	in caller can run) so you might have to wait 3 yourself
+; Before calling, the T1024 timer is set up to countdown 18 times
+;	the counter immediately drops this to 17, so in effect this
+;	counts for (1024*17) = 17408 cycles / 76 = ~229 scanlines
+;	we then wait 29 scanlines for for overscan, then
+;	our vsync routine takes 4, totalling 262
+
+; Note in the final pass we finish 3 scanlines short of 262 scanlines
+;	(so other code in caller can run) so you might have to wait 3 yourself
+
 zx02_full_decomp:
-
-
 
 
 ;=== Start VMW =================================
@@ -164,15 +169,19 @@ get_elias:
 
 vmw_check_timer:
 	ldx	INTIM			; load current timer countdown val
-	cpx	#1			; see if we've hit #1
-					; we don't wait for 0 because
-					;   after hitting 0 it will
-					;   wrap to 255 and count once-per-cycle
-					; an that's harder to recover from
+	beq	done_vmw		; if we hit zero we're done
 
-	bne	done_vmw		; if not at 1, keep decompressing
+	cpx	#1			; also check if we've hit 1
+					; as there's no guarantee that
+					; get_elias() is called often enoguh
 
-hanle_timer_out:
+					; also if you go past 0 the timer
+					; enters a weird mode where it counts
+					; down from $FF once per cycle
+
+	bne	done_vmw		; if >1, keep decompressing
+
+handle_timer_out:
 
 	; save A and Y on stack as they need to be preserved
 	pha
@@ -184,13 +193,19 @@ force_expire:
 	ldx	INTIM			; repeat until we hit 0
 	bne	force_expire		; if not, loop
 
+	; should be scanline 229 here
+
 	ldx	#29
 	jsr	common_overscan
 
+	; now at scanline 258
+
+	; our common vblank routine takes 4 scanlines, so 262 total
+
 	jsr	common_vblank
 
-	lda	#18				; 14 * 1024 = 14336
-	sta	T1024T				; which is roughly 188.6 lines
+	lda	#18				; (18-1)* 1024 = 17408
+	sta	T1024T				; which is roughly 229 scalines lines
 
 	; restore A and Y
 	pla
