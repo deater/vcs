@@ -10,7 +10,7 @@
 .byte $FF			; right destination
 .byte $00,$00			; XMAX/XMIN of grab area
 .byte $00,$00			; YMAX/YMIN of grab area
-.byte 0,$00			; missile0 (vertical line) X location
+.byte 0				; missile0 (vertical line) X location
 .byte $00,$00			; unused
 .byte $00,$00			; unused
 
