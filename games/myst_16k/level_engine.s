@@ -648,6 +648,19 @@ done_special_cases:
 	sta	POINTER_GRABBING					; 3
 	sta	WAS_CLICKED						; 3
 ; 13
+
+	; handle reset
+	lda	SWCHB		; check if reset pressed		; 3
+	lsr			; put reset into carry			; 2
+	bcs	no_reset						; 2/3
+
+	; reset
+	jmp	myst
+
+no_reset:
+
+
+
 	sta	WSYNC
 
 	;==================================

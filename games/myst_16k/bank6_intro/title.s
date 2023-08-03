@@ -176,21 +176,22 @@ done_loop:
 	;============================
 	; Overscan scanline 30
 	;============================
-	; check for button or RESET
+	; check for button
+	; we used to check for RESET too, but we'd need to debounce it
+	;	and in theory it would be sorta pointless to RESET at title
         ;============================
 
 waited_enough:
 	lda	INPT4			; check if joystick button pressed
 	bpl	done_title
 
-	lda	SWCHB			; check if reset
-	lsr				; put reset into carry
-	bcc	done_title
+;	lda	SWCHB			; check if reset
+;	lsr				; put reset into carry
+;	bcc	done_title
 
 done_check_input:
 
-;	jmp	title_frame_loop
-	bcs	title_frame_loop	; bra
+	bmi	title_frame_loop	; bra
 
 done_title:
 
