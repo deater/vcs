@@ -220,7 +220,7 @@ done_cleft_playfield:
 	;============================
 	; Overscan scanline 30
 	;============================
-	; check for button or RESET
+	; check for button
         ;============================
 ; ?
 	;===============================
@@ -242,9 +242,9 @@ waited_enough_cleft:
 	lda	INPT4			; check if joystick button	; 3
 	bpl	done_cleft
 ; +18
-	lda	SWCHB			; check if reset		; 3
-	lsr				; put reset into carry		; 2
-	bcc	done_cleft
+;	lda	SWCHB			; check if reset		; 3
+;	lsr				; put reset into carry		; 2
+;	bcc	done_cleft
 
 done_check_cleft_input:
 
@@ -252,6 +252,7 @@ done_check_cleft_input:
 
 	sta	WSYNC
 	jmp	cleft_frame_loop
+
 
 done_cleft:
 ; +22/29

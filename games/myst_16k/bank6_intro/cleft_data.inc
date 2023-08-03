@@ -1,5 +1,5 @@
 falling_sprite:
-	.byte	$E0,$31,$1A,$1E,$FE,$1E,$0F,$05,$00
+	.byte	$E0,$31,$1A,$1E,$FE,$1E,$0F,$05;,$00
 
 cleft_colors:
 	.byte $00,$00,$00,$00,$00, $02,$02,$02

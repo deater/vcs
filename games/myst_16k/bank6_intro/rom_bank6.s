@@ -8,14 +8,11 @@
 
 .include "cleft.s"
 
-.include "cleft_data.inc"
-
 
 .include "book.s"
 
-;.include "intro_data.inc"
-;.include "../sfx_data.inc"
-;.include "../sound_update.s"
+; has some alignment constraints
+.include "cleft_data.inc"
 
 .include "../pointer_update.s"
 
