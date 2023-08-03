@@ -50,10 +50,10 @@ handle_switch:
 
 	; Switch to white page if switch from $FF to $7F
 	cpy	#$ff		; be sure all are set			; 2
-	bne	done_handle_grab_29					; 2/3
+	bne	done_handle_grab_28					; 2/3
 ; 57
 	cmp	#$7f		; be sure it's dock one flipped		; 2
-	bne	done_handle_grab_29					; 2/3
+	bne	done_handle_grab_28					; 2/3
 ; 61
 
 	; handle white page
@@ -62,13 +62,15 @@ handle_switch:
 ; 107
 	lda	#POINTER_COLOR_WHITE					; 2
 	sta	POINTER_COLOR						; 3
-	bne	done_handle_grab		; bra			; 3
+	bne	done_handle_grab_29		; bra			; 3
 ; 116
 
 	;=================================
 	; done handle grab
 	;=================================
 	; should we exit more directly?
+done_handle_grab_28:
+	sta	WSYNC
 done_handle_grab_29:
 	sta	WSYNC
 
@@ -122,7 +124,7 @@ trapped_on_myst:
 ; 93
 
 	lda	#LOCATION_YOU_WIN					; 2
-	jmp	start_new_level						; 3
+	jmp	start_new_level_29					; 3
 ; 81
 
 	;================================
@@ -135,7 +137,7 @@ trapped_with_atrus:
 	; else, trapped
 	lda	#LOCATION_TRAPPED					; 3
 ; 74
-	jmp	start_new_level						; 3
+	jmp	start_new_level_29					; 3
 ; 77?  This is cutting close but I guess OK?
 
 	;==========================
@@ -151,7 +153,7 @@ grab_clock_puzzle:
 grab_fireplace:
 ; 55
 	inc	WAS_CLICKED		; set flag to handle later	; 5
-	bne	done_handle_grab_29	; bra				; 3
+	bne	done_handle_grab_28	; bra				; 3
 ; 63
 
 
@@ -176,7 +178,7 @@ common_door_same:
 ; 67
 ;	nop	; force cross scanline
 ;
-	bne	done_handle_grab	; bra				; 3
+	bne	done_handle_grab_28	; bra				; 3
 ; 70
 
 
@@ -211,7 +213,7 @@ ready_to_rumble:
 	ldy	#SFX_RUMBLE		; play sound			; 2
 	sty	SFX_PTR							; 3
 ; 65 / 75
-	bne	done_handle_grab	; bra				; 3
+	bne	done_handle_grab_29	; bra				; 3
 ; 68 / 78
 
 
@@ -222,6 +224,7 @@ ready_to_rumble:
 	; TODO: animation?  track rotation?
 grab_tower_rotation:
 ; 55
+	sta	WSYNC
 	jmp	ready_to_rumble						 ; 3
 ; 58
 
@@ -272,7 +275,7 @@ common_grab_page:
 	lda	RED_PAGES_TAKEN,X	; get current page taken status	; 4
 	and	CURRENT_PAGE		; check if it is taken		; 3
 ; 84
-	bne	done_handle_grab	; if it is we can't grab it	; 2/3
+	bne	done_handle_grab_29	; if it is we can't grab it	; 2/3
 ; 86
 	lda	TEMP1			; get hold_red/hold_blue	; 3
 	ora	CURRENT_PAGE		; set page taken		; 3
@@ -326,7 +329,7 @@ green_book_red_page:
 
 
 handle_book:
-; 75 (red/blue) / 65 (green)
+; 75 (red/blue) / 68 (green)
 	;===========================
 	; handle book being clicked
 	;===========================
@@ -337,9 +340,10 @@ handle_book:
 	;		if page count==2 then game over
 
 	; X has red/blue already
-; 75
+; 75 / 68
 	lda	POINTER_TYPE						; 3
 	cmp	#POINTER_TYPE_PAGE					; 2
+; 80 / 73
 	bne	really_do_book						; 2/3
 
 	; need to compare to make sure red page in red book
@@ -367,14 +371,15 @@ put_page_in_book:
 	bne	still_more_pages					; 2/3
 ; 115
 	lda	#LOCATION_TRAPPED					; 3
-	jmp	start_new_level
+	jmp	start_new_level_29
 
 still_more_pages:
 ; 116
-	jmp	done_handle_grab
+	jmp	done_handle_grab_29
 
 really_do_book:
-; 83 / 94
+; 83 / 76/ 94
+	sta	WSYNC
 	jsr	book_common
 
 	lda	CURRENT_LOCATION
@@ -451,7 +456,7 @@ restore_white_page:
 grab_clock_controls:
 ; 55
 	lda	#LOCATION_CLOCK_PUZZLE					; 2
-	jmp	start_new_level_29					; 3
+	jmp	start_new_level_28					; 3
 
 	;============================
 	; pushed the elevator button
@@ -459,7 +464,7 @@ grab_clock_controls:
 grab_elevator_button:
 ; 55
 	lda	#LOCATION_HINT						; 2
-	jmp	start_new_level_29					; 3
+	jmp	start_new_level_28					; 3
 
 
 

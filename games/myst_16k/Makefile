@@ -64,6 +64,7 @@ main.o:	main.s zp.inc \
 	$(CALC_ADDRESS) -a 0x1A00 -s set_pos_x main.lst >> common_routines.inc
 	$(CALC_ADDRESS) -a 0x1A00 -s load_new_level main.lst >> common_routines.inc
 	$(CALC_ADDRESS) -a 0x1A00 -s start_new_level main.lst >> common_routines.inc
+	$(CALC_ADDRESS) -a 0x1A00 -s start_new_level_28 main.lst >> common_routines.inc
 	$(CALC_ADDRESS) -a 0x1A00 -s start_new_level_29 main.lst >> common_routines.inc
 	$(CALC_ADDRESS) -a 0x1A00 -s done_check_level_input main.lst >> common_routines.inc
 	cd bank6_intro && make

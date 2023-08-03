@@ -1,11 +1,11 @@
 Things to finish:
 
-+ reset resets game
-+ One of the others increases the loading time to reduce flicker?
++ remove all glitches
+	+ opening green book
+	+ clicking in green book
 
-+ Add one more delay in the grab code
--> all for the page grab which takes 3 
--> either that or optimize drop page
++ Hook up the color/bw code that artificially increases loading
+	time to reduce flicker
 
 + remove aligns
 -> I think last one is in clock_update
@@ -23,7 +23,6 @@ Things to finish:
 
 + Put notes/disclaimer in the 256 bytes of "empty" ROM.
 	Hope this won't confuse emulators
-
 
 Sound:
 + Fix linking book noise
