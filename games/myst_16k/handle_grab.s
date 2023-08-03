@@ -117,6 +117,10 @@ trapped_on_myst:
 	stx	RED_PAGES_TAKEN						; 3
 	stx	BLUE_PAGES_TAKEN					; 3
 ; 83
+	lda	#BARRIER_ATRUS_DONE
+	ora	BARRIER_STATUS
+	sta	BARRIER_STATUS
+
 	; give white page to atrus
 	inc	WHITE_PAGE_COUNT					; 5
 	lda	#0			; drop page			; 2

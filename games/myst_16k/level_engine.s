@@ -1128,10 +1128,10 @@ fireplace_offset:
 	.byte 46,36
 
 overlay_patch_start:
-	.byte 33,12,13
+	.byte 33,12,13,29
 
 overlay_patch_color:
-	.byte $4,$2,$0
+	.byte $4,$2,$0,$0
 
 library_page_offset:
 	.byte 20,14
