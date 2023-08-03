@@ -92,6 +92,7 @@ grab_atrus:
 	; myst linking book instead
 ; 60
 	sta	WSYNC							; 3
+	sta	WSYNC							; 3
 	jmp	handle_book						; 3
 
 havent_given_page_yet:
