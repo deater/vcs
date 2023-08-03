@@ -659,6 +659,17 @@ done_special_cases:
 
 no_reset:
 
+	; handle color/bw
+	ldx	#0
+	lsr			; check if select pressed
+	lsr
+	lsr
+	bcs	no_colorbw
+yes_colorbw:
+	ldx	#5
+no_colorbw:
+	stx	LOCATION_LOAD_DELAY
+
 
 
 	sta	WSYNC
