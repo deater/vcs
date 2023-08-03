@@ -510,7 +510,7 @@ book_done_playfield:
 	;===========================
 	;===========================
 
-	ldx	#29
+	ldx	#28
 	jsr	common_overscan
 
 	;==================================
@@ -523,7 +523,7 @@ book_done_playfield:
 ;	sta	WSYNC
 
 	;==================================
-	; overscan 29, update pointer
+	; overscan 28, update pointer
 
 	ldx	POINTER_X
 	ldy	POINTER_Y
@@ -553,74 +553,90 @@ not_in_window:
 	sta	WSYNC
 
 	;==================================
-	; overscan 30, see if at end
-
+	; overscan 29/30, see if at end
+; 0
 	lda	INPUT_COUNTDOWN						; 3
 	beq	waited_enough_book					; 2/3
+; 5
 	dec     INPUT_COUNTDOWN						; 5
 	jmp     book_keep_going						; 3
 
 waited_enough_book:
-
-
-	lda	INPT4			; check if joystick button pressed
-	bpl	book_clicked
+; 6
+	lda	INPT4		; check if joystick button pressed	; 3
+	bpl	book_clicked						; 2/3
 
 book_keep_going:
+	sta	WSYNC
 	sta	WSYNC
 	jmp	book_frame
 
 book_clicked:
+
+; 12
 	; WHICH_BOOK = CURRENT_LOCATION - 8
 	; if 0..1 (red/blue) any click stays same place
 	; if 2/4 (green / dni myst book) grab links, click backs off
 	; if 3 (myst book start game) grab links
 
-	ldx	WHICH_BOOK
-	cpx	#3
-	beq	myst_book_start_game
+	ldx	WHICH_BOOK						; 3
+	cpx	#3							; 2
+	beq	myst_book_start_game					; 2/3
+; 19
 
-	cpx	#2
-	bcc	do_brother_book	; brother book
+	cpx	#2							; 2
+	bcc	do_brother_book	; brother book				; 2/3
+; 23
 
 	; books where you link or back off
 green_book:
-	lda	POINTER_TYPE
-	cmp	#POINTER_TYPE_GRAB
-	bcc	exit_no_link_noise	; should hangle GRAB+PAGE
-
+	lda	POINTER_TYPE						; 3
+	cmp	#POINTER_TYPE_GRAB					; 2
+	bcc	exit_no_link_noise	; should handle GRAB+PAGE	; 2/3
+; 30
 	; we clicked in window
 
-	cpx	#4
-	beq	were_going_to_library
+	cpx	#4							; 2
+	beq	were_going_to_library					; 2/3
 
 were_going_to_dni:
-	lda	#LOCATION_DNI_N
-	sta	LINK_DESTINATION
-	bne	exit_yes_link		; bra
+; 34
+	lda	#LOCATION_DNI_N						; 2
+	bne	exit_yes_link		; bra				; 3
 
 were_going_to_library:
-	lda	#LOCATION_LIBRARY_UP
-	sta	LINK_DESTINATION
-	bne	exit_yes_link		; bra
+; 35
+	lda	#LOCATION_LIBRARY_UP					; 2
+	bne	exit_yes_link		; bra				; 3
 
 	; start of game, so no way to back off
 myst_book_start_game:
-	lda	POINTER_TYPE
-	cmp	#POINTER_TYPE_GRAB
-	bne	book_keep_going
-
+; 20
+	lda	POINTER_TYPE						; 3
+	cmp	#POINTER_TYPE_GRAB					; 2
+	bne	book_keep_going						; 2/3
+; 27
+	lda	#LOCATION_ARRIVAL_N					; 2
+	sta	WSYNC
 
 exit_yes_link:
+; 29 / 39/40
+	sta	LINK_DESTINATION					; 3
+	sta	CURRENT_LOCATION					; 3
+; 46
 	; start linking noise
-	ldy	#SFX_LINK
-	sty	SFX_PTR
+	ldy	#SFX_LINK						; 2
+	sty	SFX_PTR							; 3
 
-	ldy	LINK_DESTINATION
-	sty	CURRENT_LOCATION
+; 51 (this is about 4 cycles too many)
+	rts
 
 do_brother_book:
+; 24
+
 exit_no_link_noise:
+; 31
+	sta	WSYNC
 	rts
 
 book_data_l:

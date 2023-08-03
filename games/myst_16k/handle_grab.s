@@ -117,19 +117,19 @@ trapped_on_myst:
 	stx	RED_PAGES_TAKEN						; 3
 	stx	BLUE_PAGES_TAKEN					; 3
 ; 83
-	lda	#BARRIER_ATRUS_DONE
-	ora	BARRIER_STATUS
-	sta	BARRIER_STATUS
-
+	lda	#BARRIER_ATRUS_DONE					; 2
+	ora	BARRIER_STATUS						; 3
+	sta	BARRIER_STATUS						; 3
+; 91
 	; give white page to atrus
 	inc	WHITE_PAGE_COUNT					; 5
 	lda	#0			; drop page			; 2
 	sta	POINTER_COLOR						; 3
-; 93
+; 101
 
 	lda	#LOCATION_YOU_WIN					; 2
 	jmp	start_new_level_29					; 3
-; 81
+; 106
 
 	;================================
 	; "bad" ending
@@ -311,7 +311,7 @@ grab_green_book:
 ; 60
 	ldy	POINTER_Y						; 3
 	cpy	#24			;				; 2
-	bcc	handle_book		; if above, clicked on book	; 2/3
+	bcc	green_handle_book	; if above, clicked on book	; 2/3
 
 ; 62
 	cpy	#37							; 2
@@ -330,6 +330,11 @@ green_book_red_page:
 	ldx	#0							; 2
 	beq	common_grab_page	; bra				; 3
 ; 74
+
+green_handle_book:
+; 68
+	sta	WSYNC
+	sta	WSYNC
 
 
 handle_book:
@@ -382,9 +387,17 @@ still_more_pages:
 	jmp	done_handle_grab_29
 
 really_do_book:
-; 83 / 76/ 94
+; 83 (red/blue) / 76 (green) / 94 (?)
 	sta	WSYNC
-	jsr	book_common
+	jsr	book_common	; book common expects being called from
+				; scanline 30?
+
+
+; 24 (red/blue) / 60 (green)
+really_done_with_book:
+	; weirdly, we have an extra frame for green/myst book
+	; but not for red/blue?
+
 
 	lda	CURRENT_LOCATION
 	jmp	start_new_level

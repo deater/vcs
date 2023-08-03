@@ -1,8 +1,7 @@
 Things to finish:
 
 + remove all glitches
-	+ opening green book
-	+ clicking in green book
+	+ click on atrus book after winning
 
 + Hook up the color/bw code that artificially increases loading
 	time to reduce flicker
@@ -11,15 +10,6 @@ Things to finish:
 -> I think last one is in clock_update
 
 + after winning: red/blue/white/pages so you can't get them anymore
-
-+ fix bounds issues
--> atrus make page acceptance cover the page graphic too
-
-+ fix all glithces
--> pick up page in library, glitches
-
-+ Clear atrus page question once game is finished
-	This could be a barrier issue
 
 + Put notes/disclaimer in the 256 bytes of "empty" ROM.
 	Hope this won't confuse emulators
