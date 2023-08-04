@@ -16,7 +16,7 @@ myst.o:	myst.s main.bin \
 	locations/rom_bank4.bin \
 	bank5_clock/rom_bank5.bin \
 	bank6_intro/rom_bank6.bin \
-	zero.bin zero2.bin
+	zero.bin empty/zero2.bin
 	ca65 -o myst.o myst.s
 
 
@@ -25,8 +25,11 @@ myst.o:	myst.s main.bin \
 zero.bin:	
 	dd if=/dev/zero of=zero.bin bs=1k count=2
 
-zero2.bin:	
-	dd if=/dev/zero of=zero2.bin bs=256 count=2
+###
+
+empty/zero2.bin:	
+	cd empty && make
+#	dd if=/dev/zero of=zero2.bin bs=256 count=2
 
 ###
 
@@ -96,3 +99,4 @@ clean:
 	cd locations && make clean
 	cd bank5_clock && make clean
 	cd bank6_intro && make clean
+	cd empty && make clean
