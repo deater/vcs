@@ -82,7 +82,12 @@ clear_loop:
 	; DEBUG
 	;	makes getting white page easier
 
+.if 0
 	dec	SWITCH_STATUS
+.else
+	nop
+	nop
+.endif
 
 
 	;==============================

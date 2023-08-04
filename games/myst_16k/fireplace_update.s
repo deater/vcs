@@ -184,17 +184,20 @@ skipped_most:
 
 	; answer is $FF if match?
 
+; debug making only the top line necessary
+; makes it easier to see Atrus when testing
+
+.if 0
 	ldx	#0
-;	ldx	#5						; 2
+.else
+	ldx	#5						; 2
+.endif
 	stx	FIREPLACE_CORRECT				; 3
 ; 5
 check_fireplace_loop:
 	lda	FIREPLACE_ROW1,X				; 4
 	cmp	fireplace_solution,X				; 4
 
-	; debug
-;	nop
-;	nop
 	bne	not_the_combination				; 2/3
 	dec	FIREPLACE_CORRECT				; 5
 not_the_combination:

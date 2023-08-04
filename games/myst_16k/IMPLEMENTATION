@@ -150,7 +150,7 @@ Book Implementation:
 
 	There's 48 bytes of data for the edge of book colors
 	There's 2*48 bytes of data for overlay1 (sprite+colors)
-	There's 2*48 bytes of data for overlay2 (sprite+colors)
+h	There's 2*48 bytes of data for overlay2 (sprite+colors)
 
 	This is a bit wasteful as especially for the red/blue pages
 		there's a lot of common data.  However it would be tricky
@@ -445,3 +445,24 @@ DEBUG
 		uncomment the dec in main.s
 	+ to make the fireplace puzzle easier:
 		ldx in update_fireplace.s
+
+
+layout
+~~~~~~
+
+	spent a lot of time properly packing the data to leave
+	as little room as possible left over.  Extra challenge
+	as for reasons mentioned earlier level data can't start
+	in the last 256 bytes of a ROM bank.
+
+	In the end there's about 200 bytes left over but scattered
+	enough can't easily fit another location (even though
+	I have a dentist/planetarium level ready to go)
+
+timing
+~~~~~~
+	The scene transition has about 2 frames (1/30s) of black in
+	between which might be annoying flashing when moving.
+	As a workaround if you flip the color/bw switch on the console
+	it was insert a longer delay to reduce flicker
+
