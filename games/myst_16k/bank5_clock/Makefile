@@ -35,7 +35,7 @@ rom_bank5.o:	rom_bank5.s \
 	../zp.inc ../../../vcs.inc \
 	steps_e_data.zx02 library_up_data.zx02 \
 	library_nw_data.zx02 library_ne_data.zx02 clock_puzzle_data.zx02 \
-	elevator_s_data.zx02 \
+	elevator_s_data.zx02 inside_elevator_data.zx02 \
 	clock_update.s ../fireplace_update.s
 	ca65 -o rom_bank5.o rom_bank5.s -l rom_bank5.lst
 
@@ -65,6 +65,11 @@ hint_data.inc:	hint_bg.png hint_overlay.png
 	$(PNG2PF) -4 -n hint -b 0x00 hint_bg.png - > hint_data.inc
 	$(PNG2OVERLAY) -4 -o -n hint hint_overlay.png - >> hint_data.inc
 
+###
+
+inside_elevator_data.inc:	inside_elevator_bg.png inside_elevator_overlay.png
+	$(PNG2PF) -4 -n inside_elevator -b 226 inside_elevator_bg.png - > inside_elevator_data.inc
+	$(PNG2OVERLAY) -4 -o -b 190 -n inside_elevator inside_elevator_overlay.png - >> inside_elevator_data.inc
 
 ###
 
@@ -144,6 +149,17 @@ hint_data.bin:	hint_data.o
 hint_data.o:	hint_data.s hint_data.inc
 	ca65 -o hint_data.o hint_data.s -l hint_data.lst
 
+
+###
+
+inside_elevator_data.zx02:	inside_elevator_data.bin
+	$(ZX02) -f inside_elevator_data.bin inside_elevator_data.zx02
+
+inside_elevator_data.bin:	inside_elevator_data.o
+	ld65 -o inside_elevator_data.bin inside_elevator_data.o -C $(LINKER_SCRIPT)/atari2600_f000.inc
+
+inside_elevator_data.o:	inside_elevator_data.s inside_elevator_data.inc
+	ca65 -o inside_elevator_data.o inside_elevator_data.s -l inside_elevator_data.lst
 
 ###
 

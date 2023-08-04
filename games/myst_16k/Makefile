@@ -52,6 +52,7 @@ main.o:	main.s zp.inc \
 	echo "library_up_data_zx02 = 0 " >> rom_bank5_routines.inc
 	echo "steps_e_data_zx02 = 0 " >> rom_bank5_routines.inc
 	echo "clock_puzzle_data_zx02 = 0 " >> rom_bank5_routines.inc
+	echo "inside_elevator_data_zx02 = 0 " >> rom_bank5_routines.inc
 	echo "library_ne_data_zx02 = 0 " >> rom_bank5_routines.inc
 	echo "library_nw_data_zx02 = 0 " >> rom_bank5_routines.inc
 	echo "clock_update = 0 " >> rom_bank5_routines.inc
@@ -82,6 +83,7 @@ main.o:	main.s zp.inc \
 	$(CALC_ADDRESS) -a 0x1000 -s clock_puzzle_data_zx02 bank5_clock/rom_bank5.lst >> rom_bank5_routines.inc
 	$(CALC_ADDRESS) -a 0x1000 -s library_ne_data_zx02 bank5_clock/rom_bank5.lst >> rom_bank5_routines.inc
 	$(CALC_ADDRESS) -a 0x1000 -s library_nw_data_zx02 bank5_clock/rom_bank5.lst >> rom_bank5_routines.inc
+	$(CALC_ADDRESS) -a 0x1000 -s inside_elevator_data_zx02 bank5_clock/rom_bank5.lst >> rom_bank5_routines.inc
 	$(CALC_ADDRESS) -a 0x1000 -s clock_update bank5_clock/rom_bank5.lst >> rom_bank5_routines.inc
 	$(CALC_ADDRESS) -a 0x1000 -s fireplace_update bank5_clock/rom_bank5.lst >> rom_bank5_routines.inc
 	$(CALC_ADDRESS) -a 0x1000 -s do_title bank5_clock/rom_bank5.lst >> rom_bank5_routines.inc

@@ -134,7 +134,7 @@ level_bank_and_high:
 	.byte	(5<<5) | (>library_nw_data_zx02)	; 16 = library_nw
 	.byte	(5<<5) | (>library_ne_data_zx02)	; 17 = library_ne
 	.byte	(5<<5) | (>clock_puzzle_data_zx02)	; 18 = clock_puzzle
-	.byte	$FF					; 19 = in_elevator
+	.byte	(5<<5) | (>inside_elevator_data_zx02)	; 19 = in_elevator
 
 	.byte	(1<<5) | (>library_n_data_zx02)		; 20 = library_n
 	.byte	(0<<5) | (>rocket_n_data_zx02)		; 21 = rocket_n
@@ -177,7 +177,7 @@ level_bank_and_high:
 	.byte	(4<<5) | (>elevator_n_data_zx02)	; 55 = elevator_n
 	.byte	(5<<5) | (>elevator_s_data_zx02)	; 56 = elevator_s
 	.byte	(4<<5) | (>hint_data_zx02)		; 57 = hint
-	.byte	$FF					; 58 = inside_elevator
+	.byte	$FF					; 58 = inside_dentist
 
 level_compress_data_low:
 	.byte	<gear_n_data_zx02			; 0 = gear_n
@@ -202,7 +202,7 @@ level_compress_data_low:
 	.byte	<library_nw_data_zx02			; 16 = library_nw
 	.byte	<library_ne_data_zx02			; 17 = library_ne
 	.byte	<clock_puzzle_data_zx02			; 18 = clock_puzzle
-	.byte	$FF					; 19 = inside_elevator
+	.byte	<inside_elevator_data_zx02		; 19 = inside_elevator
 
 	.byte	<library_n_data_zx02			; 20 = library_n
 	.byte	<rocket_n_data_zx02			; 21 = rocket_n
@@ -248,4 +248,4 @@ level_compress_data_low:
 	.byte	<elevator_n_data_zx02			; 55 = elevator_n
 	.byte	<elevator_s_data_zx02			; 56 = elevator_s
 	.byte	<hint_data_zx02				; 57 = hint
-	.byte	$FF					; 58 = inside_elevator
+	.byte	$FF					; 58 = inside_dentist

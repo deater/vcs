@@ -82,9 +82,9 @@ library_nw	208
 library_ne	205
 clock_puzzle	123
 elevator_s	130
-
+inside_elevator	167
 		===
-		764 = 156 bytes free
+		7B6 = 74 bytes free
 
 rom6:
 ~~~~~
@@ -98,5 +98,4 @@ main:
 
 TODO:
 ~~~~~
-inside_elevator = 167 bytes
 inside_dentist  = 242 bytes
