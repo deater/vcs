@@ -666,7 +666,7 @@ no_reset:
 	lsr
 	bcs	no_colorbw
 yes_colorbw:
-	ldx	#5
+	ldx	#10
 no_colorbw:
 	stx	LOCATION_LOAD_DELAY
 

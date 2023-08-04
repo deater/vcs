@@ -11,8 +11,6 @@ Things to finish:
 
 + after winning: red/blue/white/pages so you can't get them anymore
 
-+ Put notes/disclaimer in the 256 bytes of "empty" ROM.
-	Hope this won't confuse emulators
 
 Sound:
 + Fix linking book noise
@@ -105,3 +103,10 @@ FEEL FREE TO EXPLORE
 
 FEEL FREE TO HANG
 OUT IN MYST
+
+
+Done:
+
++ Put notes/disclaimer in the 256 bytes of "empty" ROM.
+	Hope this won't confuse emulators
+

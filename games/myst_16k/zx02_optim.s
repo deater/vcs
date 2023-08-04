@@ -254,6 +254,10 @@ elias_skip1:
 exit:
 ;=== Start VMW =================================
 
+	lda	LOCATION_LOAD_DELAY
+	sta	TEMP1
+	bne	blank_extra_long
+
 	;========================================
 	; If we finish before timer expires...
 	;========================================
@@ -262,9 +266,40 @@ check_timer:
 	bne	check_timer		; if not, loop
 
 	; 3 scanlines less because we copy 16 bytes in load_level
-
+early_out:
 	ldx	#26			; do the overscan
 	jsr	common_overscan
 
 	rts
+
+
+
+
+
+blank_extra_long_loop:
+
+	; our common vblank routine takes 4 scanlines, so 262 total
+
+	jsr	common_vblank
+
+	lda	#18				; (18-1)* 1024 = 17408
+	sta	T1024T				; which is roughly 229 scalines lines
+
+blank_extra_long:
+
+extra_check_timer:
+	ldx	INTIM				; see if scanline counter done
+	bne	extra_check_timer		; if not, loop
+
+	dec	TEMP1
+	beq	early_out
+
+	; should be scanline 229 here
+
+	ldx	#29
+	jsr	common_overscan
+
+	jmp	blank_extra_long_loop
+
+
 

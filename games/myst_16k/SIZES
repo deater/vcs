@@ -62,7 +62,7 @@ rom4:
 ~~~~~
 inside_fireplace122
 shack_s		240
-atrus_e		218
+atrus_e		221
 trapped		138
 dock_s		186
 dentist_e	167
@@ -72,7 +72,7 @@ hint		114
 elevator_n	161
 dni_e		254
 		===
-		7f1 = 14 bytes free
+		7f2 = 13 bytes free
 
 rom5:
 ~~~~~
@@ -89,12 +89,12 @@ elevator_s	130
 rom6:
 ~~~~~
 		===
-		786 = 122 bytes free
+		7CA = 54 bytes free
 
 main:
 ~~~~~
 		===
-		560 = 160 bytes free
+		5A8 = 88 bytes free
 
 TODO:
 ~~~~~
