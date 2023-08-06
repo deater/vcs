@@ -17,15 +17,15 @@ clock_puzzle_data_zx02:
 .incbin "clock_puzzle_data.zx02"
 elevator_s_data_zx02:
 .incbin "elevator_s_data.zx02"
-
 .include "clock_sprites.s"
-
+elevator_n_data_zx02:
+.incbin "elevator_n_data.zx02"
 inside_elevator_data_zx02:
 .incbin "inside_elevator_data.zx02"
 
 .include "clock_update.s"
 .include "../fireplace_update.s"
-.include "../sound_update.s"
-.include "../sfx_data.inc"
+;.include "../sound_update.s"
+;.include "../sfx_data.inc"
 
 rom_bank5_end:

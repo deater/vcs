@@ -76,6 +76,7 @@ dni_e		254
 
 rom5:
 ~~~~~
+elevator_n	161
 steps_e		232
 library_up	237
 library_nw	208
@@ -83,20 +84,23 @@ library_ne	205
 clock_puzzle	123
 elevator_s	130
 inside_elevator	167
+code		...
 		===
-		7B6 = 74 bytes free
+		7EE = 17 bytes free
 
 rom6:
 ~~~~~
 		===
-		7CA = 54 bytes free
+		7CB = 53 bytes free
 
 main:
 ~~~~~
 		===
-		5A8 = 88 bytes free
+		5F5 = 11 - 32 (for context switch/header) = -21 bytes free
 
 TODO:
 ~~~~~
-elevator_n	161
+
 inside_dentist  = 242 bytes
+
+sound code is 105 bytes in bank5, maybe split up and put in bank6/main?

@@ -1,5 +1,8 @@
 ; The star-fissure
 
+fall_scale:
+.byte 0,0,5,5,7,7
+
 	;================================
 	; cleft
 	;================================
@@ -259,7 +262,18 @@ done_cleft:
 	lda	#0							; 2
 	sta	ENABL			; disable ball			; 3
 
-	rts								; 6
+;	rts								; 6
 
-fall_scale:
-.byte 0,0,5,5,7,7
+
+; fall through to book...
+
+	ldy	#LOCATION_ARRIVAL_N
+	sty	CURRENT_LOCATION
+;       sty     LINK_DESTINATION
+
+        ; switch to bank 6
+;       sta     E7_SET_BANK6    ; not necessary, already in bank6?
+
+;	jsr	book_common
+
+

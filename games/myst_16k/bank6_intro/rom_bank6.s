@@ -18,4 +18,6 @@
 
 .include "../handle_grab.s"
 
+.include "../sound_update.s"
+
 rom_bank6_end:

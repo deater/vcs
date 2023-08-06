@@ -82,10 +82,12 @@ check_overlay_patch:
 ; 8
 
 no_overlay_patch:
-	sta	WSYNC
-	sta	WSYNC
-	sta	WSYNC
-	sta	WSYNC
+	ldx	#4
+	jsr	common_delay_scanlines
+;	sta	WSYNC
+;	sta	WSYNC
+;	sta	WSYNC
+;	sta	WSYNC
 done_overlay_patch:
 	sta	WSYNC
 
@@ -319,8 +321,6 @@ done_level_activate_hand:
 
 ; 67
 
-;	nop
-;	nop
 	inc	TEMP1		; nop5
 
 ; 72
@@ -458,8 +458,11 @@ level_done_pointer:
 	jmp	level_done_pointer2					; 3
 level_no_pointer2:
 	inc	TEMP1		; nop5					; 5
-	lda	TEMP1		; nop3					; 3
-	lda	TEMP1		; nop3					; 3
+	nop								; 2
+	nop								; 2
+	nop								; 2
+;	lda	TEMP1		; nop3					;
+;	lda	TEMP1		; nop3					;
 level_done_pointer2:
 								;===========
 								; 16 / 6
@@ -678,7 +681,7 @@ no_colorbw:
 	; overscan 24, update sound
 	;==================================
 
-	lda	E7_SET_BANK5						; 3
+	lda	E7_SET_BANK6						; 3
 	jsr	update_sound						; 50+6
 	lda	E7_SET_BANK7_RAM					; 3
 ; 62

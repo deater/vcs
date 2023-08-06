@@ -133,7 +133,7 @@ rom_bank4.o:	rom_bank4.s \
 	shack_s_data.zx02 \
 	dni_e_data.zx02 atrus_e_data.zx02 \
 	trapped_data.zx02 dock_s_data.zx02 burnt_book_data.zx02 \
-	rocket_s_data.zx02 hint_data.zx02 elevator_n_data.zx02 \
+	rocket_s_data.zx02 hint_data.zx02 \
 	you_win_data.zx02 inside_fireplace_data.zx02 \
 	inside_dentist_data.zx02 shortsteps_n_data.zx02
 	ca65 -o rom_bank4.o rom_bank4.s -l rom_bank4.lst

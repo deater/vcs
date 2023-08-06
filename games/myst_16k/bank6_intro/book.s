@@ -621,7 +621,7 @@ myst_book_start_game:
 
 exit_yes_link:
 ; 29 / 39/40
-	sta	LINK_DESTINATION					; 3
+;	sta	LINK_DESTINATION					; 3
 	sta	CURRENT_LOCATION					; 3
 ; 46
 	; start linking noise

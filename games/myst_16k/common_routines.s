@@ -52,7 +52,3 @@ common_delay_scanlines:
 	rts								; 6
 
 ; 10
-
-
-
-

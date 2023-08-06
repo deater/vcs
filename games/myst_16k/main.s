@@ -67,15 +67,16 @@ clear_loop:
 	;==============================
 	; Show book (ROM bank 6)
 	;==============================
+	; this all happens in bank 6...
 
-	ldy	#LOCATION_ARRIVAL_N
-	sty	CURRENT_LOCATION
-	sty	LINK_DESTINATION
+;	ldy	#LOCATION_ARRIVAL_N
+;	sty	CURRENT_LOCATION
+;	sty	LINK_DESTINATION
 
 	; switch to bank 6
-	sta	E7_SET_BANK6
+;	sta	E7_SET_BANK6	; not necessary, already in bank6?
 
-	jsr	book_common
+;	jsr	book_common
 
 
 	;==========================
@@ -85,8 +86,8 @@ clear_loop:
 .if 0
 	dec	SWITCH_STATUS
 .else
-	nop
-	nop
+;	nop
+;	nop
 .endif
 
 
@@ -94,8 +95,11 @@ clear_loop:
 	; load in current level
 	;==============================
 load_new_level:
-	jsr	load_level
+;	jsr	load_level
 
+	; we inline it now to save 4 bytes
+
+	.include "load_level.s"
 
 	;===========================
 	;===========================
@@ -111,19 +115,13 @@ load_new_level:
 
 	.include "zx02_optim.s"
 
-	.include "load_level.s"
+	.include "level_data.inc"
+;	.include "load_level.s"
 	.include "position.s"
 	.include "common_routines.s"
 
-
-
-
-;do_book:
-	; switch to bank 6
-;	sta	E7_SET_BANK6
-
-;	jmp	book_common
-
+;	.include "sound_update.s"
+	.include "sfx_data.inc"
 
 
 ; e7 signature for MAME */
