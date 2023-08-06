@@ -174,10 +174,12 @@ level_bank_and_high:
 
 	.byte	(5<<5) | (>steps_e_data_zx02)		; 53 = steps_e
 	.byte	(5<<5) | (>library_up_data_zx02)	; 54 = library_up
-	.byte	(4<<5) | (>elevator_n_data_zx02)	; 55 = elevator_n
+	.byte	$FF
+;	.byte	(4<<5) | (>elevator_n_data_zx02)	; 55 = elevator_n
 	.byte	(5<<5) | (>elevator_s_data_zx02)	; 56 = elevator_s
 	.byte	(4<<5) | (>hint_data_zx02)		; 57 = hint
-	.byte	$FF					; 58 = inside_dentist
+	.byte	(4<<5) | (>shortsteps_n_data_zx02)	; 58 = shortsteps_n
+;	.byte	$FF					; 59 = inside_dentist
 
 level_compress_data_low:
 	.byte	<gear_n_data_zx02			; 0 = gear_n
@@ -245,7 +247,10 @@ level_compress_data_low:
 
 	.byte	<steps_e_data_zx02			; 53 = steps_e
 	.byte	<library_up_data_zx02			; 54 = library_up
-	.byte	<elevator_n_data_zx02			; 55 = elevator_n
+	.byte	$FF
+;	.byte	<elevator_n_data_zx02			; 55 = elevator_n
 	.byte	<elevator_s_data_zx02			; 56 = elevator_s
 	.byte	<hint_data_zx02				; 57 = hint
-	.byte	$FF					; 58 = inside_dentist
+	.byte	<shortsteps_n_data_zx02			; 58 = shortsteps_n
+;	.byte	$FF					; 59 = inside_dentist
+

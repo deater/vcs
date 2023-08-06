@@ -5,8 +5,8 @@
 .byte $22			; color of pointer (sprite0)
 .byte $28,$28			; background color, background color2
 .byte 75			; overlay (sprite1) X location
-.byte LOCATION_DOCK_S		; center destination
-.byte LOCATION_STEPS_S		; left destination
+.byte LOCATION_SHORTSTEPS_N	; center destination
+.byte LOCATION_SHORTSTEPS_N	; left destination
 .byte LOCATION_STEPS_S		; right destination
 .byte $00,$00			; XMAX/XMIN of grab area
 .byte $00,$00			; YMAX/YMIN of grab area

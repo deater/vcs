@@ -42,7 +42,7 @@ shack_w		225
 dentist_e	167
 cabin_path_n	254
 		====
-		7FB = 5 bytes free
+		7FC = 4 bytes free
 rom3:
 ~~~~~
 clock_close_s	120
@@ -69,10 +69,10 @@ burnt_book	160
 rocket_s	231
 you_win		202
 hint		114
-elevator_n	161
+shortsteps_n	179
 dni_e		254
 		===
-		7EB = 21 bytes free
+		7FD = 3 bytes free
 
 rom5:
 ~~~~~
@@ -98,5 +98,5 @@ main:
 
 TODO:
 ~~~~~
-shortsteps_n	= 179 bytes
+elevator_n	161
 inside_dentist  = 242 bytes

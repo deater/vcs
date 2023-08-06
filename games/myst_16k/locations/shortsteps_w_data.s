@@ -7,7 +7,7 @@
 .byte 127			; overlay (sprite1) coarse/fine
 .byte LOCATION_STEPS_S		; center destination
 .byte LOCATION_STEPS_S		; left destination
-.byte LOCATION_GEAR_N		; right destination
+.byte LOCATION_SHORTSTEPS_N	; right destination
 .byte $00,$00			; XMAX/XMIN of grab area
 .byte $00,$00			; YMAX/YMIN of grab area
 .byte 0				; missile0 (vertical line) X location
