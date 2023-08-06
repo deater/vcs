@@ -8,7 +8,7 @@
 .byte $FF			; center destination
 .byte LOCATION_LIBRARY_N	; left destination
 .byte LOCATION_LIBRARY_E	; right destination
-.byte 64,100			; XMAX/XMIN of grab area
+.byte 56,96			; XMAX/XMIN of grab area
 .byte 15,26			; YMAX/YMIN of grab area
 .byte 0				; missile0 (vertical line) X location
 .byte $00,$00			; unused
