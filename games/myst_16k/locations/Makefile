@@ -37,7 +37,7 @@ level_locations.inc:	\
 	$(CALC_ADDRESS) -a 0x1000 -s rocket_close_n_data_zx02 rom_bank2.lst >> level_locations.inc
 	$(CALC_ADDRESS) -a 0x1000 -s cabin_e_data_zx02 rom_bank2.lst >> level_locations.inc
 	$(CALC_ADDRESS) -a 0x1000 -s shack_w_data_zx02 rom_bank2.lst >> level_locations.inc
-	$(CALC_ADDRESS) -a 0x1000 -s burnt_book_data_zx02 rom_bank2.lst >> level_locations.inc
+	$(CALC_ADDRESS) -a 0x1000 -s dentist_e_data_zx02 rom_bank2.lst >> level_locations.inc
 	$(CALC_ADDRESS) -a 0x1000 -s cabin_path_n_data_zx02 rom_bank2.lst >> level_locations.inc
 	$(CALC_ADDRESS) -a 0x1000 -s arrival_e_data_zx02 rom_bank3.lst >> level_locations.inc
 	$(CALC_ADDRESS) -a 0x1000 -s clock_close_s_data_zx02 rom_bank3.lst >> level_locations.inc
@@ -55,7 +55,7 @@ level_locations.inc:	\
 	$(CALC_ADDRESS) -a 0x1000 -s atrus_e_data_zx02 rom_bank4.lst >> level_locations.inc
 	$(CALC_ADDRESS) -a 0x1000 -s trapped_data_zx02 rom_bank4.lst >> level_locations.inc
 	$(CALC_ADDRESS) -a 0x1000 -s dock_s_data_zx02 rom_bank4.lst >> level_locations.inc
-	$(CALC_ADDRESS) -a 0x1000 -s dentist_e_data_zx02 rom_bank4.lst >> level_locations.inc
+	$(CALC_ADDRESS) -a 0x1000 -s burnt_book_data_zx02 rom_bank4.lst >> level_locations.inc
 	$(CALC_ADDRESS) -a 0x1000 -s rocket_s_data_zx02 rom_bank4.lst >> level_locations.inc
 	$(CALC_ADDRESS) -a 0x1000 -s you_win_data_zx02 rom_bank4.lst >> level_locations.inc
 	$(CALC_ADDRESS) -a 0x1000 -s hint_data_zx02 rom_bank4.lst >> level_locations.inc
@@ -109,13 +109,12 @@ rom_bank2.bin:	rom_bank2.o
 	ld65 -o rom_bank2.bin rom_bank2.o -C $(LINKER_SCRIPT)/atari2600_1000.inc
 
 rom_bank2.o:	rom_bank2.s \
-	burnt_book_data.zx02 \
 	cabin_path_n_data.zx02 \
 	shortsteps_w_data.zx02 \
 	library_w_data.zx02 library_e_data.zx02 \
 	red_book_close_data.zx02 blue_book_close_data.zx02 \
 	rocket_close_n_data.zx02 cabin_e_data.zx02 \
-	shack_w_data.zx02
+	shack_w_data.zx02 dentist_e_data.zx02
 	ca65 -o rom_bank2.o rom_bank2.s -l rom_bank2.lst
 
 ###
@@ -139,10 +138,10 @@ rom_bank4.bin:	rom_bank4.o
 rom_bank4.o:	rom_bank4.s \
 	shack_s_data.zx02 \
 	dni_e_data.zx02 atrus_e_data.zx02 \
-	trapped_data.zx02 dock_s_data.zx02 dentist_e_data.zx02 \
+	trapped_data.zx02 dock_s_data.zx02 burnt_book_data.zx02 \
 	rocket_s_data.zx02 hint_data.zx02 elevator_n_data.zx02 \
 	you_win_data.zx02 inside_fireplace_data.zx02 \
-	inside_dentist_data.zx02
+	inside_dentist_data.zx02 shortsteps_n_data.zx02
 	ca65 -o rom_bank4.o rom_bank4.s -l rom_bank4.lst
 
 ###
@@ -326,6 +325,12 @@ inside_elevator_data.inc:	inside_elevator_bg.png inside_elevator_overlay.png
 	$(PNG2PF) -4 -n inside_elevator -b 226 inside_elevator_bg.png - > inside_elevator_data.inc
 	$(PNG2OVERLAY) -4 -o -b 190 -n inside_elevator inside_elevator_overlay.png - >> inside_elevator_data.inc
 
+
+###
+
+shortsteps_n_data.inc:	shortsteps_n_bg.png shortsteps_n_overlay.png
+	$(PNG2PF) -4 -n shortsteps_n -b 0x0e shortsteps_n_bg.png - > shortsteps_n_data.inc
+	$(PNG2OVERLAY) -4 -o -n shortsteps_n shortsteps_n_overlay.png - >> shortsteps_n_data.inc
 
 ###
 
@@ -841,10 +846,6 @@ inside_elevator_data.bin:	inside_elevator_data.o
 inside_elevator_data.o:	inside_elevator_data.s inside_elevator_data.inc
 	ca65 -o inside_elevator_data.o inside_elevator_data.s -l inside_elevator_data.lst
 
-
-
-
-
 ###
 
 shortsteps_w_data.zx02:	shortsteps_w_data.bin
@@ -855,6 +856,18 @@ shortsteps_w_data.bin:	shortsteps_w_data.o
 
 shortsteps_w_data.o:	shortsteps_w_data.s shortsteps_w_data.inc
 	ca65 -o shortsteps_w_data.o shortsteps_w_data.s -l shortsteps_w_data.lst
+
+###
+
+shortsteps_n_data.zx02:	shortsteps_n_data.bin
+	$(ZX02) -f shortsteps_n_data.bin shortsteps_n_data.zx02
+
+shortsteps_n_data.bin:	shortsteps_n_data.o
+	ld65 -o shortsteps_n_data.bin shortsteps_n_data.o -C $(LINKER_SCRIPT)/atari2600_f000.inc
+
+shortsteps_n_data.o:	shortsteps_n_data.s shortsteps_n_data.inc
+	ca65 -o shortsteps_n_data.o shortsteps_n_data.s -l shortsteps_n_data.lst
+
 
 ###
 

@@ -160,14 +160,14 @@ level_bank_and_high:
 	.byte	(2<<5) | (>cabin_path_n_data_zx02)	; 40 = cabin_path_n
 
 	.byte	(3<<5) | (>library_se_data_zx02)	; 41 = library_se
-	.byte	(2<<5) | (>burnt_book_data_zx02)	; 42 = burnt_book
+	.byte	(4<<5) | (>burnt_book_data_zx02)	; 42 = burnt_book
 	.byte	(3<<5) | (>imager_e_data_zx02)		; 43 = imager_e
 	.byte	(3<<5) | (>shack_n_data_zx02)		; 44 = shack_n
 	.byte	(3<<5) | (>dni_n_data_zx02)		; 45 = dni_n
 	.byte	(4<<5) | (>dni_e_data_zx02)		; 46 = dni_e
 	.byte	(4<<5) | (>trapped_data_zx02)		; 47 = trapped
 	.byte	(4<<5) | (>dock_s_data_zx02)		; 48 = dock_s
-	.byte	(4<<5) | (>dentist_e_data_zx02)		; 49 = dentist_e
+	.byte	(2<<5) | (>dentist_e_data_zx02)		; 49 = dentist_e
 	.byte	(4<<5) | (>rocket_s_data_zx02)		; 50 = rocket_s
 	.byte	(3<<5) | (>pool_s_data_zx02)		; 51 = pool_s
 	.byte	(4<<5) | (>you_win_data_zx02)		; 52 = you_win

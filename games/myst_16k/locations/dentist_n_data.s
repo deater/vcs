@@ -7,7 +7,7 @@
 .byte 15			; overlay (sprite1) X location
 .byte $FF			; center destination
 .byte LOCATION_HILLTOP_W	; left destination
-.byte LOCATION_HILLTOP_W	; right destination
+.byte LOCATION_DENTIST_E	; right destination
 .byte 10,32			; XMAX/XMIN of grab area
 .byte 24,32			; YMAX/YMIN of grab area
 .byte 129			; missile0 (vertical line) X location
