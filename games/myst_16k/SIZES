@@ -91,16 +91,14 @@ code		...
 rom6:
 ~~~~~
 		===
-		7CB = 53 bytes free
+		7EE = 17 bytes free
 
 main:
 ~~~~~
 		===
-		5F5 = 11 - 32 (for context switch/header) = -21 bytes free
+		5D8 = 40 - 32 (for context switch/header) = 8 bytes free
 
 TODO:
 ~~~~~
-
 inside_dentist  = 242 bytes
 
-sound code is 105 bytes in bank5, maybe split up and put in bank6/main?

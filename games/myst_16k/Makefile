@@ -76,8 +76,8 @@ main.o:	main.s zp.inc \
 	$(CALC_ADDRESS) -a 0x1A00 -s start_new_level_29 main.lst >> common_routines.inc
 	$(CALC_ADDRESS) -a 0x1A00 -s done_check_level_input main.lst >> common_routines.inc
 #	$(CALC_ADDRESS) -a 0x1A00 -s update_sound main.lst >> common_routines.inc
-	$(CALC_ADDRESS) -a 0x1000 -s sfx_cv main.lst >> common_routines.inc
-	$(CALC_ADDRESS) -a 0x1000 -s sfx_f main.lst >> common_routines.inc
+	$(CALC_ADDRESS) -a 0x1A00 -s sfx_cv main.lst >> common_routines.inc
+	$(CALC_ADDRESS) -a 0x1A00 -s sfx_f main.lst >> common_routines.inc
 	cd bank6_intro && make
 	$(CALC_ADDRESS) -a 0x1000 -s book_common bank6_intro/rom_bank6.lst > rom_bank6_routines.inc
 	$(CALC_ADDRESS) -a 0x1000 -s do_cleft bank6_intro/rom_bank6.lst >> rom_bank6_routines.inc

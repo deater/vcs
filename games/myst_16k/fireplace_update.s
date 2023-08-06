@@ -2,38 +2,38 @@
 fireplace_update:
 
 	; clear this so we only redraw in main if changed
-; 0
+; 19
 	ldy	#$FF							; 2
 	sty	FIREPLACE_CHANGED					; 3
 	iny								; 2
 	sty	EXIT_PUZZLE						; 3
 
-; 10
+; 29
 	; check if clicked the puzzle in the fireplace last frame
 
 	lda	WAS_CLICKED						; 2
 	beq	no_grab_fireplace					; 2/3
 
 was_grab_fireplace:
-; 14
+; 33
 	lda	POINTER_X						; 3
 	cmp	#136							; 2
 	bcs	no_grab_fireplace	; too far to right		; 2/3
-; 21
+; 40
 	cmp	#9			; is a button, skip ahead	; 2
 	bcs	not_fireplace_button					; 2/3
-
-	cmp	#5			; less likely to press
-	bcs	no_grab_fireplace	; button by mistake
+; 44
+	cmp	#5			; less likely to press		; 2
+	bcs	no_grab_fireplace	; button by mistake		; 2/3
 
 fireplace_button:
-; 25
+; 48
 	inc	EXIT_PUZZLE						; 5
 	bne	no_grab_fireplace		; bra			; 3
 
 not_fireplace_button:
 
-; 26
+; 45
 
 	; calculate row
 
@@ -43,10 +43,11 @@ not_fireplace_button:
 	lsr						; 2
 	lsr						; 2
 	tax						; 2
+; 58
 
 	; used when updating screen
 	stx	FIREPLACE_CHANGED			; 3
-; 42
+; 61
 
 	; calculate column
 
@@ -67,6 +68,7 @@ not_fireplace_button:
 	; 6 = 32-47, -2, 30-45	20- 35
 	;...
 	; 0 = 128-143, -2, 126-141  116-131
+; 61
 	sec						; 2
 	lda	#136					; 2
 	sbc	POINTER_X				; 3
@@ -75,27 +77,26 @@ not_fireplace_button:
 	lsr						; 2
 	lsr						; 2
 	tay						; 2
-; 59
+; 78
 	; update matrix
 
 	lda	powers_of_two,Y				; 4
 	eor	FIREPLACE_ROW1,X			; 4
 	sta	FIREPLACE_ROW1,X			; 4
-; 71
+; 90
 
-	ldy	#SFX_CLICK				; 2
+	ldy	#SFX_CLICK	; not zero		; 2
 	sty	SFX_PTR					; 3
 
-	jmp	extra_delay				; 3
+	bne	one_less_delay	; bra			; 3
 
-; 76
+; 98
 
 no_grab_fireplace:
+; 34 / 41 / 49 / 56
 	sta	WSYNC
-extra_delay:
+one_less_delay:
 	sta	WSYNC
-
-; 15 / 22 / 33 / 76
 
 
 	;==========================

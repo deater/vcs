@@ -503,11 +503,11 @@ done_playfield:
 	; overscan (30 cycles)
 	;===========================
 	;===========================
-
+; -2
 	lda	CURRENT_LOCATION					; 3
 	cmp	#LOCATION_INSIDE_FIREPLACE				; 2
 	beq	handle_fireplace					; 2/3
-; 7
+; 5
 	cmp	#LOCATION_CLOCK_PUZZLE					; 2
 	beq	handle_clock_puzzle					; 2/3
 ; 11
@@ -565,15 +565,16 @@ done_update_clock:
 	; handle fireplace
 	;==================================
 handle_fireplace:
-; 8
+; 6
 	; skip proper number of scanlines
 
-	ldx	#13
+	ldx	#12
 	jsr	common_overscan
 
-	lda	E7_SET_BANK5
-	jsr	fireplace_update
-	sta	E7_SET_BANK7_RAM
+; 10
+	lda	E7_SET_BANK5						; 3
+	jsr	fireplace_update					;6+..
+	sta	E7_SET_BANK7_RAM					; 3
 
 	;==========================================
 	; update the puzzle playfield if it changed
