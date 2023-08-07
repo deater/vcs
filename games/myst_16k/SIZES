@@ -91,7 +91,7 @@ code		...
 rom6:
 ~~~~~
 		===
-		7EB = 21 bytes free
+		7EF = 17 bytes free
 
 main:
 ~~~~~
@@ -99,7 +99,7 @@ main:
 		5DA = 38 - 32 (for context switch/header) = 6 bytes free
 
 
-total free bytes = 70 bytes
+total free bytes = 66 bytes
 
 TODO:
 ~~~~~

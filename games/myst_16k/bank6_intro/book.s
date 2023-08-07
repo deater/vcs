@@ -588,10 +588,12 @@ book_clicked:
 	bcc	do_brother_book	; brother book				; 2/3
 ; 23
 
+	; green book or dni myst
 	; books where you link or back off
 green_book:
-	lda	POINTER_TYPE						; 3
-	cmp	#POINTER_TYPE_GRAB					; 2
+	lda	CURRENT_LOCATION					; 3
+	ldy	POINTER_TYPE						; 3
+	cpy	#POINTER_TYPE_GRAB					; 2
 	bcc	exit_no_link_noise	; should handle GRAB+PAGE	; 2/3
 ; 30
 	; we clicked in window
@@ -639,6 +641,7 @@ exit_yes_link:
 
 exit_no_link_noise:
 ; 31
+	sta	CURRENT_LOCATION
 	sta	WSYNC
 	rts
 

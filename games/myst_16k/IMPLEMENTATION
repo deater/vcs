@@ -455,7 +455,7 @@ layout
 	as for reasons mentioned earlier level data can't start
 	in the last 256 bytes of a ROM bank.
 
-	In the end there's about 70 bytes left over but scattered
+	In the end there's about 66 bytes left over but scattered
 	enough can't easily fit another location (even though
 	I have a dentist/planetarium level ready to go)
 
