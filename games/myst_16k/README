@@ -7,6 +7,8 @@
 Getting things Running:
 ~~~~~~~~~~~~~~~~~~~~~~~
 
+	Plays fine on real hardware using harmony cartridge
+
 	Plays fine under stella, even under devel mode
 
 	Plays fine with MAME and the following command:
@@ -15,14 +17,10 @@ Getting things Running:
 	Until recently crashed on javatari.  This was a bug in javatari
 		E7 ROM handling and a fix has been contributed upsream
 
-
-	Notes below from last time tested in 2022:
-
-	running on MAME: (internet archive) locks up at startup
+	running on internet archive (MAME):
+		locks up at startup
 		this is possibly because it's not auto-detecting
-
-	running on harmony cart:
-		on harmony cart locks up after cleft before book
+		e7 cartridge properly
 
 
 Background info Useful for Playing the Game
