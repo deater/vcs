@@ -11,7 +11,7 @@
 	;=====================
 	; Linking Book
 	;=====================
-	; jumps here after switching to BANK6
+	; note: cleft just falls through to here
 
 book_common:
 ; ?
@@ -617,27 +617,35 @@ myst_book_start_game:
 	bne	book_keep_going						; 2/3
 ; 27
 	lda	#LOCATION_ARRIVAL_N					; 2
-	sta	WSYNC
+;	sta	WSYNC
+;	sta	WSYNC
+; 0
 
 exit_yes_link:
-; 29 / 39/40
-;	sta	LINK_DESTINATION					; 3
-	sta	CURRENT_LOCATION					; 3
-; 46
+; 29 / 39/ 40
+;	sta	CURRENT_LOCATION					; 3
+; 32/ 42/ 43
 	; start linking noise
 	ldy	#SFX_LINK						; 2
 	sty	SFX_PTR							; 3
 
-; 51 (this is about 4 cycles too many)
-	rts
+; 8/37/47/48 (worst case.  This is a tight deadline without much
+;	wiggle room)
 
-do_brother_book:
-; 24
+;	rts								; 6
+; 14/43/53/54
+
+
 
 exit_no_link_noise:
 ; 31
 	sta	WSYNC
 	rts
+
+do_brother_book:
+; 24
+	lda	CURRENT_LOCATION
+	bne	exit_no_link_noise	; bra
 
 book_data_l:
 	.byte <red_book_data_zx02		; red no pages

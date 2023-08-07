@@ -86,17 +86,20 @@ elevator_s	130
 inside_elevator	167
 code		...
 		===
-		7EE = 17 bytes free
+		7ED = 18 bytes free
 
 rom6:
 ~~~~~
 		===
-		7EE = 17 bytes free
+		7EB = 21 bytes free
 
 main:
 ~~~~~
 		===
-		5D8 = 40 - 32 (for context switch/header) = 8 bytes free
+		5DA = 38 - 32 (for context switch/header) = 6 bytes free
+
+
+total free bytes = 70 bytes
 
 TODO:
 ~~~~~

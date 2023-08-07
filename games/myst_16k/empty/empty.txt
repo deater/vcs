@@ -1,4 +1,4 @@
-MYST for Atari VCS v2.5 3AUG2023
+MYST for Atari VCS v2.6 6AUG2023
 
 by Vince `deater` Weaver
 a VMW Production

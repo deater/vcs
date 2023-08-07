@@ -394,15 +394,14 @@ really_do_book:
 				; scanline 30?
 
 
-; 24 (red/blue) / 60 (green)
+; 6 (red/blue) / 14 (arrival myst) /  54 (green/dni myst)
 really_done_with_book:
 	; weirdly, we have an extra frame for green/myst book
 	; but not for red/blue?
 
-
-	lda	CURRENT_LOCATION
-	jmp	start_new_level
-
+;	lda	CURRENT_LOCATION				; 3
+	jmp	start_new_level					; 3
+; 60...
 
 	;===========================
 	;===========================
