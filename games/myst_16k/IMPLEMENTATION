@@ -150,7 +150,7 @@ Book Implementation:
 
 	There's 48 bytes of data for the edge of book colors
 	There's 2*48 bytes of data for overlay1 (sprite+colors)
-h	There's 2*48 bytes of data for overlay2 (sprite+colors)
+	There's 2*48 bytes of data for overlay2 (sprite+colors)
 
 	This is a bit wasteful as especially for the red/blue pages
 		there's a lot of common data.  However it would be tricky
@@ -455,7 +455,7 @@ layout
 	as for reasons mentioned earlier level data can't start
 	in the last 256 bytes of a ROM bank.
 
-	In the end there's about 200 bytes left over but scattered
+	In the end there's about 70 bytes left over but scattered
 	enough can't easily fit another location (even though
 	I have a dentist/planetarium level ready to go)
 
