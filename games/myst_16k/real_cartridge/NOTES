@@ -1,0 +1,34 @@
+Working on plan to put this on a real E7 cartridge.
+Sacrificing a burgertime cart
+
+Bought a bunch.  Singapore is epoxy blob, but made in US
+	has through-hole DIP
+
+Of the number I got, only one totally working of DIP type.
+	Possibly known they go bad?
+
+Board has E7 mapper, two ROMs (one 8k, one 4k) and
+	TMM2009P-25A which is really hard to find, but probably
+	1K SRAM (vaguely pin comaptible with 6116)
+	But the -A means 1k with the A10 line always high?
+	Investigating
+
+Using TL866 to dump roms
+	linux minipro tool
+
+
+
+Helpful links:
+
+info on RAM
+	https://x.com/RetroWizzard/status/1395835483888967693
+
+
+SC-3000 basic cartridge also has TMM2009 RAM
+	https://www.smspower.org/forums/12958-SC3000BasicLevelIIIABoardPictures
+
+atariage on E7 boards
+
+	https://forums.atariage.com/topic/352717-boards-and-mattel-e7-backswing-options/
+
+
