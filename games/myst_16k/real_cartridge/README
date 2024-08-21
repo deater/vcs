@@ -16,6 +16,26 @@ Board has E7 mapper, two ROMs (one 8k, one 4k) and
 Using TL866 to dump roms
 	linux minipro tool
 
+	minipro -y -p "2732A @DIP24"  -r 4k_dump.rom
+
+Compare ROMs:
+	the 4k rom matches!
+
+Added complication:
+	the pinout for the 8k ROMs is the MCM68766 format
+	however as far as I can tell this is a somewhat obscure
+	non-standard format (24-pin DIP for 8k) and though it is found
+	in old machines, like the IBM 5150, you need an adapter to
+	a 27C64 DIP28 if you want to read/write to it with regular
+	equipment.
+
+	They do sell adapters so I guess I'll try that, though I am worried
+	a bit about clearance issues
+
+
+
+.  The minipro can't read it
+
 
 
 Helpful links:
