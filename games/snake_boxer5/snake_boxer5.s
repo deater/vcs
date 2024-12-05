@@ -1,8 +1,8 @@
-; Test game_over screen
+; Snake Boxer5
+
+; based on the Videlectrix game
 
 ; by Vince `deater` Weaver <vince@deater.net>
-
-; Draws an asymmetric playfield
 
 .include "../../vcs.inc"
 
@@ -115,10 +115,11 @@ scad_x:
 
 	;=============================================
 	;=============================================
+	; title screen, 192 lines
 	;=============================================
 	;=============================================
 
-	; draw 192 lines
+	; draw 112 lines of the title
 	; need to race beam to draw other half of playfield
 
 title_loop:
@@ -172,9 +173,12 @@ done_iny:
                                                                 ; 11/11
 
 ; 71
-	cpx	#192						; 2
+	cpx	#112						; 2
 	bne	title_loop					; 2/3
 
+
+	ldx	#80
+	jsr	common_delay_scanlines
 
 done_loop:
 
