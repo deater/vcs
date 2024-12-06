@@ -138,10 +138,7 @@ done_iny:
 	bne	title_loop					; 2/3
 done_toploop:
 
-;	ldx	#80
-;	jsr	common_delay_scanlines
-
-
+; 75
 
 	;===========================
 	;===========================
@@ -187,11 +184,11 @@ draw_the_snake:
 
 
 
-	ldx	#79		; init X
+	ldx	#76		; init X
 	stx	TEMP2
 
 	;===============================
-	; scanline 82
+	; scanline 113
 
 	jmp	over_align2
 .align $100
@@ -199,7 +196,7 @@ over_align2:
 	sta	WSYNC
 
 	;================================
-	; scanline 83
+	; scanline 114
 
 
 	; To do background
@@ -243,16 +240,26 @@ spriteloop_cheat:
 
 	; draw BG, takes 11
 
-	ldx	a:TEMP2			; restore X			; 4
+	ldx	TEMP2			; restore X			; 3
 	lda	snake_pf2_left,X	; load bg pattern		; 4
 	sta	PF2							; 3
 
-	; 65
-	dec	TEMP2							; 5
-	ldx	TEMP2							; 3
+	; 64
+
+	nop
+	nop
+
+	; 68
+
+	dex								; 2
+	stx	TEMP2			; save X			; 3
 
 	bpl	spriteloop_cheat					; 2/3
 	; 76  (goal is 76)
+
+	;========================
+	; done with snake sprite
+
 
 	ldy	#0		; clear out sprites
 	sty	GRP1

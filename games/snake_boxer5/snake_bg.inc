@@ -8,15 +8,15 @@
 
 snake_pf2_left:
 	.byte $00
-	.byte $E0,$E0,$E0,$E0	; wide bottom
-	.byte $E0,$E0,$E0,$E0
-	.byte $E0,$E0,$E0,$E0
-	.byte $E0,$E0,$E0,$E0
+	.byte $E0,$00,$E0,$00	; wide bottom
+	.byte $E0,$00,$E0,$00
+	.byte $E0,$00,$E0,$00
+	.byte $E0,$00,$E0,$00
 
-	.byte $C0,$C0,$C0,$C0	; narrow
-	.byte $C0,$C0,$C0,$C0
-	.byte $C0,$C0,$C0,$C0
-	.byte $C0,$C0,$C0,$C0
+	.byte $C0,$00,$C0,$00	; narrow
+	.byte $C0,$00,$C0,$00
+	.byte $C0,$00,$C0,$00
+	.byte $C0,$00,$C0,$C0
 
 	.byte $40,$40,$40,$40	; tongue
 	.byte $40,$40,$40,$40
@@ -32,7 +32,7 @@ snake_pf2_left:
 	.byte $00,$00,$00,$00
 	.byte $00,$00,$00,$00
 	.byte $00,$00,$00,$00
-	.byte $00,$00,$00,$00
+;	.byte $FF,$FF,$FF,$FF
 ;	.byte $08,$08,$08,$08	; drip off fangs
 
 
