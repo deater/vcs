@@ -8,7 +8,8 @@ all:	snake_boxer5.rom
 snake_boxer5.rom:	snake_boxer5.o
 	ld65 -o snake_boxer5.rom snake_boxer5.o -C $(LINKER_SCRIPT)/atari2600_f000.inc
 
-snake_boxer5.o:	snake_boxer5.s title.inc
+snake_boxer5.o:	snake_boxer5.s \
+	title_screen.s snake_sprite.inc title.inc snake_bg.inc
 	ca65 -o snake_boxer5.o snake_boxer5.s -l snake_boxer5.lst
 
 

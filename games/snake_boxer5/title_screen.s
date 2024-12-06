@@ -12,31 +12,47 @@ title_frame_loop:
 	; 37 lines of vertical blank
 	;=============================
 
-	ldx	#35
+	ldx	#34
 	jsr	common_delay_scanlines
+
+	;=======================
+	; scanline 35 -- do nothing, makes sure alignment happens fresh
+
+	sta	WSYNC
 
 	;=======================
 	; scanline 36 -- align sprite
 
-	ldx	#7		;					; 2
-scad_x:
-	dex			;					; 2
-	bne	scad_x		;					; 2/3
 
-	; 2+1 + 5*X each time through
-	;       so 18+7+9=38
+	; to center exactly would want sprite0 at
+	;	CPU cycle 41.3
+	; and sprite1 at
+	;	GPU cycle 44
 
-	nop
-	nop
+	ldx	#6		;				2
+cpad_x:
+	dex			;				2
+	bne	cpad_x		;				2/3
+	; 3 + 5*X each time through
+
+	lda	$80		; nop 6
+	lda	$80
+
 
 	; beam is at proper place
-	sta	RESP0
+	sta	RESP0						; 3
+	; 41 (GPU=123, want 124) +1
+	sta	RESP1						; 3
+	; 44 (GPU=132, want 132) 0
 
-	lda	#$B0		; fine adjust				; 2
-	sta	HMP0
+	lda	#$00		; opposite what you'd think
+	sta	HMP0			;			3
+	lda	#$10
+	sta	HMP1			;			3
 
 	sta	WSYNC
-	sta	HMOVE
+	sta	HMOVE		; adjust fine tune, must be after WSYNC
+
 
 	;=======================
 	; scanline 37 -- config
@@ -47,33 +63,12 @@ scad_x:
 	lda	#$0		; yellow		; set color
 	sta	COLUP0
 	sta	COLUPF
+	sta	CTRLPF		; no mirror
 
 	ldy	#0
 	sty	VBLANK		; re-enable VBLANK
 
-;	sty	GRP0
-
-
-
 	ldx	#0
-
-;	inc	FRAME
-;	lda	FRAME
-;	and	#$20
-;	bne	beak_closed
-;beak_open:
-;	lda	#<game_overlay
-;	sta	INL
-;	lda	#>game_overlay
-;	jmp	beak_done
-;beak_closed:
-;	lda	#<game_overlay2
-;	sta	INL
-;	lda	#>game_overlay2
-;beak_done:
-;	sta	INH
-
-
 	sta	WSYNC
 
 
@@ -155,12 +150,17 @@ done_toploop:
 	;===========================
 	; 48-pixel sprite!!!!
 	;
-draw_the_cheat:
+draw_the_snake:
 	;================
 	; scanline 112
 	;	set things up
 
-	lda	#$1A			; yellow
+	lda	#0			; turn off playfield
+	sta	PF0
+	sta	PF1
+	sta	PF2
+
+	lda	#$D8			; green for snake
 	sta	COLUP0	; set sprite color
 	sta	COLUP1	; set sprite color
 
@@ -168,10 +168,16 @@ draw_the_cheat:
 	sta	NUSIZ0
 	sta	NUSIZ1
 
+	lda	#1
+	sta	CTRLPF		; mirror playfield
+
+
 	lda	#0		; turn off sprite
 	sta	GRP0
 	sta	GRP1
 	sta	HMP1			;			3
+
+
 
 	lda	#1		; turn on delay
 	sta	VDELP0
@@ -179,37 +185,7 @@ draw_the_cheat:
 
 	sta	WSYNC
 
-	;=================
-	; scanline 81
 
-	; to center exactly would want sprite0 at
-	;	CPU cycle 41.3
-	; and sprite1 at
-	;	GPU cycle 44
-
-	ldx	#6		;				2
-cpad_x:
-	dex			;				2
-	bne	cpad_x		;				2/3
-	; 3 + 5*X each time through
-
-	lda	$80		; nop 6
-	lda	$80
-
-
-	; beam is at proper place
-	sta	RESP0						; 3
-	; 41 (GPU=123, want 124) +1
-	sta	RESP1						; 3
-	; 44 (GPU=132, want 132) 0
-
-	lda	#$F0		; opposite what you'd think
-	sta	HMP0			;			3
-;	lda	#$00
-;	sta	HMP1			;			3
-
-	sta	WSYNC
-	sta	HMOVE		; adjust fine tune, must be after WSYNC
 
 	ldx	#79		; init X
 	stx	TEMP2
@@ -224,6 +200,13 @@ over_align2:
 
 	;================================
 	; scanline 83
+
+
+	; To do background
+	; set color whenever
+	; load left PF2 before 38
+	; clear PF2 before 64
+
 
 spriteloop_cheat:
 	; 0
@@ -258,17 +241,16 @@ spriteloop_cheat:
 	sty	GRP0			; ?->[GRP0], [GRP1 (5)]-->GRP1 	; 3
 	; 54 (need this to be 52 .. 54)
 
-	; delay 11
+	; draw BG, takes 11
 
-	inc	TEMP1	; 5
-	lda	TEMP1	; 3
-	lda	TEMP1	; 3
-
+	ldx	a:TEMP2			; restore X			; 4
+	lda	snake_pf2_left,X	; load bg pattern		; 4
+	sta	PF2							; 3
 
 	; 65
-
 	dec	TEMP2							; 5
 	ldx	TEMP2							; 3
+
 	bpl	spriteloop_cheat					; 2/3
 	; 76  (goal is 76)
 

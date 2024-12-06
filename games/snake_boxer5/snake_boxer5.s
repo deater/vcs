@@ -47,6 +47,8 @@ done_forever:
 
 .include "title.inc"
 .include "snake_sprite.inc"
+.align $100
+.include "snake_bg.inc"
 
 .include "common_routines.s"
 
