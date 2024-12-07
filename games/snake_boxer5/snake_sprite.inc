@@ -31,7 +31,7 @@ snake_sprite0:
 	.byte $00	; ........
 	.byte $00	; ........
 	.byte $00	; ........
-	.byte $00	; ........
+	.byte $00	; ........	; missing line (30)
 	.byte $01	; .......*
 	.byte $01	; .......*
 	.byte $03	; ......**
@@ -113,7 +113,7 @@ snake_sprite1:
 	.byte $1F	; ...*****
 	.byte $1F	; ...*****
 	.byte $3F	; ..******
-	.byte $F9	; *****..*
+	.byte $F9	; *****..*	; missing line? (30)
 	.byte $F9	; *****..*
 	.byte $FE	; *******.
 	.byte $FE	; *******.
@@ -195,7 +195,7 @@ snake_sprite2:
 	.byte $FC	; ******..
 	.byte $FC	; ******..
 	.byte $FC	; ******..
-	.byte $E7	; ***..***
+	.byte $E7	; ***..***	; missing line (30)
 	.byte $E7	; ***..***
 	.byte $1B	; ...**.**
 	.byte $1B	; ...**.**
@@ -279,7 +279,7 @@ snake_sprite3:
 	.byte $3F	; ..******
 	.byte $3E	; ..*****.
 	.byte $3E	; ..*****.
-	.byte $FF	; ********
+	.byte $FF	; ********	; missing line (30)
 	.byte $FF	; ********
 	.byte $F8	; *****...
 	.byte $F8	; *****...
@@ -361,7 +361,7 @@ snake_sprite4:
 	.byte $01	; .......*
 	.byte $00	; ........
 	.byte $00	; ........
-	.byte $FC	; ******..
+	.byte $FC	; ******..		; missing line (30)
 	.byte $FE	; *******.
 	.byte $07	; .....***
 	.byte $07	; .....***
@@ -443,7 +443,7 @@ snake_sprite5:
 	.byte $E0	; ***.....
 	.byte $60	; .**.....
 	.byte $60	; .**.....
-	.byte $60	; .**.....
+	.byte $60	; .**.....	; missing line (30)
 	.byte $60	; .**.....
 	.byte $E0	; ***.....
 	.byte $F0	; ****....

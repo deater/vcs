@@ -184,7 +184,8 @@ draw_the_snake:
 
 
 
-	ldx	#76		; init X
+;	ldx	#76		; init X
+	ldx	#45
 	stx	TEMP2
 
 	;===============================
@@ -204,26 +205,27 @@ over_align2:
 	; load left PF2 before 38
 	; clear PF2 before 64
 
+TOP_OFFSET	=	31
 
-spriteloop_cheat:
+spriteloop_snake_top:
 	; 0
-	lda	snake_sprite0,X	; load sprite data		; 4+
+	lda	snake_sprite0+TOP_OFFSET,X	; load sprite data		; 4+
 	sta	GRP0			; 0->[GRP0] [GRP1 (?)]->GRP1	; 3
 	; 7
-	lda	snake_sprite1,X	; load sprite data		; 4+
+	lda	snake_sprite1+TOP_OFFSET,X	; load sprite data		; 4+
 	sta	GRP1			; 1->[GRP1], [GRP0 (0)]-->GRP0	; 3
 	; 14
-	lda	snake_sprite2,X	; load sprite data		; 4+
+	lda	snake_sprite2+TOP_OFFSET,X	; load sprite data		; 4+
 	sta	GRP0			; 2->[GRP0], [GRP1 (1)]-->GRP1	; 3
 	; 21
 
-	lda	snake_sprite5,X					; 4+
+	lda	snake_sprite5+TOP_OFFSET,X					; 4+
 	sta	TEMP1							; 3
 	; 28
-	lda	snake_sprite4,X					; 4+
+	lda	snake_sprite4+TOP_OFFSET,X					; 4+
 	tay								; 2
 	; 34
-	lda	snake_sprite3,X	;				; 4+
+	lda	snake_sprite3+TOP_OFFSET,X	;				; 4+
 	ldx	a:TEMP1			; force extra cycle		; 4
 	; 42
 
@@ -241,7 +243,7 @@ spriteloop_cheat:
 	; draw BG, takes 11
 
 	ldx	TEMP2			; restore X			; 3
-	lda	snake_pf2_left,X	; load bg pattern		; 4
+	lda	snake_pf2_left+TOP_OFFSET,X	; load bg pattern		; 4
 	sta	PF2							; 3
 
 	; 64
@@ -254,8 +256,134 @@ spriteloop_cheat:
 	dex								; 2
 	stx	TEMP2			; save X			; 3
 
-	bpl	spriteloop_cheat					; 2/3
+	bpl	spriteloop_snake_top					; 2/3
 	; 76  (goal is 76)
+
+
+	;=======================================================
+	; mid-snake break to change color
+	;	thanks to glurk for suggesting this
+	;=======================================================
+
+spriteloop_snake_middle:
+	; -1
+	lda	#$00			; load sprite data		; 2
+	sta	GRP0			; 0->[GRP0] [GRP1 (?)]->GRP1	; 3
+	; 4
+	lda	#$f9			; load sprite data		; 2
+	sta	GRP1			; 1->[GRP1], [GRP0 (0)]-->GRP0	; 3
+	; 9
+	lda	#$e7			; load sprite data		; 2
+	sta	GRP0			; 2->[GRP0], [GRP1 (1)]-->GRP1	; 3
+	; 14
+	lda	#$60							; 2
+	sta	TEMP1			; 5				; 3
+	; 19
+	lda	#$FC			; 4				; 2
+	tay								; 2
+	; 23
+	lda	#$FF			;				; 2
+	ldx	TEMP1			; 3 force extra cycle		; 3
+
+	; 28
+
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+
+	; 42
+
+	sta	GRP1			; 3->[GRP1], [GRP0 (2)]-->GRP0	; 3
+	; 45 (need this to be 44 .. 46)
+
+	sty	GRP0			; 4->[GRP0], [GRP1 (3)]-->GRP1	; 3
+	; 48 (need this to be 47 .. 49)
+	stx	GRP1			; 5->[GRP1], [GRP0 (4)]-->GRP0	; 3
+	; 51 (need this to be 50 .. 51)
+
+	sty	GRP0			; ?->[GRP0], [GRP1 (5)]-->GRP1 	; 3
+	; 54 (need this to be 52 .. 54)
+
+	; draw BG, takes 11
+
+	lda	#$C0			; load bg pattern		; 2
+	sta	PF2							; 3
+
+	; 57
+
+	ldx	#29							; 2
+	stx	TEMP2							; 3
+
+	lda	#$2E							; 2
+	sta	COLUPF							; 3
+
+	; 67
+
+	sta	WSYNC
+
+	;=======================================
+	; bottom of snake
+	;=======================================
+
+BOTTOM_OFFSET = 0
+
+spriteloop_snake_bottom:
+
+	; 0
+	lda	snake_sprite0+BOTTOM_OFFSET,X	; load sprite data		; 4+
+	sta	GRP0			; 0->[GRP0] [GRP1 (?)]->GRP1	; 3
+	; 7
+	lda	snake_sprite1+BOTTOM_OFFSET,X	; load sprite data		; 4+
+	sta	GRP1			; 1->[GRP1], [GRP0 (0)]-->GRP0	; 3
+	; 14
+	lda	snake_sprite2+BOTTOM_OFFSET,X	; load sprite data		; 4+
+	sta	GRP0			; 2->[GRP0], [GRP1 (1)]-->GRP1	; 3
+	; 21
+
+	lda	snake_sprite5+BOTTOM_OFFSET,X					; 4+
+	sta	TEMP1							; 3
+	; 28
+	lda	snake_sprite4+BOTTOM_OFFSET,X					; 4+
+	tay								; 2
+	; 34
+	lda	snake_sprite3+BOTTOM_OFFSET,X	;				; 4+
+	ldx	a:TEMP1			; force extra cycle		; 4
+	; 42
+
+	sta	GRP1			; 3->[GRP1], [GRP0 (2)]-->GRP0	; 3
+	; 45 (need this to be 44 .. 46)
+
+	sty	GRP0			; 4->[GRP0], [GRP1 (3)]-->GRP1	; 3
+	; 48 (need this to be 47 .. 49)
+	stx	GRP1			; 5->[GRP1], [GRP0 (4)]-->GRP0	; 3
+	; 51 (need this to be 50 .. 51)
+
+	sty	GRP0			; ?->[GRP0], [GRP1 (5)]-->GRP1 	; 3
+	; 54 (need this to be 52 .. 54)
+
+	; draw BG, takes 11
+
+	ldx	TEMP2			; restore X			; 3
+	lda	snake_pf2_left+BOTTOM_OFFSET,X	; load bg pattern		; 4
+	sta	PF2							; 3
+
+	; 64
+
+	nop
+	nop
+
+	; 68
+
+	dex								; 2
+	stx	TEMP2			; save X			; 3
+
+	bpl	spriteloop_snake_bottom					; 2/3
+	; 76  (goal is 76)
+
 
 	;========================
 	; done with snake sprite

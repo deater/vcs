@@ -1,12 +1,12 @@
 LINKER_SCRIPT = ../../linker_script
 
-all:	snake_boxer5.rom
+all:	snake_boxer5.bin
 
 
 ###
 
-snake_boxer5.rom:	snake_boxer5.o
-	ld65 -o snake_boxer5.rom snake_boxer5.o -C $(LINKER_SCRIPT)/atari2600_f000.inc
+snake_boxer5.bin:	snake_boxer5.o
+	ld65 -o snake_boxer5.bin snake_boxer5.o -C $(LINKER_SCRIPT)/atari2600_f000.inc
 
 snake_boxer5.o:	snake_boxer5.s \
 	title_screen.s snake_sprite.inc title.inc snake_bg.inc
@@ -17,6 +17,6 @@ snake_boxer5.o:	snake_boxer5.s \
 ###
 
 clean:	
-	rm -f *~ *.o *.lst snake_boxer5.rom
+	rm -f *~ *.o *.lst snake_boxer5.bin
 
 
