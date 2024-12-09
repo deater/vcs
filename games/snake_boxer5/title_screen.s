@@ -424,5 +424,4 @@ done_check_input:
 
 done_title:
 
-        rts
-
+	; fall through

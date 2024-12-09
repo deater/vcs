@@ -6,15 +6,7 @@
 
 .include "../../vcs.inc"
 
-; zero page addresses
-
-FRAME	=	$80
-
-INL	=	$84
-INH	=	$85
-
-TEMP1	=	$90
-TEMP2	=	$91
+.include "zp.inc"
 
 start:
 	sei		; disable interrupts
@@ -38,6 +30,7 @@ clear_loop:
 
 	.include "title_screen.s"
 
+.include "boxing_ring.s"
 
 done_forever:
 	jmp	done_forever
@@ -49,6 +42,7 @@ done_forever:
 .include "snake_sprite.inc"
 .align $100
 .include "snake_bg.inc"
+
 
 .include "common_routines.s"
 
