@@ -1,15 +1,38 @@
 ; zero page addresses
 
-FRAME	=	$80
+FRAME		= $80
+
+BOXER_X		= $82
+BOXER_X_COARSE	= $84
+
+
+RBOXER_X	= $87
+
 CURRENT_SCANLINE = $89
 
-INL	=	$84
-INH	=	$85
+INL		= $8C
+INH		= $8D
 
 TEMP1	=	$90
 TEMP2	=	$91
 
 MANS	=	$96
+
+SCORE_SPRITE_LOW_0      =       $A0
+SCORE_SPRITE_LOW_1      =       $A1
+SCORE_SPRITE_LOW_2      =       $A2
+SCORE_SPRITE_LOW_3      =       $A3
+SCORE_SPRITE_LOW_4      =       $A4
+SCORE_SPRITE_LOW_5      =       $A5
+SCORE_SPRITE_LOW_6      =       $A6
+
+SCORE_SPRITE_HIGH_0     =       $A7
+SCORE_SPRITE_HIGH_1     =       $A8
+SCORE_SPRITE_HIGH_2     =       $A9
+SCORE_SPRITE_HIGH_3     =       $AA
+SCORE_SPRITE_HIGH_4     =       $AB
+SCORE_SPRITE_HIGH_5     =       $AC
+SCORE_SPRITE_HIGH_6     =       $AD
 
 
 NEED_TO_REINIT_LEVEL    =       $BB

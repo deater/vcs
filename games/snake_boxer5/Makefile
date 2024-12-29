@@ -11,6 +11,7 @@ snake_boxer5.bin:	snake_boxer5.o
 snake_boxer5.o:	snake_boxer5.s \
 	zp.inc \
 	title_screen.s snake_sprite.inc title.inc snake_bg.inc \
+	draw_score.s \
 	boxing_ring.s
 	ca65 -o snake_boxer5.o snake_boxer5.s -l snake_boxer5.lst
 
