@@ -4,6 +4,12 @@
 	; ideally called with VBLANK disabled
 
 
+	lda	#20
+	sta	SNAKE_HEALTH
+	sta	BOXER_HEALTH
+
+	sta	BUTTON_COUNTDOWN	; for now, avoid immediate button
+					; press leftover from title
 
 	lda	#100
 	sta	BOXER_X
@@ -275,6 +281,17 @@ level_no_cheat2:
 	sta	WSYNC		; 4 lines of blue
 	sta	WSYNC
 	sta	WSYNC
+
+	;=========================
+	; prep for green
+
+	lda	#(99*2)		; green
+	sta	COLUPF
+
+	ldx	SNAKE_HEALTH	; load health
+
+	ldy	#8		; 8 lines
+
 	sta	WSYNC
 
 
@@ -282,21 +299,7 @@ level_no_cheat2:
 	; snake health (green)
 	;==================================
 
-	lda	#(99*2)		; green
-	sta	COLUPF
-
-	lda	#$ff
-	sta	PF1
-	sta	PF2
-
 	; 8 lines
-	jsr	health_line
-	jsr	health_line
-	jsr	health_line
-	jsr	health_line
-	jsr	health_line
-	jsr	health_line
-	jsr	health_line
 	jsr	health_line
 
 	; 4 lines
@@ -308,26 +311,20 @@ level_no_cheat2:
 	sta	WSYNC
 	sta	WSYNC
 	sta	WSYNC
-	sta	WSYNC
 
-	; 8 lines
+	; prep for red
 
 	lda	#(34*2)		; red
 	sta	COLUPF
 
-	lda	#$ff
-	sta	PF1
-	sta	PF2
+	ldx	BOXER_HEALTH	; load health
+
+	ldy	#8		; 8 lines
+
+	sta	WSYNC
 
 	; 8 lines
-	sta	WSYNC
-	sta	WSYNC
-	sta	WSYNC
-	sta	WSYNC
-	sta	WSYNC
-	sta	WSYNC
-	sta	WSYNC
-	sta	WSYNC
+	jsr	health_line
 
 	; 4 lines
 
@@ -351,9 +348,44 @@ level_no_cheat2:
 	;==================================
 	;==================================
 
-	ldx	#28
+	ldx	#27
 	jsr	common_overscan
 
+
+	;=============================
+	; now at VBLANK scanline 28
+	;=============================
+	; handle button being pressed
+; 0
+
+	; debounce
+	lda	BUTTON_COUNTDOWN					; 3
+	beq	waited_button_enough					; 2/3
+	dec	BUTTON_COUNTDOWN					; 5
+	jmp	done_check_button					; 3
+
+waited_button_enough:
+
+	lda	INPT4		; check joystick button pressed         ; 3
+	bmi	done_check_button					; 2/3
+
+	dec	SNAKE_HEALTH
+	bpl	snake_still_alive
+snake_dead:
+	inc	SNAKE_KOS
+	lda	#20
+	sta	SNAKE_HEALTH
+
+	; debug
+	dec	BOXER_HEALTH
+	dec	BOXER_HEALTH
+
+snake_still_alive:
+	lda	#8			; debounce
+	sta	BUTTON_COUNTDOWN
+
+done_check_button:
+	sta	WSYNC
 
 	;=============================
 	; now at VBLANK scanline 29
@@ -458,9 +490,13 @@ boxer_sprite_right:
 
 ;
 
+; color 99/98	$C6/$C4	0110 0100	so and with $FC for last line
+; color 34/33	$4E/$4C 1110 1100
+
+
 health_line:
-; 6
-	ldx	#20							; 2
+; 5/6
+	nop								; 2
 ; 8
 	lda	health_pf1_l,X						; 4+
 	sta	PF1							; 3
@@ -503,6 +539,10 @@ health_line:
 
 
 	sta	WSYNC
+
+	dey								; 2
+	bne	health_line						; 2/3
+
 	rts
 
 
@@ -512,7 +552,7 @@ health_line:
 ; compromise centered 20/10
 
 
-
+; PF0  PF1      PF2      PF0  PF1      PF2
 ; 4567 76543210 01234567 4567 76543210 01234567
 ;            XX XXXXXXXX XXXX XXXXXX
 
@@ -527,7 +567,7 @@ health_pf1_l:
 	.byte	$03,$03,$03,$03,$03,$03,$03,$03,$03,$03,$03	; 10..20
 
 health_pf2_l:
-	.byte	$00,$00,$00,$80,$c0,$e0,$f0,$f8,$fc,$fe		; 0..9
+	.byte	$00,$00,$00,$01,$03,$07,$0f,$1f,$3f,$7f		; 0..9
 	.byte	$ff,$ff,$ff,$ff,$ff,$ff,$ff,$ff,$ff,$ff,$ff	; 10..20
 
 health_pf0_r:
