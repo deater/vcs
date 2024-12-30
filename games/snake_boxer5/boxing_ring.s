@@ -4,9 +4,6 @@
 	; ideally called with VBLANK disabled
 
 
-	lda	#CTRLPF_REF|CTRLPF_BALL_SIZE4				; 2
-							; reflect playfield
-	sta	CTRLPF                                                  ; 3
 
 	lda	#100
 	sta	BOXER_X
@@ -71,10 +68,13 @@ swait_pos1:
 	sta	GRP1
 
 	sta	COLUBK
+
+	lda	#CTRLPF_REF|CTRLPF_BALL_SIZE4				; 2
+							; reflect playfield
+	sta	CTRLPF                                                  ; 3
+
+
 	sta	VBLANK	; enable beam
-
-
-
 
 	sta	WSYNC
 
@@ -268,10 +268,19 @@ level_no_cheat2:
 	sta	PF1
 	sta	PF2
 
+	lda	#0		; set no reflect			; 2
+	sta	CTRLPF                                                  ; 3
+
+
 	sta	WSYNC		; 4 lines of blue
 	sta	WSYNC
 	sta	WSYNC
 	sta	WSYNC
+
+
+	;==================================
+	; snake health (green)
+	;==================================
 
 	lda	#(99*2)		; green
 	sta	COLUPF
@@ -281,14 +290,14 @@ level_no_cheat2:
 	sta	PF2
 
 	; 8 lines
-	sta	WSYNC
-	sta	WSYNC
-	sta	WSYNC
-	sta	WSYNC
-	sta	WSYNC
-	sta	WSYNC
-	sta	WSYNC
-	sta	WSYNC
+	jsr	health_line
+	jsr	health_line
+	jsr	health_line
+	jsr	health_line
+	jsr	health_line
+	jsr	health_line
+	jsr	health_line
+	jsr	health_line
 
 	; 4 lines
 
@@ -446,7 +455,90 @@ boxer_sprite_right:
 ;	.byte	$07	; .....XXX ........
 ;	.byte	$00
 
-.include "position.s"
 
+;
+
+health_line:
+; 6
+	ldx	#20							; 2
+; 8
+	lda	health_pf1_l,X						; 4+
+	sta	PF1							; 3
+; 15
+	lda	health_pf2_l,X						; 4+
+	sta	PF2							; 3
+; 22
+
+	nop
+	nop
+	nop
+; 28
+	;after 28
+	lda	health_pf0_r,X						; 4+
+	sta	PF0							; 3
+; 35
+	; after 38
+	nop
+; 37
+	lda	health_pf1_r,X						; 4+
+	sta	PF1							; 3
+; 44
+	nop
+	nop
+	nop
+	nop
+
+; 52
+
+	; after 50 (but before 65)
+
+	lda	#0							; 2
+	sta	PF2							; 3
+; 57
+
+	; after 55
+
+	lda	#0							; 2
+	sta	PF0							; 3
+
+
+	sta	WSYNC
+	rts
+
+
+; original game had 20 hitpoints snake, 10 for you
+; a lot easier here to have 16/8?
+; full width 40/20?
+; compromise centered 20/10
+
+
+
+; 4567 76543210 01234567 4567 76543210 01234567
+;            XX XXXXXXXX XXXX XXXXXX
+
+; 21 entries each
+
+; 8,8,4,8,8,4
+
+.align $100
+
+health_pf1_l:
+	.byte	$00,$02,$03,$03,$03,$03,$03,$03,$03,$03		; 0..9
+	.byte	$03,$03,$03,$03,$03,$03,$03,$03,$03,$03,$03	; 10..20
+
+health_pf2_l:
+	.byte	$00,$00,$00,$80,$c0,$e0,$f0,$f8,$fc,$fe		; 0..9
+	.byte	$ff,$ff,$ff,$ff,$ff,$ff,$ff,$ff,$ff,$ff,$ff	; 10..20
+
+health_pf0_r:
+	.byte	$00,$00,$00,$00,$00,$00,$00,$00,$00,$00		; 0..9
+	.byte	$00,$10,$30,$70,$f0,$f0,$f0,$f0,$f0,$f0,$f0	; 10..20
+
+health_pf1_r:
+	.byte	$00,$00,$00,$00,$00,$00,$00,$00,$00,$00		; 0..9
+	.byte	$00,$00,$00,$00,$00,$80,$c0,$e0,$f0,$f8,$fc	; 10..20
+
+
+.include "position.s"
 
 .include "ko.inc"
