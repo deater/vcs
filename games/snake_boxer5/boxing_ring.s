@@ -13,6 +13,7 @@
 
 	lda	#100
 	sta	BOXER_X
+	sta	SNAKE_X
 
 level_frame:
 
@@ -43,6 +44,8 @@ level_frame:
 	; now VBLANK scanline 34+35
 	;==============================
 
+.if 0
+	; position boxer
 	lda	#0
 	sta	HMCLR
 
@@ -54,9 +57,9 @@ swait_pos1:
 	dey
 	bpl	swait_pos1
 	sta	RESP0
-
+.endif
 	sta	WSYNC
-	sta	HMOVE
+;	sta	HMOVE
 
 	;==============================
 	; now VBLANK scanline 36
@@ -169,22 +172,61 @@ swait_pos1:
 	jsr	common_delay_scanlines
 
 	;===============================
-	; 4 lines to set up boxer
+	; 4 lines to set up boxer (?) check that
 	;===============================
 
 	sta	WSYNC
+
+	; position boxer left sprite
+
+	lda	#0
+	sta	HMCLR			; clear horizontal move
+
+	lda	BOXER_X			; position		; 3
+        ldx     #0			; 0=sprite1		; 2
+        jsr     set_pos_x               ; 2 scanlines           ; 6+62
+					; HM* position set by this
+					;  coarse RESP0 set by us
+
+        sta     WSYNC
+
+swait_pos1:				; set position at 5*Y (15*Y TIA)
+	dey				; 2
+	bpl	swait_pos1		; 2/3
+	sta	RESP0			; 3
+
+
+	lda	BOXER_X			; position		; 3
+	clc
+	adc	#16
+	ldx	#1
+	jsr	set_pos_x
+
 	sta	WSYNC
+
+swait_pos2:				; set position at 5*Y (15*Y TIA)
+	dey				; 2
+	bpl	swait_pos2		; 2/3
+	sta	RESP1			; 3
+
+
+
 	sta	WSYNC
+	sta	HMOVE
+
+	lda	#(39*2)		; pink color
+	sta	COLUP0
+	sta	COLUP1
+
+
 	sta	WSYNC
 
 	;===============================
 	; 52 lines of boxer (100..151)
 	;===============================
 
-
-.if 0
 	ldy	#0
-	ldx	#24
+	ldx	#100
 ring_loop:
 	cpx	#100
 	bne	done_activate_boxer
@@ -217,10 +259,9 @@ level_no_cheat2:
 	cpx	#152
 	sta	WSYNC
 	bne	ring_loop
-.endif
 
-	ldx	#52
-	jsr	common_delay_scanlines
+;	ldx	#52
+;	jsr	common_delay_scanlines
 
 	;====================================
 	; 8 lines of rope (bottom) (152..159)

@@ -3,7 +3,9 @@
 FRAME		= $80
 
 BOXER_X		= $82
+SNAKE_X		= $83
 BOXER_X_COARSE	= $84
+SNAKE_X_COARSE	= $85
 
 
 RBOXER_X	= $87
