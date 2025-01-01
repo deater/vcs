@@ -44,26 +44,25 @@ level_frame:
 	; now VBLANK scanline 34+35
 	;==============================
 
-.if 0
-	; position boxer
-	lda	#0
-	sta	HMCLR
+	; position sidebar (missile1)
 
-	lda	BOXER_X			; position		; 3
-        ldx     #0			; 0=sprite1		; 2
+	lda	#148			; position		; 3
+        ldx     #3			; 0=missile1		; 2
         jsr     set_pos_x               ; 2 scanlines           ; 6+62
         sta     WSYNC
-swait_pos1:
+mis1_pos1:
 	dey
-	bpl	swait_pos1
-	sta	RESP0
-.endif
+	bpl	mis1_pos1
+	sta	RESM1
 	sta	WSYNC
-;	sta	HMOVE
+	sta	HMOVE
 
 	;==============================
 	; now VBLANK scanline 36
 	;==============================
+
+	; setup playfield
+
 
 	lda	#$FF
 	sta	PF1
@@ -151,8 +150,27 @@ swait_pos1:
 	lda	#$00
 	sta	PF2
 
+
+	; position snake
+;	lda	#0
+;	sta	HMCLR
+
+	lda	SNAKE_X			; position		; 3
+        ldx     #0			; 0=sprite1		; 2
+        jsr     set_pos_x               ; 2 scanlines           ; 6+62
+        sta     WSYNC
+swait_pos3:
+	dey
+	bpl	swait_pos3
+	sta	RESP0
+
 	sta	WSYNC
-	sta	WSYNC
+	sta	HMOVE
+
+
+
+;	sta	WSYNC
+;	sta	WSYNC
 	sta	WSYNC
 
 	;================================
@@ -173,6 +191,17 @@ swait_pos1:
 	lda	#0
 	sta	VDELP0
 	sta	VDELP1
+
+	; turn on missile
+
+	lda	#$ff
+	sta	ENAM1
+
+	lda	#NUSIZ_MISSILE_WIDTH_4|NUSIZ_DOUBLE_SIZE
+	sta	NUSIZ1
+
+	lda	#(33*2)
+	sta	COLUP1
 
 
 	sta	WSYNC
@@ -221,6 +250,10 @@ still_green:
 	; 4 lines to set up boxer (?) check that
 	;===============================
 
+	lda	#$0		; turn off missile
+	sta	ENAM1
+
+
 	sta	WSYNC
 
 	; position boxer left sprite
@@ -260,7 +293,9 @@ swait_pos2:				; set position at 5*Y (15*Y TIA)
 	sta	WSYNC
 	sta	HMOVE
 
-	lda	#(39*2)		; pink color
+;	lda	#(39*2)		; pink color
+
+	lda	#(32*2)		; red color
 	sta	COLUP0
 	sta	COLUP1
 
@@ -271,40 +306,33 @@ swait_pos2:				; set position at 5*Y (15*Y TIA)
 	; 52 lines of boxer (100..151)
 	;===============================
 
-	ldy	#0
-	ldx	#100
-ring_loop:
-	cpx	#100
-	bne	done_activate_boxer
-activate_boxer:
 	ldy	#21
-	jmp	done_really
-done_activate_boxer:
-	nop
-	nop
-done_really:
+	ldx	#100
+
+boxer_loop:
 	lda	boxer_sprite_left,Y
-	sta	GRP0
+	sta	GRP0			; set left sprite
 	lda	boxer_sprite_right,Y
-	sta	GRP1
+	sta	GRP1			; set right sprite
 
+	cpx	#116
+	bne	same_color
+
+	lda	#(39*2)		; pink color
+	sta	COLUP0
+	sta	COLUP1
+same_color:
 	tya
-
-	beq	level_no_cheat
+	beq	level_no_boxer
 	dey
-	jmp	level_no_cheat2
-level_no_cheat:
-	nop
-	nop
-level_no_cheat2:
-
+level_no_boxer:
 
 	inx
 	sta	WSYNC
 	inx
 	cpx	#152
 	sta	WSYNC
-	bne	ring_loop
+	bne	boxer_loop
 
 ;	ldx	#52
 ;	jsr	common_delay_scanlines
