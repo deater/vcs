@@ -106,13 +106,13 @@ swait_pos1:
 
 	; draw_score here is 8 lines
 
-.include "draw_score.s"
+;.include "draw_score.s"
 
 ;	lda	#$E
 ;	sta	COLUPF
 
-;	ldx	#11
-;	jsr	common_delay_scanlines
+	ldx	#8
+	jsr	common_delay_scanlines
 
 	; done with score, set up rest
 
@@ -154,11 +154,10 @@ swait_pos1:
 	sta	WSYNC
 	sta	WSYNC
 	sta	WSYNC
-	sta	WSYNC
 
-	;===============================
-	; 76 lines of snake (20..95)
-	;===============================
+	;================================
+	; setup for snake
+
 
 	lda	#$BF
 	sta	PF1
@@ -168,8 +167,55 @@ swait_pos1:
 	lda	#$6			; medium grey
 	sta	COLUPF
 
-	ldx	#76
-	jsr	common_delay_scanlines
+	lda	#98*2
+	sta	COLUP0
+
+	lda	#0
+	sta	VDELP0
+	sta	VDELP1
+
+
+	sta	WSYNC
+
+	;===============================
+	; 76 lines of snake (20..95)
+	;===============================
+
+	ldy	#19
+	ldx	#20
+ring2_loop:
+;	cpx	#20
+;	bne	skip_activate_snake
+;activate_snake:
+;	ldy	#19
+;skip_activate_snake:
+	lda	snake_sprite,Y
+	sta	GRP0
+	tya
+	beq	level_no_snake
+	dey
+level_no_snake:
+	inx
+	inx
+	inx
+	inx
+	cpx	#92
+	bne	still_green
+
+	lda	#32*2
+	sta	COLUP0
+
+still_green:
+
+	sta	WSYNC
+	sta	WSYNC
+	sta	WSYNC
+	sta	WSYNC
+	cpx	#96
+	bne	ring2_loop
+
+;	ldx	#76
+;	jsr	common_delay_scanlines
 
 	;===============================
 	; 4 lines to set up boxer (?) check that
@@ -231,7 +277,7 @@ ring_loop:
 	cpx	#100
 	bne	done_activate_boxer
 activate_boxer:
-	ldy	#11
+	ldy	#21
 	jmp	done_really
 done_activate_boxer:
 	nop
@@ -482,55 +528,6 @@ after_check_right:
 
 
 
-
-boxer_sprite_left:
-	.byte	$00
-	.byte	$07	; .....XXX
-	.byte	$6f	; .XX.XXXX
-	.byte	$6f	; .XX.XXXX
-	.byte	$6f	; .XX.XXXX
-	.byte	$6f	; .XX.XXXX
-	.byte	$22	; .I....I.
-	.byte	$60	; .II.....
-	.byte	$71	; .XXX...X
-	.byte	$79	; .XXXX..X
-	.byte	$78	; .XXXX...
-	.byte	$30	; ..XX....
-
-boxer_sprite_right:
-	.byte	$00
-	.byte	$00	; .....XXX ........
-	.byte	$B0	; .XX.XXXX X.XX....
-	.byte	$B8	; .XX.XXXX X.XXX...
-	.byte	$B8	; .XX.XXXX X.XXX...
-	.byte	$98	; .XX.XXXX X..XX...
-	.byte	$30	; .I....I. ..XX....
-	.byte	$E0	; .II..... XXX.....
-	.byte	$E0	; .XXX...X XXX.....
-	.byte	$E0	; .XXXX..X XXX.....
-	.byte	$C0	; .XXXX... XX......
-	.byte	$00	; ..XX.... ........
-
-
-
-
-
-;	.byte	$30	; ..XX.... ........
-;	.byte	$78	; .XXXX... XX......
-;	.byte	$79	; .XXXX..X XXX.....
-;	.byte	$71	; .XXX...X XXX.....
-;	.byte	$60	; .II..... XXX.....
-;	.byte	$22	; .I....I. ..XX....
-;	.byte	$6f	; .XX.XXXX X..XX...
-;	.byte	$6f	; .XX.XXXX X.XXX...
-;	.byte	$6f	; .XX.XXXX X.XXX...
-;	.byte	$6f	; .XX.XXXX X.XX....
-;	.byte	$07	; .....XXX ........
-;	.byte	$00
-
-
-;
-
 ; color 99/98	$C6/$C4	0110 0100	so and with $FC for last line
 ; color 34/33	$4E/$4C 1110 1100
 
@@ -601,25 +598,5 @@ health_line:
 
 ; 8,8,4,8,8,4
 
-.align $100
-
-health_pf1_l:
-	.byte	$00,$02,$03,$03,$03,$03,$03,$03,$03,$03		; 0..9
-	.byte	$03,$03,$03,$03,$03,$03,$03,$03,$03,$03,$03	; 10..20
-
-health_pf2_l:
-	.byte	$00,$00,$00,$01,$03,$07,$0f,$1f,$3f,$7f		; 0..9
-	.byte	$ff,$ff,$ff,$ff,$ff,$ff,$ff,$ff,$ff,$ff,$ff	; 10..20
-
-health_pf0_r:
-	.byte	$00,$00,$00,$00,$00,$00,$00,$00,$00,$00		; 0..9
-	.byte	$00,$10,$30,$70,$f0,$f0,$f0,$f0,$f0,$f0,$f0	; 10..20
-
-health_pf1_r:
-	.byte	$00,$00,$00,$00,$00,$00,$00,$00,$00,$00		; 0..9
-	.byte	$00,$00,$00,$00,$00,$80,$c0,$e0,$f0,$f8,$fc	; 10..20
-
 
 .include "position.s"
-
-.include "ko.inc"

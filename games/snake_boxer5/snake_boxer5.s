@@ -35,16 +35,9 @@ clear_loop:
 done_forever:
 	jmp	done_forever
 
-
-.align $100
-
-.include "title.inc"
-.include "snake_sprite.inc"
-.align $100
-.include "snake_bg.inc"
-
-
 .include "common_routines.s"
+
+.include "game_data.inc"
 
 .segment "IRQ_VECTORS"
 	.word start	; NMI

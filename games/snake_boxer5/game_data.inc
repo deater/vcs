@@ -1,5 +1,132 @@
 .align $100
 
+boxer_sprite_left:
+	.byte	$00
+	.byte	$07	; .....XXX
+	.byte	$07	; .....XXX
+	.byte	$6f	; .XX.XXXX
+	.byte	$6f	; .XX.XXXX
+	.byte	$6f	; .XX.XXXX
+	.byte	$6f	; .XX.XXXX
+	.byte	$6f	; .XX.XXXX
+	.byte	$6f	; .XX.XXXX
+	.byte	$6f	; .XX.XXXX
+	.byte	$6f	; .XX.XXXX
+	.byte	$22	; .I....I.
+	.byte	$22	; .I....I.
+	.byte	$60	; .II.....
+	.byte	$60	; .II.....
+	.byte	$71	; .XXX...X
+	.byte	$71	; .XXX...X
+	.byte	$79	; .XXXX..X
+	.byte	$79	; .XXXX..X
+	.byte	$78	; .XXXX...
+	.byte	$78	; .XXXX...
+	.byte	$30	; ..XX....
+	.byte	$30	; ..XX....
+
+boxer_sprite_right:
+	.byte	$00
+	.byte	$00	; .....XXX ........
+	.byte	$00	; .....XXX ........
+	.byte	$B0	; .XX.XXXX X.XX....
+	.byte	$B0	; .XX.XXXX X.XX....
+	.byte	$B8	; .XX.XXXX X.XXX...
+	.byte	$B8	; .XX.XXXX X.XXX...
+	.byte	$B8	; .XX.XXXX X.XXX...
+	.byte	$B8	; .XX.XXXX X.XXX...
+	.byte	$98	; .XX.XXXX X..XX...
+	.byte	$98	; .XX.XXXX X..XX...
+	.byte	$30	; .I....I. ..XX....
+	.byte	$30	; .I....I. ..XX....
+	.byte	$E0	; .II..... XXX.....
+	.byte	$E0	; .II..... XXX.....
+	.byte	$E0	; .XXX...X XXX.....
+	.byte	$E0	; .XXX...X XXX.....
+	.byte	$E0	; .XXXX..X XXX.....
+	.byte	$E0	; .XXXX..X XXX.....
+	.byte	$C0	; .XXXX... XX......
+	.byte	$C0	; .XXXX... XX......
+	.byte	$00	; ..XX.... ........
+	.byte	$00	; ..XX.... ........
+
+
+
+
+
+;	.byte	$30	; ..XX.... ........
+;	.byte	$78	; .XXXX... XX......
+;	.byte	$79	; .XXXX..X XXX.....
+;	.byte	$71	; .XXX...X XXX.....
+;	.byte	$60	; .II..... XXX.....
+;	.byte	$22	; .I....I. ..XX....
+;	.byte	$6f	; .XX.XXXX X..XX...
+;	.byte	$6f	; .XX.XXXX X.XXX...
+;	.byte	$6f	; .XX.XXXX X.XXX...
+;	.byte	$6f	; .XX.XXXX X.XX....
+;	.byte	$07	; .....XXX ........
+;	.byte	$00
+
+snake_sprite:
+	.byte	$00
+	.byte	$14	; ...X .X..
+	.byte	$08	; .... X...
+	.byte	$08	; .... X...
+	.byte	$1C	; ...X XX..
+	.byte	$2A	; ..X. X.X.
+	.byte	$2A	; ..X. X.X.
+	.byte	$3E	; ..XX XXX.
+	.byte	$3E	; ..XX XXX.
+	.byte	$1C	; ...X XX..
+	.byte	$3C	; ..XX XX..
+	.byte	$3C	; ..XX XX..
+	.byte	$70	; .XXX ....
+	.byte	$70	; .XXX ....
+	.byte	$60	; .XX. ....
+	.byte	$60	; .XX. ....
+	.byte	$30	; ..XX ....
+	.byte	$10	; ...X ....
+	.byte	$08	; .... X...
+	.byte	$08	; .... X...
+	.byte	$01	; ...X ....
+
+
+; original game had 20 hitpoints snake, 10 for you
+; a lot easier here to have 16/8?
+; full width 40/20?
+; compromise centered 20/10
+
+
+; PF0  PF1      PF2      PF0  PF1      PF2
+; 4567 76543210 01234567 4567 76543210 01234567
+;            XX XXXXXXXX XXXX XXXXXX
+
+; 21 entries each
+
+; 8,8,4,8,8,4
+
+
+
+health_pf1_l:
+	.byte	$00,$02,$03,$03,$03,$03,$03,$03,$03,$03		; 0..9
+	.byte	$03,$03,$03,$03,$03,$03,$03,$03,$03,$03,$03	; 10..20
+
+health_pf2_l:
+	.byte	$00,$00,$00,$01,$03,$07,$0f,$1f,$3f,$7f		; 0..9
+	.byte	$ff,$ff,$ff,$ff,$ff,$ff,$ff,$ff,$ff,$ff,$ff	; 10..20
+
+health_pf0_r:
+	.byte	$00,$00,$00,$00,$00,$00,$00,$00,$00,$00		; 0..9
+	.byte	$00,$10,$30,$70,$f0,$f0,$f0,$f0,$f0,$f0,$f0	; 10..20
+
+health_pf1_r:
+	.byte	$00,$00,$00,$00,$00,$00,$00,$00,$00,$00		; 0..9
+	.byte	$00,$00,$00,$00,$00,$80,$c0,$e0,$f0,$f8,$fc	; 10..20
+
+
+
+.align $100
+
 snake_sprite0:
 	.byte $00	; ........
 	.byte $00	; ........
@@ -493,3 +620,189 @@ snake_sprite5:
 	.byte $00	; ........
 	.byte $00	; ........
 	.byte $00	; ........
+; Using background color $00
+
+.align $100
+
+left_colors:
+	.byte $00,$9A,$9A,$9A,$AC,$AE,$0E,$EE
+	.byte $2C,$1C,$0E,$0E,$0E,$00,$00,$0E
+	.byte $EE,$1C,$2C,$28,$0E,$0E,$AE,$AC
+	.byte $9A,$40,$40,$40
+
+;	.byte $40,$D8,$D8,$D8
+;	.byte $D8,$C0,$D8,$D8,$D4,$D8,$D8,$D8
+;	.byte $1E,$D8,$D8,$D8,$1E,$1E,$1E,$1E
+
+
+right_colors:
+	.byte $00,$9A,$9A,$D8,$D8,$D8,$D8,$D8
+	.byte $D8,$D8,$D8,$DC,$DC,$DC,$DC,$DC
+	.byte $DC,$EE,$0E,$0E,$0E,$0E,$0E,$0E
+	.byte $40,$40,$40,$40
+
+;	.byte $40,$D8,$D8,$D8
+;	.byte $D8,$C0,$D8,$D8,$D4,$D8,$D8,$D8
+;	.byte $1E,$D8,$D8,$D8,$1E,$1E,$1E,$1E
+
+.align $100
+
+playfield0_left:
+	.byte $00,$00,$00,$00,$80,$80,$C0,$80
+	.byte $80,$00,$00,$80,$80,$00,$00,$C0
+	.byte $C0,$C0,$C0,$C0,$80,$80,$80,$80
+	.byte $80,$00,$00,$00
+
+;	.byte $00,$00,$00,$00
+;	.byte $00,$00,$00,$00,$00,$00,$00,$00
+;	.byte $00,$00,$00,$00,$00,$00,$00,$00
+
+playfield1_left:
+	.byte $00,$40,$60,$E5,$ED,$EF,$CF,$8F
+	.byte $8B,$C9,$CD,$84,$00,$00,$00,$C7
+	.byte $E7,$EF,$EF,$AF,$A9,$C9,$EF,$66
+	.byte $C0,$00,$00,$00
+
+;	.byte $00,$00,$00,$00
+;	.byte $00,$00,$00,$00,$00,$00,$00,$00
+;	.byte $00,$00,$00,$00,$00,$00,$00,$00
+
+playfield2_left:
+	.byte $00,$00,$00,$6C,$6E,$EE,$EE,$EE
+	.byte $EA,$AE,$2A,$09,$00,$00,$00,$14
+	.byte $D4,$B6,$BF,$BD,$89,$9D,$9C,$94
+	.byte $00,$00,$00,$00
+;	.byte $C0,$E0,$F0,$B8
+;	.byte $B8,$D8,$F0,$90,$E8,$58,$D8,$70
+;	.byte $F0,$E0,$C0,$C0,$C0,$E0,$E0,$E0
+
+playfield0_right:
+	.byte $00,$00,$00,$D0,$D0,$D0,$D0,$D0
+	.byte $C0,$D0,$D0,$00,$00,$00,$00,$B0
+	.byte $B0,$B0,$B0,$90,$B0,$10,$10,$30
+	.byte $00,$00,$00,$00
+
+;	.byte $30,$70,$E0,$F0
+;	.byte $F0,$E0,$F0,$F0,$E0,$50,$20,$E0
+;	.byte $F0,$F0,$F0,$F0,$70,$70,$70,$70
+
+
+
+playfield1_right:
+	.byte $00,$00,$00,$C1,$81,$81,$81,$03
+	.byte $83,$03,$83,$03,$07,$07,$00,$E0
+	.byte $E0,$F0,$F0,$A0,$C0,$E1,$A3,$A7
+	.byte $07,$0E,$1E,$38
+
+;	.byte $80,$00,$00,$C0
+;	.byte $C0,$40,$C0,$C0,$C0,$40,$C0,$C0
+;	.byte $80,$80,$80,$00,$00,$00,$00,$00
+
+playfield2_right:
+	.byte $00,$00,$00,$1F,$1F,$1F,$01,$00
+	.byte $04,$06,$07,$07,$06,$06,$06,$06
+	.byte $06,$07,$07,$07,$03,$03,$03,$03
+	.byte $00,$00,$00,$00
+;	.byte $00,$00,$00,$00
+;	.byte $00,$00,$00,$00,$00,$00,$00,$00
+;	.byte $00,$00,$00,$00,$00,$00,$00,$00
+; Using background color $00
+;snake_pf_colors:
+;	.byte $40,$00,$00,$00
+;	.byte $40,$00,$00,$00,$00,$40,$40,$40
+;	.byte $1E,$1E,$1E,$1E,$1E,$1E,$1E,$1E
+
+	; 0 1 2 3 4 5 6 7 | 7 6 5 4 3 2 1 0
+
+snake_pf2_left:
+	.byte $00
+	.byte $E0,$E0,$E0,$E0	; wide bottom
+	.byte $E0,$E0,$E0,$E0
+	.byte $E0,$E0,$E0,$E0
+	.byte $E0,$E0,$E0,$E0
+
+	.byte $C0,$C0,$C0,$C0	; narrow
+	.byte $C0,$C0,$C0,$C0
+	.byte $C0,$C0,$C0,$C0
+	.byte $C0,$C0
+
+	.byte $A0,$A0		; fork
+
+	.byte $40,$40,$40,$40	; tongue
+	.byte $40,$40,$40,$40
+	.byte $40,$40,$40,$40
+
+	.byte $00,$00,$00,$00
+	.byte $00,$00,$00,$00
+	.byte $00,$00,$00,$00
+	.byte $00,$00,$00,$00
+
+	.byte $A0,$A0,$A0,$A0	; eyes
+
+	.byte $00,$00,$00,$00
+	.byte $00,$00,$00,$00
+	.byte $00,$00,$00,$00
+;	.byte $FF,$FF,$FF,$FF
+;	.byte $08,$08,$08,$08	; drip off fangs
+
+.align $100
+
+ko_sprite0:
+	.byte $A9	; *.*.*..*
+	.byte $A9	; *.*.*..*
+	.byte $AB	; *.*.*.**
+	.byte $CB	; **..*.**
+	.byte $CD	; **..**.*
+	.byte $AD	; *.*.**.*
+	.byte $A9	; *.*.*..*
+	.byte $A9	; *.*.*..*
+
+ko_sprite1:
+	.byte $23	; ..*...**
+	.byte $54	; .*.*.*..
+	.byte $54	; .*.*.*..
+	.byte $54	; .*.*.*..
+	.byte $54	; .*.*.*..
+	.byte $54	; .*.*.*..
+	.byte $54	; .*.*.*..
+	.byte $23	; ..*...**
+
+ko_sprite2:
+	.byte $52	; .*.*..*.
+	.byte $55	; .*.*.*.*
+	.byte $55	; .*.*.*.*
+	.byte $65	; .**..*.*
+	.byte $65	; .**..*.*
+	.byte $55	; .*.*.*.*
+	.byte $55	; .*.*.*.*
+	.byte $52	; .*.*..*.
+
+ko_sprite3:
+	.byte $22	; ..*...*.
+	.byte $52	; .*.*..*.
+	.byte $52	; .*.*..*.
+	.byte $52	; .*.*..*.
+	.byte $52	; .*.*..*.
+	.byte $52	; .*.*..*.
+	.byte $52	; .*.*..*.
+	.byte $57	; .*.*.***
+
+ko_sprite4:
+	.byte $60	; .**.....
+	.byte $14	; ...*.*..
+	.byte $14	; ...*.*..
+	.byte $10	; ...*....
+	.byte $20	; ..*.....
+	.byte $44	; .*...*..
+	.byte $44	; .*...*..
+	.byte $30	; ..**....
+
+ko_sprite5:
+	.byte $72	; .***..*.
+	.byte $45	; .*...*.*
+	.byte $45	; .*...*.*
+	.byte $22	; ..*...*.
+	.byte $32	; ..**..*.
+	.byte $15	; ...*.*.*
+	.byte $15	; ...*.*.*
+	.byte $62	; .**...*.
