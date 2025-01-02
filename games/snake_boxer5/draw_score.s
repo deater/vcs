@@ -1,6 +1,6 @@
 	;============================================
 	;============================================
-	; draw Score (8 scanlines)
+	; draw Score (9 scanlines)
 	;============================================
 	;============================================
 
@@ -17,33 +17,31 @@ draw_score:
 	sta	REFP1							; 3
 
 ; 11
+	lda	#$F0		; = right ?				; 2
+	sta	HMP0		; sprite0 fine tune			; 3
 	lda	#$00		; = right ?				; 2
-	sta	HMP0							; 3
-	lda	#$10		; = right ?				; 2
-	sta	HMP1							; 3
+	sta	HMP1		; sprit1 fine tune			; 3
 
 ; 21
-	inc	TEMP1		; nop5					; 5
-	nop								; 2
-	nop								; 2
-; 30
-	inc	TEMP1		; nop5					; 5
-;	inc	TEMP1		; nop5					; 5
-	nop
-;	nop
+	lda	#$1							; 2
+	sta	VDELP0		; turn on delay	sprite0			; 3
+	sta	VDELP1		; turn on delay sprite1			; 3
 
-;	nop								; 2
+; 29
+	inc	TEMP1		; nop5					; 5
+	nop
+	nop
 
 	; (5*X)-1 each time through
 	;	so if X=3 then 14
 
-; 39	; want to be 39 here
+; 38	; want to be 41+44 here
 
 	; beam is at proper place
 	sta	RESP0							; 3
-	; 42 (GPU=120, want ??) +?
+	; 41
 	sta	RESP1							; 3
-	; 45 (GPU=129, want ??) +?
+	; 44
 
 ; 52
 
@@ -57,7 +55,7 @@ draw_score:
 
 	; set to be 32 adjacent pixels
 
-	lda	#NUSIZ_TWO_COPIES_CLOSE					; 2
+	lda	#NUSIZ_THREE_COPIES_CLOSE				; 2
 	sta	NUSIZ0							; 3
 	sta	NUSIZ1							; 3
 
@@ -65,19 +63,21 @@ draw_score:
 
 	sta	WSYNC							; 3
 
+; 0
 	;===================
 	; now scanline 1
 	;===================
-; 0
-	sta	HMOVE	; adjust fine tune, must be after WSYNC		; 3
-	ldx	#7							; 2
-	stx	TEMP2
 
-	;===================
-	; now scanline 1..7
-	;===================
+	sta	HMOVE	; adjust fine tune, must be after WSYNC		; 3
+	ldx	#8							; 2
+	stx	TEMP2							; 3
 
 	sta	WSYNC							; 3
+
+	;===================
+	; now scanline 2..10
+	;===================
+
 
 scoreloop:
 
@@ -102,43 +102,41 @@ scoreloop:
 	ldx	a:TEMP1							; 4
 
 ; 42
-	sta	GRP1			;				; 3
-; 45
+	sta	a:GRP1			;				; 4
+; 46
 	sty	GRP0			;				; 3
-; 48
+; 49
 	stx	GRP1							; 3
-; 51
+; 52
 	sty	GRP0							; 3
-; 54
+; 55
+	inc	TEMP1		; nop5
+	inc	TEMP1		; nop5
+; 65
 	ldx	TEMP2							; 3
 	dex								; 2
 	stx	TEMP2							; 3
-;62
-
-	inc	TEMP1
-	nop
-	nop
-	nop
-
+; 73
 	bpl	scoreloop						; 2/3
 
 	; aim for 76 if no WSYNC
 
 
-	; 61 if fell through
-; 61
+	; 75 if fell through
+; 75
 	;
 	; done drawing score
 	;
 	; turn off sprites
 
-	ldy	#0							; 2
-	sty	GRP1							; 3
-	sty	GRP0							; 3
+;	ldy	#0							; 2
+;	sty	GRP1							; 3
+;	sty	GRP0							; 3
 ; 68
-	sta	WSYNC
+
+;	sta	WSYNC
 ; 71
-	; begin of scanline 8
-;	rts
+	; cycle 75 of scanline 10
+
 
 

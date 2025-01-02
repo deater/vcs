@@ -68,27 +68,27 @@ boxer_sprite_right:
 ;	.byte	$00
 
 snake_sprite:
-	.byte	$00
-	.byte	$14	; ...X .X..
-	.byte	$08	; .... X...
-	.byte	$08	; .... X...
-	.byte	$1C	; ...X XX..
-	.byte	$2A	; ..X. X.X.
-	.byte	$2A	; ..X. X.X.
-	.byte	$3E	; ..XX XXX.
-	.byte	$3E	; ..XX XXX.
-	.byte	$1C	; ...X XX..
-	.byte	$3C	; ..XX XX..
-	.byte	$3C	; ..XX XX..
-	.byte	$70	; .XXX ....
-	.byte	$70	; .XXX ....
-	.byte	$60	; .XX. ....
-	.byte	$60	; .XX. ....
-	.byte	$30	; ..XX ....
-	.byte	$10	; ...X ....
-	.byte	$08	; .... X...
-	.byte	$08	; .... X...
-	.byte	$01	; ...X ....
+	.byte	$00				; 0
+	.byte	$14	; ...X .X..		; 1
+	.byte	$08	; .... X...		; 2
+	.byte	$08	; .... X...		; 3
+	.byte	$1C	; ...X XX..		; 4
+	.byte	$2A	; ..X. X.X.		; 5
+	.byte	$2A	; ..X. X.X.		; 6
+	.byte	$3E	; ..XX XXX.		; 7
+	.byte	$3E	; ..XX XXX.		; 8
+	.byte	$1C	; ...X XX..		; 9
+	.byte	$3C	; ..XX XX..		; 10
+	.byte	$3C	; ..XX XX..		; 11
+	.byte	$70	; .XXX ....		; 12
+	.byte	$70	; .XXX ....		; 13
+	.byte	$60	; .XX. ....		; 14
+	.byte	$60	; .XX. ....		; 15
+	.byte	$30	; ..XX ....		; 16
+	.byte	$10	; ...X ....		; 17
+	.byte	$08	; .... X...		; 18
+	.byte	$08	; .... X...		; 19
+	.byte	$01	; ...X ....		; 20
 
 
 ; original game had 20 hitpoints snake, 10 for you
@@ -748,6 +748,7 @@ snake_pf2_left:
 .align $100
 
 ko_sprite0:
+	.byte $00
 	.byte $A9	; *.*.*..*
 	.byte $A9	; *.*.*..*
 	.byte $AB	; *.*.*.**
@@ -758,6 +759,7 @@ ko_sprite0:
 	.byte $A9	; *.*.*..*
 
 ko_sprite1:
+	.byte $00
 	.byte $23	; ..*...**
 	.byte $54	; .*.*.*..
 	.byte $54	; .*.*.*..
@@ -768,6 +770,7 @@ ko_sprite1:
 	.byte $23	; ..*...**
 
 ko_sprite2:
+	.byte $00
 	.byte $52	; .*.*..*.
 	.byte $55	; .*.*.*.*
 	.byte $55	; .*.*.*.*
@@ -778,6 +781,7 @@ ko_sprite2:
 	.byte $52	; .*.*..*.
 
 ko_sprite3:
+	.byte $00
 	.byte $22	; ..*...*.
 	.byte $52	; .*.*..*.
 	.byte $52	; .*.*..*.
@@ -788,6 +792,7 @@ ko_sprite3:
 	.byte $57	; .*.*.***
 
 ko_sprite4:
+	.byte $00
 	.byte $60	; .**.....
 	.byte $14	; ...*.*..
 	.byte $14	; ...*.*..
@@ -798,6 +803,7 @@ ko_sprite4:
 	.byte $30	; ..**....
 
 ko_sprite5:
+	.byte $00
 	.byte $72	; .***..*.
 	.byte $45	; .*...*.*
 	.byte $45	; .*...*.*

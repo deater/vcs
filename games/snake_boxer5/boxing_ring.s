@@ -84,6 +84,13 @@ mis1_pos1:
 
 	sta	VBLANK	; enable beam
 
+
+	jmp	score_align
+
+.align	$100
+
+score_align:
+
 	sta	WSYNC
 
 	;==============================
@@ -103,19 +110,25 @@ mis1_pos1:
 	; 12 lines of score	(0..11)
 	;===============================
 
-	; draw_score here is 8 lines
+	; draw_score here is 10 lines
 
-;.include "draw_score.s"
+	; need this to not cross page
+
+.include "draw_score.s"
 
 ;	lda	#$E
 ;	sta	COLUPF
 
-	ldx	#8
-	jsr	common_delay_scanlines
+;	ldx	#8
+;	jsr	common_delay_scanlines
+
+
+; cycle 75 of scanline 10
 
 	; done with score, set up rest
 
 	lda	#$0
+; scanline 11
 	sta	COLUPF
 	lda	#NUSIZ_DOUBLE_SIZE
 	sta	NUSIZ0
@@ -129,6 +142,8 @@ mis1_pos1:
 	; 8 lines of rope  (12..19)
 	;===============================
 
+; scanline 12
+
 	lda	#$e			; white
 	sta	COLUPF
 
@@ -136,14 +151,13 @@ mis1_pos1:
 	sta	PF1
 
 	sta	WSYNC
+; scanline 13
 	sta	WSYNC
+; scanline 14
 	sta	WSYNC
+; scanline 15
 	sta	WSYNC
-
-;	sta	WSYNC
-;	sta	WSYNC
-;	sta	WSYNC
-;	sta	WSYNC
+; scanline 16
 
 	lda	#$40			; other pattern
 	sta	PF1
@@ -152,26 +166,24 @@ mis1_pos1:
 
 
 	; position snake
-;	lda	#0
-;	sta	HMCLR
+	lda	#0
+	sta	HMCLR
 
 	lda	SNAKE_X			; position		; 3
         ldx     #0			; 0=sprite1		; 2
         jsr     set_pos_x               ; 2 scanlines           ; 6+62
         sta     WSYNC
+; scanline 17+18
+
 swait_pos3:
 	dey
 	bpl	swait_pos3
 	sta	RESP0
 
 	sta	WSYNC
+; scanline 19
 	sta	HMOVE
 
-
-
-;	sta	WSYNC
-;	sta	WSYNC
-	sta	WSYNC
 
 	;================================
 	; setup for snake
@@ -213,11 +225,6 @@ swait_pos3:
 	ldy	#19
 	ldx	#20
 ring2_loop:
-;	cpx	#20
-;	bne	skip_activate_snake
-;activate_snake:
-;	ldy	#19
-;skip_activate_snake:
 	lda	snake_sprite,Y
 	sta	GRP0
 	tya
@@ -233,7 +240,6 @@ level_no_snake:
 
 	lda	#32*2
 	sta	COLUP0
-
 still_green:
 
 	sta	WSYNC
@@ -252,9 +258,15 @@ still_green:
 
 	lda	#$0		; turn off missile
 	sta	ENAM1
+	sta	GRP0
 
+	jmp	align2
+.align $100
+
+align2:
 
 	sta	WSYNC
+; scanline 97
 
 	; position boxer left sprite
 
@@ -268,6 +280,7 @@ still_green:
 					;  coarse RESP0 set by us
 
         sta     WSYNC
+; scanline 98+99
 
 swait_pos1:				; set position at 5*Y (15*Y TIA)
 	dey				; 2
@@ -282,6 +295,7 @@ swait_pos1:				; set position at 5*Y (15*Y TIA)
 	jsr	set_pos_x
 
 	sta	WSYNC
+; scanline 100+101
 
 swait_pos2:				; set position at 5*Y (15*Y TIA)
 	dey				; 2
@@ -291,6 +305,7 @@ swait_pos2:				; set position at 5*Y (15*Y TIA)
 
 
 	sta	WSYNC
+; scanline 102
 	sta	HMOVE
 
 ;	lda	#(39*2)		; pink color
@@ -301,6 +316,7 @@ swait_pos2:				; set position at 5*Y (15*Y TIA)
 
 
 	sta	WSYNC
+; scanline 103
 
 	;===============================
 	; 52 lines of boxer (100..151)
@@ -340,7 +356,7 @@ level_no_boxer:
 	;====================================
 	; 8 lines of rope (bottom) (152..159)
 	;====================================
-
+; scanline 152
 	lda	#$e			; white
 	sta	COLUPF
 
@@ -350,9 +366,13 @@ level_no_boxer:
 	sta	PF2
 
 	sta	WSYNC
+; scanline 153
 	sta	WSYNC
+; scanline 154
 	sta	WSYNC
+; scanline 155
 	sta	WSYNC
+; scanline 156
 
 	lda	#$BF
 	sta	PF1
@@ -360,9 +380,13 @@ level_no_boxer:
 	sta	PF2
 
 	sta	WSYNC
+; scanline 157
 	sta	WSYNC
+; scanline 158
 	sta	WSYNC
+; scanline 159
 	sta	WSYNC
+; scanline 160
 
 	;====================================
 	; 4 lines of blank (160..163)
@@ -372,9 +396,13 @@ level_no_boxer:
 	sta	COLUPF
 
 	sta	WSYNC
+; scanline 161
 	sta	WSYNC
+; scanline 162
 	sta	WSYNC
+; scanline 163
 	sta	WSYNC
+; scanline 164
 
 	;===============================
 	; 28 lines of health (164..191)
@@ -394,8 +422,11 @@ level_no_boxer:
 
 
 	sta	WSYNC		; 4 lines of blue
+; scanline 165
 	sta	WSYNC
+; scanline 166
 	sta	WSYNC
+; scanline 167
 
 	;=========================
 	; prep for green
@@ -408,7 +439,7 @@ level_no_boxer:
 	ldy	#8		; 8 lines
 
 	sta	WSYNC
-
+; scanline 168
 
 	;==================================
 	; snake health (green)
@@ -416,6 +447,7 @@ level_no_boxer:
 
 	; 8 lines
 	jsr	health_line
+; scanline 176
 
 	; 4 lines
 
@@ -424,8 +456,11 @@ level_no_boxer:
 	sta	PF2
 
 	sta	WSYNC
+; scanline 177
 	sta	WSYNC
+; scanline 178
 	sta	WSYNC
+; scanline 179
 
 	; prep for red
 
@@ -437,9 +472,11 @@ level_no_boxer:
 	ldy	#8		; 8 lines
 
 	sta	WSYNC
+; scanline 180
 
 	; 8 lines
 	jsr	health_line
+; scanline 188
 
 	; 4 lines
 
@@ -448,10 +485,13 @@ level_no_boxer:
 	sta	PF2
 
 	sta	WSYNC
+; scanline 189
 	sta	WSYNC
+; scanline 190
 	sta	WSYNC
+; scanline 191
 	sta	WSYNC
-
+; scanline 192
 
 
 	;==================================
