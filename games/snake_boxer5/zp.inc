@@ -7,7 +7,7 @@ RBOXER_X	= $83		; X-position of right boxer sprite (BOXER_X+8)
 SNAKE_X		= $84		; X-position of snake
 BOXER_X_COARSE	= $85
 SNAKE_X_COARSE	= $86
-;
+SNAKE_SPEED	= $87
 BOXER_PTR_L	= $88
 BOXER_PTR_L_H	= $89
 BOXER_PTR_R	= $8A

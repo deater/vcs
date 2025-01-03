@@ -37,8 +37,43 @@ level_frame:
 	;=================================
 	;=================================
 
-	ldx	#26
+	ldx	#25
 	jsr	common_delay_scanlines
+
+	;==============================
+	; now VBLANK scanline 26
+	;==============================
+	; move snake
+
+	lda	SNAKE_SPEED
+	bne	snake_speed_go
+	; if zero, ??
+	inc	SNAKE_SPEED
+
+snake_speed_go:
+	clc
+	lda	SNAKE_X
+	adc	SNAKE_SPEED
+	sta	SNAKE_X
+
+	; see if out of bounds
+	cmp	#120
+	bcc	snake_ok_left
+
+	lda	#$ff
+	sta	SNAKE_SPEED
+
+snake_ok_left:
+	cmp	#32
+	bcs	snake_ok_right
+
+	lda	#$1
+	sta	SNAKE_SPEED
+
+snake_ok_right:
+
+
+	sta	WSYNC
 
 	;==============================
 	; now VBLANK scanline 27
