@@ -232,7 +232,8 @@ swait_pos3:
 	lda	#$6			; medium grey
 	sta	COLUPF
 
-	lda	#98*2
+	ldx	SNAKE_KOS		; set snake color
+	lda	snake_colors,X
 	sta	COLUP0
 
 	lda	#0
@@ -247,6 +248,7 @@ swait_pos3:
 	lda	#NUSIZ_MISSILE_WIDTH_4|NUSIZ_DOUBLE_SIZE
 	sta	NUSIZ1
 
+	; setup missle color
 	lda	#(33*2)
 	sta	COLUP1
 
@@ -260,7 +262,7 @@ swait_pos3:
 	ldy	#19
 	ldx	#20
 ring2_loop:
-	lda	snake_sprite,Y
+	lda	(SNAKE_PTR),Y
 	sta	GRP0
 	tya
 	beq	level_no_snake
@@ -472,7 +474,8 @@ level_no_boxer:
 	;=========================
 	; prep for green
 
-	lda	#(99*2)		; green
+	ldx	SNAKE_KOS
+	lda	snake_colors,X	; load same color as snake
 	sta	COLUPF
 
 	ldx	SNAKE_HEALTH	; load health
@@ -483,7 +486,7 @@ level_no_boxer:
 ; scanline 168
 
 	;==================================
-	; snake health (green)
+	; snake health (green at first)
 	;==================================
 
 	; 8 lines
@@ -582,6 +585,9 @@ waited_button_enough:
 	lda	INPT4		; check joystick button pressed         ; 3
 	bmi	done_check_button					; 2/3
 
+	lda	#0
+	sta	BOXER_STATE
+
 	dec	SNAKE_HEALTH
 	bpl	snake_still_alive
 snake_dead:
@@ -665,6 +671,11 @@ after_check_right:
 ; color 34/33	$4E/$4C 1110 1100
 
 
+	;====================================
+	;====================================
+	; draw line of health
+	;====================================
+	;====================================
 health_line:
 ; 5/6
 	nop								; 2

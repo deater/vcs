@@ -16,11 +16,32 @@ snake_sprites_l:
 snake_sprites_h:
 	.byte >snake_sprite
 
+snake_colors:
+	.byte	98*2	; 0 = dark green
+	.byte	$BC	; 1 = cyan green
+	.byte	$9C	; 2 = light blue
+	.byte	$34	; 3 = red
+	.byte	$26	; 4 = orange
+	.byte	$44	; 5 = magenta
+	.byte	$1C	; 6 = yellow
+	.byte	$86	; 7 = medium blue
+	.byte	$66	; 8 = blue grey
+	.byte	$80	; 9 = dark blue
+	.byte	$A2	; 10 = dark green
+	.byte	$C8	; 11 = light green
+	.byte	$BC	; 12 = cyan green
+	.byte	$34	; 13 = red
+	.byte	$56	; 14 = purple
+	.byte	$48	; 15 = magenta
+	.byte	$08	; 16 = grey
+	.byte	$0E	; 17 = white
+	.byte	$5A	; 18 = lavendar
+	.byte	$56	; 19 = purple
 
 
 boxer_block_left:
 	.byte	$00
-	.byte	$07	; .....XXX
+	.byte	$07	; .....lXXX
 	.byte	$07	; .....XXX
 	.byte	$0f	; ....XXXX
 	.byte	$0f	; ....XXXX
