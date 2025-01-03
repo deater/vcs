@@ -37,13 +37,13 @@ level_frame:
 	;=================================
 	;=================================
 
-	ldx	#28
+	ldx	#27
 	jsr	common_delay_scanlines
 
 	;==============================
-	; now VBLANK scanline 29
+	; now VBLANK scanline 28
 	;==============================
-	; score takes 5 scanlines?
+	; setting up KO score takes 6 scanlines
 
 .include "update_score.s"
 
