@@ -37,8 +37,36 @@ level_frame:
 	;=================================
 	;=================================
 
-	ldx	#27
+	ldx	#26
 	jsr	common_delay_scanlines
+
+	;==============================
+	; now VBLANK scanline 27
+	;==============================
+	; set up sprites
+
+	ldx	BOXER_STATE
+
+	lda	lboxer_sprites_l,X
+	sta	BOXER_PTR_L
+	lda	lboxer_sprites_h,X
+	sta	BOXER_PTR_L_H
+
+	lda	rboxer_sprites_l,X
+	sta	BOXER_PTR_R
+	lda	rboxer_sprites_h,X
+	sta	BOXER_PTR_R_H
+
+	ldx	SNAKE_STATE
+
+	lda	snake_sprites_l,X
+	sta	SNAKE_PTR
+	lda	snake_sprites_h,X
+	sta	SNAKE_PTR_H
+
+
+
+
 
 	;==============================
 	; now VBLANK scanline 28
@@ -333,10 +361,16 @@ swait_pos2:				; set position at 5*Y (15*Y TIA)
 	ldx	#100
 
 boxer_loop:
-	lda	boxer_sprite_left,Y
+;	lda	boxer_sprite_left,Y
+;	sta	GRP0			; set left sprite
+;	lda	boxer_sprite_right,Y
+;	sta	GRP1			; set right sprite
+
+	lda	(BOXER_PTR_L),Y
 	sta	GRP0			; set left sprite
-	lda	boxer_sprite_right,Y
+	lda	(BOXER_PTR_R),Y
 	sta	GRP1			; set right sprite
+
 
 	cpx	#116
 	bne	same_color
@@ -510,8 +544,25 @@ level_no_boxer:
 	;==================================
 	;==================================
 
-	ldx	#27
+	ldx	#26
 	jsr	common_overscan
+
+	;=============================
+	; now at VBLANK scanline 27
+	;=============================
+	; handle down being pressed
+; 0
+	lda	#$20			; check down			; 2
+	bit	SWCHA			;				; 3
+	bne	after_check_down	;				; 2/3
+down_pressed:
+
+	lda	#1
+	sta	BOXER_STATE
+
+
+after_check_down:
+	sta	WSYNC
 
 
 	;=============================

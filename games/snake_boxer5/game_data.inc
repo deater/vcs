@@ -1,5 +1,23 @@
 .align $100
 
+; 0=neutral, 1=block, 2=punch_left, 3=punch_right, 4=hit
+lboxer_sprites_l:
+	.byte <boxer_sprite_left,<boxer_block_left
+lboxer_sprites_h:
+	.byte >boxer_sprite_left,>boxer_block_left
+
+rboxer_sprites_l:
+	.byte <boxer_sprite_right,<boxer_block_right
+rboxer_sprites_h:
+	.byte >boxer_sprite_right,>boxer_block_right
+
+snake_sprites_l:
+	.byte <snake_sprite
+snake_sprites_h:
+	.byte >snake_sprite
+
+
+
 boxer_block_left:
 	.byte	$00
 	.byte	$07	; .....XXX
