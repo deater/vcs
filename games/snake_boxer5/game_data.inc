@@ -37,6 +37,11 @@ snake_colors:
 	.byte	$0E	; 17 = white
 	.byte	$5A	; 18 = lavendar
 	.byte	$56	; 19 = purple
+	.byte	$00	; 20+ = black
+
+	; assumes max is 3
+mans_max_lookup:
+	.byte 20,30,46,64
 
 
 boxer_block_left:

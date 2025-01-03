@@ -26,9 +26,11 @@ BUTTON_COUNTDOWN= $94
 SNAKE_HEALTH	= $95
 BOXER_HEALTH	= $96
 MANS		= $97
+MAN_BAR		= $98
+MAX_MANS	= $99	; used when drawing bar
 
-BOXER_STATE	= $98	; 0=neutral, 1=block, 2=left punch, 3=right punch
-SNAKE_STATE	= $99	;
+BOXER_STATE	= $9A	; 0=neutral, 1=block, 2=left punch, 3=right punch
+SNAKE_STATE	= $9B	;
 
 SCORE_SPRITE_LOW_0      = $A0
 SCORE_SPRITE_LOW_1      = $A1

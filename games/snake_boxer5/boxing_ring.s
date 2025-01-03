@@ -15,6 +15,9 @@
 	sta	BOXER_X
 	sta	SNAKE_X
 
+	lda	#3
+	sta	MANS
+
 level_frame:
 
 	; comes in with 3 cycles from loop
@@ -274,11 +277,16 @@ swait_pos3:
 	lda	#0
 	sta	VDELP0
 	sta	VDELP1
+	sta	MAN_BAR
+
+	ldx	MANS
+	lda	mans_max_lookup,X
+	sta	MAX_MANS
 
 	; turn on missile
 
-	lda	#$ff
-	sta	ENAM1
+;	lda	#$ff
+;	sta	ENAM1
 
 	lda	#NUSIZ_MISSILE_WIDTH_4|NUSIZ_DOUBLE_SIZE
 	sta	NUSIZ1
@@ -315,6 +323,24 @@ level_no_snake:
 still_green:
 
 	sta	WSYNC
+
+	cpx	MAX_MANS
+	bcc	no_skip_mans
+
+	lda	#$00
+	sta	ENAM1
+	jmp	skip_mans
+
+no_skip_mans:
+	txa
+	and	#$07
+	bne	skip_mans
+
+	lda	MAN_BAR
+	eor	#$FF
+	sta	MAN_BAR
+	sta	ENAM1
+skip_mans:
 	sta	WSYNC
 	sta	WSYNC
 	sta	WSYNC
@@ -624,6 +650,7 @@ waited_button_enough:
 	sta	BOXER_STATE
 
 	dec	SNAKE_HEALTH
+
 	bpl	snake_still_alive
 snake_dead:
 
@@ -646,6 +673,12 @@ snake_dead:
 	; debug
 	dec	BOXER_HEALTH
 	dec	BOXER_HEALTH
+	bne	snake_still_alive
+
+	dec	MANS
+	lda	#20
+	sta	BOXER_HEALTH
+
 
 snake_still_alive:
 	lda	#8			; debounce
