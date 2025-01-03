@@ -27,7 +27,7 @@ update_score:
 	;=================
 	;=================
 
-	lda	SNAKE_KOS	; get bottom 2 digits			; 3
+	lda	SNAKE_KOS_BCD	; get bottom 2 digits			; 3
 	and	#$f		; get bottom digit			; 2
 	asl			; multiply by 8				; 2
 	asl								; 2
@@ -52,7 +52,7 @@ low_right_score_loop:
 ; 152
 	; get 10s digit
 
-	lda	SNAKE_KOS						; 3
+	lda	SNAKE_KOS_BCD						; 3
 	lsr		; >>4 then <<3					; 2
 	and	#$f8							; 2
 	bne	no_lead_zero	; if leading 0, print blakn instead	; 3/2

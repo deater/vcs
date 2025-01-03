@@ -24,7 +24,7 @@ snake_colors:
 	.byte	$26	; 4 = orange
 	.byte	$44	; 5 = magenta
 	.byte	$1C	; 6 = yellow
-	.byte	$86	; 7 = medium blue
+	.byte	$72	; 7 = medium blue
 	.byte	$66	; 8 = blue grey
 	.byte	$80	; 9 = dark blue
 	.byte	$A2	; 10 = dark green

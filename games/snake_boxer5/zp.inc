@@ -21,13 +21,14 @@ TEMP1	=	$90
 TEMP2	=	$91
 
 SNAKE_KOS	= $92
-BUTTON_COUNTDOWN= $93
-SNAKE_HEALTH	= $94
-BOXER_HEALTH	= $95
-MANS		= $96
+SNAKE_KOS_BCD	= $93
+BUTTON_COUNTDOWN= $94
+SNAKE_HEALTH	= $95
+BOXER_HEALTH	= $96
+MANS		= $97
 
-BOXER_STATE	= $97	; 0=neutral, 1=block, 2=left punch, 3=right punch
-SNAKE_STATE	= $98	;
+BOXER_STATE	= $98	; 0=neutral, 1=block, 2=left punch, 3=right punch
+SNAKE_STATE	= $99	;
 
 SCORE_SPRITE_LOW_0      = $A0
 SCORE_SPRITE_LOW_1      = $A1

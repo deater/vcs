@@ -592,11 +592,17 @@ waited_button_enough:
 	bpl	snake_still_alive
 snake_dead:
 
+	; increment KOs
+
+	inc	SNAKE_KOS
+
+	; increment KO score which is BCD
+
 	clc
 	sed
-	lda	SNAKE_KOS		; bcd
+	lda	SNAKE_KOS_BCD		; bcd
 	adc	#1
-	sta	SNAKE_KOS
+	sta	SNAKE_KOS_BCD
 	cld
 
 	lda	#20
