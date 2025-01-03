@@ -37,8 +37,15 @@ level_frame:
 	;=================================
 	;=================================
 
-	ldx	#33
+	ldx	#28
 	jsr	common_delay_scanlines
+
+	;==============================
+	; now VBLANK scanline 29
+	;==============================
+	; score takes 5 scanlines?
+
+.include "update_score.s"
 
 	;==============================
 	; now VBLANK scanline 34+35
@@ -527,7 +534,14 @@ waited_button_enough:
 	dec	SNAKE_HEALTH
 	bpl	snake_still_alive
 snake_dead:
-	inc	SNAKE_KOS
+
+	clc
+	sed
+	lda	SNAKE_KOS		; bcd
+	adc	#1
+	sta	SNAKE_KOS
+	cld
+
 	lda	#20
 	sta	SNAKE_HEALTH
 

@@ -92,7 +92,8 @@ scoreloop:
 	lda	ko_sprite2,X						; 4+
 	sta	GRP0			; 2->[GRP0], [GRP1 (1)]-->GRP1	; 3
 ; 21
-	lda	ko_sprite5,X						; 4+
+;	lda	ko_sprite5,X						; 4+
+	lda	a:SCORE_SPRITE_LOW_0,X
 	sta	TEMP1			;				; 3
 ; 28
 	lda	ko_sprite4,X						; 4+
