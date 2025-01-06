@@ -159,7 +159,8 @@ mis1_pos1:
 	lda	#$FF
 	sta	PF1
 	sta	PF2
-	sta	ENABL
+
+;	sta	ENABL		; enable ball
 
 	lda	#0
 	sta	PF0
@@ -374,9 +375,10 @@ skip_mans:
 	; 4 lines to set up boxer (?) check that
 	;===============================
 
-	lda	#$0		; turn off missile
-	sta	ENAM1
+;	lda	#$0		; turn off sprites
+;	sta	ENAM1
 	sta	GRP0
+	sta	GRP1
 
 	jmp	align2
 .align $100
@@ -439,19 +441,15 @@ swait_pos2:				; set position at 5*Y (15*Y TIA)
 	;===============================
 	; 52 lines of boxer (100..151)
 	;===============================
+	; boxer each pixel is 4 high
 
-	ldy	#21
+	ldy	#13
 	ldx	#100
 
 boxer_loop:
-;	lda	boxer_sprite_left,Y
-;	sta	GRP0			; set left sprite
-;	lda	boxer_sprite_right,Y
-;	sta	GRP1			; set right sprite
-
-	lda	(BOXER_PTR_L),Y
+	lda	(BOXER_PTR_L),Y		; load left sprite data
 	sta	GRP0			; set left sprite
-	lda	(BOXER_PTR_R),Y
+	lda	(BOXER_PTR_R),Y		; load right sprite data
 	sta	GRP1			; set right sprite
 
 
@@ -469,6 +467,11 @@ level_no_boxer:
 
 	inx
 	sta	WSYNC
+	inx
+	sta	WSYNC
+	inx
+	sta	WSYNC
+
 	inx
 	cpx	#152
 	sta	WSYNC
