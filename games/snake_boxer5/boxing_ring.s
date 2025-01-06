@@ -50,23 +50,20 @@ level_frame:
 	;==============================
 
 	; position ball, takes 2 scanlines
+	; FIXME: not currently using this
 
 	lda	#100			; position		; 3
         ldx     #4			; 4=ball		; 2
-        jsr     set_pos_x               ; 2 scanlines           ; 6+56
-;	sta	WSYNC
-;ball_pos1:
-;	dey
-;	bpl	ball_pos1
-;	sta	RESBL
-;	sta	WSYNC
-
-
+					; must call with less than 16 cycles
+        jsr     set_pos_x               ; 1 scanline + most of another
+	sta	WSYNC
 
 	;==============================
 	; now VBLANK scanline 26
 	;==============================
 	; move snake
+
+	; snake bounds are 28 ... 116
 
 	lda	SNAKE_SPEED
 	bne	snake_speed_go
@@ -80,14 +77,14 @@ snake_speed_go:
 	sta	SNAKE_X
 
 	; see if out of bounds
-	cmp	#120
+	cmp	#116
 	bcc	snake_ok_left
 
 	lda	#$ff
 	sta	SNAKE_SPEED
 
 snake_ok_left:
-	cmp	#32
+	cmp	#28
 	bcs	snake_ok_right
 
 	lda	#$1
@@ -102,29 +99,27 @@ snake_ok_right:
 	; now VBLANK scanline 27
 	;==============================
 	; set up sprites
-
-	ldx	BOXER_STATE
-
-	lda	lboxer_sprites_l,X
-	sta	BOXER_PTR_L
-	lda	lboxer_sprites_h,X
-	sta	BOXER_PTR_L_H
-
-	lda	rboxer_sprites_l,X
-	sta	BOXER_PTR_R
-	lda	rboxer_sprites_h,X
-	sta	BOXER_PTR_R_H
-
-	ldx	SNAKE_STATE
-
-	lda	snake_sprites_l,X
-	sta	SNAKE_PTR
-	lda	snake_sprites_h,X
-	sta	SNAKE_PTR_H
-
-
-
-
+; 0
+	ldx	BOXER_STATE					; 3
+; 3
+	lda	lboxer_sprites_l,X				; 4+
+	sta	BOXER_PTR_L					; 3
+	lda	lboxer_sprites_h,X				; 4+
+	sta	BOXER_PTR_L_H					; 3
+; 17
+	lda	rboxer_sprites_l,X				; 4+
+	sta	BOXER_PTR_R					; 3
+	lda	rboxer_sprites_h,X				; 4+
+	sta	BOXER_PTR_R_H					; 3
+; 31
+	ldx	SNAKE_STATE					; 3
+; 34
+	lda	snake_sprites_l,X				; 4+
+	sta	SNAKE_PTR					; 3
+	lda	snake_sprites_h,X				; 4+
+	sta	SNAKE_PTR_H					; 3
+; 48
+	sta	WSYNC
 
 	;==============================
 	; now VBLANK scanline 28
@@ -139,17 +134,15 @@ snake_ok_right:
 
 	; position sidebar (missile1)
 
-	lda	#148			; position		; 3
+	lda	#150			; position		; 3
         ldx     #3			; 3=missile1		; 2
-        jsr     set_pos_x               ; 2 scanlines           ; 6+56
-								; must be < 72
-        sta     WSYNC
-;mis1_pos1:
-;	dey
-;	bpl	mis1_pos1
-;	sta	RESM1
-;	sta	WSYNC
-;	sta	HMOVE
+					; must be <20 when calling
+        jsr     set_pos_x               ; almost 2 scanlines
+
+	; NOTE! This close to edge the rts does kick it just barely
+	; into the next scanline
+
+;        sta     WSYNC
 
 	;==============================
 	; now VBLANK scanline 36
@@ -157,29 +150,26 @@ snake_ok_right:
 
 	; setup playfield
 
+	lda	#$FF		; boxing ring playfield entirely on	; 2
+	sta	PF1							; 3
+	sta	PF2							; 3
 
-	lda	#$FF
-	sta	PF1
-	sta	PF2
+;	sta	ENABL		; enable ball				; 3
 
-;	sta	ENABL		; enable ball
+	lda	#0							; 2
+	sta	PF0		; sides of screen entirely off		; 3
+	sta	COLUPF		; set playfield color to black?		; 3
 
-	lda	#0
-	sta	PF0
-	sta	COLUPF
+	sta	GRP0		; turn off sprite0			; 3
+	sta	GRP1		; turn off sprite1			; 3
 
-	sta	GRP0
-	sta	GRP1
-
-	sta	COLUBK
+	sta	COLUBK		; set playfiel background to black	; 3
 
 	lda	#CTRLPF_REF|CTRLPF_BALL_SIZE8				; 2
-							; reflect playfield
+				; playfield reflected with big ball
 	sta	CTRLPF                                                  ; 3
 
-
-	sta	VBLANK	; enable beam
-
+	sta	VBLANK		; enable beam				; 3
 
 	jmp	score_align
 
@@ -212,21 +202,14 @@ score_align:
 
 .include "draw_score.s"
 
-;	lda	#$E
-;	sta	COLUPF
-
-;	ldx	#8
-;	jsr	common_delay_scanlines
-
-
 ; cycle 75 of scanline 10
 
 	; done with score, set up rest
 
 	lda	#$0
 ; scanline 11
-	sta	COLUPF
-	lda	#NUSIZ_DOUBLE_SIZE
+	sta	COLUPF			; playfiel black
+	lda	#NUSIZ_DOUBLE_SIZE	; make sprites double wide
 	sta	NUSIZ0
 	sta	NUSIZ1
 
@@ -240,7 +223,7 @@ score_align:
 
 ; scanline 12
 
-	lda	#$e			; white
+	lda	#$e			; set playfield white white
 	sta	COLUPF
 
 	lda	#$BF			; pattern for ropes
@@ -250,92 +233,92 @@ score_align:
 	sta	HMCLR			; clear out sprite ajustments
 
 	sta	WSYNC
+
 ; scanline 13
 
 	;====================================
 	; position boxer right sprite (well in advance)
 
-	lda	BOXER_X			; position		; 3
-	clc				; it's 16 pixels to right
-	adc	#16
-	ldx	#1			; positioning SPRITE1
-	jsr	set_pos_x
+	lda	BOXER_X			; position			; 3
+	clc				; it's 16 pixels to right	; 2
+	adc	#16							; 2
+	ldx	#1			; positioning SPRITE1		; 2
 
-;	sta	WSYNC
-; scanline 13+14
+					; must be called <20
+	jsr	set_pos_x		; bit less than 2 scanlines
 
-;swait_pos2:				; set position at 5*Y (15*Y TIA)
-;	dey				; 2
-;	bpl	swait_pos2		; 2/3
-;	sta	RESP1			; 3
+	sta	WSYNC
+; scanline 14
 
-;	sta	WSYNC
-;	sta	HMOVE
 ; scanline 15
 	sta	WSYNC
 ; scanline 16
 
-	lda	#$40			; other pattern
-	sta	PF1
-	lda	#$00
-	sta	PF2
+	lda	#$40			; setup rope on edges		; 2
+	sta	PF1							; 3
+	lda	#$00			; empty space between ropes	; 2
+	sta	PF2							; 3
 
 	;================================
 	; position snake
 
-	lda	SNAKE_X			; position		; 3
-        ldx     #0			; 0=sprite1		; 2
-        jsr     set_pos_x               ; 2 scanlines           ; 6+62
-;        sta     WSYNC
-; scanline 17+18
+	lda	SNAKE_X			; position			; 3
+        ldx     #0			; 0=sprite1			; 2
+							; call with <20
+        jsr     set_pos_x               ; almost 2 scanlines
+; scanline 17
+	sta	WSYNC
+; scanline 18
 
-;swait_pos3:
-;	dey
-;	bpl	swait_pos3
-;	sta	RESP0
+	;===============================
+	; unused scanline 18!
+	;===============================
 
 	sta	WSYNC
+
 ; scanline 19
-	sta	HMOVE
 
-
+; 0
+	sta	HMOVE							; 3
+; 3
 	;================================
 	; setup for snake
 
+	lda	#$BF			; boxing ring pattern		; 2
+	sta	PF1							; 3
+	lda	#$FF							; 2
+	sta	PF2							; 3
+; 13
+	lda	#$6			; medium grey			; 2
+	sta	COLUPF			; set boxing ring color		; 3
+; 18
+	ldx	SNAKE_KOS		; set snake color		; 3
+	lda	snake_colors,X		; from lookup table		; 4+
+	sta	COLUP0							; 3
+; 28
+	lda	#0			; turn off delay on sprites	; 2
+	sta	VDELP0							; 3
+	sta	VDELP1							; 3
+	sta	MAN_BAR			; clear mans bar value		; 3
+; 39
+	ldx	MANS			; setup man max for bar		; 3
+	lda	mans_max_lookup,X					; 4+
+	sta	MAX_MANS						; 3
+; 49
 
-	lda	#$BF
-	sta	PF1
-	lda	#$FF
-	sta	PF2
-
-	lda	#$6			; medium grey
-	sta	COLUPF
-
-	ldx	SNAKE_KOS		; set snake color
-	lda	snake_colors,X
-	sta	COLUP0
-
-	lda	#0
-	sta	VDELP0
-	sta	VDELP1
-	sta	MAN_BAR
-
-	ldx	MANS
-	lda	mans_max_lookup,X
-	sta	MAX_MANS
-
-	; turn on missile
+	;==================================
+	; setup missile for mans bar
 
 ;	lda	#$ff
 ;	sta	ENAM1
 
-	lda	#NUSIZ_MISSILE_WIDTH_4|NUSIZ_DOUBLE_SIZE
-	sta	NUSIZ1
-
+	lda	#NUSIZ_MISSILE_WIDTH_4|NUSIZ_DOUBLE_SIZE		; 2
+	sta	NUSIZ1							; 3
+; 54
 	; setup missle color
-	lda	#(33*2)
-	sta	COLUP1
-
+	lda	#(33*2)			; red				; 2
+	sta	COLUP1							; 3
+; 59
 
 	sta	WSYNC
 
@@ -343,29 +326,33 @@ score_align:
 	; 76 lines of snake (20..95)
 	;===============================
 
-	ldy	#19
-	ldx	#20
+	ldy	#19		; Y = index into snake sprite
+	ldx	#20		; X = scanline
+
 ring2_loop:
-	lda	(SNAKE_PTR),Y
-	sta	GRP0
-	tya
+	lda	(SNAKE_PTR),Y	; load snake sprite data
+	sta	GRP0		; save in SPRITE0
+
+	tya			; stop drawing if hit 0
 	beq	level_no_snake
 	dey
 level_no_snake:
+
+	inx			; draw 4 lines
 	inx
 	inx
 	inx
-	inx
-	cpx	#92
+
+	cpx	#92		; see if change color of tongue
 	bne	still_green
 
 	lda	#32*2
 	sta	COLUP0
 still_green:
 
-	sta	WSYNC
+	sta	WSYNC		; start sub line 1
 
-	cpx	MAX_MANS
+	cpx	MAX_MANS	; upate mans display on side
 	bcc	no_skip_mans
 
 	lda	#$00
@@ -382,14 +369,13 @@ no_skip_mans:
 	sta	MAN_BAR
 	sta	ENAM1
 skip_mans:
-	sta	WSYNC
-	sta	WSYNC
-	sta	WSYNC
-	cpx	#96
-	bne	ring2_loop
 
-;	ldx	#76
-;	jsr	common_delay_scanlines
+	sta	WSYNC			; start sub-line2
+	sta	WSYNC			; start sub-line3
+	sta	WSYNC			; start sub-line4
+
+	cpx	#96			; loop if not done
+	bne	ring2_loop
 
 	;===============================
 	; 4 lines to set up boxer (?) check that
