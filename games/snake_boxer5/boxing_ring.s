@@ -326,14 +326,14 @@ score_align:
 	; 76 lines of snake (20..95)
 	;===============================
 
-	ldy	#19		; Y = index into snake sprite
-	ldx	#20		; X = scanline
+	ldy	#19		; Y = index into snake sprite		; 2
+	ldx	#20		; X = scanline				; 2
 
 ring2_loop:
-	lda	(SNAKE_PTR),Y	; load snake sprite data
-	sta	GRP0		; save in SPRITE0
+	lda	(SNAKE_PTR),Y	; load snake sprite data		; 5+
+	sta	GRP0		; save in SPRITE0			; 3
 
-	tya			; stop drawing if hit 0
+	tya			; stop drawing if hit 0			; 2
 	beq	level_no_snake
 	dey
 level_no_snake:
@@ -377,23 +377,23 @@ skip_mans:
 	cpx	#96			; loop if not done
 	bne	ring2_loop
 
-	;===============================
+	;=========================================
 	; 4 lines to set up boxer (?) check that
-	;===============================
+	;=========================================
 	; ideally 96 ... 99
 
 ; scanline 96
 
-	lda	#$0		; turn off sprites
+	lda	#$0		; turn off sprites			; 2
 ;	sta	ENAM1
-	sta	GRP0
-	sta	GRP1
+	sta	GRP0							; 3
+	sta	GRP1							; 3
 
 ;	lda	#(39*2)		; pink color
 
-	lda	#(32*2)		; red color
-	sta	COLUP0
-	sta	COLUP1
+	lda	#(32*2)		; red color				; 2
+	sta	COLUP0							; 3
+	sta	COLUP1							; 3
 
 	jmp	align2
 
@@ -407,32 +407,24 @@ align2:
 	;====================================
 	; position boxer left sprite
 
-	lda	#0
-	sta	HMCLR			; clear horizontal move
+	lda	#0							; 2
+	sta	HMCLR			; clear horizontal move		; 3
 
-	lda	BOXER_X			; position		; 3
-	ldx	#0			; 0=sprite1		; 2
-	jsr	set_pos_x		; 2 scanlines           ; 6+62
-					; HM* position set by this
-					;  coarse RESP0 set by us
+	lda	BOXER_X			; position			; 3
+	ldx	#0			; 0=sprite1			; 2
+	jsr	set_pos_x		; almost 2 scanlins	; needs <20
 
-;        sta     WSYNC
-; scanline 98+99
+; scanline 98
 
-	; actually position left sprite
+	sta	WSYNC
+; scanline 99
+	sta	HMOVE						; 3
 
-;swait_pos1:				; set position at 5*Y (15*Y TIA)
-;	dey				; 2
-;	bpl	swait_pos1		; 2/3
-;	sta	RESP0			; 3
-
-
+	; unused?
 
 
 	sta	WSYNC
-	sta	HMOVE
-
-; scanline 102
+; scanline 100
 
 	;===============================
 	; 52 lines of boxer (100..151)
@@ -441,18 +433,18 @@ align2:
 
 	; at entry already at 4 cycles
 
-	ldy	#13						; 2
-	ldx	#100						; 2
+	ldy	#12							; 2
+	ldx	#100							; 2
 
 boxer_loop:
-	lda	(BOXER_PTR_L),Y		; load left sprite data
-	sta	GRP0			; set left sprite
-	lda	(BOXER_PTR_R),Y		; load right sprite data
-	sta	GRP1			; set right sprite
+	lda	(BOXER_PTR_L),Y		; load left sprite data		; 5+
+	sta	GRP0			; set left sprite		; 3
+	lda	(BOXER_PTR_R),Y		; load right sprite data	; 5+
+	sta	GRP1			; set right sprite		; 3
 
 
-	cpx	#116
-	bne	same_color
+	cpx	#116							; 2
+	bne	same_color						; 2/3
 
 	lda	#(39*2)		; pink color
 	sta	COLUP0
@@ -475,20 +467,17 @@ level_no_boxer:
 	sta	WSYNC
 	bne	boxer_loop
 
-;	ldx	#52
-;	jsr	common_delay_scanlines
-
 	;====================================
 	; 8 lines of rope (bottom) (152..159)
 	;====================================
 ; scanline 152
-	lda	#$e			; white
-	sta	COLUPF
+	lda	#$e		; white					; 2
+	sta	COLUPF		; playfield color			; 3
 
-	lda	#$40
-	sta	PF1
-	lda	#$00
-	sta	PF2
+	lda	#$40		; playfield pattern			; 2
+	sta	PF1							; 3
+	lda	#$00							; 2
+	sta	PF2							; 3
 
 	sta	WSYNC
 ; scanline 153
@@ -499,7 +488,10 @@ level_no_boxer:
 	sta	WSYNC
 ; scanline 156
 
-	lda	#$BF
+	;===================================
+	; draw bottom rope
+
+	lda	#$BF		; playfield pattern
 	sta	PF1
 	lda	#$FF
 	sta	PF2
@@ -514,7 +506,7 @@ level_no_boxer:
 ; scanline 160
 
 	;====================================
-	; 4 lines of blank (160..163)
+	; 4 lines of black (160..163)
 	;====================================
 
 	lda	#$0			; black
@@ -667,8 +659,8 @@ waited_button_enough:
 	lda	INPT4		; check joystick button pressed         ; 3
 	bmi	done_check_button					; 2/3
 
-	lda	#0
-	sta	BOXER_STATE
+;	lda	#0
+	inc	BOXER_STATE
 
 	dec	SNAKE_HEALTH
 
