@@ -11,8 +11,9 @@
 	sta	BUTTON_COUNTDOWN	; for now, avoid immediate button
 					; press leftover from title
 
-	lda	#100
+	lda	#64			; roughly center on screen
 	sta	BOXER_X
+	lda	#100
 	sta	SNAKE_X
 
 	lda	#3
@@ -48,17 +49,17 @@ level_frame:
 	; now VBLANK scanline 24+25
 	;==============================
 
-	; position ball
+	; position ball, takes 2 scanlines
 
 	lda	#100			; position		; 3
         ldx     #4			; 4=ball		; 2
-        jsr     set_pos_x               ; 2 scanlines           ; 6+62
-        sta     WSYNC
-ball_pos1:
-	dey
-	bpl	ball_pos1
-	sta	RESBL
-	sta	WSYNC
+        jsr     set_pos_x               ; 2 scanlines           ; 6+56
+;	sta	WSYNC
+;ball_pos1:
+;	dey
+;	bpl	ball_pos1
+;	sta	RESBL
+;	sta	WSYNC
 
 
 
@@ -140,14 +141,15 @@ snake_ok_right:
 
 	lda	#148			; position		; 3
         ldx     #3			; 3=missile1		; 2
-        jsr     set_pos_x               ; 2 scanlines           ; 6+62
+        jsr     set_pos_x               ; 2 scanlines           ; 6+56
+								; must be < 72
         sta     WSYNC
-mis1_pos1:
-	dey
-	bpl	mis1_pos1
-	sta	RESM1
-	sta	WSYNC
-	sta	HMOVE
+;mis1_pos1:
+;	dey
+;	bpl	mis1_pos1
+;	sta	RESM1
+;	sta	WSYNC
+;	sta	HMOVE
 
 	;==============================
 	; now VBLANK scanline 36
@@ -244,11 +246,31 @@ score_align:
 	lda	#$BF			; pattern for ropes
 	sta	PF1
 
+	lda	#0			; needed?
+	sta	HMCLR			; clear out sprite ajustments
+
 	sta	WSYNC
 ; scanline 13
-	sta	WSYNC
-; scanline 14
-	sta	WSYNC
+
+	;====================================
+	; position boxer right sprite (well in advance)
+
+	lda	BOXER_X			; position		; 3
+	clc				; it's 16 pixels to right
+	adc	#16
+	ldx	#1			; positioning SPRITE1
+	jsr	set_pos_x
+
+;	sta	WSYNC
+; scanline 13+14
+
+;swait_pos2:				; set position at 5*Y (15*Y TIA)
+;	dey				; 2
+;	bpl	swait_pos2		; 2/3
+;	sta	RESP1			; 3
+
+;	sta	WSYNC
+;	sta	HMOVE
 ; scanline 15
 	sta	WSYNC
 ; scanline 16
@@ -258,21 +280,19 @@ score_align:
 	lda	#$00
 	sta	PF2
 
-
+	;================================
 	; position snake
-	lda	#0
-	sta	HMCLR
 
 	lda	SNAKE_X			; position		; 3
         ldx     #0			; 0=sprite1		; 2
         jsr     set_pos_x               ; 2 scanlines           ; 6+62
-        sta     WSYNC
+;        sta     WSYNC
 ; scanline 17+18
 
-swait_pos3:
-	dey
-	bpl	swait_pos3
-	sta	RESP0
+;swait_pos3:
+;	dey
+;	bpl	swait_pos3
+;	sta	RESP0
 
 	sta	WSYNC
 ; scanline 19
@@ -374,59 +394,14 @@ skip_mans:
 	;===============================
 	; 4 lines to set up boxer (?) check that
 	;===============================
+	; ideally 96 ... 99
 
-;	lda	#$0		; turn off sprites
+; scanline 96
+
+	lda	#$0		; turn off sprites
 ;	sta	ENAM1
 	sta	GRP0
 	sta	GRP1
-
-	jmp	align2
-.align $100
-
-align2:
-
-	sta	WSYNC
-; scanline 97
-
-	; position boxer left sprite
-
-	lda	#0
-	sta	HMCLR			; clear horizontal move
-
-	lda	BOXER_X			; position		; 3
-        ldx     #0			; 0=sprite1		; 2
-        jsr     set_pos_x               ; 2 scanlines           ; 6+62
-					; HM* position set by this
-					;  coarse RESP0 set by us
-
-        sta     WSYNC
-; scanline 98+99
-
-swait_pos1:				; set position at 5*Y (15*Y TIA)
-	dey				; 2
-	bpl	swait_pos1		; 2/3
-	sta	RESP0			; 3
-
-
-	lda	BOXER_X			; position		; 3
-	clc
-	adc	#16
-	ldx	#1
-	jsr	set_pos_x
-
-	sta	WSYNC
-; scanline 100+101
-
-swait_pos2:				; set position at 5*Y (15*Y TIA)
-	dey				; 2
-	bpl	swait_pos2		; 2/3
-	sta	RESP1			; 3
-
-
-
-	sta	WSYNC
-; scanline 102
-	sta	HMOVE
 
 ;	lda	#(39*2)		; pink color
 
@@ -434,17 +409,54 @@ swait_pos2:				; set position at 5*Y (15*Y TIA)
 	sta	COLUP0
 	sta	COLUP1
 
+	jmp	align2
+
+.align $100
+
+align2:
 
 	sta	WSYNC
-; scanline 103
+; scanline 97
+
+	;====================================
+	; position boxer left sprite
+
+	lda	#0
+	sta	HMCLR			; clear horizontal move
+
+	lda	BOXER_X			; position		; 3
+	ldx	#0			; 0=sprite1		; 2
+	jsr	set_pos_x		; 2 scanlines           ; 6+62
+					; HM* position set by this
+					;  coarse RESP0 set by us
+
+;        sta     WSYNC
+; scanline 98+99
+
+	; actually position left sprite
+
+;swait_pos1:				; set position at 5*Y (15*Y TIA)
+;	dey				; 2
+;	bpl	swait_pos1		; 2/3
+;	sta	RESP0			; 3
+
+
+
+
+	sta	WSYNC
+	sta	HMOVE
+
+; scanline 102
 
 	;===============================
 	; 52 lines of boxer (100..151)
 	;===============================
 	; boxer each pixel is 4 high
 
-	ldy	#13
-	ldx	#100
+	; at entry already at 4 cycles
+
+	ldy	#13						; 2
+	ldx	#100						; 2
 
 boxer_loop:
 	lda	(BOXER_PTR_L),Y		; load left sprite data

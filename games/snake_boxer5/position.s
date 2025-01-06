@@ -66,22 +66,28 @@ mult_16:
 	asl             						; 2
 	asl             						; 2
 ; 46/43
-;	rts								; 6
 
 set_pos_x2:
 	sta	HMP0,X	; fine position the object specified in X	; 4
+; 50/47
 	iny		; get past 68 pixels of horizontal blank	; 2
 	iny								; 2
 	iny								; 2
-; 56
-	rts
-; 62
+; 56/53
+;	rts 62/69
 
-;	sta	WSYNC							; 3
+; 56/53
 
-;wait_pos:
-;	dey								; 2
-;	bpl	wait_pos	; 5-cycle loop (15 TIA color clocks)	; 2/3
+;=================================
+; be careful, when we do this here
+; can lead to problems with the rts overflowing to next scanline
+; if at right edge of screen
 
-;	sta	RESP0,X           					; 4
-;	rts								; 6
+	sta	WSYNC							; 3
+
+wait_pos:
+	dey								; 2
+	bpl	wait_pos	; 5-cycle loop (15 TIA color clocks)	; 2/3
+
+	sta	RESP0,X           					; 4
+	rts								; 6
