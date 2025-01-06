@@ -40,8 +40,27 @@ level_frame:
 	;=================================
 	;=================================
 
-	ldx	#25
+	ldx	#23
 	jsr	common_delay_scanlines
+
+
+	;==============================
+	; now VBLANK scanline 24+25
+	;==============================
+
+	; position ball
+
+	lda	#100			; position		; 3
+        ldx     #4			; 4=ball		; 2
+        jsr     set_pos_x               ; 2 scanlines           ; 6+62
+        sta     WSYNC
+ball_pos1:
+	dey
+	bpl	ball_pos1
+	sta	RESBL
+	sta	WSYNC
+
+
 
 	;==============================
 	; now VBLANK scanline 26
@@ -120,7 +139,7 @@ snake_ok_right:
 	; position sidebar (missile1)
 
 	lda	#148			; position		; 3
-        ldx     #3			; 0=missile1		; 2
+        ldx     #3			; 3=missile1		; 2
         jsr     set_pos_x               ; 2 scanlines           ; 6+62
         sta     WSYNC
 mis1_pos1:
@@ -140,6 +159,7 @@ mis1_pos1:
 	lda	#$FF
 	sta	PF1
 	sta	PF2
+	sta	ENABL
 
 	lda	#0
 	sta	PF0
@@ -150,7 +170,7 @@ mis1_pos1:
 
 	sta	COLUBK
 
-	lda	#CTRLPF_REF|CTRLPF_BALL_SIZE4				; 2
+	lda	#CTRLPF_REF|CTRLPF_BALL_SIZE8				; 2
 							; reflect playfield
 	sta	CTRLPF                                                  ; 3
 
