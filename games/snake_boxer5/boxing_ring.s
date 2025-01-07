@@ -100,25 +100,35 @@ snake_ok_right:
 	;==============================
 	; set up sprites
 ; 0
+	; set up boxer sprites
+
 	ldx	BOXER_STATE					; 3
 ; 3
 	lda	lboxer_sprites_l,X				; 4+
 	sta	BOXER_PTR_L					; 3
-	lda	lboxer_sprites_h,X				; 4+
-	sta	BOXER_PTR_L_H					; 3
-; 17
 	lda	rboxer_sprites_l,X				; 4+
 	sta	BOXER_PTR_R					; 3
-	lda	rboxer_sprites_h,X				; 4+
-	sta	BOXER_PTR_R_H					; 3
+	lda	lboxer_colors_l,X				; 4+
+	sta	BOXER_COL_L					; 3
+	lda	rboxer_colors_l,X				; 4+
+	sta	BOXER_COL_R					; 3
 ; 31
+
+	; all in same page
+	lda	#>boxer_data					; 2
+	sta	BOXER_PTR_LH					; 3
+	sta	BOXER_PTR_RH					; 3
+	sta	BOXER_COL_LH					; 3
+	sta	BOXER_COL_RH					; 3
+
+; 45
 	ldx	SNAKE_STATE					; 3
-; 34
+; 48
 	lda	snake_sprites_l,X				; 4+
 	sta	SNAKE_PTR					; 3
 	lda	snake_sprites_h,X				; 4+
 	sta	SNAKE_PTR_H					; 3
-; 48
+; 62
 	sta	WSYNC
 
 	;==============================
@@ -422,6 +432,8 @@ align2:
 
 	; unused?
 
+	ldy	#12							; 2
+	ldx	#100							; 2
 
 	sta	WSYNC
 ; scanline 100
@@ -433,30 +445,51 @@ align2:
 
 	; at entry already at 4 cycles
 
-	ldy	#12							; 2
-	ldx	#100							; 2
-
 boxer_loop:
+;	ldy	BOXER_PTR_L
+;	lda	boxer_data,Y
+;	sta	GRP0
+;	ldy	BOXER_PTR_R
+;	lda	boxer_data,Y
+;	sta	GRP1
+;	ldy	BOXER_COL_L
+;	lda	boxer_data,Y
+;	sta	COLUP0
+;	ldy	BOXER_COL_R
+;	lda	boxer_data,Y
+;	sta	COLUP1
+
 	lda	(BOXER_PTR_L),Y		; load left sprite data		; 5+
 	sta	GRP0			; set left sprite		; 3
 	lda	(BOXER_PTR_R),Y		; load right sprite data	; 5+
 	sta	GRP1			; set right sprite		; 3
 
+	lda	(BOXER_COL_L),Y		; load left color data		; 5+
+	sta	COLUP0			; set left color		; 3
+	lda	(BOXER_COL_R),Y		; load right color data		; 5+
+	sta	COLUP1			; set right color		; 3
 
-	cpx	#116							; 2
-	bne	same_color						; 2/3
 
-	lda	#(39*2)		; pink color
-	sta	COLUP0
-	sta	COLUP1
-same_color:
-	tya
-	beq	level_no_boxer
+
+;	cpx	#116							; 2
+;	bne	same_color						; 2/3
+
+;	lda	#(39*2)		; pink color
+;	sta	COLUP0
+;	sta	COLUP1
+;same_color:
+;	tya
+;	beq	level_no_boxer
 	dey
-level_no_boxer:
+;level_no_boxer:
 
 	inx
 	sta	WSYNC
+;	inc	BOXER_PTR_L
+;	inc	BOXER_PTR_R
+;	inc	BOXER_COL_L
+;	inc	BOXER_COL_R
+
 	inx
 	sta	WSYNC
 	inx

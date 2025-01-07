@@ -8,14 +8,19 @@ SNAKE_X		= $84		; X-position of snake
 BOXER_X_COARSE	= $85
 SNAKE_X_COARSE	= $86
 SNAKE_SPEED	= $87
+
 BOXER_PTR_L	= $88
-BOXER_PTR_L_H	= $89
+BOXER_PTR_LH	= $89
 BOXER_PTR_R	= $8A
-BOXER_PTR_R_H	= $8B
-SNAKE_PTR	= $8C
-SNAKE_PTR_H	= $8D
-INL		= $8E
-INH		= $8F
+BOXER_PTR_RH	= $8B
+BOXER_COL_L	= $8C
+BOXER_COL_LH	= $8D
+BOXER_COL_R	= $8E
+BOXER_COL_RH	= $8F
+
+
+
+
 
 TEMP1	=	$90
 TEMP2	=	$91
@@ -31,6 +36,11 @@ MAX_MANS	= $99	; used when drawing bar
 
 BOXER_STATE	= $9A	; 0=neutral, 1=block, 2=left punch, 3=right punch
 SNAKE_STATE	= $9B	;
+
+SNAKE_PTR	= $9C
+SNAKE_PTR_H	= $9D
+INL		= $9E
+INH		= $9F
 
 SCORE_SPRITE_LOW_0      = $A0
 SCORE_SPRITE_LOW_1      = $A1
