@@ -18,10 +18,12 @@ rboxer_colors_l:
 	.byte <boxer_lpunch_right_colors,<boxer_rpunch_right_colors
 	.byte <boxer_hit_right_colors,<boxer_dead_right_colors
 
+; 0 = normal, 1=coiled, 2=injured, 3=strike
+
 snake_sprites_l:
-	.byte <snake_sprite
+	.byte <snake_sprite,<snake_coiled,<snake_injured,<snake_strike
 snake_sprites_h:
-	.byte >snake_sprite
+	.byte >snake_sprite,>snake_coiled,>snake_injured,>snake_strike
 
 snake_colors:
 	.byte	98*2	; 0 = dark green
@@ -279,7 +281,7 @@ boxer_dead_left_colors:
 ;======================================================
 
 snake_sprite:
-	.byte	$00				; 0
+	.byte	$00	; .... ....		; 0
 	.byte	$14	; ...X .X..		; 1
 	.byte	$08	; .... X...		; 2
 	.byte	$08	; .... X...		; 3
@@ -300,6 +302,78 @@ snake_sprite:
 	.byte	$08	; .... X...		; 18
 	.byte	$08	; .... X...		; 19
 	.byte	$01	; ...X ....		; 20
+
+snake_coiled:
+	.byte	$00	; .... ....		; 0
+	.byte	$00	; .... ....		; 1
+	.byte	$00	; .... ....		; 2
+	.byte	$00	; .... ....		; 3
+	.byte	$00	; .... ....		; 4
+	.byte	$00	; .... ....		; 5
+	.byte	$00	; .... ....		; 6
+	.byte	$00	; .... ....		; 7
+	.byte	$00	; .... ....		; 8
+	.byte	$08	; .... X...		; 9
+	.byte	$1C	; ...X XX..		; 10
+	.byte	$2A	; ..X. X.X.		; 11
+	.byte	$2A	; ..X. X.X.		; 12
+	.byte	$3E	; ..XX XXX.		; 13
+	.byte	$7E	; .XXX XXX.		; 14
+	.byte	$FC	; XXXX XX..		; 15
+	.byte	$C0	; XX.. ....		; 16
+	.byte	$70	; .XXX ....		; 17
+	.byte	$1C	; ...X XX..		; 18
+	.byte	$24	; ..X. .X..		; 19
+	.byte	$18	; ...X X...		; 20
+
+snake_injured:
+	.byte	$00	; .... ....		; 0
+	.byte	$00	; .... ....		; 1
+	.byte	$00	; .... ....		; 2
+	.byte	$00	; .... ....		; 3
+	.byte	$00	; .... ....		; 4
+	.byte	$00	; .... ....		; 5
+	.byte	$00	; .... ....		; 6
+	.byte	$00	; .... ....		; 7
+	.byte	$00	; .... ....		; 8
+	.byte	$38	; ..XX X...		; 9
+	.byte	$7E	; .XXX XXX.		; 10
+	.byte	$BF	; X.XX XXXX		; 11
+	.byte	$FF	; XXXX XXXX		; 12
+	.byte	$D6	; XX.X .XX.		; 13
+	.byte	$6C	; .XX. XX..		; 14
+	.byte	$98	; X..X X...		; 15
+	.byte	$59	; .X.X X..X		; 16
+	.byte	$0E	; .... XXX.		; 17
+	.byte	$00	; .... ....		; 18
+	.byte	$00	; .... ....		; 19
+	.byte	$00	; .... ....		; 20
+
+snake_strike:
+	.byte	$54	; .X.X .X..		; 0
+	.byte	$54	; .X.X .X..		; 1
+	.byte	$7C	; .XXX XX..		; 2
+	.byte	$7C	; .XXX XX..		; 3
+	.byte	$3C	; ..XX XX..		; 4
+	.byte	$1E	; ...X XXX.		; 5
+	.byte	$1E	; ...X XXX.		; 6
+	.byte	$0E	; .... XXX.		; 7
+	.byte	$0E	; .... XXX.		; 8
+	.byte	$0C	; .... XX..		; 9
+	.byte	$1C	; ...X XX..		; 10
+	.byte	$38	; ..XX X...		; 11
+	.byte	$30	; ..XX ....		; 12
+	.byte	$60	; .XX. ....		; 13
+	.byte	$60	; .XX. ....		; 14
+	.byte	$60	; .XX. ....		; 15
+	.byte	$30	; ..XX ....		; 16
+	.byte	$08	; .... X...		; 17
+	.byte	$08	; .... X...		; 18
+	.byte	$10	; ...X ....		; 19
+	.byte	$20	; ..X. ....		; 20
+
+
+
 
 
 ; original game had 20 hitpoints snake, 10 for you

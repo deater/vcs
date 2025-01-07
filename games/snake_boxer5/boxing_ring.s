@@ -696,7 +696,8 @@ waited_button_enough:
 	bmi	done_check_button					; 2/3
 
 ;	lda	#0
-	inc	BOXER_STATE
+;	inc	BOXER_STATE
+;	inc	SNAKE_STATE
 
 	dec	SNAKE_HEALTH
 
