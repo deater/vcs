@@ -1,19 +1,20 @@
 .align $100
 
-; 0=neutral, 1=block, 2=punch_left, 3=punch_right, 4=hit
+; 0=neutral, 1=block, 2=punch_left, 3=punch_right, 4=hit, 5=dead
+
 lboxer_sprites_l:
 	.byte <boxer_sprite_left,<boxer_block_left,<boxer_lpunch_left
-	.byte <boxer_rpunch_left,<boxer_hit_left
+	.byte <boxer_rpunch_left,<boxer_hit_left,<boxer_dead_left
 lboxer_sprites_h:
 	.byte >boxer_sprite_left,>boxer_block_left,>boxer_lpunch_left
-	.byte >boxer_rpunch_left,>boxer_hit_left
+	.byte >boxer_rpunch_left,>boxer_hit_left,>boxer_dead_left
 
 rboxer_sprites_l:
 	.byte <boxer_sprite_right,<boxer_block_right,<boxer_lpunch_right
-	.byte <boxer_rpunch_right,<boxer_hit_right
+	.byte <boxer_rpunch_right,<boxer_hit_right,<boxer_dead_right
 rboxer_sprites_h:
-	.byte >boxer_sprite_right,>boxer_block_right,<boxer_lpunch_right
-	.byte >boxer_rpunch_right,>boxer_hit_right
+	.byte >boxer_sprite_right,>boxer_block_right,>boxer_lpunch_right
+	.byte >boxer_rpunch_right,>boxer_hit_right,>boxer_dead_right
 
 snake_sprites_l:
 	.byte <snake_sprite
@@ -49,6 +50,42 @@ mans_max_lookup:
 
 ;=====================================
 
+boxer_dead_left:
+	.byte	$00	; ........ ........	0
+	.byte	$00	; ........ ........	1
+	.byte	$3F	; ..BBBBBB BBBBB..B	2
+	.byte	$7F	; .BBBBBBB BBB....B	3
+	.byte	$7E	; .BBBBBB. BB.....B	4
+	.byte	$FE	; BBBBBBB. B......B	5
+	.byte	$01	; .......G .L     L	6
+	.byte	$0A	; ....Y.Y. .L..LL.L	7
+	.byte	$15	; ...Y.Y.Y .L.LL..L	8
+	.byte	$0E	; ....YYY. .L.....L	9
+	.byte	$15	; ...Y.Y.Y ..L...L.	10
+	.byte	$0A	; ....Y.Y. ...LLL..	11
+	.byte	$00	; ........ ........	12
+
+boxer_dead_right_colors:
+	.byte 0,0,36,36,36,36,216,30,30,30,30,30,0
+boxer_dead_left_colors:
+	.byte 0,0,36,36,36,36,0,0,0,0,0,0,0
+
+
+boxer_dead_right:
+	.byte	$00	; ........ ........	0
+	.byte	$00	; ........ ........	1
+	.byte	$F9	; ..BBBBBB BBBBB..B	2
+	.byte	$E1	; .BBBBBBB BBB....B	3
+	.byte	$C1	; .BBBBBB. BB.....B	4
+	.byte	$81	; BBBBBBB. B......B	5
+	.byte	$41	; .......G .L.....L	6
+	.byte	$4D	; ....Y.Y. .L..LL.L	7
+	.byte	$59	; ...Y.Y.Y .L.LL..L	8
+	.byte	$41	; ....YYY. .L.....L	9
+	.byte	$22	; ...Y.Y.Y ..L...L.	10
+	.byte	$1C	; ....Y.Y. ...LLL..	11
+	.byte	$00	; ........ ........	12
+
 boxer_hit_left:
 	.byte	$40	; .I...... .....I..	; 0
 	.byte	$E0	; III..... ....III.	; 1
@@ -83,7 +120,7 @@ boxer_hit_right:
 
 boxer_rpunch_left:
 	.byte	$00	; ........ ........	; 0
-	.byte	$C0	; ....XX.. ........	; 1
+	.byte	$0C	; ....XX.. ........	; 1
 	.byte	$1B	; ...XX.XX X.......	; 2
 	.byte	$37	; ..XX.XXX XX......	; 3
 	.byte	$37	; ..XX.XXX XX.X....	; 4
@@ -128,7 +165,7 @@ boxer_lpunch_left:
 	.byte	$07	; .....XXX XX.XX...	; 3
 	.byte	$17	; ...X.XXX XX.XX...	; 4
 	.byte	$17	; ...X.XXX XX.XX...	; 5
-	.byte	$1B	; ...XX.XX XX.II...	; 6
+	.byte	$1B	; ...XX.XX X..II...	; 6
 	.byte	$1D	; ...XXX.X ..IIII..	; 7
 	.byte	$0C	; ....XX.. ..IIII..	; 8
 	.byte	$0C	; ....XX.. ...II...	; 9
@@ -147,7 +184,7 @@ boxer_lpunch_right:
 	.byte	$D8	; .....XXX XX.XX...	; 3
 	.byte	$D8	; ...X.XXX XX.XX...	; 4
 	.byte	$D8	; ...X.XXX XX.XX...	; 5
-	.byte	$D8	; ...XX.XX XX.II...	; 6
+	.byte	$98	; ...XX.XX X..II...	; 6
 	.byte	$3C	; ...XXX.X ..IIII..	; 7
 	.byte	$3C	; ....XX.. ..IIII..	; 8
 	.byte	$18	; ....XX.. ...II...	; 9

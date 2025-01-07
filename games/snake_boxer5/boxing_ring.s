@@ -476,8 +476,11 @@ level_no_boxer:
 
 	lda	#$40		; playfield pattern			; 2
 	sta	PF1							; 3
+
 	lda	#$00							; 2
 	sta	PF2							; 3
+	sta	GRP0
+	sta	GRP1
 
 	sta	WSYNC
 ; scanline 153
