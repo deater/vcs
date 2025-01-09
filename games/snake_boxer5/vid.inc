@@ -1,13 +1,13 @@
 ; Using background color $00
-left_colors:
-	.byte $C6,$C6,$84
-	.byte $84,$0E,$0E,$0E,$0E,$0E,$0E,$0E
-	.byte $00
+;left_colors:
+;	.byte $44,$44,$84
+;	.byte $84,$84,$84,$84,$84,$84,$84,$84
+;	.byte $00
 
-right_colors:
-	.byte $0E,$0E,$0E
-	.byte $0E,$0E,$0E,$0E,$0E,$0E,$0E,$0E
-	.byte $00
+;right_colors:
+;	.byte $C6,$C6,$0E
+;	.byte $0E,$0E,$0E,$0E,$0E,$0E,$0E,$0E
+;	.byte $00
 
 playfield0_left:
 	.byte $C0,$C0,$C0

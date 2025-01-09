@@ -192,50 +192,136 @@ snake_ok_right:
 	; draw 44 lines of the title
 	; need to race beam to draw other half of playfield
 	;=============================================
+; scanline 19
+	lda	#$C0		; top of V pattern
+	sta	PF0
+	lda	#$B8
+	sta	PF1
 
-	ldy	#0
-	ldx	#0
+	;========================
+	; top V
+	; scanline 20..23
+
+	ldx	#3			; draw 3 lines			; 2
+top_v_loop:
+	sta	WSYNC
+
+; 0
+	lda	#$44			; red				; 2
+	sta	COLUPF							; 3
+; 5
+	; want to delay 20 total
+	jsr	delay_20
+; 25
+	lda	#$C6			; green				; 2
+	sta	COLUPF							; 3
+; 30
+	lda	#$00							; 2
+	sta	COLUPF							; 3
+; 35
+	dex
+	bpl	top_v_loop
+
+; scanline 23
+
+	;========================
+	; middle V
+	; 	24..27
+
+	ldx	#3			; draw 3 lines			; 2
+mid_v_loop:
+	sta	WSYNC
+
+; 0
+	lda	#$44			; red				; 2
+	sta	COLUPF							; 3
+; 5
+	; want to delay 16
+	jsr	delay_16
+; 21
+	ldy	#$C6			; load green in avance		; 2
+	lda	#$84			; blue				; 2
+	sta	COLUPF			; set blue			; 3
+	sty	a:COLUPF		; quickly set green		; 4
+; 32
+	lda	#$00			; set black			; 2
+	sta	COLUPF							; 3
+	dex
+	bpl	mid_v_loop
+
+	;========================
+	; bottom V
+
+	ldx	#3							; 2
+bottom_v_loop:
+	sta	WSYNC
+
+; 0
+	lda	#$84			; set blue			; 2
+	sta	COLUPF							; 3
+; 5
+	; want to delay 26
+	jsr	delay_26
+; 31
+	lda	#$00							; 2
+	sta	COLUPF							; 3
+; 36
+	dex								; 2
+	bpl	bottom_v_loop						; 2/3
+
+	;========================
+	; set up for title loop
+
+	ldy	#3
+	ldx	#12
+
+	jmp	titl_align
+.align $100
+
+titl_align:
 	sta	WSYNC
 
 vid_title_loop:
-	lda	left_colors,Y		;				; 4+
-	sta	COLUPF			; set playfield color		; 3
-; 7
+	lda	#$84		; medium blue				; 2
+	sta	COLUPF		; set playfield color			; 3
+; 5
 	lda	playfield0_left,Y	;				; 4+
 	sta	PF0			;				; 3
 	; must write by CPU 22 [GPU 68]
-; 14
+; 12
 	lda	playfield1_left,Y	;				; 4+
 	sta	PF1			;				; 3
 	; must write by CPU 28 [GPU 84]
-
-; 21
+; 19
 	lda	playfield2_left,Y	;				; 4+
 	sta	PF2			;				; 3
 	; must write by CPU 38 [GPU 116]
-
+; 26
+	nop
 ; 28
+	lda	#$0e		; white					; 2
+	sta	a:COLUPF						; 4
+; 34
+
+	lda	$80		; nop3
+
+; 37
 	; at this point we're at 28 cycles
 	lda	playfield0_right,Y	;				; 4+
 	sta	PF0			;				; 3
 	; must write by CPU 49 [GPU 148]
-; 35
+; 44
 	lda	playfield1_right,Y	;				; 4+
 	sta	PF1			;				; 3
 	; must write by CPU 54 [GPU 164]
-; 42
-	lda	$80							; 3
+; 51
+	nop
 	lda	playfield2_right,Y	;				; 4+
 	sta	PF2			;				; 3
 	; must write by CPU 65 [GPU 196]
 
-; 52
-
-	lda	right_colors,Y		;				; 4+
-;	force 4-cycle store
-	sta	a:COLUPF						; 4
-
 ; 60
+
 	inx                                                             ; 2
 	txa                                                             ; 2
 	and	#$3                                                     ; 2
@@ -248,15 +334,17 @@ done_iny:
                                                                 ; 11/11
 
 ; 71
-	cpx	#48						; 2
+	cpx	#44						; 2
 	bne	vid_title_loop					; 2/3
 done_toploop:
 
 	;==================================
-	; black for 68..95
+	; black for 64..95
 	;==================================
+	lda	#$0
+	sta	COLUPF
 
-	ldx	#28
+	ldx	#32
 	jsr	common_delay_scanlines
 
 ;scanline 96
@@ -435,3 +523,17 @@ after_check_right:
 	jmp	level_frame
 
 .include "position.s"
+
+delay_26:
+	nop
+	nop
+	nop
+delay_20:
+	nop
+	nop
+delay_16:
+	nop
+	nop
+delay_12:
+	rts
+
