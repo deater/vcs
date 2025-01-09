@@ -1,7 +1,14 @@
 ; zero page addresses
 
 FRAME		= $80
-;
+FRAMEH		= $81
+
+; for title
+RUNNER_X	= $82
+RUNNER_STATE	= $9A
+
+; for actual game
+
 BOXER_X		= $82		; X-position of boxer
 RBOXER_X	= $83		; X-position of right boxer sprite (BOXER_X+8)
 SNAKE_X		= $84		; X-position of snake
