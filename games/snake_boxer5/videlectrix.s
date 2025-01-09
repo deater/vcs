@@ -272,7 +272,7 @@ bottom_v_loop:
 	;========================
 	; set up for title loop
 
-	ldy	#3
+	ldy	#0
 	ldx	#12
 
 	jmp	titl_align
