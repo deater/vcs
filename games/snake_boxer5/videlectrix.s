@@ -8,7 +8,6 @@
 
 level_frame:
 
-
 	;============================
 	; Start Vertical Blank
 	;============================
@@ -150,32 +149,22 @@ snake_ok_right:
 
 	; setup playfield
 
-	lda	#$FF		; boxing ring playfield entirely on	; 2
+	lda	#$0		; playfield entirely off		; 2
+	sta	PF0
 	sta	PF1							; 3
 	sta	PF2							; 3
 
-;	sta	ENABL		; enable ball				; 3
-
-	lda	#0							; 2
-	sta	PF0		; sides of screen entirely off		; 3
-	sta	COLUPF		; set playfield color to black?		; 3
+	sta	COLUPF		; set playfield color to black		; 3
 
 	sta	GRP0		; turn off sprite0			; 3
 	sta	GRP1		; turn off sprite1			; 3
 
-	sta	COLUBK		; set playfiel background to black	; 3
+	sta	COLUBK		; set playfield background to black	; 3
 
-	lda	#CTRLPF_REF|CTRLPF_BALL_SIZE8				; 2
-				; playfield reflected with big ball
+;	lda	#0		; playfield not reflected		; 2
 	sta	CTRLPF                                                  ; 3
 
 	sta	VBLANK		; enable beam				; 3
-
-	jmp	score_align
-
-.align	$100
-
-score_align:
 
 	sta	WSYNC
 
@@ -193,43 +182,84 @@ score_align:
 
 
 	;===============================
-	; 12 lines of score	(0..11)
+	; 20 lines of black	(0..19)
 	;===============================
+; scanline 0
+	ldx	#19
+	jsr	common_delay_scanlines
 
-; scanline 13
+	;=============================================
+	; draw 44 lines of the title
+	; need to race beam to draw other half of playfield
+	;=============================================
 
-	;====================================
-	; position boxer right sprite (well in advance)
-
-	lda	RUNNER_X		; position			; 3
-	clc				; it's 16 pixels to right	; 2
-	adc	#16							; 2
-	ldx	#1			; positioning SPRITE1		; 2
-
-					; must be called <20
-	jsr	set_pos_x		; bit less than 2 scanlines
-
+	ldy	#0
+	ldx	#0
 	sta	WSYNC
-; scanline 14
 
-; scanline 15
-	sta	WSYNC
-; scanline 16
+vid_title_loop:
+	lda	left_colors,Y		;				; 4+
+	sta	COLUPF			; set playfield color		; 3
+; 7
+	lda	playfield0_left,Y	;				; 4+
+	sta	PF0			;				; 3
+	; must write by CPU 22 [GPU 68]
+; 14
+	lda	playfield1_left,Y	;				; 4+
+	sta	PF1			;				; 3
+	; must write by CPU 28 [GPU 84]
 
+; 21
+	lda	playfield2_left,Y	;				; 4+
+	sta	PF2			;				; 3
+	; must write by CPU 38 [GPU 116]
 
-	;=========================================
-	; 4 lines to set up boxer (?) check that
-	;=========================================
-	; ideally 96 ... 99
+; 28
+	; at this point we're at 28 cycles
+	lda	playfield0_right,Y	;				; 4+
+	sta	PF0			;				; 3
+	; must write by CPU 49 [GPU 148]
+; 35
+	lda	playfield1_right,Y	;				; 4+
+	sta	PF1			;				; 3
+	; must write by CPU 54 [GPU 164]
+; 42
+	lda	$80							; 3
+	lda	playfield2_right,Y	;				; 4+
+	sta	PF2			;				; 3
+	; must write by CPU 65 [GPU 196]
 
-; scanline 96
+; 52
 
-	lda	#$0		; turn off sprites			; 2
-;	sta	ENAM1
-	sta	GRP0							; 3
-	sta	GRP1							; 3
+	lda	right_colors,Y		;				; 4+
+;	force 4-cycle store
+	sta	a:COLUPF						; 4
 
-;	lda	#(39*2)		; pink color
+; 60
+	inx                                                             ; 2
+	txa                                                             ; 2
+	and	#$3                                                     ; 2
+	beq	yes_iny                                                 ; 2/3
+	.byte	$A5     ; begin of LDA ZP                               ; 3
+yes_iny:
+	iny		; $E8 should be harmless to load                ; 2
+done_iny:
+                                                                ;===========
+                                                                ; 11/11
+
+; 71
+	cpx	#48						; 2
+	bne	vid_title_loop					; 2/3
+done_toploop:
+
+	;==================================
+	; black for 68..95
+	;==================================
+
+	ldx	#28
+	jsr	common_delay_scanlines
+
+;scanline 96
 
 	lda	#(32*2)		; red color				; 2
 	sta	COLUP0							; 3
@@ -240,6 +270,7 @@ score_align:
 .align $100
 
 align2:
+
 
 	sta	WSYNC
 ; scanline 97
@@ -328,8 +359,7 @@ runner_loop:
 	sta	WSYNC
 
 	inx
-	cpx	#152
-	sta	WSYNC
+	cpx	#118
 	bne	runner_loop
 
 

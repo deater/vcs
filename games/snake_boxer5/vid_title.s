@@ -35,7 +35,11 @@ done_forever:
 
 .include "common_routines.s"
 
+.align $100
 .include "runner.inc"
+
+.align $100
+.include "vid.inc"
 
 .segment "IRQ_VECTORS"
 	.word start	; NMI

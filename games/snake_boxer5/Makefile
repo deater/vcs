@@ -22,7 +22,7 @@ vid_title.bin:	vid_title.o
 
 vid_title.o:	vid_title.s \
 	zp.inc \
-	videlectrix.s runner.inc \
+	videlectrix.s runner.inc vid.inc \
 	position.s \
 	common_routines.s
 	ca65 -o vid_title.o vid_title.s -l vid_title.lst
