@@ -5,6 +5,11 @@ FRAMEH		= $81
 
 ; for title
 RUNNER_X	= $82
+RUNNER_COUNT	= $84
+RUNNER_PTR_L	= $88
+RUNNER_PTR_LH	= $89
+RUNNER_PTR_R	= $8A
+RUNNER_PTR_RH	= $8B
 RUNNER_STATE	= $9A
 
 ; for actual game

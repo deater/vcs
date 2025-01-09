@@ -85,6 +85,20 @@ set_pos_x2:
 
 	sta	WSYNC							; 3
 
+	; Y=0  -> (5)-1 + 4 =   8 cycles on screen?
+	; Y=1  -> (10)-1 + 4 = 13 cycles
+	; Y=8  -> (45)-1 + 4 = 48 cycles
+	; Y=10 -> (55)-1 + 4 = 58 cycles
+	; Y=11 -> (65)-1 + 4 = 63 cycles ; safe for rts/WSYNC (8*15=120)
+	; Y=12 -> (65)-1 + 4 = 68 cycles
+	; Y=13 -> (70)-1 + 4 = 73 cycles
+	; Y=14 -> (75)-1 + 4 = 78 cycles
+	; Y=15 -> (80)-1 + 4 = 83 cycles
+
+	; 160/15 = 10+3 = 73 cycles
+
+	; TIA=160+68 = 228
+
 wait_pos:
 	dey								; 2
 	bpl	wait_pos	; 5-cycle loop (15 TIA color clocks)	; 2/3

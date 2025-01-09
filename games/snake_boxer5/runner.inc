@@ -1,3 +1,20 @@
+runner_data:
+
+MAX_RUNNER_STATE=16
+
+runner_state:
+	.byte 9,0,3,4,1,2,3,4,0,3,4,1,5,6,7,7,8,$FF
+
+runner_left:
+	.byte <runner0L,<runner0L,<runner0L,<runner0L	; 0,1,2,3
+	.byte <runner0L,<runner0L,<runner0L,<runner7L	; 4,5,6,7
+	.byte <runner7L,<runner0L			; 8,9
+
+runner_right:
+	.byte <runner0,<runner1,<runner2,<runner3	; 0,1,2,3
+	.byte <runner4,<runner5,<runner6,<runner7	; 4,5,6,7
+	.byte <runner8,<runner0L			; 8,9
+
 runner0L:
 	.byte	$00	; ........
 	.byte	$00	; ........
@@ -19,24 +36,24 @@ runner0L:
 	.byte	$00	; ........
 
 runner0:
-	.byte	$00	; ........
-	.byte	$00	; ........
-	.byte	$62	; .XX....X
-	.byte	$63	; .XX...XX
-	.byte	$26	; ..X..XX.
-	.byte	$24	; ..X..X..
-	.byte	$3C	; ..XXXX..
-	.byte	$38	; ..XXX...
-	.byte	$18	; ...XX...
-	.byte	$18	; ...XX...
-	.byte	$3C	; ..XXXX..
-	.byte	$5C	; .X.XXX..
-	.byte	$1C	; ...XXX..
-	.byte	$18	; ...XX...
-	.byte	$18	; ...XX...
-	.byte	$08	; ....X...
-	.byte	$18	; ...XX...
-	.byte	$18	; ...XX...
+	.byte	$00	; ........	; 0
+	.byte	$00	; ........	; 1
+	.byte	$61	; .XX....X	; 2
+	.byte	$63	; .XX...XX	; 3
+	.byte	$26	; ..X..XX.	; 4
+	.byte	$24	; ..X..X..	; 5
+	.byte	$3C	; ..XXXX..	; 6
+	.byte	$38	; ..XXX...	; 7
+	.byte	$18	; ...XX...	; 8
+	.byte	$18	; ...XX...	; 9
+	.byte	$3C	; ..XXXX..	; 10
+	.byte	$5C	; .X.XXX..	; 11
+	.byte	$1C	; ...XXX..	; 12
+	.byte	$18	; ...XX...	; 13
+	.byte	$18	; ...XX...	; 14
+	.byte	$08	; ....X...	; 15
+	.byte	$18	; ...XX...	; 16
+	.byte	$18	; ...XX...	; 17
 
 runner1:
 	.byte	$00	; ........
@@ -80,7 +97,7 @@ runner2:
 
 runner3:
 	.byte	$30	; ..XX....
-	.byte	$20	; ...X....
+	.byte	$10	; ...X....
 	.byte	$14	; ...X.X..
 	.byte	$14	; ...X.X..
 	.byte	$7C	; .XXXXX..
