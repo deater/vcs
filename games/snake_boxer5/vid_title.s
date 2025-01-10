@@ -1,6 +1,6 @@
-; Videlectrix title test
+; Videlectrix Intro and Title for Snake Boxer 5
 
-; based on the Videlectrix game
+; based on the Videlectrix game Snake Boxer 5
 
 ; by Vince `deater` Weaver <vince@deater.net>
 
@@ -30,22 +30,27 @@ clear_loop:
 
 	.include "videlectrix.s"
 
-;done_forever:
-;	jmp	done_forever
+	.include "title_screen.s"
+
+.include "position.s"
 
 .include "common_routines.s"
 
 .include "sound_notes.s"
 
-.align $100
-.include "runner.inc"
+.include "delay.s"
 
 .align $100
-.include "vid.inc"
+.include "title_data.inc"
 
 .segment "IRQ_VECTORS"
 	.word start	; NMI
 	.word start	; RESET
 	.word start	; IRQ
+
+
+
+
+
 
 

@@ -8,6 +8,8 @@ snake_boxer5.bin:	vid_title.bin gameplay.bin
 	cat vid_title.bin > snake_boxer5.bin
 	cat gameplay.bin >> snake_boxer5.bin
 
+
+
 ###
 
 gameplay.bin:	gameplay.o
@@ -27,9 +29,9 @@ vid_title.bin:	vid_title.o
 
 vid_title.o:	vid_title.s \
 	zp.inc \
-	videlectrix.s runner.inc vid.inc \
+	videlectrix.s  title_data.inc \
 	position.s sound_notes.s \
-	common_routines.s
+	common_routines.s delay.s
 	ca65 -o vid_title.o vid_title.s -l vid_title.lst
 
 ###

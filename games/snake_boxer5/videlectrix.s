@@ -289,15 +289,15 @@ vid_title_loop:
 	lda	#$84		; medium blue				; 2
 	sta	COLUPF		; set playfield color			; 3
 ; 5
-	lda	playfield0_left,Y	;				; 4+
+	lda	vplayfield0_left,Y	;				; 4+
 	sta	PF0			;				; 3
 	; must write by CPU 22 [GPU 68]
 ; 12
-	lda	playfield1_left,Y	;				; 4+
+	lda	vplayfield1_left,Y	;				; 4+
 	sta	PF1			;				; 3
 	; must write by CPU 28 [GPU 84]
 ; 19
-	lda	playfield2_left,Y	;				; 4+
+	lda	vplayfield2_left,Y	;				; 4+
 	sta	PF2			;				; 3
 	; must write by CPU 38 [GPU 116]
 ; 26
@@ -311,36 +311,36 @@ vid_title_loop:
 
 ; 37
 	; at this point we're at 28 cycles
-	lda	playfield0_right,Y	;				; 4+
+	lda	vplayfield0_right,Y	;				; 4+
 	sta	PF0			;				; 3
 	; must write by CPU 49 [GPU 148]
 ; 44
-	lda	playfield1_right,Y	;				; 4+
+	lda	vplayfield1_right,Y	;				; 4+
 	sta	PF1			;				; 3
 	; must write by CPU 54 [GPU 164]
 ; 51
 	nop
-	lda	playfield2_right,Y	;				; 4+
+	lda	vplayfield2_right,Y	;				; 4+
 	sta	PF2			;				; 3
 	; must write by CPU 65 [GPU 196]
 
 ; 60
 
-	inx                                                             ; 2
-	txa                                                             ; 2
-	and	#$3                                                     ; 2
-	beq	yes_iny                                                 ; 2/3
+	inx								; 2
+	txa								; 2
+	and	#$3							; 2
+	beq	vyes_iny						; 2/3
 	.byte	$A5     ; begin of LDA ZP                               ; 3
-yes_iny:
+vyes_iny:
 	iny		; $E8 should be harmless to load                ; 2
-done_iny:
+vdone_iny:
                                                                 ;===========
                                                                 ; 11/11
 
 ; 71
 	cpx	#44						; 2
 	bne	vid_title_loop					; 2/3
-done_toploop:
+
 
 	;==================================
 	; black for 64..95
@@ -457,33 +457,25 @@ done_check_button:
 	;=============================
 	; now at VBLANK scanline 29
 	;=============================
-	; handle left being pressed
-; 0
-after_check_left:
+	; Handle end
+
+	lda	FRAMEH
+	cmp	#3
+	beq	done_vid
+
 	sta	WSYNC
 
 
 	;==================================
 	; overscan 30, handle end
 	;==================================
-	; handle right being pressed
+	;
+
 
 after_check_right:
 
 	jmp	level_frame
 
-.include "position.s"
+done_vid:
 
-delay_26:
-	nop
-	nop
-	nop
-delay_20:
-	nop
-	nop
-delay_16:
-	nop
-	nop
-delay_12:
-	rts
 
