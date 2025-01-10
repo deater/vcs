@@ -68,3 +68,5 @@ SFX_RIGHT               =       $B0
 SFX_LEFT                =       $B1
 NOTE_DURATION		=	$B2
 NOTE_POINTER		=	$B3
+LEVEL_OVER		=	$B4
+

@@ -69,6 +69,10 @@ cpad_x:
 	sty	VBLANK		; re-enable VBLANK
 
 	ldx	#0
+
+	jmp	title_align2
+	.align $100
+title_align2:
 	sta	WSYNC
 
 
@@ -401,27 +405,57 @@ spriteloop_snake_bottom:
 	; overscan
 	;==========================
 
-	ldx	#29
+	ldx	#28
 	jsr	common_overscan
 
 
 	;============================
-	; Overscan scanline 30
+	; Overscan scanline 29
 	;============================
 	; check for button
 	; we used to check for RESET too, but we'd need to debounce it
 	;       and in theory it would be sorta pointless to RESET at title
 	;============================
 
-waited_enough:
-	lda	INPT4			; check if joystick button pressed
-	bpl	done_title
+; 0
+	; debounce
+	lda	BUTTON_COUNTDOWN					; 3
+	beq	twaited_button_enough					; 2/3
+	dec	BUTTON_COUNTDOWN					; 5
+	jmp	tdone_check_button					; 3
+
+twaited_button_enough:
+
+	lda	INPT4		; check joystick button pressed		; 3
+	bmi	tdone_check_button					; 2/3
+
+	inc	LEVEL_OVER
+	lda	#20
+	sta	BUTTON_COUNTDOWN
+
+tdone_check_button:
+	sta     WSYNC
+
 
 
 done_check_input:
 
+	;============================
+	; Overscan scanline 30
+	;============================
+
+	lda	LEVEL_OVER
+	bne	done_title
+
         jmp     title_frame_loop        ; bra
 
 done_title:
+	lda	#0
+	sta	FRAME
+	sta	FRAMEH
+	sta	BOXER_STATE
+
+
+	sta	LEVEL_OVER
 
 	; fall through

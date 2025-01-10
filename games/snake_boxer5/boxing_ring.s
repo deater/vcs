@@ -55,9 +55,10 @@ level_frame:
 	lda	#100			; position		; 3
         ldx     #4			; 4=ball		; 2
 					; must call with less than 16 cycles
-        jsr     set_pos_x               ; 1 scanline + most of another
-	sta	WSYNC
+        jsr     set_pos_x               ; usually 2 scanlines
+;	sta	WSYNC
 
+; 6
 	;==============================
 	; now VBLANK scanline 26
 	;==============================
@@ -147,13 +148,9 @@ snake_ok_right:
 	lda	#150			; position		; 3
         ldx     #3			; 3=missile1		; 2
 					; must be <20 when calling
-        jsr     set_pos_x               ; almost 2 scanlines
+        jsr     set_pos_x               ; usually 2 scanlines
 
-	; NOTE! This close to edge the rts does kick it just barely
-	; into the next scanline
-
-;        sta     WSYNC
-
+; 6
 	;==============================
 	; now VBLANK scanline 36
 	;==============================
@@ -255,9 +252,10 @@ score_align:
 	ldx	#1			; positioning SPRITE1		; 2
 
 					; must be called <20
-	jsr	set_pos_x		; bit less than 2 scanlines
+	jsr	set_pos_x		; usually 2 scanlines
 
-	sta	WSYNC
+; 6
+
 ; scanline 14
 
 ; scanline 15
@@ -275,10 +273,12 @@ score_align:
 	lda	SNAKE_X			; position			; 3
         ldx     #0			; 0=sprite1			; 2
 							; call with <20
-        jsr     set_pos_x               ; almost 2 scanlines
+        jsr     set_pos_x               ; usually 2 scanlines
 ; scanline 17
-	sta	WSYNC
+
 ; scanline 18
+
+; 6
 
 	;===============================
 	; unused scanline 18!
@@ -422,13 +422,14 @@ align2:
 
 	lda	BOXER_X			; position			; 3
 	ldx	#0			; 0=sprite1			; 2
-	jsr	set_pos_x		; almost 2 scanlins	; needs <20
+	jsr	set_pos_x		; usually 2 scanlins	; needs <20
 
 ; scanline 98
 
-	sta	WSYNC
+; 6
+
 ; scanline 99
-	sta	HMOVE						; 3
+
 
 	; unused?
 
@@ -436,6 +437,8 @@ align2:
 	ldx	#100							; 2
 
 	sta	WSYNC
+	sta	HMOVE						; 3
+
 ; scanline 100
 
 	;===============================

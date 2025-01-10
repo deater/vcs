@@ -1,20 +1,23 @@
-+ Overlap when either side striking, using Ball graphic
-
 + Videlectrix intro
+	-- no logo until character falls
+	-- avoid glitch going to title
 
-+ Check if there are sound effects?
++ Title screen
+	-- take secret code
+	-- do something to indicate secret code
+	-- play music?
+	-- avoid glitch going to game
 
-+ Optimize data usage
++ Normal Game
+	-- Overlap when either side striking, using Ball graphic
+	-- sound effects
+	-- find some way to multi-color the boxer?
+	-- handle graphics and such when run out of lives
 
-+ Lives down the side
-	Do this with missile2?
++ Bonus Game
+	-- sprites, etc
 
-+ Multi-color the boxer
-	Not sure best way.  Maybe inverting the playfield, and having
-	the ball be his outfit?
++ Overall
+	-- Optimize data usage
+	-- maybe squeeze into 4k cart somehow?
 
-+ Death display
-
-+ More sprites
-
-+ Actually box

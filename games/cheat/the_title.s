@@ -12,7 +12,7 @@
 
 switch_to_bank1_and_start_strongbadia:
 	bit	$1FF9		; switch to bank1
-				; this is followed by a jumpg
+				; this is followed by a jump
 switched_from_bank1_and_start_game:
 	jmp	the_cheat_start
 

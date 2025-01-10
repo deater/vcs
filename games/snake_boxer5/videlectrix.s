@@ -439,7 +439,7 @@ after_check_down:
 	;=============================
 	; handle button being pressed
 ; 0
-	; debounceg
+	; debounce
 	lda	BUTTON_COUNTDOWN					; 3
 	beq	waited_button_enough					; 2/3
 	dec	BUTTON_COUNTDOWN					; 5
@@ -450,6 +450,9 @@ waited_button_enough:
 	lda	INPT4		; check joystick button pressed         ; 3
 	bmi	done_check_button					; 2/3
 
+	inc	LEVEL_OVER
+	lda	#20
+	sta	BUTTON_COUNTDOWN
 
 done_check_button:
 	sta	WSYNC
@@ -462,6 +465,9 @@ done_check_button:
 	lda	FRAMEH
 	cmp	#3
 	beq	done_vid
+
+	lda	LEVEL_OVER		; see if level over set
+	bne	done_vid		; then exit
 
 	sta	WSYNC
 
@@ -477,5 +483,6 @@ after_check_right:
 	jmp	level_frame
 
 done_vid:
-
+	lda	#0
+	sta	LEVEL_OVER
 

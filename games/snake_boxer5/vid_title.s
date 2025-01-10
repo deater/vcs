@@ -36,12 +36,21 @@ clear_loop:
 
 	; S=$FF, A=$00, X=$00, Y=??
 
+	;============================
+	; do videlectrix intro
+	;============================
 
 	.include "videlectrix.s"
 
+	;============================
+	; do title screen
+	;============================
+
 	.include "title_screen.s"
 
+	;============================
 	; done with title, start game
+	;============================
 
 	jmp	switch_to_bank1_and_start_game
 
