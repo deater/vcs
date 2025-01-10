@@ -104,4 +104,9 @@ wait_pos:
 	bpl	wait_pos	; 5-cycle loop (15 TIA color clocks)	; 2/3
 
 	sta	RESP0,X           					; 4
+
+	; safer, can handle up to 73
+
+	sta	WSYNC							; 3
+
 	rts								; 6

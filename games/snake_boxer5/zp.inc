@@ -64,3 +64,5 @@ SCORE_SPRITE_LOW_6      = $A6
 SCORE_SPRITE_LOW_7	= $A7
 SCORE_SPRITE_LOW_8	= $A8
 
+SFX_RIGHT               =       $B0
+SFX_LEFT                =       $B1

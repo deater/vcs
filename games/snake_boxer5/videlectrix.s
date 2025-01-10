@@ -58,6 +58,12 @@ no_oflo:
 	lda	runner_state,X						; 4+
 	sta	RUNNER_STATE						; 3
 
+	cpx	#3
+	bne	same_frame
+
+	ldy	#SFX_GAMEOVER
+	jsr	trigger_sound
+
 same_frame:
 
 	sta	WSYNC
@@ -89,13 +95,12 @@ skip_move:
 
 	lda	RUNNER_X		; position			; 3
 	ldx	#0			; 0=sprite0			; 2
-	jsr	set_pos_x		; almost 2 scanlines	; needs <20
+	jsr	set_pos_x		; usually 2 scanlines	; needs <20
 
 ; scanline 33
-	sta	WSYNC
 ; scanline 34
 
-
+; 6
 
 	;====================================
 	; position runner right sprite 34+35
@@ -104,13 +109,14 @@ skip_move:
 	clc								; 2
 	adc	#16							; 2
 	ldx	#1			; 1=sprite1			; 2
-	jsr	set_pos_x		; almost 2 scanlins	; needs <20
-; scanline 34
+; 15
+	jsr	set_pos_x		; usually 2 scanlines	; needs <20
 
-	sta	WSYNC
 ; scanline 35
-	sta	HMOVE						; 3
+; scanline 36
 
+
+; 6
 
 	;==============================
 	; now VBLANK scanline 36
@@ -132,6 +138,7 @@ skip_move:
 	sta	RUNNER_PTR_RH					; 3
 
 	sta	WSYNC
+	sta	HMOVE						; 3
 
 	;==============================
 	; now VBLANK scanline 37
@@ -398,8 +405,18 @@ runner_loop:
 	;==================================
 	;==================================
 
-	ldx	#26
+	ldx	#24
 	jsr	common_overscan
+
+	;=============================
+	; now at VBLANK scanline 25+26
+	;=============================
+	; update sound
+        ; takes two scanlines
+
+	jsr	update_sound		; 2 scanlines
+
+	sta	WSYNC
 
 	;=============================
 	; now at VBLANK scanline 27
@@ -416,7 +433,7 @@ after_check_down:
 	;=============================
 	; handle button being pressed
 ; 0
-	; debounce
+	; debounceg
 	lda	BUTTON_COUNTDOWN					; 3
 	beq	waited_button_enough					; 2/3
 	dec	BUTTON_COUNTDOWN					; 5

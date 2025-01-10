@@ -30,10 +30,14 @@ clear_loop:
 
 	.include "videlectrix.s"
 
-done_forever:
-	jmp	done_forever
+;done_forever:
+;	jmp	done_forever
 
 .include "common_routines.s"
+
+.include "sound_update.s"
+.include "sound_trigger.s"
+.include "sfx.inc"
 
 .align $100
 .include "runner.inc"
