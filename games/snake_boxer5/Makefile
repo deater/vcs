@@ -1,19 +1,24 @@
 LINKER_SCRIPT = ../../linker_script
 
-all:	snake_boxer5.bin vid_title.bin
-
+all:	snake_boxer5.bin
 
 ###
 
-snake_boxer5.bin:	snake_boxer5.o
-	ld65 -o snake_boxer5.bin snake_boxer5.o -C $(LINKER_SCRIPT)/atari2600_f000.inc
+snake_boxer5.bin:	vid_title.bin gameplay.bin
+	cat vid_title.bin > snake_boxer5.bin
+	cat gameplay.bin >> snake_boxer5.bin
 
-snake_boxer5.o:	snake_boxer5.s \
+###
+
+gameplay.bin:	gameplay.o
+	ld65 -o gameplay.bin gameplay.o -C $(LINKER_SCRIPT)/atari2600_f000.inc
+
+gameplay.o:	gameplay.s \
 	zp.inc \
 	title_screen.s game_data.inc \
 	draw_score.s update_score.s common_routines.s position.s \
 	boxing_ring.s
-	ca65 -o snake_boxer5.o snake_boxer5.s -l snake_boxer5.lst
+	ca65 -o gameplay.o gameplay.s -l gameplay.lst
 
 ###
 
@@ -31,6 +36,6 @@ vid_title.o:	vid_title.s \
 
 
 clean:	
-	rm -f *~ *.o *.lst snake_boxer5.bin vid_title.bin
+	rm -f *~ *.o *.lst snake_boxer5.bin vid_title.bin gameplay.bin
 
 

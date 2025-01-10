@@ -35,9 +35,6 @@ clear_loop:
 
 .include "common_routines.s"
 
-.include "sound_update.s"
-.include "sound_trigger.s"
-.include "sfx.inc"
 .include "sound_notes.s"
 
 .align $100
