@@ -38,6 +38,7 @@ clear_loop:
 .include "sound_update.s"
 .include "sound_trigger.s"
 .include "sfx.inc"
+.include "sound_notes.s"
 
 .align $100
 .include "runner.inc"

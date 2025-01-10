@@ -52,17 +52,20 @@ no_oflo:
 	cmp	#MAX_RUNNER_STATE					; 2
 	bcs	same_frame						; 2/3
 
-	inc	RUNNER_COUNT						; 5
+	inc	RUNNER_COUNT	; increment count each 32 frames (~0.5s); 5
 
-	ldx	RUNNER_COUNT						; 3
+	ldx	RUNNER_COUNT		; lookup state for new count	; 3
 	lda	runner_state,X						; 4+
 	sta	RUNNER_STATE						; 3
 
-	cpx	#3
+	cpx	#4		; start music after 1s?
 	bne	same_frame
 
-	ldy	#SFX_GAMEOVER
-	jsr	trigger_sound
+	ldy	#VID_THEME
+	sty	NOTE_POINTER
+
+;	ldy	#SFX_GAMEOVER
+;	jsr	trigger_sound
 
 same_frame:
 
@@ -414,8 +417,11 @@ runner_loop:
 	; update sound
         ; takes two scanlines
 
-	jsr	update_sound		; 2 scanlines
+;	jsr	update_sound		; 2 scanlines
 
+	jsr	play_note
+
+	sta	WSYNC
 	sta	WSYNC
 
 	;=============================

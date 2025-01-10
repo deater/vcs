@@ -2,6 +2,16 @@ runner_data:
 
 MAX_RUNNER_STATE=16
 
+; for all states: goes left
+; for state 5: goes up+left
+; for state 6: goes up+down
+; for state 7: goes down
+; second state 7 stops
+; state 8 videlectrix logo appears
+
+; so Ypos = 100, but then 
+;         99 98 97 96   95 94  94 95 96 97 98 88
+
 runner_state:
 	.byte 9,0,3,4,1,2,3,4,0,3,4,1,5,6,7,7,8,$FF
 
