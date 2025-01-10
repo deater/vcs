@@ -8,32 +8,28 @@
 
 .include "zp.inc"
 
+; this is bank1 (title is bank0) of an 8k cartridge
+
+; if we accidentally come up with bank1 active, jump to bank0
+
+
 start:
-	sei		; disable interrupts
-	cld		; clear decimal bit
+switch_to_bank0_and_start_game:
+	bit	$1FF8
+
+switched_from_bank0_and_start_game:
+	jmp	gameplay
 
 
-restart_game:
-
-	; init zero page and addresses to 0
-
-	ldx	#0
-	txa
-clear_loop:
-	dex
-	txs
-	pha
-	bne	clear_loop
-
-	; S=$FF, A=$00, X=$00, Y=??
-
-
-	.include "title_screen.s"
+gameplay:
 
 .include "boxing_ring.s"
 
-done_forever:
-	jmp	done_forever
+	; if finish, restart game?
+	; maybe go to title instead of to videlectrix?
+
+	jmp	switch_to_bank0_and_start_game
+
 
 .include "common_routines.s"
 

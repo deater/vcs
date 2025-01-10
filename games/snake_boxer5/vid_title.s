@@ -8,6 +8,15 @@
 
 .include "zp.inc"
 
+; we're in bank0 here
+
+switch_to_bank1_and_start_game:
+	bit	$1FF9		; switch to bank1
+				; this is followed by a jump there
+
+switched_from_bank1_and_reset:
+	jmp	start
+
 start:
 	sei		; disable interrupts
 	cld		; clear decimal bit
@@ -32,6 +41,11 @@ clear_loop:
 
 	.include "title_screen.s"
 
+	; done with title, start game
+
+	jmp	switch_to_bank1_and_start_game
+
+
 .include "position.s"
 
 .include "common_routines.s"
@@ -47,10 +61,4 @@ clear_loop:
 	.word start	; NMI
 	.word start	; RESET
 	.word start	; IRQ
-
-
-
-
-
-
 
