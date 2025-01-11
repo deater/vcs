@@ -23,6 +23,8 @@
 	lda	#SNAKE_SPRITE_NEUTRAL	;0
 	sta	SNAKE_WHICH_SPRITE
 	sta	SNAKE_STATE
+	sta	BOXER_WHICH_SPRITE
+	sta	BOXER_STATE
 
 level_frame:
 
@@ -46,12 +48,12 @@ level_frame:
 	;=================================
 	;=================================
 
-	ldx	#20
+	ldx	#19
 	jsr	common_delay_scanlines
 
 
 	;==============================
-	; now VBLANK scanline 21
+	; now VBLANK scanline 20
 	;==============================
 	; update rng
 
@@ -59,7 +61,7 @@ level_frame:
 	sta	WSYNC
 
 	;==============================
-	; now VBLANK scanline 22+23
+	; now VBLANK scanline 21+22
 	;==============================
 
 	; position ball, takes 2 scanlines
@@ -72,6 +74,50 @@ level_frame:
 ;	sta	WSYNC
 
 ; 6
+
+	;==============================
+	; now VBLANK scanline 23
+	;==============================
+	; handle boxer punching
+
+	lda	BOXER_STATE						; 3
+	cmp	#BOXER_PUNCHING
+	bne	skip_boxer_punching					; 2/3
+
+boxer_punching:
+	dec	BOXER_COUNTDOWN
+	lda	BOXER_COUNTDOWN
+	bne	boxer_still_punching
+boxer_done_punching:
+	lda	#BOXER_NEUTRAL
+	sta	BOXER_STATE
+	lda	#BOXER_SPRITE_NEUTRAL
+	jmp	boxer_punch_update_sprite
+
+boxer_still_punching:
+	; A is boxer_countdown
+	cmp	#29
+	bne	boxer_already_punching
+
+boxer_start_punching:
+	lda	RAND_B
+	bmi	boxer_punch_right
+
+boxer_punch_left:
+	lda	#BOXER_SPRITE_LPUNCH
+	bne	boxer_punch_update_sprite	; bra
+boxer_punch_right:
+	lda	#BOXER_SPRITE_RPUNCH
+
+boxer_punch_update_sprite:
+	sta	BOXER_WHICH_SPRITE
+
+boxer_already_punching:
+skip_boxer_punching:
+
+	sta	WSYNC
+
+
 	;==============================
 	; now VBLANK scanline 24
 	;==============================
@@ -191,7 +237,7 @@ skip_snake_attack:
 ; 0
 	; set up boxer sprites
 
-	ldx	BOXER_STATE					; 3
+	ldx	BOXER_WHICH_SPRITE				; 3
 ; 3
 	lda	lboxer_sprites_l,X				; 4+
 	sta	BOXER_PTR_L					; 3
@@ -797,38 +843,49 @@ waited_button_enough:
 	lda	INPT4		; check joystick button pressed         ; 3
 	bmi	done_check_button					; 2/3
 
-	dec	SNAKE_HEALTH
+button_pressed:
 
-	bpl	snake_still_alive
-snake_dead:
+	lda	BOXER_STATE
+	cmp	#BOXER_NEUTRAL
+	bne	done_check_button
+
+	lda	#BOXER_PUNCHING
+	sta	BOXER_STATE
+	lda	#30
+	sta	BOXER_COUNTDOWN
+
+;	dec	SNAKE_HEALTH
+
+;	bpl	snake_still_alive
+;snake_dead:
 
 	; increment KOs
 
-	inc	SNAKE_KOS
+;	inc	SNAKE_KOS
 
 	; increment KO score which is BCD
 
-	clc
-	sed
-	lda	SNAKE_KOS_BCD		; bcd
-	adc	#1
-	sta	SNAKE_KOS_BCD
-	cld
+;	clc
+;	sed
+;	lda	SNAKE_KOS_BCD		; bcd
+;	adc	#1
+;	sta	SNAKE_KOS_BCD
+;	cld
 
-	lda	#20
-	sta	SNAKE_HEALTH
+;	lda	#20
+;	sta	SNAKE_HEALTH
 
 	; debug
-	dec	BOXER_HEALTH
-	dec	BOXER_HEALTH
-	bne	snake_still_alive
+;	dec	BOXER_HEALTH
+;	dec	BOXER_HEALTH
+;	bne	snake_still_alive
 
-	dec	MANS
-	lda	#20
-	sta	BOXER_HEALTH
+;	dec	MANS
+;	lda	#20
+;	sta	BOXER_HEALTH
 
 
-snake_still_alive:
+;snake_still_alive:
 	lda	#8			; debounce
 	sta	BUTTON_COUNTDOWN
 
