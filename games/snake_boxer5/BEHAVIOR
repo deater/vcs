@@ -15,4 +15,7 @@ Snake:
 	+ 
 
 Boxer:
-	
+	3 lives, you die when hit 0 (no blocks) not -1	
+
+	when blocking, cannot punch or move
+	when punching, cannot move

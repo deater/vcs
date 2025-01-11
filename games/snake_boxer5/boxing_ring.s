@@ -1,3 +1,6 @@
+PUNCH_LENGTH = 15
+
+
 	;===========================
 	; do some Snake Boxing!
 	;===========================
@@ -96,7 +99,7 @@ boxer_done_punching:
 
 boxer_still_punching:
 	; A is boxer_countdown
-	cmp	#29
+	cmp	#(PUNCH_LENGTH-1)
 	bne	boxer_already_punching
 
 boxer_start_punching:
@@ -812,15 +815,36 @@ boxer_loop:
 	; now at VBLANK scanline 27
 	;=============================
 	; handle down being pressed
+
+	; if neutral and down -> block
+	; if block and down -> block
+	; if block and not down -> neutral
+	; else, keep same
+
 ; 0
+	lda	BOXER_STATE
+	beq	block_or_neutral	; don't move if not neutral
+	cmp	#BOXER_BLOCKING
+	bne	after_check_down
+
+	; should be BLOCK or NEUTRAL state here
+
+block_or_neutral:
 	lda	#$20			; check down			; 2
 	bit	SWCHA			;				; 3
-	bne	after_check_down	;				; 2/3
+	beq	down_pressed						; 2/3
+down_not_pressed:
+	lda	#BOXER_SPRITE_NEUTRAL
+	sta	BOXER_WHICH_SPRITE
+	lda	#BOXER_NEUTRAL
+	jmp	down_update_state
 down_pressed:
+	lda	#BOXER_SPRITE_BLOCK
+	sta	BOXER_WHICH_SPRITE
 
-	lda	#1
+	lda	#BOXER_BLOCKING
+down_update_state:
 	sta	BOXER_STATE
-
 
 after_check_down:
 	sta	WSYNC
@@ -851,7 +875,7 @@ button_pressed:
 
 	lda	#BOXER_PUNCHING
 	sta	BOXER_STATE
-	lda	#30
+	lda	#PUNCH_LENGTH
 	sta	BOXER_COUNTDOWN
 
 ;	dec	SNAKE_HEALTH
@@ -897,6 +921,9 @@ done_check_button:
 	;=============================
 	; handle left being pressed
 ; 0
+	lda	BOXER_STATE
+	bne	after_check_left	; don't move if not neutral
+
 	lda	#$40			; check left			; 2
 	bit	SWCHA			;				; 3
 	bne	after_check_left	;				; 2/3
@@ -923,7 +950,11 @@ after_check_left:
 	;==================================
 	; handle right being pressed
 ; 0
-	lda	#$80                    ; check right                    ; 2
+
+	lda	BOXER_STATE
+	bne	after_check_right	; don't move if not neutral
+
+	lda	#$80                    ; check right			; 2
 	bit	SWCHA                   ;                               ; 3
 	bne	after_check_right       ;                               ; 2/3
 right_pressed:
