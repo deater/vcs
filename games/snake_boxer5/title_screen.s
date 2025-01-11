@@ -1,3 +1,8 @@
+	; come in with one more line left in the vblank
+title_entry:
+
+	sta	WSYNC
+
 
 title_frame_loop:
 
@@ -405,12 +410,12 @@ spriteloop_snake_bottom:
 	; overscan
 	;==========================
 
-	ldx	#28
+	ldx	#27
 	jsr	common_overscan
 
 
 	;============================
-	; Overscan scanline 29
+	; Overscan scanline 28
 	;============================
 	; check for button
 	; we used to check for RESET too, but we'd need to debounce it
@@ -434,28 +439,27 @@ twaited_button_enough:
 	sta	BUTTON_COUNTDOWN
 
 tdone_check_button:
+
 	sta     WSYNC
 
+	;============================
+	; Overscan scanline 29
+	;============================
 
+	; want to exit at scanline 29
+	lda	LEVEL_OVER
+	bne	done_title
 
-done_check_input:
+	sta     WSYNC
 
 	;============================
 	; Overscan scanline 30
 	;============================
 
-	lda	LEVEL_OVER
-	bne	done_title
 
         jmp     title_frame_loop        ; bra
 
+
 done_title:
-	lda	#0
-	sta	FRAME
-	sta	FRAMEH
-	sta	BOXER_STATE
-
-
-	sta	LEVEL_OVER
 
 	; fall through

@@ -4,30 +4,39 @@ PUNCH_LENGTH = 15
 	;===========================
 	; do some Snake Boxing!
 	;===========================
-	; ideally called with VBLANK disabled
+	; ideally called with VBLANK disabled in VBLANK line 29
 
 
-	lda	#20
-	sta	SNAKE_HEALTH
-	sta	BOXER_HEALTH
+	lda	#20							; 2
+	sta	SNAKE_HEALTH						; 3
+	sta	BOXER_HEALTH						; 3
 
-	sta	BUTTON_COUNTDOWN	; for now, avoid immediate button
+	sta	BUTTON_COUNTDOWN	; avoid immediate button	; 3
 					; press leftover from title
 
-	lda	#64			; roughly center on screen
-	sta	BOXER_X
-	lda	#100
-	sta	SNAKE_X
+	lda	#64			; roughly center on screen	; 2
+	sta	BOXER_X							; 3
+	lda	#100							; 2
+	sta	SNAKE_X							; 3
 
-	lda	#3
-	sta	MANS
-	sta	RAND_C
+	lda	#3							; 2
+	sta	MANS							; 3
+	sta	RAND_C							; 3
 
-	lda	#SNAKE_SPRITE_NEUTRAL	;0
-	sta	SNAKE_WHICH_SPRITE
-	sta	SNAKE_STATE
-	sta	BOXER_WHICH_SPRITE
+	lda	#SNAKE_SPRITE_NEUTRAL	;0				; 2
+	sta	SNAKE_WHICH_SPRITE					; 3
+	sta	SNAKE_STATE						; 3
+	sta	BOXER_WHICH_SPRITE					; 3
+	sta	BOXER_STATE						; 3
+
+;	lda	#0
+	sta	FRAME
+	sta	FRAMEH
 	sta	BOXER_STATE
+
+	sta	LEVEL_OVER
+
+	sta	WSYNC
 
 level_frame:
 
