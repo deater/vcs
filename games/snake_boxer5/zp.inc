@@ -47,7 +47,10 @@ MAN_BAR		= $98
 MAX_MANS	= $99	; used when drawing bar
 
 BOXER_STATE	= $9A	; 0=neutral, 1=block, 2=left punch, 3=right punch
-SNAKE_STATE	= $9B	;
+SNAKE_STATE	= $9B	; 0=neutral, 1=ATTACKING, 2=INJURED
+	SNAKE_NEUTRAL   = 0
+	SNAKE_ATTACKING = 1
+	SNAKE_INJURED   = 2
 
 SNAKE_PTR	= $9C
 SNAKE_PTR_H	= $9D
@@ -64,12 +67,19 @@ SCORE_SPRITE_LOW_6      = $A6
 SCORE_SPRITE_LOW_7	= $A7
 SCORE_SPRITE_LOW_8	= $A8
 
-SFX_RIGHT               =       $B0
-SFX_LEFT                =       $B1
-NOTE_DURATION		=	$B2
-NOTE_POINTER		=	$B3
-LEVEL_OVER		=	$B4
+SFX_RIGHT               = $B0
+SFX_LEFT                = $B1
+NOTE_DURATION		= $B2
+NOTE_POINTER		= $B3
+LEVEL_OVER		= $B4
 
-RAND_A			=	$B5
-RAND_B			=	$B6
-RAND_C			=	$B7
+RAND_A			= $B5
+RAND_B			= $B6
+RAND_C			= $B7
+
+SNAKE_WHICH_SPRITE	= $B8	; 0=neutral, 1=coiled, 2=injured, 3=attack
+	SNAKE_SPRITE_NEUTRAL = 0
+	SNAKE_SPRITE_COILED  = 1
+	SNAKE_SPRITE_INJURED = 2
+	SNAKE_SPRITE_ATTACK  = 3
+SNAKE_COUNTDOWN		= $B9

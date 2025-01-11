@@ -20,6 +20,10 @@
 	sta	MANS
 	sta	RAND_C
 
+	lda	#SNAKE_SPRITE_NEUTRAL	;0
+	sta	SNAKE_WHICH_SPRITE
+	sta	SNAKE_STATE
+
 level_frame:
 
 	; comes in with 3 cycles from loop
@@ -69,13 +73,39 @@ level_frame:
 
 ; 6
 	;==============================
-	; now VBLANK scanline 26
+	; now VBLANK scanline 25
 	;==============================
 	; move snake
 
+	lda	SNAKE_STATE		; only if neutral (0)		; 3
+	bne	skip_snake_move						; 2/3
+
+	; see if change state
+; 5
+	lda	RAND_A							; 3
+	and	#$7f
+	bne	snake_same_dir						; 2/3
+
+	; switch direction
+	jsr	switch_snake_direction
+
+snake_same_dir:
+	; see if attack
+
+	lda	RAND_B							; 3
+	and	#$7f
+	bne	snake_no_attack						; 2/3
+snake_attack:
+
+	lda	#SNAKE_ATTACKING
+	sta	SNAKE_STATE
+	lda	#30
+	sta	SNAKE_COUNTDOWN
+snake_no_attack:
+
 	; snake bounds are 28 ... 116
 
-	lda	SNAKE_SPEED						
+	lda	SNAKE_SPEED
 	bne	snake_speed_go
 	; if zero, ??
 	inc	SNAKE_SPEED
@@ -102,6 +132,45 @@ snake_ok_left:
 
 snake_ok_right:
 
+
+skip_snake_move:
+; 6
+	sta	WSYNC
+
+
+	;==============================
+	; now VBLANK scanline 26
+	;==============================
+	; handle snake attack
+
+	lda	SNAKE_STATE						; 3
+	cmp	#SNAKE_ATTACKING
+	bne	skip_snake_attack					; 2/3
+skip_attacking:
+	dec	SNAKE_COUNTDOWN
+	lda	SNAKE_COUNTDOWN
+	bne	snake_still_attacking
+snake_done_attacking:
+	lda	#SNAKE_NEUTRAL
+	sta	SNAKE_STATE
+	lda	#SNAKE_SPRITE_NEUTRAL
+	jmp	snake_attack_update_sprite
+
+snake_still_attacking:
+	; A is snake_countdown
+	cmp	#15
+	bcc	snake_attack_lunging
+
+snake_attack_coiled:
+	lda	#SNAKE_SPRITE_COILED
+	bne	snake_attack_update_sprite	; bra
+snake_attack_lunging:
+	lda	#SNAKE_SPRITE_ATTACK
+snake_attack_update_sprite:
+	sta	SNAKE_WHICH_SPRITE
+
+snake_done_handle_attack:
+skip_snake_attack:
 
 	sta	WSYNC
 
@@ -132,7 +201,7 @@ snake_ok_right:
 	sta	BOXER_COL_RH					; 3
 
 ; 45
-	ldx	SNAKE_STATE					; 3
+	ldx	SNAKE_WHICH_SPRITE				; 3
 ; 48
 	lda	snake_sprites_l,X				; 4+
 	sta	SNAKE_PTR					; 3
@@ -707,10 +776,6 @@ waited_button_enough:
 	lda	INPT4		; check joystick button pressed         ; 3
 	bmi	done_check_button					; 2/3
 
-;	lda	#0
-;	inc	BOXER_STATE
-;	inc	SNAKE_STATE
-
 	dec	SNAKE_HEALTH
 
 	bpl	snake_still_alive
@@ -877,6 +942,17 @@ health_line:
 ; 21 entries each
 
 ; 8,8,4,8,8,4
+
+
+	;=============================
+	; ff -> 1, 1->FF
+switch_snake_direction:
+	lda	SNAKE_SPEED
+	eor	#$FF
+	clc
+	adc	#1
+	sta	SNAKE_SPEED
+	rts
 
 
 .include "position.s"
