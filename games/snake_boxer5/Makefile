@@ -19,6 +19,7 @@ gameplay.o:	gameplay.s \
 	zp.inc \
 	title_screen.s game_data.inc \
 	draw_score.s update_score.s common_routines.s position.s \
+	sound_update.s sfx.inc \
 	boxing_ring.s
 	ca65 -o gameplay.o gameplay.s -l gameplay.lst
 

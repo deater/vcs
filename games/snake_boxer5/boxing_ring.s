@@ -738,8 +738,19 @@ boxer_loop:
 	;==================================
 	;==================================
 
-	ldx	#26
+	ldx	#24
 	jsr	common_overscan
+
+
+	;=============================
+	; now at VBLANK scanline 25+26
+	;=============================
+	; handle sound
+	; takes two scanlines
+
+	jsr	update_sound            ; 2 scanlines
+
+	sta	WSYNC
 
 	;=============================
 	; now at VBLANK scanline 27

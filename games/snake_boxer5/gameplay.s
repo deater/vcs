@@ -33,6 +33,8 @@ gameplay:
 
 .include "common_routines.s"
 .include "random8.s"
+.include "sound_update.s"
+.include "sfx.inc"
 
 .include "game_data.inc"
 
