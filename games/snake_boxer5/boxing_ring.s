@@ -46,12 +46,12 @@ level_frame:
 	;=================================
 	;=================================
 
-	ldx	#22
+	ldx	#20
 	jsr	common_delay_scanlines
 
 
 	;==============================
-	; now VBLANK scanline 23
+	; now VBLANK scanline 21
 	;==============================
 	; update rng
 
@@ -59,7 +59,7 @@ level_frame:
 	sta	WSYNC
 
 	;==============================
-	; now VBLANK scanline 24+25
+	; now VBLANK scanline 22+23
 	;==============================
 
 	; position ball, takes 2 scanlines
@@ -73,27 +73,28 @@ level_frame:
 
 ; 6
 	;==============================
-	; now VBLANK scanline 25
+	; now VBLANK scanline 24
 	;==============================
-	; move snake
+	; randomly update snake
 
 	lda	SNAKE_STATE		; only if neutral (0)		; 3
-	bne	skip_snake_move						; 2/3
+	bne	skip_snake_adjust					; 2/3
 
 	; see if change state
 ; 5
 	lda	RAND_A							; 3
-	and	#$7f
+	and	#$7f							; 2
 	bne	snake_same_dir						; 2/3
-
+; 12
 	; switch direction
-	jsr	switch_snake_direction
+	jsr	switch_snake_direction					; 6+18
 
 snake_same_dir:
+; 36 / 13
 	; see if attack
 
 	lda	RAND_B							; 3
-	and	#$7f
+	and	#$7f							; 2
 	bne	snake_no_attack						; 2/3
 snake_attack:
 
@@ -102,8 +103,17 @@ snake_attack:
 	lda	#30
 	sta	SNAKE_COUNTDOWN
 snake_no_attack:
+skip_snake_adjust:
+	sta	WSYNC
 
+	;==============================
+	; now VBLANK scanline 25
+	;==============================
+	; actually move snake
 	; snake bounds are 28 ... 116
+
+	lda	SNAKE_STATE		; only if neutral (0)		; 3
+	bne	skip_snake_move						; 2/3
 
 	lda	SNAKE_SPEED
 	bne	snake_speed_go
@@ -958,12 +968,13 @@ health_line:
 	;=============================
 	; ff -> 1, 1->FF
 switch_snake_direction:
-	lda	SNAKE_SPEED
-	eor	#$FF
-	clc
-	adc	#1
-	sta	SNAKE_SPEED
-	rts
+	lda	SNAKE_SPEED						; 3
+	eor	#$FF							; 2
+	clc								; 2
+	adc	#1							; 2
+	sta	SNAKE_SPEED						; 3
+	rts								; 6
+; 18
 
 
 .include "position.s"
