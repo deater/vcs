@@ -32,6 +32,7 @@ gameplay:
 
 
 .include "common_routines.s"
+.include "random8.s"
 
 .include "game_data.inc"
 

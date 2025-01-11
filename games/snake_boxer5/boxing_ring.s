@@ -18,6 +18,7 @@
 
 	lda	#3
 	sta	MANS
+	sta	RAND_C
 
 level_frame:
 
@@ -41,9 +42,17 @@ level_frame:
 	;=================================
 	;=================================
 
-	ldx	#23
+	ldx	#22
 	jsr	common_delay_scanlines
 
+
+	;==============================
+	; now VBLANK scanline 23
+	;==============================
+	; update rng
+
+	jsr	random8							; 6+48
+	sta	WSYNC
 
 	;==============================
 	; now VBLANK scanline 24+25
@@ -66,7 +75,7 @@ level_frame:
 
 	; snake bounds are 28 ... 116
 
-	lda	SNAKE_SPEED
+	lda	SNAKE_SPEED						
 	bne	snake_speed_go
 	; if zero, ??
 	inc	SNAKE_SPEED
