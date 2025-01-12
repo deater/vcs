@@ -1,22 +1,50 @@
 .align $100
 
-; 0=neutral, 1=block, 2=punch_left, 3=punch_right, 4=hit, 5=dead
+; 0=neutral, 1=block, 2=punch_left, 3=punch_right, 4=hit, 5=dead, 6=gone
 
 lboxer_sprites_l:
 	.byte <boxer_sprite_left,<boxer_block_left,<boxer_lpunch_left
 	.byte <boxer_rpunch_left,<boxer_hit_left,<boxer_dead_left
+	.byte <snake_gone
+lboxer_sprites_h:
+	.byte >boxer_sprite_left,>boxer_block_left,>boxer_lpunch_left
+	.byte >boxer_rpunch_left,>boxer_hit_left,>boxer_dead_left
+	.byte >snake_gone
+
+
 lboxer_colors_l:
 	.byte <boxer_sprite_left_colors,<boxer_block_left_colors
 	.byte <boxer_lpunch_left_colors,<boxer_rpunch_left_colors
 	.byte <boxer_hit_left_colors,<boxer_dead_left_colors
+	.byte <snake_gone
+
+lboxer_colors_h:
+	.byte >boxer_sprite_left_colors,>boxer_block_left_colors
+	.byte >boxer_lpunch_left_colors,>boxer_rpunch_left_colors
+	.byte >boxer_hit_left_colors,>boxer_dead_left_colors
+	.byte >snake_gone
+
 
 rboxer_sprites_l:
 	.byte <boxer_sprite_right,<boxer_block_right,<boxer_lpunch_right
 	.byte <boxer_rpunch_right,<boxer_hit_right,<boxer_dead_right
+	.byte <snake_gone
+
+rboxer_sprites_h:
+	.byte >boxer_sprite_right,>boxer_block_right,>boxer_lpunch_right
+	.byte >boxer_rpunch_right,>boxer_hit_right,>boxer_dead_right
+	.byte >snake_gone
+
 rboxer_colors_l:
 	.byte <boxer_sprite_right_colors,<boxer_block_right_colors
 	.byte <boxer_lpunch_right_colors,<boxer_rpunch_right_colors
 	.byte <boxer_hit_right_colors,<boxer_dead_right_colors
+	.byte <snake_gone
+rboxer_colors_h:
+	.byte >boxer_sprite_right_colors,>boxer_block_right_colors
+	.byte >boxer_lpunch_right_colors,>boxer_rpunch_right_colors
+	.byte >boxer_hit_right_colors,>boxer_dead_right_colors
+	.byte >snake_gone
 
 ; 0 = normal, 1=coiled, 2=injured, 3=strike
 

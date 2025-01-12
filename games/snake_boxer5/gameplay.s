@@ -20,6 +20,10 @@ switch_to_bank0_and_start_game:
 switched_from_bank0_and_start_game:
 	jmp	gameplay
 
+switch_to_bank0_and_start_title:
+	bit	$1FF8
+
+	jmp	gameplay
 
 gameplay:
 

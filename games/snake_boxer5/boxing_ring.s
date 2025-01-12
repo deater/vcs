@@ -1,6 +1,8 @@
 PUNCH_LENGTH = 15
 SNAKE_INJURE_TIME = 15
 SNAKE_KO_TIME	= 64
+SNAKE_ATTACK_LENGTH = 30
+BOXER_KO_TIME	= 64
 
 	;===========================
 	; do some Snake Boxing!
@@ -61,12 +63,12 @@ level_frame:
 	;=================================
 	;=================================
 
-	ldx	#16
+	ldx	#13
 	jsr	common_delay_scanlines
 
 
 	;==============================
-	; now VBLANK scanline 17
+	; now VBLANK scanline 14
 	;==============================
 	; update rng
 
@@ -74,7 +76,7 @@ level_frame:
 	sta	WSYNC
 
 	;==============================
-	; now VBLANK scanline 18+19
+	; now VBLANK scanline 15+16
 	;==============================
 	; position ball
 	;==============================
@@ -90,7 +92,7 @@ level_frame:
 ; 6
 
 	;==============================
-	; now VBLANK scanline 20
+	; now VBLANK scanline 17
 	;==============================
 	; handle boxer punching
 	;==============================
@@ -133,7 +135,7 @@ skip_boxer_punching:
 	sta	WSYNC
 
 	;==============================
-	; now VBLANK scanline 21
+	; now VBLANK scanline 18
 	;==============================
 	; handle snake being punched
 	;==============================
@@ -170,7 +172,7 @@ done_snake_collide:
 
 
 	;===============================
-	; now VBLANK scanline 22
+	; now VBLANK scanline 19
 	;===============================
 	; randomly adjust snake behavior
 	;===============================
@@ -198,14 +200,14 @@ snake_attack:
 
 	lda	#SNAKE_ATTACKING
 	sta	SNAKE_STATE
-	lda	#30
+	lda	#SNAKE_ATTACK_LENGTH
 	sta	SNAKE_COUNTDOWN
 snake_no_attack:
 skip_snake_adjust:
 	sta	WSYNC
 
 	;==============================
-	; now VBLANK scanline 23
+	; now VBLANK scanline 20
 	;==============================
 	; handle snake injured
 	;==============================
@@ -263,10 +265,100 @@ skip_snake_injured:
 	sta	WSYNC
 
 
+	;==============================
+	; now VBLANK scanline 21
+	;==============================
+	; handle boxer injured
+
+	lda	BOXER_STATE		; only if injured (0)		; 3
+	cmp	#BOXER_INJURED
+	bne	skip_boxer_injured					; 2/3
+
+	dec	BOXER_COUNTDOWN
+	bne	still_boxer_injured
+
+done_boxer_injured:
+	dec	BOXER_HEALTH
+	dec	BOXER_HEALTH
+
+	lda	BOXER_HEALTH
+	bpl	boxer_health_still_ok
+
+boxer_health_negative:
+	lda	#BOXER_KOED
+	sta	BOXER_STATE
+	lda	#BOXER_KO_TIME
+	sta	BOXER_COUNTDOWN
+	lda	#BOXER_SPRITE_NEUTRAL
+	jmp	boxer_injured_update_sprite
+
+boxer_health_still_ok:
+	lda	#BOXER_NEUTRAL
+	sta	BOXER_STATE
+	lda	#BOXER_SPRITE_NEUTRAL
+
+boxer_injured_update_sprite:
+	sta	BOXER_WHICH_SPRITE
+
+still_boxer_injured:
+skip_boxer_injured:
+; 6
+	sta	WSYNC
 
 
 	;==============================
-	; now VBLANK scanline 24
+	; now VBLANK scanline 22
+	;==============================
+	; handle boxer koed
+
+	lda	BOXER_STATE		; only if koed state		; 3
+	cmp	#BOXER_KOED
+	bne	skip_boxer_koed						; 2/3
+
+	dec	BOXER_COUNTDOWN
+	bne	still_boxer_koed
+
+done_boxer_koed:
+	lda	MANS
+	bne	decrement_mans
+
+make_dead:
+	lda	#BOXER_DEAD
+	sta	BOXER_STATE
+	lda	#BOXER_SPRITE_DEAD
+	jmp	boxer_koed_update_sprite
+
+decrement_mans:
+	dec	MANS			; decrement men
+	lda	#20
+	sta	BOXER_HEALTH		; reset health
+
+	; should be back to neutral by now
+	lda	#BOXER_NEUTRAL
+	sta	BOXER_STATE
+	lda	#BOXER_SPRITE_NEUTRAL
+	jmp	boxer_koed_update_sprite
+
+still_boxer_koed:
+	lda	BOXER_COUNTDOWN
+	and	#$08
+	beq	boxer_koed_sprite_off
+boxer_koed_sprite_on:
+	lda	#BOXER_SPRITE_NEUTRAL
+	bne	boxer_koed_update_sprite	; bra
+boxer_koed_sprite_off:
+	lda	#BOXER_SPRITE_EMPTY
+boxer_koed_update_sprite:
+	sta	BOXER_WHICH_SPRITE
+
+skip_boxer_koed:
+; 6
+	sta	WSYNC
+
+
+
+	;==============================
+	; now VBLANK scanline 23
 	;==============================
 	; handle snake koed
 
@@ -303,7 +395,7 @@ skip_snake_koed:
 
 
 	;==============================
-	; now VBLANK scanline 25
+	; now VBLANK scanline 24
 	;==============================
 	; actually move snake
 	; snake bounds are 28 ... 116
@@ -346,35 +438,49 @@ skip_snake_move:
 
 
 	;==============================
-	; now VBLANK scanline 26
+	; now VBLANK scanline 25
 	;==============================
 	; handle snake attack
-
-	lda	SNAKE_STATE						; 3
-	cmp	#SNAKE_ATTACKING
+; 0
+	lda	SNAKE_STATE		; check if snake attacking	; 3
+	cmp	#SNAKE_ATTACKING					; 2
 	bne	skip_snake_attack					; 2/3
+; 8
 skip_attacking:
-	dec	SNAKE_COUNTDOWN
-	lda	SNAKE_COUNTDOWN
+	dec	SNAKE_COUNTDOWN		; count down			; 5
+	lda	SNAKE_COUNTDOWN						; 3
+	beq	snake_done_attacking	; check if done attacking	; 2/3
+	cmp	#(SNAKE_ATTACK_LENGTH-1)				; 2
 	bne	snake_still_attacking
+
+snake_attack_start:
+
+	lda	#BOXER_INJURED
+	sta	BOXER_STATE
+	lda	#BOXER_SPRITE_INJURED
+	sta	BOXER_WHICH_SPRITE
+	lda	#SNAKE_ATTACK_LENGTH
+	sta	BOXER_COUNTDOWN
+	jmp	snake_done_handle_attack
+
 snake_done_attacking:
-	lda	#SNAKE_NEUTRAL
-	sta	SNAKE_STATE
-	lda	#SNAKE_SPRITE_NEUTRAL
-	jmp	snake_attack_update_sprite
+	lda	#SNAKE_NEUTRAL		; reset state to neutral	; 2
+	sta	SNAKE_STATE						; 3
+	lda	#SNAKE_SPRITE_NEUTRAL	; reset sprite to neutral	; 2
+	jmp	snake_attack_update_sprite				; 3
 
 snake_still_attacking:
 	; A is snake_countdown
-	cmp	#15
-	bcc	snake_attack_lunging
+	cmp	#15							; 2
+	bcc	snake_attack_lunging					; 2/3
 
 snake_attack_coiled:
-	lda	#SNAKE_SPRITE_COILED
-	bne	snake_attack_update_sprite	; bra
+	lda	#SNAKE_SPRITE_COILED					; 2
+	bne	snake_attack_update_sprite	; bra			; 2/3
 snake_attack_lunging:
-	lda	#SNAKE_SPRITE_ATTACK
+	lda	#SNAKE_SPRITE_ATTACK					; 2
 snake_attack_update_sprite:
-	sta	SNAKE_WHICH_SPRITE
+	sta	SNAKE_WHICH_SPRITE					; 3
 
 snake_done_handle_attack:
 skip_snake_attack:
@@ -382,9 +488,9 @@ skip_snake_attack:
 	sta	WSYNC
 
 	;==============================
-	; now VBLANK scanline 27
+	; now VBLANK scanline 26
 	;==============================
-	; set up sprites
+	; set up boxer sprites
 ; 0
 	; set up boxer sprites
 
@@ -400,21 +506,30 @@ skip_snake_attack:
 	sta	BOXER_COL_R					; 3
 ; 31
 
-	; all in same page
-	lda	#>boxer_data					; 2
+	; sadly changed so no longer all in same page
+	lda	lboxer_sprites_h,X				; 4+
 	sta	BOXER_PTR_LH					; 3
+	lda	rboxer_sprites_h,X				; 4+
 	sta	BOXER_PTR_RH					; 3
+	lda	lboxer_colors_h,X				; 4+
 	sta	BOXER_COL_LH					; 3
+	lda	rboxer_colors_h,X				; 4+
 	sta	BOXER_COL_RH					; 3
+; 59
+	sta	WSYNC
 
-; 45
+	;==============================
+	; now VBLANK scanline 27
+	;==============================
+	; set up snake sprites
+; 0
 	ldx	SNAKE_WHICH_SPRITE				; 3
-; 48
+; 3
 	lda	snake_sprites_l,X				; 4+
 	sta	SNAKE_PTR					; 3
 	lda	snake_sprites_h,X				; 4+
 	sta	SNAKE_PTR_H					; 3
-; 62
+; 17
 	sta	WSYNC
 
 	;==============================
@@ -745,27 +860,10 @@ boxer_loop:
 	lda	(BOXER_COL_R),Y		; load right color data		; 5+
 	sta	COLUP1			; set right color		; 3
 
-
-
-;	cpx	#116							; 2
-;	bne	same_color						; 2/3
-
-;	lda	#(39*2)		; pink color
-;	sta	COLUP0
-;	sta	COLUP1
-;same_color:
-;	tya
-;	beq	level_no_boxer
 	dey
-;level_no_boxer:
 
 	inx
 	sta	WSYNC
-;	inc	BOXER_PTR_L
-;	inc	BOXER_PTR_R
-;	inc	BOXER_COL_L
-;	inc	BOXER_COL_R
-
 	inx
 	sta	WSYNC
 	inx
@@ -902,7 +1000,10 @@ snake_health_good:
 	lda	#(34*2)		; red
 	sta	COLUPF
 
-	ldx	BOXER_HEALTH	; load health
+	ldx	BOXER_HEALTH		; load boxer health
+	bpl	boxer_health_good	; if negative, show as 0
+	ldx	#0
+boxer_health_good:
 
 	ldy	#8		; 8 lines
 
@@ -938,12 +1039,12 @@ snake_health_good:
 	;==================================
 	;==================================
 
-	ldx	#24
+	ldx	#22
 	jsr	common_overscan
 
 
 	;=============================
-	; now at VBLANK scanline 25+26
+	; now at VBLANK scanline 23+24
 	;=============================
 	; handle sound
 	; takes two scanlines
@@ -953,7 +1054,7 @@ snake_health_good:
 	sta	WSYNC
 
 	;=============================
-	; now at VBLANK scanline 27
+	; now at VBLANK scanline 25
 	;=============================
 	; handle down being pressed
 
@@ -992,7 +1093,7 @@ after_check_down:
 
 
 	;=============================
-	; now at VBLANK scanline 28
+	; now at VBLANK scanline 26
 	;=============================
 	; handle button being pressed
 ; 0
@@ -1022,14 +1123,7 @@ button_pressed:
 	sta	BOXER_COUNTDOWN						; 3
 
 
-	; debug
-;	dec	BOXER_HEALTH
-;	dec	BOXER_HEALTH
-;	bne	snake_still_alive
 
-;	dec	MANS
-;	lda	#20
-;	sta	BOXER_HEALTH
 
 
 ;snake_still_alive:
@@ -1040,7 +1134,7 @@ done_check_button:
 	sta	WSYNC
 
 	;=============================
-	; now at VBLANK scanline 29
+	; now at VBLANK scanline 27
 	;=============================
 	; handle left being pressed
 ; 0
@@ -1069,7 +1163,7 @@ after_check_left:
 
 
 	;==================================
-	; overscan 30, handle end
+	; overscan 28, handle end
 	;==================================
 	; handle right being pressed
 ; 0
@@ -1095,13 +1189,34 @@ update_right:
 	sta	RBOXER_X
 
 after_check_right:
+	sta	WSYNC
+
+	;==================================
+	; overscan 29, handle end
+	;==================================
+
+	lda	LEVEL_OVER
+	bne	done_game
+
+	sta	WSYNC
+
+	;==================================
+	; overscan 30, do nothing
+	;==================================
+	; handle right being pressed
 
 	jmp	level_frame
 
 
+	;===========================
+	; done game
+	;===========================
 
-; color 99/98	$C6/$C4	0110 0100	so and with $FC for last line
-; color 34/33	$4E/$4C 1110 1100
+done_game:
+	; return to title screen
+
+	jmp	switch_to_bank0_and_start_title
+
 
 
 	;====================================
@@ -1109,6 +1224,12 @@ after_check_right:
 	; draw line of health
 	;====================================
 	;====================================
+
+; potential 3d effect for health lines?
+; color 99/98	$C6/$C4	0110 0100	so and with $FC for last line
+; color 34/33	$4E/$4C 1110 1100
+
+
 health_line:
 ; 5/6
 	nop								; 2

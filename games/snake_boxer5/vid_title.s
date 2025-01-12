@@ -17,6 +17,10 @@ switch_to_bank1_and_start_game:
 switched_from_bank1_and_reset:
 	jmp	start
 
+	bit	$1FF9		; switch to bank1
+switched_from_bank1_and_title:
+	jmp	do_title
+
 start:
 	sei		; disable interrupts
 	cld		; clear decimal bit
@@ -45,7 +49,7 @@ clear_loop:
 	;============================
 	; do title screen
 	;============================
-
+do_title:
 	.include "title_screen.s"
 
 	;============================
