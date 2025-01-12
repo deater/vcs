@@ -1,6 +1,10 @@
 
 
 Snake:
+	+ when KO's, blinks 10 times
+		blinks the injured sprite
+		reset both to middle of screen
+
 	+ moves back/forth?
 		speed varies with level?
 	+ color varies with level as well.  Seems to go
@@ -19,3 +23,10 @@ Boxer:
 
 	when blocking, cannot punch or move
 	when punching, cannot move
+
+	when lose life, start as injured, then move to
+		normal while blinking
+	reset to middle of screen
+
+	when lose last life, as above but then move to grave image
+

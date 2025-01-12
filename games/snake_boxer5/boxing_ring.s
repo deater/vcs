@@ -1,5 +1,6 @@
 PUNCH_LENGTH = 15
-
+SNAKE_INJURE_TIME = 15
+SNAKE_KO_TIME	= 64
 
 	;===========================
 	; do some Snake Boxing!
@@ -60,12 +61,12 @@ level_frame:
 	;=================================
 	;=================================
 
-	ldx	#19
+	ldx	#16
 	jsr	common_delay_scanlines
 
 
 	;==============================
-	; now VBLANK scanline 20
+	; now VBLANK scanline 17
 	;==============================
 	; update rng
 
@@ -73,10 +74,11 @@ level_frame:
 	sta	WSYNC
 
 	;==============================
-	; now VBLANK scanline 21+22
+	; now VBLANK scanline 18+19
 	;==============================
-
-	; position ball, takes 2 scanlines
+	; position ball
+	;==============================
+	; takes 2 scanlines
 	; FIXME: not currently using this
 
 	lda	#100			; position		; 3
@@ -88,9 +90,10 @@ level_frame:
 ; 6
 
 	;==============================
-	; now VBLANK scanline 23
+	; now VBLANK scanline 20
 	;==============================
 	; handle boxer punching
+	;==============================
 
 	lda	BOXER_STATE						; 3
 	cmp	#BOXER_PUNCHING
@@ -129,11 +132,48 @@ skip_boxer_punching:
 
 	sta	WSYNC
 
+	;==============================
+	; now VBLANK scanline 21
+	;==============================
+	; handle snake being punched
+	;==============================
+; 0
+	lda	BOXER_STATE		; make sure we are punching	; 3
+	cmp	#BOXER_PUNCHING						; 2
+	bne	done_snake_collide					; 2/3
+; 7
+	lda	BOXER_COUNTDOWN		; check if punch just happened	; 3
+	cmp	#(PUNCH_LENGTH-1)					; 2
+	bne	done_snake_collide					; 2/3
 
-	;==============================
-	; now VBLANK scanline 24
-	;==============================
-	; randomly update snake
+punch_just_happened:
+
+; 15
+	; TODO: collision detection
+
+	lda	#SNAKE_SPRITE_INJURED	; move to injured sprite	; 2
+	sta	SNAKE_WHICH_SPRITE					; 3
+; 20
+	lda	#SNAKE_INJURED		; move to injured state		; 2
+	sta	SNAKE_STATE						; 3
+; 25
+	lda	#SNAKE_INJURE_TIME	; set up countdown for injury	; 2
+	sta	SNAKE_COUNTDOWN						; 3
+; 30
+	dec	SNAKE_HEALTH		; decrement the snake health	; 5
+					; not this could be $FF if
+					; about to be KOed
+done_snake_collide:
+
+
+	sta	WSYNC
+
+
+	;===============================
+	; now VBLANK scanline 22
+	;===============================
+	; randomly adjust snake behavior
+	;===============================
 
 	lda	SNAKE_STATE		; only if neutral (0)		; 3
 	bne	skip_snake_adjust					; 2/3
@@ -163,6 +203,104 @@ snake_attack:
 snake_no_attack:
 skip_snake_adjust:
 	sta	WSYNC
+
+	;==============================
+	; now VBLANK scanline 23
+	;==============================
+	; handle snake injured
+	;==============================
+
+	lda	SNAKE_STATE		; only if injured		; 3
+	cmp	#SNAKE_INJURED						; 2
+	bne	skip_snake_injured					; 2/3
+
+; 8
+	dec	SNAKE_COUNTDOWN		; countdown			; 5
+	bne	skip_snake_injured					; 2/3
+
+; 16
+
+done_snake_injured:
+	lda	SNAKE_HEALTH		; check health			; 3
+	bpl	still_snake_health	; if still health, skip ahead	; 2/3
+; 21
+	; out of health, KO
+
+	lda	#SNAKE_KOED		; set KO state			; 2
+	sta	SNAKE_STATE						; 3
+	lda	#SNAKE_KO_TIME		; set KO countdown		; 2
+	sta	SNAKE_COUNTDOWN						; 3
+; 31
+	; increment KOs
+
+	inc	SNAKE_KOS						; 5
+
+; 36
+	; increment KO score which is BCD
+
+	clc								; 2
+	sed								; 2
+	lda	SNAKE_KOS_BCD		; bcd				; 3
+	adc	#1							; 2
+	sta	SNAKE_KOS_BCD						; 3
+	cld								; 2
+; 50
+	lda	#20			; reset health to full		; 2
+	sta	SNAKE_HEALTH						; 3
+; 55
+	jmp	skip_snake_injured
+
+	; still health
+
+still_snake_health:
+	lda	#SNAKE_NEUTRAL		; reset state to neutral	; 2
+	sta	SNAKE_STATE						; 3
+	lda	#SNAKE_SPRITE_NEUTRAL					; 2
+	sta	SNAKE_WHICH_SPRITE					; 3
+
+skip_snake_injured:
+; 6
+	sta	WSYNC
+
+
+
+
+	;==============================
+	; now VBLANK scanline 24
+	;==============================
+	; handle snake koed
+
+	lda	SNAKE_STATE		; only if neutral (0)		; 3
+	cmp	#SNAKE_KOED
+	bne	skip_snake_koed						; 2/3
+
+	dec	SNAKE_COUNTDOWN
+	bne	still_snake_koed
+
+done_snake_koed:
+	lda	#SNAKE_NEUTRAL
+	sta	SNAKE_STATE
+	lda	#SNAKE_SPRITE_NEUTRAL
+	jmp	koed_update_sprite
+
+still_snake_koed:
+	lda	SNAKE_COUNTDOWN
+	and	#$08
+	beq	koed_sprite_off
+koed_sprite_on:
+	lda	#SNAKE_SPRITE_INJURED
+	bne	koed_update_sprite	; bra
+koed_sprite_off:
+	lda	#SNAKE_SPRITE_EMPTY
+koed_update_sprite:
+	sta	SNAKE_WHICH_SPRITE
+
+skip_snake_koed:
+; 6
+	sta	WSYNC
+
+
+
 
 	;==============================
 	; now VBLANK scanline 25
@@ -204,6 +342,7 @@ snake_ok_right:
 skip_snake_move:
 ; 6
 	sta	WSYNC
+
 
 
 	;==============================
@@ -595,18 +734,6 @@ align2:
 	; at entry already at 4 cycles
 
 boxer_loop:
-;	ldy	BOXER_PTR_L
-;	lda	boxer_data,Y
-;	sta	GRP0
-;	ldy	BOXER_PTR_R
-;	lda	boxer_data,Y
-;	sta	GRP1
-;	ldy	BOXER_COL_L
-;	lda	boxer_data,Y
-;	sta	COLUP0
-;	ldy	BOXER_COL_R
-;	lda	boxer_data,Y
-;	sta	COLUP1
 
 	lda	(BOXER_PTR_L),Y		; load left sprite data		; 5+
 	sta	GRP0			; set left sprite		; 3
@@ -734,10 +861,13 @@ boxer_loop:
 	; prep for green
 
 	ldx	SNAKE_KOS
-	lda	snake_colors,X	; load same color as snake
+	lda	snake_colors,X	; 	load same color as snake
 	sta	COLUPF
 
-	ldx	SNAKE_HEALTH	; load health
+	ldx	SNAKE_HEALTH		; load health
+	bpl	snake_health_good	; if negative, show as 0
+	ldx	#0
+snake_health_good:
 
 	ldy	#8		; 8 lines
 
@@ -745,14 +875,16 @@ boxer_loop:
 ; scanline 168
 
 	;==================================
-	; snake health (green at first)
+	;==================================
+	; snake health (snake colored)
+	;==================================
 	;==================================
 
 	; 8 lines
 	jsr	health_line
 ; scanline 176
 
-	; 4 lines
+	; 4 lines of blue color
 
 	lda	#$00
 	sta	PF1
@@ -878,35 +1010,17 @@ waited_button_enough:
 
 button_pressed:
 
-	lda	BOXER_STATE
-	cmp	#BOXER_NEUTRAL
-	bne	done_check_button
+	lda	BOXER_STATE		; only punch if boxer neutral	; 3
+	cmp	#BOXER_NEUTRAL						; 2
+	bne	done_check_button					; 2/3
 
-	lda	#BOXER_PUNCHING
-	sta	BOXER_STATE
-	lda	#PUNCH_LENGTH
-	sta	BOXER_COUNTDOWN
+	; TODO: only punch if snake in X state?
 
-;	dec	SNAKE_HEALTH
+	lda	#BOXER_PUNCHING						; 2
+	sta	BOXER_STATE						; 3
+	lda	#PUNCH_LENGTH						; 2
+	sta	BOXER_COUNTDOWN						; 3
 
-;	bpl	snake_still_alive
-;snake_dead:
-
-	; increment KOs
-
-;	inc	SNAKE_KOS
-
-	; increment KO score which is BCD
-
-;	clc
-;	sed
-;	lda	SNAKE_KOS_BCD		; bcd
-;	adc	#1
-;	sta	SNAKE_KOS_BCD
-;	cld
-
-;	lda	#20
-;	sta	SNAKE_HEALTH
 
 	; debug
 ;	dec	BOXER_HEALTH

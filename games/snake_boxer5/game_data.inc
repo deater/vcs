@@ -22,8 +22,10 @@ rboxer_colors_l:
 
 snake_sprites_l:
 	.byte <snake_sprite,<snake_coiled,<snake_injured,<snake_strike
+	.byte <snake_gone
 snake_sprites_h:
 	.byte >snake_sprite,>snake_coiled,>snake_injured,>snake_strike
+	.byte >snake_gone
 
 snake_colors:
 	.byte	98*2	; 0 = dark green
@@ -371,6 +373,29 @@ snake_strike:
 	.byte	$08	; .... X...		; 18
 	.byte	$10	; ...X ....		; 19
 	.byte	$20	; ..X. ....		; 20
+
+snake_gone:
+	.byte	$00	; .... ....		; 0
+	.byte	$00	; .... ....		; 1
+	.byte	$00	; .... ....		; 2
+	.byte	$00	; .... ....		; 3
+	.byte	$00	; .... ....		; 4
+	.byte	$00	; .... ....		; 5
+	.byte	$00	; .... ....		; 6
+	.byte	$00	; .... ....		; 7
+	.byte	$00	; .... ....		; 8
+	.byte	$00	; .... ....		; 9
+	.byte	$00	; .... ....		; 10
+	.byte	$00	; .... ....		; 11
+	.byte	$00	; .... ....		; 12
+	.byte	$00	; .... ....		; 13
+	.byte	$00	; .... ....		; 14
+	.byte	$00	; .... ....		; 15
+	.byte	$00	; .... ....		; 16
+	.byte	$00	; .... ....		; 17
+	.byte	$00	; .... ....		; 18
+	.byte	$00	; .... ....		; 19
+	.byte	$00	; .... ....		; 20
 
 
 
