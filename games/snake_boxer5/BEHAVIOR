@@ -1,6 +1,9 @@
 
 
 Snake:
+	+ KO happens when bar hits zero, not after
+	+ bars go down at end of animation
+
 	+ when KO's, blinks 10 times
 		blinks the injured sprite
 		reset both to middle of screen
@@ -29,4 +32,7 @@ Boxer:
 	reset to middle of screen
 
 	when lose last life, as above but then move to grave image
+
+	ko happens when bar hits 0, not -1
+	bars go down at end of animation
 

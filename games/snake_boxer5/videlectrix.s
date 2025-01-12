@@ -462,7 +462,7 @@ done_check_button:
 	;=============================
 	; Handle end
 
-	lda	FRAMEH
+	lda	FRAMEH			; timeout
 	cmp	#3
 	beq	done_vid
 
@@ -483,6 +483,5 @@ after_check_right:
 	jmp	level_frame
 
 done_vid:
-	lda	#0
-	sta	LEVEL_OVER
+
 

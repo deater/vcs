@@ -4,41 +4,64 @@ SNAKE_KO_TIME	= 64
 SNAKE_ATTACK_LENGTH = 30
 BOXER_KO_TIME	= 64
 
+SNAKE_ATTACK_MASK = $3f		; 1 time in 64
+				; TODO, make comparison with zero page
+				; value and not mask
+
 	;===========================
 	; do some Snake Boxing!
 	;===========================
-	; ideally called with VBLANK disabled in VBLANK line 29
 
+
+	;===========================
+	; initialization!
+	;===========================
+	; takes 2 scanlines
+	;===========================
+	; ideally called with VBLANK disabled in VBLANK line 28
+
+; 13
 
 	lda	#20							; 2
 	sta	SNAKE_HEALTH						; 3
 	sta	BOXER_HEALTH						; 3
-
+; 21
 	sta	BUTTON_COUNTDOWN	; avoid immediate button	; 3
 					; press leftover from title
-
+; 24
 	lda	#64			; roughly center on screen	; 2
 	sta	BOXER_X							; 3
 	lda	#100							; 2
 	sta	SNAKE_X							; 3
-
+; 34
 	lda	#3							; 2
 	sta	MANS							; 3
 	sta	RAND_C							; 3
 
-	lda	#SNAKE_SPRITE_NEUTRAL	;0				; 2
+; 42
+	lda	#1							; 2
+	sta	SNAKE_SPEED						; 3
+; 47
+	sta	WSYNC
+
+;=============================
+
+; 0
+	lda	#SNAKE_SPRITE_NEUTRAL	; 0				; 2
 	sta	SNAKE_WHICH_SPRITE					; 3
+; 5
 	sta	SNAKE_STATE						; 3
 	sta	BOXER_WHICH_SPRITE					; 3
 	sta	BOXER_STATE						; 3
-
+; 14
 ;	lda	#0
-	sta	FRAME
-	sta	FRAMEH
-	sta	BOXER_STATE
-
-	sta	LEVEL_OVER
-
+	sta	FRAME							; 3
+	sta	FRAMEH							; 3
+	sta	BOXER_STATE						; 3
+	sta	LEVEL_OVER						; 3
+	sta	SNAKE_KOS						; 3
+	sta	SNAKE_KOS_BCD						; 3
+; 37
 	sta	WSYNC
 
 level_frame:
@@ -96,6 +119,9 @@ level_frame:
 	;==============================
 	; handle boxer punching
 	;==============================
+	; keep boxing for BOXER_COUNTDOWN time
+	; if just starting, randomly pick left/right
+	; at end, return to neutral
 
 	lda	BOXER_STATE						; 3
 	cmp	#BOXER_PUNCHING
@@ -139,6 +165,8 @@ skip_boxer_punching:
 	;==============================
 	; handle snake being punched
 	;==============================
+	; if begin of punch, collision check with snake
+	; if hit, decrement snake health, set injured, start countdown
 ; 0
 	lda	BOXER_STATE		; make sure we are punching	; 3
 	cmp	#BOXER_PUNCHING						; 2
@@ -176,9 +204,18 @@ done_snake_collide:
 	;===============================
 	; randomly adjust snake behavior
 	;===============================
+	; randomly have snake reverse direction or strike
+	; should not move/strike if boxer injured, koed, or dead
 
 	lda	SNAKE_STATE		; only if neutral (0)		; 3
 	bne	skip_snake_adjust					; 2/3
+
+	lda	BOXER_STATE
+	beq	do_random_snake		; ok if neutral
+	cmp	#BOXER_BLOCKING
+	bne	skip_snake_adjust	; if not blocking continue
+
+do_random_snake:
 
 	; see if change state
 ; 5
@@ -194,7 +231,7 @@ snake_same_dir:
 	; see if attack
 
 	lda	RAND_B							; 3
-	and	#$7f							; 2
+	and	#SNAKE_ATTACK_MASK					; 2
 	bne	snake_no_attack						; 2/3
 snake_attack:
 
@@ -211,6 +248,9 @@ skip_snake_adjust:
 	;==============================
 	; handle snake injured
 	;==============================
+	; countdown while showing injured sprite
+	; at end if health then return to neutral
+	; if KO'd, set KO state + countdown
 
 	lda	SNAKE_STATE		; only if injured		; 3
 	cmp	#SNAKE_INJURED						; 2
@@ -269,6 +309,10 @@ skip_snake_injured:
 	; now VBLANK scanline 21
 	;==============================
 	; handle boxer injured
+	;==============================
+	; if injured, countdown while showing injured sprite
+	; at end, reduce health
+	; if health negative, move to KO state
 
 	lda	BOXER_STATE		; only if injured (0)		; 3
 	cmp	#BOXER_INJURED
@@ -310,17 +354,24 @@ skip_boxer_injured:
 	; now VBLANK scanline 22
 	;==============================
 	; handle boxer koed
+	;==============================
+	; if in KO state, blink sprite
+	; when done, decrement MANS count
+	; if MANS count hits zero, enter dead state
 
 	lda	BOXER_STATE		; only if koed state		; 3
 	cmp	#BOXER_KOED
 	bne	skip_boxer_koed						; 2/3
 
-	dec	BOXER_COUNTDOWN
-	bne	still_boxer_koed
+	dec	BOXER_COUNTDOWN		; dec countdown			; 5
+	bne	still_boxer_koed	; if not zero, still KOed	; 2/3
+
+	; done KO countdown
 
 done_boxer_koed:
-	lda	MANS
-	bne	decrement_mans
+	dec	MANS			; decrement MANS		; 5
+	lda	MANS			; load MANS count		; 3
+	bne	boxer_still_alive	; if hit zero then dead		; 2/3
 
 make_dead:
 	lda	#BOXER_DEAD
@@ -328,24 +379,25 @@ make_dead:
 	lda	#BOXER_SPRITE_DEAD
 	jmp	boxer_koed_update_sprite
 
-decrement_mans:
-	dec	MANS			; decrement men
+boxer_still_alive:
+
 	lda	#20
 	sta	BOXER_HEALTH		; reset health
 
-	; should be back to neutral by now
+	; reset back to neutral
 	lda	#BOXER_NEUTRAL
 	sta	BOXER_STATE
 	lda	#BOXER_SPRITE_NEUTRAL
 	jmp	boxer_koed_update_sprite
 
+	; blink sprite
 still_boxer_koed:
 	lda	BOXER_COUNTDOWN
 	and	#$08
 	beq	boxer_koed_sprite_off
 boxer_koed_sprite_on:
 	lda	#BOXER_SPRITE_NEUTRAL
-	bne	boxer_koed_update_sprite	; bra
+	beq	boxer_koed_update_sprite	; bra
 boxer_koed_sprite_off:
 	lda	#BOXER_SPRITE_EMPTY
 boxer_koed_update_sprite:
@@ -403,10 +455,10 @@ skip_snake_koed:
 	lda	SNAKE_STATE		; only if neutral (0)		; 3
 	bne	skip_snake_move						; 2/3
 
-	lda	SNAKE_SPEED
-	bne	snake_speed_go
-	; if zero, ??
-	inc	SNAKE_SPEED
+	lda	BOXER_STATE		; only if NEUTRAL OR BLOCKING
+	beq	snake_speed_go
+	cmp	#BOXER_BLOCKING
+	bne	skip_snake_move
 
 snake_speed_go:
 	clc
@@ -1111,8 +1163,15 @@ waited_button_enough:
 
 button_pressed:
 
-	lda	BOXER_STATE		; only punch if boxer neutral	; 3
-	cmp	#BOXER_NEUTRAL						; 2
+	lda	BOXER_STATE		; check boxer state		; 3
+	cmp	#BOXER_DEAD
+	bne	button_not_dead
+
+	inc	LEVEL_OVER		; if dead, trigger level over	; 5
+	jmp	button_set_debounce
+
+button_not_dead:
+	cmp	#BOXER_NEUTRAL		; only punch if boxer neutral	; 2
 	bne	done_check_button					; 2/3
 
 	; TODO: only punch if snake in X state?
@@ -1122,11 +1181,7 @@ button_pressed:
 	lda	#PUNCH_LENGTH						; 2
 	sta	BOXER_COUNTDOWN						; 3
 
-
-
-
-
-;snake_still_alive:
+button_set_debounce:
 	lda	#8			; debounce
 	sta	BUTTON_COUNTDOWN
 
@@ -1163,7 +1218,7 @@ after_check_left:
 
 
 	;==================================
-	; overscan 28, handle end
+	; now at VBLANK scanline 28
 	;==================================
 	; handle right being pressed
 ; 0

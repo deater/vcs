@@ -1,5 +1,7 @@
 	; come in with one more line left in the vblank
 title_entry:
+	lda	#0
+	sta	LEVEL_OVER
 
 	sta	WSYNC
 
@@ -69,6 +71,9 @@ cpad_x:
 	sta	COLUP0
 	sta	COLUPF
 	sta	CTRLPF		; no mirror
+
+	sta	COLUBK		; background black
+				; TODO: change if SECRET enabled?
 
 	ldy	#0
 	sty	VBLANK		; re-enable VBLANK
@@ -410,12 +415,12 @@ spriteloop_snake_bottom:
 	; overscan
 	;==========================
 
-	ldx	#27
+	ldx	#26
 	jsr	common_overscan
 
 
 	;============================
-	; Overscan scanline 28
+	; Overscan scanline 27
 	;============================
 	; check for button
 	; we used to check for RESET too, but we'd need to debounce it
@@ -443,14 +448,20 @@ tdone_check_button:
 	sta     WSYNC
 
 	;============================
+	; Overscan scanline 28
+	;============================
+; 0
+	; want to exit at scanline 28
+	lda	LEVEL_OVER						; 3
+	bne	done_title						; 2/3
+
+	sta     WSYNC
+
+	;============================
 	; Overscan scanline 29
 	;============================
 
-	; want to exit at scanline 29
-	lda	LEVEL_OVER
-	bne	done_title
-
-	sta     WSYNC
+	sta	WSYNC
 
 	;============================
 	; Overscan scanline 30
@@ -462,4 +473,5 @@ tdone_check_button:
 
 done_title:
 
+; 6
 	; fall through
