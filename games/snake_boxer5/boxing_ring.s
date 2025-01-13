@@ -29,11 +29,7 @@ SNAKE_ATTACK_MASK = $3f		; 1 time in 64
 	sta	BUTTON_COUNTDOWN	; avoid immediate button	; 3
 					; press leftover from title
 ; 24
-	lda	#64			; roughly center on screen	; 2
-	sta	BOXER_X							; 3
-	lda	#100							; 2
-	sta	SNAKE_X							; 3
-; 34
+
 	lda	#3							; 2
 	sta	MANS							; 3
 	sta	RAND_C							; 3
@@ -58,15 +54,25 @@ SNAKE_ATTACK_MASK = $3f		; 1 time in 64
 	sta	FRAME							; 3
 	sta	FRAMEH							; 3
 	sta	BOXER_STATE						; 3
-	sta	LEVEL_OVER						; 3
 	sta	SNAKE_KOS						; 3
 	sta	SNAKE_KOS_BCD						; 3
 	sta	SNAKE_X_LOW						; 3
 	sta	SNAKE_SPEED_LOW						; 3
 ; 38
 
+	; re-ceneter both, ring bell
+level_restart:
+
+	lda	#0
+	sta	LEVEL_OVER						; 3
+
 	lda	#SFX_BELL		; start with bell
 	sta	SFX_NEW
+
+	lda	#64			; roughly center on screen	; 2
+	sta	BOXER_X							; 3
+	lda	#100							; 2
+	sta	SNAKE_X							; 3
 
 	sta	WSYNC
 
@@ -92,12 +98,49 @@ level_frame:
 	;=================================
 	;=================================
 
-	ldx	#13
+	ldx	#11
 	jsr	common_delay_scanlines
+
+	;==============================
+	; now VBLANK scanline 12
+	;==============================
+	; pre-emptive collision detect
+
+	; doing sort of Minkowski Sum Collision
+
+	lda	#0
+	sta	COLLIDING
+
+	; snake_x should never be less than 16 so no need to worry
+	;	about bounds
+
+	; if (snake_X+8 <boxer_X-8) no collision?
+	;	same as if (boxer_X-16 > snake_x)
+
+
+	lda	BOXER_X
+	sec
+	sbc	#8
+	cmp	SNAKE_X
+	bcs	no_collision
+
+	; if (snake_X > boxer_X+40) no collision
+	;	sams as if (boxer_X+40 < snake_X)
+
+	lda	BOXER_X
+	clc
+	adc	#40
+	cmp	SNAKE_X
+	bcc	no_collision
+
+	inc	COLLIDING
+
+no_collision:
+	sta	WSYNC
 
 
 	;==============================
-	; now VBLANK scanline 14
+	; now VBLANK scanline 13
 	;==============================
 	; update rng
 
@@ -105,7 +148,7 @@ level_frame:
 	sta	WSYNC
 
 	;==============================
-	; now VBLANK scanline 15+16
+	; now VBLANK scanline 14+15
 	;==============================
 	; position ball
 	;==============================
@@ -121,7 +164,7 @@ level_frame:
 ; 6
 
 	;==============================
-	; now VBLANK scanline 17
+	; now VBLANK scanline 16
 	;==============================
 	; handle boxer punching
 	;==============================
@@ -129,19 +172,20 @@ level_frame:
 	; if just starting, randomly pick left/right
 	; at end, return to neutral
 
-	lda	BOXER_STATE						; 3
-	cmp	#BOXER_PUNCHING
+	lda	BOXER_STATE		; only if in PUNCHING state	; 3
+	cmp	#BOXER_PUNCHING						; 2
 	bne	skip_boxer_punching					; 2/3
 
 boxer_punching:
-	dec	BOXER_COUNTDOWN
-	lda	BOXER_COUNTDOWN
-	bne	boxer_still_punching
+	dec	BOXER_COUNTDOWN						; 5
+	lda	BOXER_COUNTDOWN						; 3
+	bne	boxer_still_punching					; 2/3
+
 boxer_done_punching:
-	lda	#BOXER_NEUTRAL
-	sta	BOXER_STATE
-	lda	#BOXER_SPRITE_NEUTRAL
-	jmp	boxer_punch_update_sprite
+	lda	#BOXER_NEUTRAL		; reset back to normal		; 2
+	sta	BOXER_STATE						; 3
+	lda	#BOXER_SPRITE_NEUTRAL					; 3
+	jmp	boxer_punch_update_sprite	; FIXME			; 3
 
 boxer_still_punching:
 	; A is boxer_countdown
@@ -167,7 +211,7 @@ skip_boxer_punching:
 	sta	WSYNC
 
 	;==============================
-	; now VBLANK scanline 18
+	; now VBLANK scanline 17
 	;==============================
 	; handle snake being punched
 	;==============================
@@ -185,7 +229,26 @@ skip_boxer_punching:
 punch_just_happened:
 
 ; 15
-	; TODO: collision detection
+	;======================
+	; collision detection
+
+	lda	COLLIDING
+	beq	punch_not_hit_snake	; not colliding
+
+	lda	SNAKE_STATE		; no hit if snake injured
+	cmp	#SNAKE_NEUTRAL
+	beq	punch_hit_snake
+
+punch_not_hit_snake:
+
+	lda	#SFX_PUNCH_MISS
+	sta	SFX_NEW
+	jmp	done_snake_collide
+
+punch_hit_snake:
+
+	lda	#SFX_PUNCH_HIT
+	sta	SFX_NEW
 
 	lda	#SNAKE_SPRITE_INJURED	; move to injured sprite	; 2
 	sta	SNAKE_WHICH_SPRITE					; 3
@@ -206,7 +269,7 @@ done_snake_collide:
 
 
 	;===============================
-	; now VBLANK scanline 19
+	; now VBLANK scanline 18
 	;===============================
 	; randomly adjust snake behavior
 	;===============================
@@ -240,9 +303,6 @@ snake_same_dir:
 	and	#SNAKE_ATTACK_MASK					; 2
 	bne	snake_no_attack						; 2/3
 snake_attack:
-
-	lda	#SFX_SNAKE_ATTACK
-	sta	SFX_NEW
 	lda	#SNAKE_ATTACKING
 	sta	SNAKE_STATE
 	lda	#SNAKE_ATTACK_LENGTH
@@ -252,7 +312,7 @@ skip_snake_adjust:
 	sta	WSYNC
 
 	;==============================
-	; now VBLANK scanline 20
+	; now VBLANK scanline 19
 	;==============================
 	; handle snake injured
 	;==============================
@@ -272,9 +332,12 @@ skip_snake_adjust:
 
 done_snake_injured:
 	lda	SNAKE_HEALTH		; check health			; 3
-	bpl	still_snake_health	; if still health, skip ahead	; 2/3
+	bne	still_snake_health	; if still health, skip ahead	; 2/3
+					; note 0 = out of health
 ; 21
 	; out of health, KO
+	lda	#SFX_SNAKE_KO
+	sta	SFX_NEW
 
 	lda	#SNAKE_KOED		; set KO state			; 2
 	sta	SNAKE_STATE						; 3
@@ -298,6 +361,8 @@ done_snake_injured:
 	lda	#20			; reset health to full		; 2
 	sta	SNAKE_HEALTH						; 3
 ; 55
+	inc	LEVEL_OVER		; reset ring			; 5
+; 60
 	jmp	skip_snake_injured
 
 	; still health
@@ -314,7 +379,7 @@ skip_snake_injured:
 
 
 	;==============================
-	; now VBLANK scanline 21
+	; now VBLANK scanline 20
 	;==============================
 	; handle boxer injured
 	;==============================
@@ -330,36 +395,35 @@ skip_snake_injured:
 	bne	still_boxer_injured
 
 done_boxer_injured:
-	dec	BOXER_HEALTH
-	dec	BOXER_HEALTH
+	dec	BOXER_HEALTH						; 5
+	dec	BOXER_HEALTH						; 5
 
-	lda	BOXER_HEALTH
-	bpl	boxer_health_still_ok
+	lda	BOXER_HEALTH		; health=0 means KO		; 3
+	bne	boxer_health_still_ok					; 2/3
 
 boxer_health_negative:
-	lda	#BOXER_KOED
-	sta	BOXER_STATE
-	lda	#BOXER_KO_TIME
-	sta	BOXER_COUNTDOWN
-	lda	#BOXER_SPRITE_NEUTRAL
-	jmp	boxer_injured_update_sprite
+	lda	#BOXER_KOED						; 2
+	sta	BOXER_STATE						; 3
+	lda	#BOXER_KO_TIME						; 2
+	sta	BOXER_COUNTDOWN						; 3
+	lda	#BOXER_SPRITE_NEUTRAL					; 2
+	jmp	boxer_injured_update_sprite				; 3
 
 boxer_health_still_ok:
-	lda	#BOXER_NEUTRAL
-	sta	BOXER_STATE
-	lda	#BOXER_SPRITE_NEUTRAL
+	lda	#BOXER_NEUTRAL						; 2
+	sta	BOXER_STATE						; 3
+	lda	#BOXER_SPRITE_NEUTRAL					; 2
 
 boxer_injured_update_sprite:
-	sta	BOXER_WHICH_SPRITE
+	sta	BOXER_WHICH_SPRITE					; 3
 
 still_boxer_injured:
 skip_boxer_injured:
 ; 6
 	sta	WSYNC
 
-
 	;==============================
-	; now VBLANK scanline 22
+	; now VBLANK scanline 21
 	;==============================
 	; handle boxer koed
 	;==============================
@@ -377,6 +441,7 @@ skip_boxer_injured:
 	; done KO countdown
 
 done_boxer_koed:
+	inc	LEVEL_OVER		; reset				; 5
 	dec	MANS			; decrement MANS		; 5
 	lda	MANS			; load MANS count		; 3
 	bne	boxer_still_alive	; if hit zero then dead		; 2/3
@@ -419,8 +484,9 @@ skip_boxer_koed:
 
 
 
+
 	;==============================
-	; now VBLANK scanline 23
+	; now VBLANK scanline 22
 	;==============================
 	; handle snake koed
 
@@ -457,7 +523,7 @@ skip_snake_koed:
 
 
 	;==============================
-	; now VBLANK scanline 24
+	; now VBLANK scanline 23
 	;==============================
 	; actually move snake
 	; snake bounds are 28 ... 116
@@ -500,7 +566,7 @@ skip_snake_move:
 
 
 	;==============================
-	; now VBLANK scanline 25
+	; now VBLANK scanline 24
 	;==============================
 	; handle snake attack
 ; 0
@@ -550,7 +616,7 @@ skip_snake_attack:
 	sta	WSYNC
 
 	;==============================
-	; now VBLANK scanline 26
+	; now VBLANK scanline 25
 	;==============================
 	; set up boxer sprites
 ; 0
@@ -581,7 +647,7 @@ skip_snake_attack:
 	sta	WSYNC
 
 	;==============================
-	; now VBLANK scanline 27
+	; now VBLANK scanline 26
 	;==============================
 	; set up snake sprites
 ; 0
@@ -595,14 +661,14 @@ skip_snake_attack:
 	sta	WSYNC
 
 	;==============================
-	; now VBLANK scanline 28
+	; now VBLANK scanline 27
 	;==============================
 	; setting up KO score takes 6 scanlines
 
 .include "update_score.s"
 
 	;==============================
-	; now VBLANK scanline 34+35
+	; now VBLANK scanline 33+34
 	;==============================
 
 	; position sidebar (missile1)
@@ -614,7 +680,7 @@ skip_snake_attack:
 
 ; 6
 	;==============================
-	; now VBLANK scanline 36
+	; now VBLANK scanline 35
 	;==============================
 
 	; setup playfield
@@ -645,6 +711,14 @@ skip_snake_attack:
 .align	$100
 
 score_align:
+
+	sta	WSYNC
+
+	;==============================
+	; now VBLANK scanline 36
+	;==============================
+
+	; PLACEHOLDER
 
 	sta	WSYNC
 
@@ -1189,7 +1263,8 @@ button_pressed:
 	cmp	#BOXER_DEAD
 	bne	button_not_dead
 
-	inc	LEVEL_OVER		; if dead, trigger level over	; 5
+	lda	#$FF			; if dead, trigger level over	; 2
+	sta	LEVEL_OVER						; 3
 	jmp	button_set_debounce
 
 button_not_dead:
@@ -1274,7 +1349,12 @@ after_check_right:
 	; handle end
 
 	lda	LEVEL_OVER
-	bne	done_game
+	beq	level_good		; 0 means normal
+	bmi	done_game		; $FF means back to title screen
+
+	; reset
+	jmp	level_restart		; 1 means reset position
+level_good:
 
 	sta	WSYNC
 

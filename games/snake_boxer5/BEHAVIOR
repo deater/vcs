@@ -1,10 +1,34 @@
+Collision detect
+
+
+        snake_X:     snake_X+16
+              SSSSSS
+
+boxer_X:                      boxer_X+32
+	XXXXX            XXXXX
+
+
+	; minkowski sum collision?
+
+	if (snake_X+8 <boxer_X-8) no collision?
+		same as snake_x < boxer_X-16
+
+                       83       84    100     101
+	boxer: 100     91,92  92,92   108,92
+
+	if (snake_X > boxer_X+40) no collision
+
+punch hit:
+	if (boxer_x
+
+
 SFX:
-	+ snake lunge and miss (whip-crack)
-	+ snake lunge and hit (b-blank)
-	+ punch and miss (whiff)
-	+ punch and hit (blip)
-	+ KO snake (da-oodle-der)
-	+ restart after KO (bell-bell)
+	+ SFX_SNAKE_MISS:	snake lunge and miss (whip-crack)
+	+ SFX_SNAKE_HIT:	snake lunge and hit (b-blank)
+	+ SFX_PUNCH_MISS:	punch and miss (whiff)
+	+ SFX_PUNCH_HIT:	punch and hit (blip)
+	+ SFX_SNAKE_KO:		KO snake (da-oodle-der)
+	+ SFX_BELL:		restart after KO (bell-bell)
 	+ SFX_GAMEOVER: game-over (long rumble)
 
 Snake:
