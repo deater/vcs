@@ -61,7 +61,13 @@ SNAKE_ATTACK_MASK = $3f		; 1 time in 64
 	sta	LEVEL_OVER						; 3
 	sta	SNAKE_KOS						; 3
 	sta	SNAKE_KOS_BCD						; 3
-; 37
+	sta	SNAKE_X_LOW						; 3
+	sta	SNAKE_SPEED_LOW						; 3
+; 38
+
+	lda	#SFX_BELL		; start with bell
+	sta	SFX_NEW
+
 	sta	WSYNC
 
 level_frame:
@@ -235,6 +241,8 @@ snake_same_dir:
 	bne	snake_no_attack						; 2/3
 snake_attack:
 
+	lda	#SFX_SNAKE_ATTACK
+	sta	SFX_NEW
 	lda	#SNAKE_ATTACKING
 	sta	SNAKE_STATE
 	lda	#SNAKE_ATTACK_LENGTH
@@ -374,6 +382,8 @@ done_boxer_koed:
 	bne	boxer_still_alive	; if hit zero then dead		; 2/3
 
 make_dead:
+	lda	#SFX_GAMEOVER
+	sta	SFX_NEW
 	lda	#BOXER_DEAD
 	sta	BOXER_STATE
 	lda	#BOXER_SPRITE_DEAD
@@ -1091,12 +1101,24 @@ boxer_health_good:
 	;==================================
 	;==================================
 
-	ldx	#22
+	ldx	#21
 	jsr	common_overscan
 
+	;===============================
+	; now at overscan 22
+	;===============================
+	; trigger sound
+
+	ldy	SFX_NEW
+	beq	bskip_sound
+	jsr	trigger_sound		; 52 cycles
+	lda	#0
+	sta	SFX_NEW
+bskip_sound:
+	sta	WSYNC
 
 	;=============================
-	; now at VBLANK scanline 23+24
+	; now at overscan 23+24
 	;=============================
 	; handle sound
 	; takes two scanlines
@@ -1106,7 +1128,7 @@ boxer_health_good:
 	sta	WSYNC
 
 	;=============================
-	; now at VBLANK scanline 25
+	; now at overscan 25
 	;=============================
 	; handle down being pressed
 
@@ -1145,7 +1167,7 @@ after_check_down:
 
 
 	;=============================
-	; now at VBLANK scanline 26
+	; now at overscan 26
 	;=============================
 	; handle button being pressed
 ; 0
@@ -1189,7 +1211,7 @@ done_check_button:
 	sta	WSYNC
 
 	;=============================
-	; now at VBLANK scanline 27
+	; now at overscan 27
 	;=============================
 	; handle left being pressed
 ; 0
@@ -1218,7 +1240,7 @@ after_check_left:
 
 
 	;==================================
-	; now at VBLANK scanline 28
+	; now at overscan 28
 	;==================================
 	; handle right being pressed
 ; 0
@@ -1247,8 +1269,9 @@ after_check_right:
 	sta	WSYNC
 
 	;==================================
-	; overscan 29, handle end
+	; now at overscan 29
 	;==================================
+	; handle end
 
 	lda	LEVEL_OVER
 	bne	done_game
@@ -1256,9 +1279,9 @@ after_check_right:
 	sta	WSYNC
 
 	;==================================
-	; overscan 30, do nothing
+	; now at overscan 30
 	;==================================
-	; handle right being pressed
+	; do nothing
 
 	jmp	level_frame
 

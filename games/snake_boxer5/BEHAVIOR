@@ -1,4 +1,11 @@
-
+SFX:
+	+ snake lunge and miss (whip-crack)
+	+ snake lunge and hit (b-blank)
+	+ punch and miss (whiff)
+	+ punch and hit (blip)
+	+ KO snake (da-oodle-der)
+	+ restart after KO (bell-bell)
+	+ SFX_GAMEOVER: game-over (long rumble)
 
 Snake:
 	+ KO happens when bar hits zero, not after

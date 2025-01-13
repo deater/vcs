@@ -14,6 +14,8 @@
 	sta	FRAMEH
 	sta	RUNNER_COUNT
 
+;	sta	WSYNC
+
 level_frame:
 
 	;============================

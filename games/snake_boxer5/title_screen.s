@@ -3,6 +3,12 @@ title_entry:
 	lda	#0
 	sta	LEVEL_OVER
 
+	; turn off any sound
+
+	sta	AUDV0
+	sta	AUDV1
+
+
 	sta	WSYNC
 
 

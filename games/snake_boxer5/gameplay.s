@@ -38,6 +38,7 @@ gameplay:
 .include "common_routines.s"
 .include "random8.s"
 .include "sound_update.s"
+.include "sound_trigger.s"
 .include "sfx.inc"
 
 .include "game_data.inc"

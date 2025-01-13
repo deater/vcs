@@ -1,5 +1,6 @@
 + Videlectrix intro
 	-- no logo until character falls
+	-- runner should move up/down when falling
 
 + Title screen
 	-- take secret code
