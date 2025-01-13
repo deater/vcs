@@ -441,12 +441,14 @@ skip_boxer_injured:
 	; done KO countdown
 
 done_boxer_koed:
-	inc	LEVEL_OVER		; reset				; 5
 	dec	MANS			; decrement MANS		; 5
 	lda	MANS			; load MANS count		; 3
-	bne	boxer_still_alive	; if hit zero then dead		; 2/3
+	beq	boxer_make_dead		; if hit zero then dead		; 2/3
 
-make_dead:
+	inc	LEVEL_OVER		; reset				; 5
+	jmp	boxer_still_alive
+
+boxer_make_dead:
 	lda	#SFX_GAMEOVER
 	sta	SFX_NEW
 	lda	#BOXER_DEAD
@@ -521,7 +523,6 @@ skip_snake_koed:
 
 
 
-
 	;==============================
 	; now VBLANK scanline 23
 	;==============================
@@ -569,6 +570,11 @@ skip_snake_move:
 	; now VBLANK scanline 24
 	;==============================
 	; handle snake attack
+	; if starting:
+	;	start
+	; if halfway:
+	;	do collision detect
+
 ; 0
 	lda	SNAKE_STATE		; check if snake attacking	; 3
 	cmp	#SNAKE_ATTACKING					; 2
@@ -583,12 +589,12 @@ skip_attacking:
 
 snake_attack_start:
 
-	lda	#BOXER_INJURED
-	sta	BOXER_STATE
-	lda	#BOXER_SPRITE_INJURED
-	sta	BOXER_WHICH_SPRITE
-	lda	#SNAKE_ATTACK_LENGTH
-	sta	BOXER_COUNTDOWN
+;	lda	#BOXER_INJURED
+;	sta	BOXER_STATE
+;	lda	#BOXER_SPRITE_INJURED
+;	sta	BOXER_WHICH_SPRITE
+;	lda	#SNAKE_ATTACK_LENGTH
+;	sta	BOXER_COUNTDOWN
 	jmp	snake_done_handle_attack
 
 snake_done_attacking:
@@ -606,6 +612,34 @@ snake_attack_coiled:
 	lda	#SNAKE_SPRITE_COILED					; 2
 	bne	snake_attack_update_sprite	; bra			; 2/3
 snake_attack_lunging:
+
+	; no attack if blocking
+
+	lda	COLLIDING
+	beq	snake_lunge_miss
+
+	lda	BOXER_STATE
+	cmp	#BOXER_BLOCKING
+	beq	snake_lunge_miss
+
+snake_lunge_hit:
+	lda	#SFX_SNAKE_HIT
+	sta	SFX_NEW
+
+	lda	#BOXER_INJURED
+	sta	BOXER_STATE
+	lda	#BOXER_SPRITE_INJURED
+	sta	BOXER_WHICH_SPRITE
+	lda	#SNAKE_ATTACK_LENGTH
+	sta	BOXER_COUNTDOWN
+	jmp	snake_lunge_draw
+snake_lunge_miss:
+
+	lda	#SFX_SNAKE_MISS
+	sta	SFX_NEW
+
+snake_lunge_draw:
+
 	lda	#SNAKE_SPRITE_ATTACK					; 2
 snake_attack_update_sprite:
 	sta	SNAKE_WHICH_SPRITE					; 3
