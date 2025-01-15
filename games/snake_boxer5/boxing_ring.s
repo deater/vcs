@@ -293,22 +293,25 @@ do_random_snake:
 	bne	snake_same_dir						; 2/3
 ; 12
 	; switch direction
-	jsr	switch_snake_direction					; 6+18
+	jsr	switch_snake_direction					; 6+28
 
 snake_same_dir:
-; 36 / 13
+; 46 / 13
 	; see if attack
 
 	lda	RAND_B							; 3
 	and	#SNAKE_ATTACK_MASK					; 2
+; 51
 	bne	snake_no_attack						; 2/3
 snake_attack:
-	lda	#SNAKE_ATTACKING
-	sta	SNAKE_STATE
-	lda	#SNAKE_ATTACK_LENGTH
-	sta	SNAKE_COUNTDOWN
+; 53
+	lda	#SNAKE_ATTACKING					; 2
+	sta	SNAKE_STATE						; 3
+	lda	#SNAKE_ATTACK_LENGTH					; 2
+	sta	SNAKE_COUNTDOWN						; 3
 snake_no_attack:
 skip_snake_adjust:
+; 63 worst case
 	sta	WSYNC
 
 	;==============================
@@ -1490,15 +1493,24 @@ health_line:
 
 
 	;=============================
+	; switch snake direction
+	;=============================
+	; more complex as it's 16-bit twos complement
+
 	; ff -> 1, 1->FF
 switch_snake_direction:
+	clc								; 2
+	lda	SNAKE_SPEED_LOW						; 3
+	eor	#$FF							; 2
+	adc	#1							; 2
+	sta	SNAKE_SPEED_LOW						; 3
+; 12
 	lda	SNAKE_SPEED						; 3
 	eor	#$FF							; 2
-	clc								; 2
-	adc	#1							; 2
+	adc	#0							; 2
 	sta	SNAKE_SPEED						; 3
 	rts								; 6
-; 18
+; 28
 
 
 .include "position.s"
