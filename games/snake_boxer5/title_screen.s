@@ -78,8 +78,12 @@ cpad_x:
 	sta	COLUPF
 	sta	CTRLPF		; no mirror
 
-	sta	COLUBK		; background black
-				; TODO: change if SECRET enabled?
+	ldx	#0		; black default
+	lda	SECRET_UNLOCKED
+	beq	default_bg
+	ldx	#$C0		; green if secret unlocked
+default_bg:
+	stx	COLUBK		;
 
 	ldy	#0
 	sty	VBLANK		; re-enable VBLANK
@@ -445,7 +449,23 @@ twaited_button_enough:
 	lda	INPT4		; check joystick button pressed		; 3
 	bmi	tdone_check_button					; 2/3
 
+	lda	SECRET_PROGRESS
+	cmp	#4
+	bne	no_secret
+secret_active:
+	lda	SECRET_UNLOCKED		; toggle secret
+	eor	#$01
+	sta	SECRET_UNLOCKED
+
+	lda	#0			; reset progress
+	sta	SECRET_PROGRESS
+	beq	tdone_check_reset	; bra
+
+no_secret:
+
 	inc	LEVEL_OVER
+
+tdone_check_reset:
 	lda	#20
 	sta	BUTTON_COUNTDOWN
 
@@ -466,7 +486,34 @@ tdone_check_button:
 	;============================
 	; Overscan scanline 29
 	;============================
+	; check joystick for secret purposes
 
+	; want to get up up down up
+
+	; reuse debounce
+	lda	BUTTON_COUNTDOWN					; 3
+	bne	skip_check						; 2/3
+
+	lda	SWCHA	; $80=right, $40=left, $20=down, $10=up
+	cmp	#$FF		; default is $FF, pull low when press?
+	beq	skip_check
+
+	ldx	SECRET_PROGRESS
+	and	secret_progression,X
+	bne	reset_check
+
+	inc	SECRET_PROGRESS
+	bne	done_check		; bra
+
+reset_check:
+	lda	#0
+store_check:
+	sta	SECRET_PROGRESS
+done_check:
+	lda	#20
+	sta	BUTTON_COUNTDOWN
+
+skip_check:
 	sta	WSYNC
 
 	;============================
@@ -475,6 +522,9 @@ tdone_check_button:
 
 
         jmp     title_frame_loop        ; bra
+
+secret_progression:
+	.byte $10,$10,$20,$10,$00
 
 
 done_title:

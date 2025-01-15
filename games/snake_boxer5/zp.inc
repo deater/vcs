@@ -101,3 +101,6 @@ BOXER_WHICH_SPRITE	= $BA	; 0=neutral 1=block 2=left punch 3=right punch
 BOXER_COUNTDOWN		= $BB
 SFX_NEW			= $BC
 COLLIDING		= $BD
+SECRET_UNLOCKED		= $BE
+SECRET_PROGRESS		= $BF
+
