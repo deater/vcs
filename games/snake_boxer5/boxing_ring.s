@@ -98,11 +98,11 @@ level_frame:
 	;=================================
 	;=================================
 
-	ldx	#11
+	ldx	#10
 	jsr	common_delay_scanlines
 
 	;==============================
-	; now VBLANK scanline 12
+	; now VBLANK scanline 11
 	;==============================
 	; pre-emptive collision detect
 
@@ -140,7 +140,7 @@ no_collision:
 
 
 	;==============================
-	; now VBLANK scanline 13
+	; now VBLANK scanline 12
 	;==============================
 	; update rng
 
@@ -148,7 +148,7 @@ no_collision:
 	sta	WSYNC
 
 	;==============================
-	; now VBLANK scanline 14+15
+	; now VBLANK scanline 13+14
 	;==============================
 	; position ball
 	;==============================
@@ -164,7 +164,7 @@ no_collision:
 ; 6
 
 	;==============================
-	; now VBLANK scanline 16
+	; now VBLANK scanline 15
 	;==============================
 	; handle boxer punching
 	;==============================
@@ -211,7 +211,7 @@ skip_boxer_punching:
 	sta	WSYNC
 
 	;==============================
-	; now VBLANK scanline 17
+	; now VBLANK scanline 16
 	;==============================
 	; handle snake being punched
 	;==============================
@@ -269,7 +269,7 @@ done_snake_collide:
 
 
 	;===============================
-	; now VBLANK scanline 18
+	; now VBLANK scanline 17
 	;===============================
 	; randomly adjust snake behavior
 	;===============================
@@ -315,7 +315,7 @@ skip_snake_adjust:
 	sta	WSYNC
 
 	;==============================
-	; now VBLANK scanline 19
+	; now VBLANK scanline 18
 	;==============================
 	; handle snake injured
 	;==============================
@@ -382,7 +382,7 @@ skip_snake_injured:
 
 
 	;==============================
-	; now VBLANK scanline 20
+	; now VBLANK scanline 19
 	;==============================
 	; handle boxer injured
 	;==============================
@@ -426,7 +426,7 @@ skip_boxer_injured:
 	sta	WSYNC
 
 	;==============================
-	; now VBLANK scanline 21
+	; now VBLANK scanline 20
 	;==============================
 	; handle boxer koed
 	;==============================
@@ -488,10 +488,8 @@ skip_boxer_koed:
 	sta	WSYNC
 
 
-
-
 	;==============================
-	; now VBLANK scanline 22
+	; now VBLANK scanline 21
 	;==============================
 	; handle snake koed
 
@@ -527,43 +525,66 @@ skip_snake_koed:
 
 
 	;==============================
-	; now VBLANK scanline 23
+	; now VBLANK scanline 22
 	;==============================
 	; actually move snake
 	; snake bounds are 28 ... 116
-
+; 0
 	lda	SNAKE_STATE		; only if neutral (0)		; 3
 	bne	skip_snake_move						; 2/3
-
-	lda	BOXER_STATE		; only if NEUTRAL OR BLOCKING
-	beq	snake_speed_go
-	cmp	#BOXER_BLOCKING
-	bne	skip_snake_move
+; 5
+	lda	BOXER_STATE		; only if NEUTRAL OR BLOCKING	; 3
+	beq	snake_speed_go						; 2/3
+; 10
+	cmp	#BOXER_BLOCKING						; 2
+	bne	skip_snake_move						; 2/3
+; 14
 
 snake_speed_go:
-	clc
-	lda	SNAKE_X
-	adc	SNAKE_SPEED
-	sta	SNAKE_X
+	clc								; 2
+	lda	SNAKE_X_LOW						; 3
+	adc	SNAKE_SPEED_LOW						; 3
+	sta	SNAKE_X_LOW						; 3
+; 25
+	lda	SNAKE_X							; 3
+	adc	SNAKE_SPEED						; 3
+	sta	SNAKE_X							; 3
+; 34
+skip_snake_move:
+	sta	WSYNC
 
+	;==============================
+	; now VBLANK scanline 23
+	;==============================
+	; keep snake in bounds
+; 0
 	; see if out of bounds
-	cmp	#116
-	bcc	snake_ok_left
+	cmp	#116							; 2
+	bcc	snake_ok_left						; 2/3
+; 4
+	jsr	switch_snake_direction					; 6+28
+; 38
 
-	lda	#$ff
-	sta	SNAKE_SPEED
+;	lda	#$ff
+;	sta	SNAKE_SPEED
+	jmp	snake_bounds_done
 
 snake_ok_left:
-	cmp	#28
-	bcs	snake_ok_right
+; 5
+	cmp	#28							; 2
+	bcs	snake_ok_right						; 2/3
+; 9
 
-	lda	#$1
-	sta	SNAKE_SPEED
+	jsr	switch_snake_direction					; 6+28
+; 43
+
+;	lda	#$1
+;	sta	SNAKE_SPEED
 
 snake_ok_right:
 
+snake_bounds_done:
 
-skip_snake_move:
 ; 6
 	sta	WSYNC
 
