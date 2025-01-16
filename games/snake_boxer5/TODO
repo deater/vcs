@@ -3,18 +3,13 @@
 	-- runner should move up/down when falling
 
 + Title screen
-	-- take secret code
-	-- do something to indicate secret code
 	-- play music?
 
 + Normal Game
 	-- Overlap when either side striking, using Ball graphic
-	-- sound effects
+	-- improved sound effects
 	-- find some way to multi-color the boxer?
-	-- handle graphics and such when run out of lives
-	-- blink boxer when out of lives
-	-- snake KO
-		* wait until done blinking to reset health?
+	-- snake KO: don't move to middle until after done blinking
 
 + Bonus Game
 	-- sprites, etc

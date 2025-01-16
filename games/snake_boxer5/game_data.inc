@@ -182,7 +182,6 @@ boxer_rpunch_right:
 	.byte	$F0	; ........ IIII...	; 12
 
 boxer_block_left:
-	.byte	$00	; ........ ........	0
 	.byte	$00	; ........ ........	1
 	.byte	$03	; ......XX X.......	2
 	.byte	$07	; .....XXX XX......	3
@@ -194,6 +193,7 @@ boxer_block_left:
 	.byte	$0F	; ....IIII III.....	9
 	.byte	$0F	; ....IIII III.....	10
 	.byte	$06	; .....II. II......	11
+	.byte	$00	; ........ ........	0
 ;	.byte	$00	; ........ ........	12
 
 boxer_lpunch_left:
@@ -214,7 +214,6 @@ boxer_lpunch_left:
 
 
 boxer_block_right:
-	.byte	$00	; ........ ........	0
 	.byte	$00	; ........ ........	1
 	.byte	$80	; ......XX X.......	2
 	.byte	$C0	; .....XXX XX......	3
@@ -226,6 +225,7 @@ boxer_block_right:
 	.byte	$E0	; ....IIII III.....	9
 	.byte	$E0	; ....IIII III.....	10
 	.byte	$C0	; .....II. II......	11
+	.byte	$00	; ........ ........	0
 ;	.byte	$00	; ........ ........	12
 
 boxer_lpunch_right:
@@ -281,7 +281,7 @@ boxer_sprite_right_colors:
 boxer_block_left_colors:
 boxer_block_right_colors:
 ;	.byte 0,0,78,78,78,78,78,78,64,64,64,64,0
-	.byte 0,0,78,78,78,78,78,78,64,64,64,64;,0
+	.byte 0,78,78,78,78,78,78,64,64,64,64,0;,0
 
 
 boxer_lpunch_right_colors:
