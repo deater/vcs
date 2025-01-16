@@ -1355,7 +1355,7 @@ done_check_button:
 	bit	SWCHA			;				; 3
 	bne	after_check_left	;				; 2/3
 left_pressed:
-	lda	#32
+	lda	#24
 	cmp	BOXER_X
 	bcs	cant_dec
 can_dec:
