@@ -9,7 +9,10 @@
 	-- Overlap when either side striking, using Ball graphic
 	-- improved sound effects
 	-- find some way to multi-color the boxer?
-	-- snake KO: don't move to middle until after done blinking
+	-- don't change color of snake until after KO done
+	-- balance speed of snake at each level
+	-- don't stop snake if punching and not hit?
+
 
 + Bonus Game
 	-- sprites, etc

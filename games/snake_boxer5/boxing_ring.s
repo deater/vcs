@@ -71,7 +71,7 @@ level_restart:
 
 	lda	#64			; roughly center on screen	; 2
 	sta	BOXER_X							; 3
-	lda	#100							; 2
+	lda	#72							; 2
 	sta	SNAKE_X							; 3
 
 	sta	WSYNC
@@ -323,35 +323,37 @@ skip_snake_adjust:
 	; at end if health then return to neutral
 	; if KO'd, set KO state + countdown
 
+; 0
 	lda	SNAKE_STATE		; only if injured		; 3
 	cmp	#SNAKE_INJURED						; 2
 	bne	skip_snake_injured					; 2/3
 
-; 8
+; 7
 	dec	SNAKE_COUNTDOWN		; countdown			; 5
 	bne	skip_snake_injured					; 2/3
 
-; 16
+; 14
 
 done_snake_injured:
 	lda	SNAKE_HEALTH		; check health			; 3
 	bne	still_snake_health	; if still health, skip ahead	; 2/3
 					; note 0 = out of health
-; 21
+; 19
+make_snake_koed:
 	; out of health, KO
-	lda	#SFX_SNAKE_KO
-	sta	SFX_NEW
-
+	lda	#SFX_SNAKE_KO		; play sound			; 2
+	sta	SFX_NEW							; 3
+; 24
 	lda	#SNAKE_KOED		; set KO state			; 2
 	sta	SNAKE_STATE						; 3
 	lda	#SNAKE_KO_TIME		; set KO countdown		; 2
 	sta	SNAKE_COUNTDOWN						; 3
-; 31
+; 44
 	; increment KOs
 
 	inc	SNAKE_KOS						; 5
 
-; 36
+; 49
 	; increment KO score which is BCD
 
 	clc								; 2
@@ -360,12 +362,8 @@ done_snake_injured:
 	adc	#1							; 2
 	sta	SNAKE_KOS_BCD						; 3
 	cld								; 2
-; 50
-	lda	#20			; reset health to full		; 2
-	sta	SNAKE_HEALTH						; 3
-; 55
-	inc	LEVEL_OVER		; reset ring			; 5
-; 60
+; 64
+
 	jmp	skip_snake_injured
 
 	; still health
@@ -492,19 +490,42 @@ skip_boxer_koed:
 	; now VBLANK scanline 21
 	;==============================
 	; handle snake koed
-
-	lda	SNAKE_STATE		; only if neutral (0)		; 3
-	cmp	#SNAKE_KOED
+; 0
+	lda	SNAKE_STATE		; only if koed			; 3
+	cmp	#SNAKE_KOED						; 2
 	bne	skip_snake_koed						; 2/3
-
-	dec	SNAKE_COUNTDOWN
-	bne	still_snake_koed
-
+; 7
+	dec	SNAKE_COUNTDOWN		; countdown			; 5
+	bne	still_snake_koed	; skip if waiting		; 2/3
+; 14
 done_snake_koed:
-	lda	#SNAKE_NEUTRAL
-	sta	SNAKE_STATE
-	lda	#SNAKE_SPRITE_NEUTRAL
-	jmp	koed_update_sprite
+	lda	#SNAKE_NEUTRAL						; 2
+	sta	SNAKE_STATE						; 3
+; 19
+
+	lda	#20			; reset health to full		; 2
+	sta	SNAKE_HEALTH						; 3
+; 24
+	inc	LEVEL_OVER		; reset ring			; 5
+; 29
+	; speed up snake
+	; instead of math, use table
+
+	ldx	SNAKE_KOS						; 3
+	cpx	#MAX_SNAKE_SPEED					; 2
+	bcc	snake_speed_good					; 2/3
+	ldx	#(MAX_SNAKE_SPEED-1)					; 2
+snake_speed_good:
+; 38
+	lda	snake_speed_hi,X					; 4+
+	sta	SNAKE_SPEED						; 3
+	lda	snake_speed_lo,X					; 4+
+	sta	SNAKE_SPEED_LOW						; 3
+
+; 52
+	lda	#SNAKE_SPRITE_NEUTRAL					; 2
+
+	jmp	koed_update_sprite					; 3
 
 still_snake_koed:
 	lda	SNAKE_COUNTDOWN
@@ -515,8 +536,10 @@ koed_sprite_on:
 	bne	koed_update_sprite	; bra
 koed_sprite_off:
 	lda	#SNAKE_SPRITE_EMPTY
+
+; / / / 52
 koed_update_sprite:
-	sta	SNAKE_WHICH_SPRITE
+	sta	SNAKE_WHICH_SPRITE					; 3
 
 skip_snake_koed:
 ; 6

@@ -82,6 +82,13 @@ snake_colors:
 mans_max_lookup:
 	.byte 20,30,46,64
 
+MAX_SNAKE_SPEED = 12
+
+snake_speed_hi:
+	.byte $01,$01,$02,$02,$03,$03,$04,$04,$05,$05,$06,$06
+snake_speed_lo:
+	.byte $00,$80,$00,$80,$00,$80,$00,$80,$00,$80,$00,$80
+
 ;================================================================
 ; Boxer data
 ;	must all fit in one page as we don't save high pointers
