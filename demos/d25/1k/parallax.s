@@ -1,4 +1,4 @@
-; Parallax 
+; Parallax
 
 ; by Vince `deater` Weaver
 
@@ -37,26 +37,27 @@ clear_loop:
 
 
 tia_frame:
+
+	;================================
+	; 3 lines of veritcal sync
+	;================================
+	; our code actually does 4?
+
+	jsr	common_vblank
+
 	;================================
 	; 37 lines of VBLANK
 	;================================
 
 	;========================
-	; VBLANK scanlines 0..3
-	;========================
-	; in scanline 0, takes 4 scanlines
-
-	jsr	common_vblank
-
-	;========================
-	; VBLANK scanlines 4..15
+	; VBLANK scanlines 1..27
 	;========================
 
-	ldx	#11
+	ldx	#27
 	jsr	common_delay_scanlines
 
 	;=====================================================
-	; VBLANK scanline 16 -- handle frame
+	; VBLANK scanline 28 -- handle frame
 	;=====================================================
 
 	inc	FRAMEL                                                  ; 5
@@ -68,7 +69,7 @@ no_frame_oflo:
 	sta	WSYNC
 
 	;================================================
-	; VBLANK scanline 17 -- init
+	; VBLANK scanline 29 -- init
 	;================================================
 
 ; 26
@@ -83,7 +84,7 @@ no_frame_oflo:
 
 
 	;=====================================
-	; scanline 18: setup X for sprites
+	; scanline 30: setup X for sprites
 	;====================================
 ; 0
 	lda	SPRITE0_X						; 3
@@ -127,7 +128,7 @@ no_frame_oflo:
 	sta	WSYNC
 
 	;=========================================
-	; scanline 19/20 : setup zigzag
+	; scanline 31/32 : setup zigzag
 	;=========================================
 ; 0
 
@@ -154,15 +155,10 @@ zigzag_loop:
 
 	; 2+ 13*8 -1 = 105
 
-
-	;=========================================
-	; scanline 21: ?
-	;=========================================
-
 	sta	WSYNC
 
 	;=======================================================
-	; scanline 22: set up sprite0 to be at proper X position
+	; scanline 33: set up sprite0 to be at proper X position
 	;=======================================================
 	; value will be 0..9
 
@@ -198,7 +194,7 @@ par_pad_x:
 
 
 	;=======================================================
-	; scanline 23: set up sprite1 to be at proper X position
+	; scanline 34: set up sprite1 to be at proper X position
 	;=======================================================
 
 ; 0
@@ -233,7 +229,7 @@ par_pad_x1:
 
 
 	;================================================
-	; VBLANK scanline 24 -- init
+	; VBLANK scanline 35 -- init
 	;================================================
 ; 3
 	; other init
@@ -254,7 +250,7 @@ par_pad_x1:
 	sta	WSYNC
 
 	;=================================
-	; VBLANK scanline 25
+	; VBLANK scanline 36
 	;=================================
 ; 0
 	lda	#0							; 2
