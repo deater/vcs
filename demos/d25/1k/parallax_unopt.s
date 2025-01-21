@@ -96,8 +96,8 @@ frame_oflo:
         inc	FRAMEH                                                  ; 5
 no_frame_oflo:
 
-;	lda	#48							; 2
-;	sta	SPRITE0_X						; 3
+	lda	#48							; 2
+	sta	SPRITE0_X						; 3
 	lda	#82							; 2
 	sta	SPRITE1_X						; 3
 ; 36
@@ -109,16 +109,21 @@ no_frame_oflo:
 	; scanline 30: setup Xpos for sprites
 	;====================================
 ; 0
-;	lda	#48		; SPRITE0_X always 48			; 2
-	lda	#3		; SPRITE0_X DIV 16 is 3
-        sta	SPRITE0_X_COARSE					; 3
+	lda	SPRITE0_X						; 3
+; 3
+        ; spritex DIV 16
 
+	lsr								; 2
+	lsr								; 2
+	lsr								; 2
+	lsr								; 2
+
+        sta	SPRITE0_X_COARSE					; 3
 ; 14
 	; apply fine adjust
-;	lda	SPRITE0_X						; 3
-;	and	#$0f							; 2
-;	tax								; 2
-	ldx	#$0
+	lda	SPRITE0_X						; 3
+	and	#$0f							; 2
+	tax								; 2
 	lda	fine_adjust_table,X					; 4+
 	sta	HMP0							; 3
 ; 28
