@@ -8,6 +8,11 @@
 
 .include "zp.inc"
 
+
+; size optimization
+;	$15F = 351 bytes	original code
+;	$14F = 335 bytes	low-hanging optimizations
+
 	;=============================
 	; clear out mem / init things
 	;=============================
@@ -42,37 +47,48 @@ tia_frame:
 	; 3 lines of veritcal sync
 	;================================
 	; our code actually does 4?
+	;=====================
+	; our code takes 4 scanlines, clears out old one first
+	; this makes sure we get a full 3 scanlines of VSYNC
 
-	jsr	common_vblank
+	;=================================
+	; wait for 3 scanlines of VSYNC
+	;=================================
+
+	lda	#2		; value to write for vsync
+	sta	WSYNC		; wait until end of scanline
+	sta	VSYNC
+
+	sta	WSYNC
+	sta	WSYNC
+	lda	#0		; done beam reset			; 2
+	sta	WSYNC
+	sta	VSYNC							; 3
+; 3 cycles in
 
 	;================================
 	; 37 lines of VBLANK
 	;================================
 
 	;========================
-	; VBLANK scanlines 1..27
+	; VBLANK scanlines 1..28
 	;========================
 
-	ldx	#27
+	ldx	#28
 	jsr	common_delay_scanlines
 
-	;=====================================================
-	; VBLANK scanline 28 -- handle frame
-	;=====================================================
+	;================================================
+	; VBLANK scanline 29 -- init
+	;================================================
+
+	; increment frame
+	;
 
 	inc	FRAMEL                                                  ; 5
 	bne	no_frame_oflo						; 2/3
 frame_oflo:
         inc	FRAMEH                                                  ; 5
 no_frame_oflo:
-
-	sta	WSYNC
-
-	;================================================
-	; VBLANK scanline 29 -- init
-	;================================================
-
-; 26
 
 	lda	#48							; 2
 	sta	SPRITE0_X						; 3
@@ -84,7 +100,7 @@ no_frame_oflo:
 
 
 	;=====================================
-	; scanline 30: setup X for sprites
+	; scanline 30: setup Xpos for sprites
 	;====================================
 ; 0
 	lda	SPRITE0_X						; 3
@@ -237,11 +253,7 @@ par_pad_x1:
 	lda	#$86							; 2
 	sta	COLUP0							; 3
 	sta	COLUP1		; color of sprite grid			; 3
-; 8
-	lda	#$00							; 2
-        sta	COLUBK							; 3
-	sta	VDELP0							; 3
-	sta	VDELP1		; turn off delay			; 3
+
 ; 19
 	lda	#NUSIZ_QUAD_SIZE					; 2
 	sta	NUSIZ0		; make sprite grid large		; 3
@@ -254,19 +266,15 @@ par_pad_x1:
 	;=================================
 ; 0
 	lda	#0							; 2
-	sta	VBLANK                  ; turn on beam			; 3
-; 5
-
-	lda	#0							; 2
+        sta	COLUBK							; 3
 	sta	COLUPF			; fg, black			; 3
 	sta	GRP0			; sprite 1			; 3
 	sta	GRP1			; sprite 2			; 3
-; 16
-
-	lda	#$0			; clear playfields		; 2
 	sta	PF0			;				; 3
 	sta	PF1			;				; 3
 	sta	PF2							; 3
+	sta	VBLANK                  ; turn on beam			; 3
+
 ; 27
 	lda	#CTRLPF_REF|CTRLPF_PFP	; reflect			; 2
 	sta	CTRLPF			; also playfield priority	; 3
@@ -277,16 +285,9 @@ par_pad_x1:
 	rol
 	lda	FRAMEH
 	rol
-;	lsr
-;	lsr
-;	lsr
-;	lsr
-;	lsr
-;	lsr
 	and	#$7
 	tay
 	lda	fg_colors,Y
-;	lda	#$4e							; 2
 	sta	COLUPF							; 3
 ; 37
 	ldy	#0							; 2
@@ -414,10 +415,6 @@ effect_done:
 	jmp	tia_frame
 
 
-
-
-;.align $100
-
 fine_adjust_table:
         ; left
         .byte $70,$60,$50,$40,$30,$20,$10,$00
@@ -426,41 +423,6 @@ fine_adjust_table:
 
 	;=====================
 	; other includes
-
-	;=====================
-	; VBLANK/VSYNC
-	;=====================
-	; our code takes 4 scanlines, clears out old one first
-	; this makes sure we get a full 3 scanlines of VSYNC
-
-common_vblank:
-
-	;============================
-	; Start Vertical Blank
-	;============================
-
-	lda	#2
-
-
-	;=================================
-	; wait for 3 scanlines of VSYNC
-	;=================================
-
-	sta	WSYNC		; wait until end of scanline
-	sta	VSYNC
-
-	sta	WSYNC
-	sta	WSYNC
-	lda	#0		; done beam reset			; 2
-	sta	WSYNC
-
-	; now in VSYNC scanline 3
-
-	sta	VSYNC							; 3
-
-	rts
-
-; 9 cycles in
 
 
 
