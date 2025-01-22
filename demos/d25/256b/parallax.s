@@ -19,6 +19,7 @@
 ;	$15F = 351 bytes	original code
 ;	$14F = 335 bytes	low-hanging optimizations
 ;	$121 = 289 bytes	hard-code sprite xpos values
+;	$FB  = 250 bytes	remove extraneous initialization
 
 	;=============================
 	; clear out mem / init things
@@ -79,11 +80,11 @@ tia_frame:
 	; VBLANK scanlines 1..29
 	;========================
 
-	ldx	#29
+	ldx	#30
 	jsr	common_delay_scanlines
 
 	;================================================
-	; VBLANK scanline 30 -- init
+	; VBLANK scanline 31 -- init
 	;================================================
 
 	; increment frame
@@ -98,8 +99,8 @@ no_frame_oflo:
 	; setup sprite0/sprite1 xpos
 
 ;	lda	#48		; SPRITE0_X always 48			; 2
-	lda	#3		; SPRITE0_X DIV 16 is 3
-        sta	SPRITE0_X_COARSE					; 3
+;	lda	#3		; SPRITE0_X DIV 16 is 3
+;       sta	SPRITE0_X_COARSE					; 3
 
 	; apply fine adjust
 	lda	#$70
@@ -109,8 +110,8 @@ no_frame_oflo:
 ; 31
         ; spritex DIV 16 = 5
 
-	lda	#$5
-        sta	SPRITE1_X_COARSE					; 3
+;	lda	#$5
+ ;       sta	SPRITE1_X_COARSE					; 3
 ; 42
 	; apply fine adjust
 	lda	#$50
@@ -119,7 +120,7 @@ no_frame_oflo:
 	sta	WSYNC
 
 	;=========================================
-	; scanline 31/32 : setup zigzag
+	; scanline 32/33 : setup zigzag
 	;=========================================
 ; 0
 
@@ -149,13 +150,15 @@ zigzag_loop:
 	sta	WSYNC
 
 	;=======================================================
-	; scanline 33: set up sprite0 to be at proper X position
+	; scanline 34: set up sprite0 to be at proper X position
 	;=======================================================
 	; value will be 0..9
 
 ; 0
 
-	ldx	a:SPRITE0_X_COARSE	; force 4-cycle version		; 4
+;	ldx	a:SPRITE0_X_COARSE	; force 4-cycle version		; 4
+	ldx	#3
+	nop
 ; 4
 
 	nop								; 2
@@ -185,12 +188,14 @@ par_pad_x:
 
 
 	;=======================================================
-	; scanline 34: set up sprite1 to be at proper X position
+	; scanline 35: set up sprite1 to be at proper X position
 	;=======================================================
 
 ; 0
 
-	ldx	a:SPRITE1_X_COARSE	; force 4-cycle version		; 4
+;	ldx	a:SPRITE1_X_COARSE	; force 4-cycle version		; 4
+	ldx	#5
+	nop
 ; 4
 
 	nop								; 2
@@ -220,7 +225,7 @@ par_pad_x1:
 
 
 	;================================================
-	; VBLANK scanline 35 -- init
+	; VBLANK scanline 36 -- init
 	;================================================
 ; 3
 	; other init
@@ -233,22 +238,6 @@ par_pad_x1:
 	lda	#NUSIZ_QUAD_SIZE					; 2
 	sta	NUSIZ0		; make sprite grid large		; 3
 	sta	NUSIZ1							; 3
-
-	sta	WSYNC
-
-	;=================================
-	; VBLANK scanline 36
-	;=================================
-; 0
-	lda	#0							; 2
-        sta	COLUBK							; 3
-	sta	COLUPF			; fg, black			; 3
-	sta	GRP0			; sprite 1			; 3
-	sta	GRP1			; sprite 2			; 3
-	sta	PF0			;				; 3
-	sta	PF1			;				; 3
-	sta	PF2							; 3
-	sta	VBLANK                  ; turn on beam			; 3
 
 ; 27
 	lda	#CTRLPF_REF|CTRLPF_PFP	; reflect			; 2
@@ -265,8 +254,10 @@ par_pad_x1:
 	lda	fg_colors,Y
 	sta	COLUPF							; 3
 ; 37
-	ldy	#0							; 2
-	ldx	#0			; scanline			; 2
+	lda	#0							; 2
+	sta	VBLANK                  ; turn on beam			; 3
+	tax				; scanline=0
+	tay
 ; 41
 	sta	WSYNC							; 3
 
@@ -368,15 +359,6 @@ effect_done:
 	lda	#2		; we want this to happen in hblank	; 2
 	sta	VBLANK		;					; 3
 ; 8
-	; turn off everything
-
-	lda	#0
-	sta	GRP0							; 3
-	sta	GRP1							; 3
-	sta	PF0							; 3
-	sta	PF1							; 3
-	sta	PF2							; 3
-; 23
 
 	;=============================
 	; overscan
@@ -384,8 +366,6 @@ effect_done:
 
 	ldx	#30
 	jsr	common_delay_scanlines
-
-
 
 	jmp	tia_frame
 

@@ -20,7 +20,7 @@ parallax.zip:	parallax.bin
 ###
 
 parallax.bin:	parallax.o
-	ld65 -o parallax.bin parallax.o -C $(LINKER_SCRIPT)/atari2600_f000.inc
+	ld65 -o parallax.bin parallax.o -C $(LINKER_SCRIPT)/atari2600_f000_1k.inc
 
 parallax.o:	parallax.s \
 	zp.inc
