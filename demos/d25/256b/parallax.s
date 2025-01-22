@@ -112,25 +112,28 @@ skip_vsync:
 
 	; other init
 
-	lda	#$86		; medium blue				; 2
+	lda	#$86			; medium blue			; 2
 	sta	COLUP0							; 3
-	sta	COLUP1		; color of sprite grid			; 3
+	sta	COLUP1			; color of sprite grid		; 3
 ; 12
-	lda	#NUSIZ_QUAD_SIZE					; 2
-	sta	NUSIZ0		; make sprite grid large		; 3
+	lda	#NUSIZ_QUAD_SIZE	; $07				; 2
+	sta	NUSIZ0			; make sprite grid large	; 3
 	sta	NUSIZ1							; 3
 ; 20
-	lda	#CTRLPF_REF|CTRLPF_PFP	; reflect			; 2
-	sta	CTRLPF			; also playfield priority	; 3
+	lda	#CTRLPF_REF|CTRLPF_PFP	; priority/reflect ($05)	; 2
+	sta	CTRLPF							; 3
 ; 25
 
 	; setup sprite0/sprite1 xpos
 	; SPRITE0_X always 48	(39+7 ??)
-	lda	#$70		; +7					; 2
+	;	note strobe happens 5 clocks later on player sprite
+	;  (68+48)/3=116/3=38R2  39*3=117+5=122-7=115?
+	lda	#$70		; -7					; 2
 	sta	HMP0		; fine adjust				; 3
 ; 30
 	; SPRITE1_X always 82	(49+5 ??)
-	lda	#$50							; 2
+	; (68+82)/3=150/3=50	49*3=147+5=152-5=147?
+	lda	#$50		; -5					; 2
 	sta	a:HMP1		; force 4 cycles			; 4
 ; 36
 	;===============================================================
@@ -198,10 +201,6 @@ frame_oflo:
         inc	FRAMEH                                                  ; 5
 no_frame_oflo:
 
-
-
-
-
 	lda	FRAMEL
 	rol
 	lda	FRAMEH
@@ -210,9 +209,11 @@ no_frame_oflo:
 	tay
 	lda	fg_colors,Y
 	sta	COLUPF							; 3
+
 ; 37
 	lda	#0							; 2
 	sta	VBLANK                  ; turn on beam			; 3
+
 	tax				; scanline=0
 	tay
 ; 41
@@ -228,30 +229,35 @@ no_frame_oflo:
 	; 192 scanlines
 
 parallax_playfield:
-	; comes in at 3 cycles
+	; comes in at 0/3 cycles
+
+	; X=0, Y=0
 
 ; 3
 
 	;============================
 	; set sprite pattern
 	;============================
-	lda	FRAMEL							; 3
+	; if (scanline-(frame/4))&8 (every 8 on/off) flip
+
+	lda	FRAMEL		; get frame count/4			; 3
 	lsr								; 2
 	lsr								; 2
-	sta	TEMP2							; 3
+	sta	TEMP2		; store?				; 3
 ; 13
-	ldy	#$AA							; 2
-	txa								; 2
+	ldy	#$AA		; 1010 pattern				; 2
+
+	txa			; scanline in A				; 2
 	sec								; 2
-	sbc	TEMP2							; 2
-	and	#$8							; 2
+	sbc	TEMP2		; subtract frame count/4		; 2
+	and	#$8		; mask					; 2
 ; 23
 	beq	alternate_sprite0					; 2/3
-	ldy	#$55							; 2
+	ldy	#$55		; 0101 pattern				; 2
 alternate_sprite0:
 ; 27
-	sty	GRP0							; 3
-	sty	GRP1							; 3
+	sty	GRP0		; store sprite0				; 3
+	sty	GRP1		; store sprite1				; 3
 ; 33
 
 	;============================
@@ -269,6 +275,9 @@ alternate_pf0:
 ; 47
 	sty	PF2							; 3
 ; 50
+
+	;=================================
+	; do zig-zags
 
 	txa								; 2
 	adc	FRAMEL							; 3
@@ -288,11 +297,8 @@ alternate_pf0:
 ;
 	bne	parallax_playfield					; 2/3
 
-
-done_parallax:
-	sta	WSYNC
-
-	jmp	tia_frame
+	jmp	tia_frame						; 3
+; 5
 
 zigzag:
 	.byte $80,$40,$20,$10, $10,$20,$40,$80

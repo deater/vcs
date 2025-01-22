@@ -1,0 +1,13 @@
+0
+1:	n/a
+2:	nop		; 1 byte
+3:	lda	$80	; 2 bytes
+4:	nop/nop		; 2 bytes
+5:	asl	$80	; 2 bytes	(sets flags?)
+6:	nop/nop/nop	; 3 bytes	(can do indirect X in 2 but harder)
+7:	pha/pla		; 2 bytes
+8:	nop/nop/nop/nop	; 4 bytes
+9:
+10:
+11:
+12:	jsr to rts	; 3/4 bytes (can be shared)
