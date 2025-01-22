@@ -20,6 +20,8 @@
 ;	$14F = 335 bytes	low-hanging optimizations
 ;	$121 = 289 bytes	hard-code sprite xpos values
 ;	$FB  = 250 bytes	remove extraneous initialization
+;	$F4  = 244 bytes	move overscan around
+;	$DF  = 223 bytes	merge overscan/vsync/vblank
 
 	;=============================
 	; clear out mem / init things
@@ -49,40 +51,58 @@ clear_loop:
 
 tia_frame:
 
-	;================================
-	; 3 lines of veritcal sync
-	;================================
-	; our code actually does 4?
-	;=====================
-	; our code takes 4 scanlines, clears out old one first
-	; this makes sure we get a full 3 scanlines of VSYNC
+	;====================================
+	; handle overscan/vsync/vblank (NTSC)
+	;====================================
 
-	;=================================
-	; wait for 3 scanlines of VSYNC
-	;=================================
+	; so what we want to happen here is
+	;	enable vblank:	write 2 to VBLANK
+	;	overscan:	delay 30 scanlines
+	;	enable vsync:	write 2 to VSYNC
+	;	vsync:		delay 3 scanlines
+	;	disable vsync:	write 0 to VSYNC
+	;	do VBLANK:	37 scanlines, but we want to do stuff in some
+	;	disable vblank:	write 0 to VBLANK
 
-	lda	#2		; value to write for vsync
-	sta	WSYNC		; wait until end of scanline
-	sta	VSYNC
+	;=============================
+	; enable VBLANK
 
-	sta	WSYNC
-	sta	WSYNC
-	lda	#0		; done beam reset			; 2
-	sta	WSYNC
-	sta	VSYNC							; 3
-; 3 cycles in
+	ldy	#2		; we want this to happen in hblank	; 2
+	sty	VBLANK		;					; 3
 
-	;================================
-	; 37 lines of VBLANK
-	;================================
+	;=============================
+	; overscan
+
+	; let's delay 63
+
+	;  0  1 .. 30 .. 34 .. 63
+	; 63 62 .. 33 .. 29 .. 0
+	;
+	;
+
+	ldx	#64
+delay_scanlines:
+	cpx	#(64-30)	; triggers at scanline 30
+	beq	do_vsync
+skip1:
+	cpx	#(64-34)	; triggers at scanline 34?
+	bne	skip_vsync
+do_vsync:
+	sty	VSYNC
+	ldy	#0
+skip_vsync:
+	sta	WSYNC							; 3
+	dex								; 2
+	bne	delay_scanlines						; 2/3
+
 
 	;========================
-	; VBLANK scanlines 1..29
+	; VBLANK scanlines 0..30
 	;========================
 
-	ldx	#30
-	jsr	common_delay_scanlines
+	; already happened
 
+; 4
 	;================================================
 	; VBLANK scanline 31 -- init
 	;================================================
@@ -123,16 +143,11 @@ no_frame_oflo:
 	; scanline 32/33 : setup zigzag
 	;=========================================
 ; 0
+	; zigzag when music hits?
 
-	lda	#8
-	ldx	FRAMEH
-	cpx	#$4		; not start music response until partway in
-	bcc	zigzag_start
-
-
-	ldx	IS_DRUM
-	beq	zigzag_start
-	dec	IS_DRUM
+	ldx	MUSIC_HIT		; check if music hit		; 2
+	beq	zigzag_start		; if 
+	dec	MUSIC_HIT
 	clc
 	adc	#$8
 zigzag_start:
@@ -335,7 +350,7 @@ alternate_pf0:
 done_parallax:
 	sta	WSYNC
 
-	jmp	effect_done
+	jmp	tia_frame
 
 zigzag:
 	.byte $80,$40,$20,$10, $10,$20,$40,$80
@@ -345,59 +360,12 @@ zigzag2:
 fg_colors:
 	.byte $4E,$9E,$AE,$12, $4E,$9E,$AE,$7E
 
-
-
-	;============================
-	; handle overscan
-	;============================
-	; NTSC 30
-	; should arrive 3 cycles after a WSYNC
-
-effect_done:
-
-; 3
-	lda	#2		; we want this to happen in hblank	; 2
-	sta	VBLANK		;					; 3
-; 8
-
-	;=============================
-	; overscan
-	;=============================
-
-	ldx	#30
-	jsr	common_delay_scanlines
-
-	jmp	tia_frame
-
-
 fine_adjust_table:
         ; left
-;        .byte $70,$60,$50,$40,$30,$20,$10,$00
-        ; right -1 ... -8
- ;       .byte $F0,$E0,$D0,$C0,$B0,$A0,$90,$80
+;	.byte $70,$60,$50,$40,$30,$20,$10,$00
+	; right -1 ... -8
+;	.byte $F0,$E0,$D0,$C0,$B0,$A0,$90,$80
 
-	;=====================
-	; other includes
-
-
-
-
-	;=============================
-	; overscan
-	;=============================
-	; amount of scanlines to wait is in X
-
-common_overscan:
-	lda	#$2		; turn off beam
-	sta	VBLANK
-
-common_delay_scanlines:
-	sta	WSYNC							; 3
-	dex								; 2
-	bne	common_delay_scanlines					; 2/3
-	rts								; 6
-
-; 10
 
 .segment "IRQ_VECTORS"
 	.word vcs_desire	; NMI
