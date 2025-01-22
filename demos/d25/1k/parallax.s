@@ -18,6 +18,7 @@
 ; size optimization
 ;	$15F = 351 bytes	original code
 ;	$14F = 335 bytes	low-hanging optimizations
+;	$121 = 289 bytes	hard-code sprite xpos values
 
 	;=============================
 	; clear out mem / init things
@@ -26,8 +27,6 @@
 	; can assume S starts at $FD on 6502
 
 vcs_desire:
-
-	; TODO: can we move txs outside loop?
 
 	sei			; disable interrupts			; 2
 	cld			; clear decimal mode			; 2
@@ -77,14 +76,14 @@ tia_frame:
 	;================================
 
 	;========================
-	; VBLANK scanlines 1..28
+	; VBLANK scanlines 1..29
 	;========================
 
-	ldx	#28
+	ldx	#29
 	jsr	common_delay_scanlines
 
 	;================================================
-	; VBLANK scanline 29 -- init
+	; VBLANK scanline 30 -- init
 	;================================================
 
 	; increment frame
@@ -96,51 +95,26 @@ frame_oflo:
         inc	FRAMEH                                                  ; 5
 no_frame_oflo:
 
-;	lda	#48							; 2
-;	sta	SPRITE0_X						; 3
-	lda	#82							; 2
-	sta	SPRITE1_X						; 3
-; 36
-	sta	WSYNC
+	; setup sprite0/sprite1 xpos
 
-
-
-	;=====================================
-	; scanline 30: setup Xpos for sprites
-	;====================================
-; 0
 ;	lda	#48		; SPRITE0_X always 48			; 2
 	lda	#3		; SPRITE0_X DIV 16 is 3
         sta	SPRITE0_X_COARSE					; 3
 
-; 14
 	; apply fine adjust
-;	lda	SPRITE0_X						; 3
-;	and	#$0f							; 2
-;	tax								; 2
-	ldx	#$0
-	lda	fine_adjust_table,X					; 4+
+	lda	#$70
 	sta	HMP0							; 3
-; 28
 
-	lda	SPRITE1_X						; 3
+	; SPRITE1_X=82 = $52
 ; 31
-        ; spritex DIV 16
+        ; spritex DIV 16 = 5
 
-	lsr								; 2
-	lsr								; 2
-	lsr								; 2
-	lsr								; 2
-
+	lda	#$5
         sta	SPRITE1_X_COARSE					; 3
 ; 42
 	; apply fine adjust
-	lda	SPRITE1_X						; 3
-	and	#$0f							; 2
-	tax								; 2
-	lda	fine_adjust_table,X					; 4+
+	lda	#$50
 	sta	HMP1							; 3
-; 56
 
 	sta	WSYNC
 
@@ -418,9 +392,9 @@ effect_done:
 
 fine_adjust_table:
         ; left
-        .byte $70,$60,$50,$40,$30,$20,$10,$00
+;        .byte $70,$60,$50,$40,$30,$20,$10,$00
         ; right -1 ... -8
-        .byte $F0,$E0,$D0,$C0,$B0,$A0,$90,$80
+ ;       .byte $F0,$E0,$D0,$C0,$B0,$A0,$90,$80
 
 	;=====================
 	; other includes
