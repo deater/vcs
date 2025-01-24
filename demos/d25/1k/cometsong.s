@@ -1,0 +1,432 @@
+; Attempt some music
+
+; by Vince `deater` Weaver
+
+.include "../../../vcs.inc"
+
+; zero page addresses
+
+.include "zp.inc"
+
+	;=============================
+	; clear out mem / init things
+	;=============================
+
+	; can assume S starts at $FD on 6502
+
+vcs_desire:
+
+	sei			; disable interrupts			; 2
+	cld			; clear decimal mode			; 2
+	ldx	#0							; 2
+	txa								; 2
+clear_loop:
+	dex								; 2
+	txs								; 2
+	pha								; 3
+	bne	clear_loop						; 2/3
+						;============================
+	; S = $FF, A=$0, x=$0, Y=??		;	8+(256*10)-1=2567 / 10B
+
+
+;======================================================================
+; MAIN LOOP
+;======================================================================
+
+
+tia_frame:
+
+	;====================================
+	; handle overscan/vsync/vblank (NTSC)
+	;====================================
+
+	; so what we want to happen here is
+	;	enable vblank:	write 2 to VBLANK
+	;	overscan:	delay 30 scanlines
+	;	enable vsync:	write 2 to VSYNC
+	;	vsync:		delay 3 scanlines
+	;	disable vsync:	write 0 to VSYNC
+	;	do VBLANK:	37 scanlines, but we want to do stuff in some
+	;	disable vblank:	write 0 to VBLANK
+
+	;=============================
+	; enable VBLANK
+
+	ldy	#2		; we want this to happen in hblank	; 2
+	sty	VBLANK		;					; 3
+
+	;=============================
+	; overscan
+
+NUM_WSYNCS = 66
+
+	ldx	#NUM_WSYNCS
+delay_scanlines:
+	cpx	#(NUM_WSYNCS-30)	; triggers at scanline 30
+	beq	do_vsync
+skip1:
+	cpx	#(NUM_WSYNCS-33)	; triggers at scanline 34?
+	bne	skip_vsync
+do_vsync:
+	sty	VSYNC
+	ldy	#0
+skip_vsync:
+	sta	WSYNC							; 3
+	dex								; 2
+	bne	delay_scanlines						; 2/3
+
+
+	;========================
+	; VBLANK scanlines 0..30
+	;========================
+
+	; already happened
+
+; 4
+
+
+
+	;================================================
+	; VBLANK scanline 31 -- init
+	;================================================
+
+	; other init
+
+	lda	#$86			; medium blue			; 2
+	sta	COLUP0							; 3
+	sta	COLUP1			; color of sprite grid		; 3
+; 12
+	lda	#NUSIZ_QUAD_SIZE	; $07				; 2
+	sta	NUSIZ0			; make sprite grid large	; 3
+	sta	NUSIZ1							; 3
+; 20
+	lda	#CTRLPF_REF|CTRLPF_PFP	; priority/reflect ($05)	; 2
+	sta	CTRLPF							; 3
+; 25
+
+	; setup sprite0/sprite1 xpos
+	; SPRITE0_X always 48	(39+7 ??)
+	;	note strobe happens 5 clocks later on player sprite
+	;  (68+48)/3=116/3=38R2  39*3=117+5=122-7=115?
+	lda	#$70		; -7					; 2
+	sta	HMP0		; fine adjust				; 3
+; 30
+	; SPRITE1_X always 82	(49+5 ??)
+	; (68+82)/3=150/3=50	49*3=147+5=152-5=147?
+	lda	#$50		; -5					; 2
+	sta	a:HMP1		; force 4 cycles			; 4
+; 36
+	;===============================================================
+	; set up sprite0/sprite1 to be at proper X position
+	;===============================================================
+	; sprite0 is always at 39 cycles
+	; sprite1 is always at 49 cycles
+
+; 36
+        sta     RESP0			; set sprite0 xpos at 39	; 3
+; 39
+	pha	; combine for nop7
+	pla
+
+;	nop
+;	nop
+;	lda	$80	; nop3
+; 46
+        sta     RESP1			; set sprite1 xpos at 49	; 3
+; 49
+
+	sta	WSYNC
+	sta	HMOVE		; finalize fine adjust
+
+
+
+	;=========================
+	; play music
+	;=========================
+
+play_frame:
+
+	;============================
+	; see if still counting down
+; 3
+
+song_countdown_smc:
+	lda	SOUND_COUNTDOWN						; 3
+	bpl	done_update_song					; 2/3
+
+set_note_channel0:
+; 8
+	;==================
+	; load next byte
+
+	ldx	SOUND_POINTER						; 3
+	inc	SOUND_POINTER						; 5
+	lda	music,X							; 4+
+; 20
+	bne	not_end		; 0 means end				; 2/3
+
+	;====================================
+	; if at end, loop back to beginning
+; 22
+;	lda	#0							; 2
+	sta	SOUND_POINTER						; 3
+	beq	done_update_song	; bra				; 3
+
+; 23
+not_end:
+
+	; W?CNNNNN	-- W=which, C=channel, N=note
+
+	tay				; save note			; 2
+; 25
+	and	#$1F							; 2
+	sta	AUDF0							; 3
+; 30
+	lda	#$8							; 2
+	sta	SOUND_COUNTDOWN						; 3
+; 35
+
+; 40
+	tya								; 2
+	bmi	do_12							; 2/3
+; 44
+do_4:
+	lda	#4							; 2
+	bne	do_c	; bra						; 3
+; 45
+do_12:
+	lda	#12							; 2
+do_c:
+; 47/49
+	sta	AUDC0							; 3
+; 52
+	;============================
+	; point to next
+
+	; don't have to, PLA did it for us
+
+done_update_song:
+	dec	SOUND_COUNTDOWN						; 3
+
+	lda	SOUND_COUNTDOWN						; 3
+	cmp	#4
+	bcc	quieter
+
+	lda	#$f
+	sta	AUDV0
+	lda	#$9
+	bne	done_volume	; bra
+
+quieter:
+	lda	#$9							; 2
+	sta	AUDV0							; 3
+	lda	#$5
+done_volume:
+	sta	AUDV1
+	sta	WSYNC
+
+
+	;=========================================
+	; scanline 32/33 : setup zigzag
+	;=========================================
+; 0
+	; zigzag when music hits?
+	lda	#8
+	ldx	FRAMEH
+	cpx	#4
+	bcc	zigzag_start
+
+	ldx	MUSIC_HIT		; check if music hit		; 2
+	beq	zigzag_start		; if 
+	dec	MUSIC_HIT
+	clc
+	adc	#$8
+zigzag_start:
+	ldx	#8
+	tay
+zigzag_loop:
+	lda	zigzag,Y						; 4
+	sta	ZIGZAG0,X						; 4
+	dey
+	dex								; 2
+	bne	zigzag_loop						; 2/3
+
+	; 2+ 13*8 -1 = 105
+
+	sta	WSYNC
+
+	;================================================
+	; VBLANK scanline 36 -- init
+	;================================================
+; 3
+
+	; increment frame
+	inc	FRAMEL                                                  ; 5
+	bne	no_frame_oflo						; 2/3
+frame_oflo:
+        inc	FRAMEH                                                  ; 5
+no_frame_oflo:
+
+	lda	FRAMEL
+	rol
+	lda	FRAMEH
+	rol
+	and	#$7
+	tay
+	lda	fg_colors,Y
+	sta	COLUPF							; 3
+
+; 37
+	lda	#0							; 2
+	sta	VBLANK                  ; turn on beam			; 3
+
+	tax				; scanline=0
+	tay
+; 41
+	sta	WSYNC							; 3
+
+
+
+	;=========================
+	;=========================
+	; kernel
+	;=========================
+	;=========================
+	; 192 scanlines
+
+parallax_playfield:
+	; comes in at 0/3 cycles
+
+	; X=0, Y=0
+
+; 3
+
+	;============================
+	; set sprite pattern
+	;============================
+	; if (scanline-(frame/4))&8 (every 8 on/off) flip
+
+	lda	FRAMEL		; get frame count/4			; 3
+	lsr								; 2
+	lsr								; 2
+	sta	TEMP2		; store?				; 3
+; 13
+	ldy	#$AA		; 1010 pattern				; 2
+
+	txa			; scanline in A				; 2
+	sec								; 2
+	sbc	TEMP2		; subtract frame count/4		; 2
+	and	#$8		; mask					; 2
+; 23
+	beq	alternate_sprite0					; 2/3
+	ldy	#$55		; 0101 pattern				; 2
+alternate_sprite0:
+; 27
+	sty	GRP0		; store sprite0				; 3
+	sty	GRP1		; store sprite1				; 3
+; 33
+
+	;============================
+	; set playfield pattern
+	;============================
+	ldy	#$3C							; 2
+	txa								; 2
+	sec								; 2
+	sbc	FRAMEL							; 2
+	and	#$20							; 2
+; 43
+	beq	alternate_pf0						; 2/3
+	ldy	#$C3							; 2
+alternate_pf0:
+; 47
+	sty	PF2							; 3
+; 50
+
+	;=================================
+	; do zig-zags
+
+	txa								; 2
+	adc	FRAMEL							; 3
+	and	#$7							; 2
+	tay								; 2
+	lda	ZIGZAG0,Y						; 4+
+	sta	PF0							; 3
+
+; 63 worst case
+
+	inx								; 2
+	cpx	#191							; 1
+
+; 67
+	sta	WSYNC							; 3
+; 70/0
+;
+	bne	parallax_playfield					; 2/3
+
+	jmp	tia_frame						; 3
+; 5
+
+zigzag:
+	.byte $80,$40,$20,$10, $10,$20,$40,$80
+zigzag2:
+	.byte $40,$40,$20,$20, $40,$40,$20,$20
+
+fg_colors:
+	.byte $4E,$9E,$AE,$12, $4E,$9E,$AE,$7E
+
+fine_adjust_table:
+        ; left
+;	.byte $70,$60,$50,$40,$30,$20,$10,$00
+	; right -1 ... -8
+;	.byte $F0,$E0,$D0,$C0,$B0,$A0,$90,$80
+
+music:
+.byte	$80|19		; 12,19		; C4
+.byte	$80|12		; 12,12		; G4
+.byte	29		; 4,29		; C5
+.byte	19		; 4,19		; G5
+.byte	16		; 4,16		; A#5
+.byte	14		; 4,14		; C6
+.byte	19		; 4,19		; G5
+.byte	21		; 4,21		; F5
+
+.byte	$80|19		; 12,19		; C4
+.byte	$80|12		; 12,12		; G4
+.byte	29		; 4,29		; C5
+.byte	19		; 4,19		; G5
+.byte	16		; 4,16		; A#5
+.byte	14		; 4,14		; C6
+.byte	19		; 4,19		; G5
+.byte	21		; 4,21		; F5
+
+.byte	$80|19		; 12,19		; C4
+.byte	$80|12		; 12,12		; G4
+.byte	29		; 4,29		; C5
+.byte	19		; 4,19		; G5
+.byte	16		; 4,16		; A#5
+.byte	14		; 4,14		; C6
+.byte	19		; 4,19		; G5
+.byte	21		; 4,21		; F5
+
+.byte	$80|19		; 12,19		; C4
+.byte	$80|12		; 12,12		; G4
+.byte	29		; 4,29		; C5
+.byte	19		; 4,19		; G5
+.byte	11		; 4,16		; D#6
+.byte	12		; 4,14		; D6
+.byte	16		; 4,19		; A#5
+.byte	19		; 4,21		; G5
+
+.byte	0
+
+; alternate F/9 volume channel 0
+; alternate 9/5 volume channel 1
+
+; C4/G4/C5/G5/D#6/D6/A#5/G5
+;             11  12  16
+
+
+.segment "IRQ_VECTORS"
+	.word vcs_desire	; NMI
+	.word vcs_desire	; RESET
+	.word vcs_desire	; IRQ
