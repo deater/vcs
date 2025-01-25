@@ -23,6 +23,7 @@
 ;	$F4  = 244 bytes	move overscan around
 ;	$DF  = 223 bytes	merge overscan/vsync/vblank
 ;	$D2  = 210 bytes	set sprite locations at same time
+;	$139 = 313 bytes	guess we're trying to do music
 
 	;=============================
 	; clear out mem / init things
@@ -74,13 +75,6 @@ tia_frame:
 	;=============================
 	; overscan
 
-	; let's delay 63
-
-	;  0  1 .. 30 .. 34 .. 63
-	; 63 62 .. 33 .. 29 .. 0
-	;
-	;
-
 NUM_WSYNCS = 66
 
 	ldx	#NUM_WSYNCS
@@ -88,7 +82,7 @@ delay_scanlines:
 	cpx	#(NUM_WSYNCS-30)	; triggers at scanline 30
 	beq	do_vsync
 skip1:
-	cpx	#(NUM_WSYNCS-34)	; triggers at scanline 34?
+	cpx	#(NUM_WSYNCS-33)	; triggers at scanline 34?
 	bne	skip_vsync
 do_vsync:
 	sty	VSYNC
@@ -106,6 +100,9 @@ skip_vsync:
 	; already happened
 
 ; 4
+
+
+
 	;================================================
 	; VBLANK scanline 31 -- init
 	;================================================
@@ -160,15 +157,88 @@ skip_vsync:
 
 
 
+	;=========================
+	; play music
+	;=========================
+
+play_frame:
+
+	;============================
+	; see if still counting down
+; 3
+
+song_countdown_smc:
+	lda	SOUND_COUNTDOWN						; 3
+	bpl	done_update_song					; 2/3
+
+set_note_channel0:
+; 8
+	;==================
+	; load next byte
+
+	ldx	SOUND_POINTER						; 3
+	inc	SOUND_POINTER						; 5
+	lda	music+1,X						; 4+
+; 20
+	bne	not_end		; 0 means end				; 2/3
+
+	;====================================
+	; if at end, loop back to beginning
+; 22
+;	lda	#0							; 2
+	sta	SOUND_POINTER						; 3
+	beq	done_update_song	; bra				; 3
+
+; 23
+not_end:
+	ldx	#0
+	jsr	play_note
+
+	ldx	SOUND_POINTER						; 3
+	lda	music,X							; 4+
+	ldx	#1
+	jsr	play_note
+
+	lda	#$8							; 2
+	sta	SOUND_COUNTDOWN						; 3
+
+	;============================
+	; point to next
+
+	; don't have to, PLA did it for us
+
+done_update_song:
+	dec	SOUND_COUNTDOWN						; 3
+
+	lda	SOUND_COUNTDOWN						; 3
+	cmp	#4
+	bcc	quieter
+
+	lda	#$f
+	sta	AUDV0
+	lda	#$A
+	bne	done_volume	; bra
+
+quieter:
+	lda	#$A							; 2
+	sta	AUDV0							; 3
+	lda	#$8
+done_volume:
+	sta	AUDV1
+	sta	WSYNC
+
+
 	;=========================================
 	; scanline 32/33 : setup zigzag
 	;=========================================
 ; 0
 	; zigzag when music hits?
-	lda	#8
-	ldx	FRAMEH
-	cpx	#4
-	bcc	zigzag_start
+
+	lda	#8			; load ?			; 2
+;	ldx	FRAMEH			; get high frame		; 3
+;	cpx	#4			; only start after 4 big frames	; 2
+;	bcc	zigzag_start		; blt
+
 
 	ldx	MUSIC_HIT		; check if music hit		; 2
 	beq	zigzag_start		; if 
@@ -313,6 +383,132 @@ fine_adjust_table:
 ;	.byte $70,$60,$50,$40,$30,$20,$10,$00
 	; right -1 ... -8
 ;	.byte $F0,$E0,$D0,$C0,$B0,$A0,$90,$80
+
+
+	; which is in X
+	; note in A
+play_note:
+	ldy	#$4
+
+	rol
+	bcc	do_c	; bra						; 3
+do_12:
+	ldy	#12							; 2
+do_c:
+	sty	AUDC0,X							; 3
+
+	ror
+	and	#$1F							; 2
+	sta	AUDF0,X							; 3
+	rts
+
+
+
+; alternate
+
+music:
+.byte	$80|(60-32)	; 12,19		; C3
+.byte	$80|(60-32)	; 12,19		; C3
+music2:
+.byte	$80|(50-32)	; 12,12		; G3
+.byte	$80|(45-32)	; 4,29		; C4
+.byte	28		; 4,19		; G4
+.byte	23		; 4,16		; A#4
+.byte	20		; 4,14		; C5
+.byte	28		; 4,19		; G4
+.byte	31		; 4,21		; F4
+
+.byte	$80|(60-32)	; 12,19		; C3
+.byte	$80|(50-32)	; 12,12		; G3
+.byte	$80|(45-32)	; 4,29		; C4
+.byte	28		; 4,19		; G4
+.byte	23		; 4,16		; A#4
+.byte	20		; 4,14		; C5
+.byte	28		; 4,19		; G4
+.byte	31		; 4,21		; F4
+
+.byte	$80|(60-32)	; 12,19		; C3
+.byte	$80|(50-32)	; 12,12		; G3
+.byte	$80|(45-32)	; 4,29		; C4
+.byte	28		; 4,19		; G4
+.byte	23		; 4,16		; A#4
+.byte	20		; 4,14		; C5
+.byte	28		; 4,19		; G4
+.byte	31		; 4,21		; F4
+
+.byte	$80|(60-32)	; 12,19		; C3
+.byte	$80|(50-32)	; 12,12		; G3
+.byte	$80|(45-32)	; 4,29		; C4
+.byte	28		; 4,19		; G4
+.byte	17		; 4,16		; A#4
+.byte	18		; 4,14		; C5
+.byte	23		; 4,19		; G4
+.byte	28		; 4,21		; F4
+
+
+.byte 0
+
+
+
+.if 0
+music:
+.byte	$80|(60-32)	; 12,19		; C3
+music2:
+.byte	$80|(50-32)	; 12,12		; G3
+.byte	$80|(45-32)	; 4,29		; C4
+.byte	28		; 4,19		; G4
+.byte	23		; 4,16		; A#4
+.byte	20		; 4,14		; C5
+.byte	28		; 4,19		; G4
+.byte	31		; 4,21		; F4
+
+
+;music:
+.byte	$80|19		; 12,19		; C4
+;music2:
+.byte	$80|12		; 12,12		; G4
+.byte	29		; 4,29		; C5
+.byte	19		; 4,19		; G5
+.byte	16		; 4,16		; A#5
+.byte	14		; 4,14		; C6
+.byte	19		; 4,19		; G5
+.byte	21		; 4,21		; F5
+
+.byte	$80|19		; 12,19		; C4
+.byte	$80|12		; 12,12		; G4
+.byte	29		; 4,29		; C5
+.byte	19		; 4,19		; G5
+.byte	16		; 4,16		; A#5
+.byte	14		; 4,14		; C6
+.byte	19		; 4,19		; G5
+.byte	21		; 4,21		; F5
+
+.byte	$80|19		; 12,19		; C4
+.byte	$80|12		; 12,12		; G4
+.byte	29		; 4,29		; C5
+.byte	19		; 4,19		; G5
+.byte	16		; 4,16		; A#5
+.byte	14		; 4,14		; C6
+.byte	19		; 4,19		; G5
+.byte	21		; 4,21		; F5
+
+.byte	$80|19		; 12,19		; C4
+.byte	$80|12		; 12,12		; G4
+.byte	29		; 4,29		; C5
+.byte	19		; 4,19		; G5
+.byte	11		; 4,16		; D#6
+.byte	12		; 4,14		; D6
+.byte	16		; 4,19		; A#5
+.byte	19		; 4,21		; G5
+
+.byte	0
+.endif
+
+; alternate F/9 volume channel 0
+; alternate 9/5 volume channel 1
+
+; C4/G4/C5/G5/D#6/D6/A#5/G5
+;             11  12  16
 
 
 .segment "IRQ_VECTORS"

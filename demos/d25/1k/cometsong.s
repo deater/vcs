@@ -161,7 +161,7 @@ set_note_channel0:
 
 	ldx	SOUND_POINTER						; 3
 	inc	SOUND_POINTER						; 5
-	lda	music,X							; 4+
+	lda	music+1,X						; 4+
 ; 20
 	bne	not_end		; 0 means end				; 2/3
 
@@ -174,32 +174,17 @@ set_note_channel0:
 
 ; 23
 not_end:
+	ldx	#0
+	jsr	play_note
 
-	; W?CNNNNN	-- W=which, C=channel, N=note
+	ldx	SOUND_POINTER						; 3
+	lda	music,X							; 4+
+	ldx	#1
+	jsr	play_note
 
-	tay				; save note			; 2
-; 25
-	and	#$1F							; 2
-	sta	AUDF0							; 3
-; 30
 	lda	#$8							; 2
 	sta	SOUND_COUNTDOWN						; 3
-; 35
 
-; 40
-	tya								; 2
-	bmi	do_12							; 2/3
-; 44
-do_4:
-	lda	#4							; 2
-	bne	do_c	; bra						; 3
-; 45
-do_12:
-	lda	#12							; 2
-do_c:
-; 47/49
-	sta	AUDC0							; 3
-; 52
 	;============================
 	; point to next
 
@@ -214,13 +199,13 @@ done_update_song:
 
 	lda	#$f
 	sta	AUDV0
-	lda	#$9
+	lda	#$A
 	bne	done_volume	; bra
 
 quieter:
-	lda	#$9							; 2
+	lda	#$A							; 2
 	sta	AUDV0							; 3
-	lda	#$5
+	lda	#$8
 done_volume:
 	sta	AUDV1
 	sta	WSYNC
@@ -231,10 +216,12 @@ done_volume:
 	;=========================================
 ; 0
 	; zigzag when music hits?
-	lda	#8
-	ldx	FRAMEH
-	cpx	#4
-	bcc	zigzag_start
+
+	lda	#8			; load ?			; 2
+;	ldx	FRAMEH			; get high frame		; 3
+;	cpx	#4			; only start after 4 big frames	; 2
+;	bcc	zigzag_start		; blt
+
 
 	ldx	MUSIC_HIT		; check if music hit		; 2
 	beq	zigzag_start		; if 
@@ -380,8 +367,88 @@ fine_adjust_table:
 	; right -1 ... -8
 ;	.byte $F0,$E0,$D0,$C0,$B0,$A0,$90,$80
 
+
+	; which is in X
+	; note in A
+play_note:
+	ldy	#$4
+
+	rol
+	bcc	do_c	; bra						; 3
+do_12:
+	ldy	#12							; 2
+do_c:
+	sty	AUDC0,X							; 3
+
+	ror
+	and	#$1F							; 2
+	sta	AUDF0,X							; 3
+	rts
+
+
+
+; alternate
+
 music:
+.byte	$80|(60-32)	; 12,19		; C3
+.byte	$80|(60-32)	; 12,19		; C3
+music2:
+.byte	$80|(50-32)	; 12,12		; G3
+.byte	$80|(45-32)	; 4,29		; C4
+.byte	28		; 4,19		; G4
+.byte	23		; 4,16		; A#4
+.byte	20		; 4,14		; C5
+.byte	28		; 4,19		; G4
+.byte	31		; 4,21		; F4
+
+.byte	$80|(60-32)	; 12,19		; C3
+.byte	$80|(50-32)	; 12,12		; G3
+.byte	$80|(45-32)	; 4,29		; C4
+.byte	28		; 4,19		; G4
+.byte	23		; 4,16		; A#4
+.byte	20		; 4,14		; C5
+.byte	28		; 4,19		; G4
+.byte	31		; 4,21		; F4
+
+.byte	$80|(60-32)	; 12,19		; C3
+.byte	$80|(50-32)	; 12,12		; G3
+.byte	$80|(45-32)	; 4,29		; C4
+.byte	28		; 4,19		; G4
+.byte	23		; 4,16		; A#4
+.byte	20		; 4,14		; C5
+.byte	28		; 4,19		; G4
+.byte	31		; 4,21		; F4
+
+.byte	$80|(60-32)	; 12,19		; C3
+.byte	$80|(50-32)	; 12,12		; G3
+.byte	$80|(45-32)	; 4,29		; C4
+.byte	28		; 4,19		; G4
+.byte	17		; 4,16		; A#4
+.byte	18		; 4,14		; C5
+.byte	23		; 4,19		; G4
+.byte	28		; 4,21		; F4
+
+
+.byte 0
+
+
+
+.if 0
+music:
+.byte	$80|(60-32)	; 12,19		; C3
+music2:
+.byte	$80|(50-32)	; 12,12		; G3
+.byte	$80|(45-32)	; 4,29		; C4
+.byte	28		; 4,19		; G4
+.byte	23		; 4,16		; A#4
+.byte	20		; 4,14		; C5
+.byte	28		; 4,19		; G4
+.byte	31		; 4,21		; F4
+
+
+;music:
 .byte	$80|19		; 12,19		; C4
+;music2:
 .byte	$80|12		; 12,12		; G4
 .byte	29		; 4,29		; C5
 .byte	19		; 4,19		; G5
@@ -418,6 +485,7 @@ music:
 .byte	19		; 4,21		; G5
 
 .byte	0
+.endif
 
 ; alternate F/9 volume channel 0
 ; alternate 9/5 volume channel 1

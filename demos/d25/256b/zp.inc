@@ -1,4 +1,5 @@
 ; tt music player
+.if 0
 tt_timer                = $80    ; current music timer value
 tt_cur_pat_index_c0     = $81    ; current pattern index into tt_SequenceTable
 tt_cur_pat_index_c1     = $82
@@ -11,8 +12,10 @@ tt_cur_ins_c1           = $88
 tt_ptr                  = $89	; temporary
 tt_ptr2			= $8A
 player_time_max         = $8B
+.endif
 FRAMEL			= $8C
 FRAMEH			= $8D
+.if 0
 LOGO_Y			= $8E
 LOGO_LEFT		= $8F
 
@@ -33,13 +36,15 @@ SPRITE1_X		= $9C
 SPRITE1_Y		= $9D
 SPRITE1_X_COARSE	= $9E
 SPRITE1_XADD		= $9F
+.endif
 
-TEMP1			=	$A0
+;TEMP1			=	$A0
 TEMP2			=	$A1
-SPRITE0_YADD		=	$A2
+;SPRITE0_YADD		=	$A2
 INL			=	$A3
 INH			=	$A4
 
+.if 0
 TITLE_COLOR		=	$A5
 BACKGROUND_COLOR	=	$A6
 TITLE_COUNTDOWN		=	$A7
@@ -54,10 +59,11 @@ SPRITE0_COLOR		=	$AF
 SPRITE1_COLOR		=	$B0
 FIREWORK_PROGRESS0	=	$B1
 FIREWORK_PROGRESS1	=	$B2
+.endif
+
 MUSIC_HIT		=	$B3
-SKY_COLOR		=	$B4
-BOX_HEIGHT		=	$B5
-IS_NOTE			=	$B6
+SOUND_POINTER		=	$B4
+SOUND_COUNTDOWN		=	$B5
 
 ZIGZAG0			=	$B8
 ZIGZAG1			=	$B9
@@ -67,4 +73,5 @@ ZIGZAG4			=	$BC
 ZIGZAG5			=	$BD
 ZIGZAG6			=	$BE
 ZIGZAG7			=	$BF
+
 
