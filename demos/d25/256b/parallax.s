@@ -27,6 +27,7 @@
 ;	$D2  = 210 bytes	set sprite locations at same time
 ;	$139 = 313 bytes	guess we're trying to do music
 ;	$132 = 306 bytes	try to simplify zigzag code
+;	$134 = 308 bytes	back to stable 262 scanlines
 
 	;=============================
 	; clear out mem / init things
@@ -111,7 +112,7 @@ skip_vsync:
 	;================================================
 
 	; other init
-
+; 4
 	lda	#$86			; medium blue			; 2
 	sta	COLUP0							; 3
 	sta	COLUP1			; color of sprite grid		; 3
@@ -145,12 +146,8 @@ skip_vsync:
 ; 36
         sta     RESP0			; set sprite0 xpos at 39	; 3
 ; 39
-	pha	; combine for nop7
-	pla
-
-;	nop
-;	nop
-;	lda	$80	; nop3
+	pha	; combine for nop7					; 3
+	pla								; 4
 ; 46
         sta     RESP1			; set sprite1 xpos at 49	; 3
 ; 49
@@ -161,7 +158,7 @@ skip_vsync:
 
 
 	;=========================
-	; play music
+	; VBLANK 32: play music
 	;=========================
 
 play_frame:
@@ -172,7 +169,7 @@ play_frame:
 
 song_countdown_smc:
 	lda	SOUND_COUNTDOWN						; 3
-	bpl	done_update_song					; 2/3
+	bpl	done_song_early						; 2/3
 
 set_note_channel0:
 ; 8
@@ -183,87 +180,78 @@ set_note_channel0:
 	inc	SOUND_POINTER						; 5
 	lda	music+1,X						; 4+
 ; 20
-	bne	not_end		; 0 means end				; 2/3
+	bne	not_end			; 0 means end			; 2/3
 
 	;====================================
 	; if at end, loop back to beginning
 ; 22
-;	lda	#0							; 2
-	sta	SOUND_POINTER						; 3
-	beq	done_update_song	; bra				; 3
+	sta	SOUND_POINTER		; a is 0 here			; 3
+	beq	done_song_early		; bra				; 3
 
 ; 23
 not_end:
-	ldx	#0
-	jsr	play_note
+	ldx	#0			; channel 0			; 2
+	jsr	play_note		; play_note			; 6+27
+; 58
+	; do channel 1
 
 	ldx	SOUND_POINTER						; 3
 	lda	music,X							; 4+
-	ldx	#1
-	jsr	play_note
-
-	lda	#$8							; 2
+	ldx	#1			; channel 1			; 2
+; 67
+	jsr	play_note		; play_note			; 6+27
+; 110
+	lda	#$8			; note 8 frames long		; 2
 	sta	SOUND_COUNTDOWN						; 3
+; 115
+	bne	not_early		; bra				; 3
 
-	;============================
-	; point to next
+done_song_early:
+; 9 / 28 / 115
+	sta	WSYNC
+not_early:
+; 76 / 76 / 118
 
-	; don't have to, PLA did it for us
-
-done_update_song:
-	dec	SOUND_COUNTDOWN						; 3
-
+	dec	SOUND_COUNTDOWN						; 5
 	lda	SOUND_COUNTDOWN						; 3
-	cmp	#4
-	bcc	quieter
-
-	lda	#$f
-	sta	AUDV0
-	lda	#$A
-	bne	done_volume	; bra
+; 126
+	cmp	#4							; 2
+	bcc	quieter							; 2/3
+; 130
+	lda	#$f							; 2
+	sta	AUDV0							; 3
+	lda	#$A							; 2
+	bne	done_volume	; bra					; 3
 
 quieter:
+; 131
 	lda	#$A							; 2
 	sta	AUDV0							; 3
-	lda	#$8
+	lda	#$8							; 2
 done_volume:
-	sta	AUDV1
+; 138 / 140
+	sta	AUDV1							; 3
+; 143
 	sta	WSYNC
 
 
 	;=========================================
-	; scanline 32/33 : setup zigzag
+	; VBLANK 33 : setup zigzag
 	;=========================================
 ; 0
 	; zigzag when music hits?
 
 	lda	#0			; load ?			; 2
-;	ldx	FRAMEH			; get high frame		; 3
-;	cpx	#4			; only start after 4 big frames	; 2
-;	bcc	zigzag_start		; blt
 
 	ldx	MUSIC_HIT		; check if a music hit (?)	; 3
 	beq	zigzag_start		; if 0, start?			; 2/3
 
 	dec	MUSIC_HIT		; countdown the hit		; 5
-;	clc				;				; 2
-;	adc	#$8			; offset is 16 instead		; 2
-	lda	#$8
+	lda	#$8							; 2
 
 zigzag_start:
-	sta	ZIGZAG_OFFSET
-;	ldx	#8			; load countdown		; 2
-;	tay				; move pointer to Y		; 2
-
-;zigzag_loop:
-;	lda	zigzag,Y		; copy offset into zero page	; 4
-;	sta	ZIGZAG0,X						; 4
-;	dey
-;	dex								; 2
-;	bne	zigzag_loop						; 2/3
-
-;	; 2+ 13*8 -1 = 105
-
+	sta	ZIGZAG_OFFSET						; 3
+; 17 worst case?
 	sta	WSYNC
 
 	;================================================
@@ -397,25 +385,32 @@ fine_adjust_table:
 ;	.byte $F0,$E0,$D0,$C0,$B0,$A0,$90,$80
 
 
-	; which is in X
+	;===============================
+	; play note
+	;===============================
+	; which channel is in X
 	; note in A
+; 0
 play_note:
-	ldy	#$4
-
-	rol
-	bcc	do_c	; bra						; 3
+	ldy	#$4		; pre-load instrument	(want 4 or 12)	; 2
+	rol			; put high bit in C			; 2
+; 4
+	bcc	do_c		; if not set, then instrument 4		; 2/3
 do_12:
-	;ldy	#4							; 2
-	sty	MUSIC_HIT	; setup zigzag shift			; 3
-	ldy	#12							; 2
+; 6
+	sty	MUSIC_HIT	; set 4 long musical hit for elsewhere	; 3
+	ldy	#12		; want instrument 12			; 2
 do_c:
-	sty	AUDC0,X							; 3
+; 7 / 11
+	sty	AUDC0,X		; store out instrument			; 4
+; 11/15
+;	ror			; restore frequenchy			; 2
+;	and	#$1F		; mask off extra			; 2
 
-	ror
-	and	#$1F							; 2
-	sta	AUDF0,X							; 3
-	rts
-
+	lsr			; strips off top bit, so no mask	; 2
+	sta	AUDF0,X		; set frequency				; 4
+	rts								; 6
+; 23/27
 
 
 ; alternate
