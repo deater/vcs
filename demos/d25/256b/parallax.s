@@ -28,6 +28,8 @@
 ;	$139 = 313 bytes	guess we're trying to do music
 ;	$132 = 306 bytes	try to simplify zigzag code
 ;	$134 = 308 bytes	back to stable 262 scanlines
+;	$12F = 303 bytes	optimize sound playback a bit
+;	$11F = 287 bytes	use patterns for a mini tracker
 
 	;=============================
 	; clear out mem / init things
@@ -79,7 +81,7 @@ tia_frame:
 	;=============================
 	; overscan
 
-NUM_WSYNCS = 66
+NUM_WSYNCS = 67
 
 	ldx	#NUM_WSYNCS
 delay_scanlines:
@@ -98,7 +100,7 @@ skip_vsync:
 
 
 	;========================
-	; VBLANK scanlines 0..30
+	; VBLANK scanlines 0..32
 	;========================
 
 	; already happened
@@ -108,7 +110,7 @@ skip_vsync:
 
 
 	;================================================
-	; VBLANK scanline 31 -- init
+	; VBLANK scanline 33 -- init
 	;================================================
 
 	; other init
@@ -152,13 +154,29 @@ skip_vsync:
         sta     RESP1			; set sprite1 xpos at 49	; 3
 ; 49
 
-	sta	WSYNC
-	sta	HMOVE		; finalize fine adjust
+	;==========================
+	; zigzag with music
 
+	lda	#0			; default no zigzag		; 2
+
+	ldx	MUSIC_HIT		; check if a music hit (?)	; 3
+	beq	zigzag_start		; if 0, skip			; 2/3
+
+	dec	MUSIC_HIT		; countdown the hit		; 5
+	lda	#$8			; offset into zigzag table	; 2
+
+zigzag_start:
+	sta	ZIGZAG_OFFSET						; 3
+; 17 / 11
+
+
+; 66
+	sta	WSYNC
+	sta	HMOVE			; finalize fine adjust
 
 
 	;=========================
-	; VBLANK 32: play music
+	; VBLANK 34+35: play music
 	;=========================
 
 play_frame:
@@ -174,32 +192,47 @@ song_countdown_smc:
 set_note_channel0:
 ; 8
 	;==================
-	; load next byte
+	; load next notes
 
-	ldx	SOUND_POINTER						; 3
+	lda	LAST_NOTE						; 3
+	ldx	#1			; channel 1			; 2
+	jsr	play_note		; play_note			; 6+27
+; 46
+	ldy	SOUND_POINTER						; 3
 	inc	SOUND_POINTER						; 5
-	lda	music+1,X						; 4+
-; 20
+; 54
+	lda	music,Y							; 4+
+; 58
 	bne	not_end			; 0 means end			; 2/3
 
 	;====================================
 	; if at end, loop back to beginning
-; 22
-	sta	SOUND_POINTER		; a is 0 here			; 3
-	beq	done_song_early		; bra				; 3
+; 60
+	inc	FG_COUNT		; update color			; 5
+	inc	PATTERN_INDEX		; move to next pattern		; 5
+	lda	PATTERN_INDEX						; 3
+	and	#$3							; 2
+	tax								; 2
+	lda	music_patterns,X					; 4
+	sta	SOUND_POINTER						; 3
+; 84
 
-; 23
+	jmp	not_early		; bra				; 3
+
 not_end:
+; 61
+	sta	LAST_NOTE
 	ldx	#0			; channel 0			; 2
 	jsr	play_note		; play_note			; 6+27
 ; 58
-	; do channel 1
+;	; do channel 1
 
-	ldx	SOUND_POINTER						; 3
-	lda	music,X							; 4+
-	ldx	#1			; channel 1			; 2
+;	ldx	SOUND_POINTER						; 3
+;	lda	music+1,X							; 4+
+;	ldx	#1			; channel 1			; 2
 ; 67
-	jsr	play_note		; play_note			; 6+27
+;	jsr	play_note		; play_note			; 6+27
+
 ; 110
 	lda	#$8			; note 8 frames long		; 2
 	sta	SOUND_COUNTDOWN						; 3
@@ -215,43 +248,23 @@ not_early:
 	dec	SOUND_COUNTDOWN						; 5
 	lda	SOUND_COUNTDOWN						; 3
 ; 126
+	ldx	#$A		; preload useful constant		; 2
 	cmp	#4							; 2
 	bcc	quieter							; 2/3
-; 130
-	lda	#$f							; 2
-	sta	AUDV0							; 3
-	lda	#$A							; 2
+; 132
+louder:			; louder first half of note
+	txa			; $A channel 1				; 2
+	ldx	#$f		; $F channel 0				; 2
 	bne	done_volume	; bra					; 3
-
 quieter:
-; 131
-	lda	#$A							; 2
-	sta	AUDV0							; 3
-	lda	#$8							; 2
+; 133
+;	ldx	#$A		; channel 0				; 2
+	lda	#$8		; channel 1				; 2
 done_volume:
-; 138 / 140
-	sta	AUDV1							; 3
-; 143
-	sta	WSYNC
-
-
-	;=========================================
-	; VBLANK 33 : setup zigzag
-	;=========================================
-; 0
-	; zigzag when music hits?
-
-	lda	#0			; load ?			; 2
-
-	ldx	MUSIC_HIT		; check if a music hit (?)	; 3
-	beq	zigzag_start		; if 0, start?			; 2/3
-
-	dec	MUSIC_HIT		; countdown the hit		; 5
-	lda	#$8							; 2
-
-zigzag_start:
-	sta	ZIGZAG_OFFSET						; 3
-; 17 worst case?
+; 139 / 135
+	stx	AUDV0		; set volume channel 0			; 3
+	sta	AUDV1		; set volume channel 1			; 3
+; 145 / 141
 	sta	WSYNC
 
 	;================================================
@@ -259,6 +272,7 @@ zigzag_start:
 	;================================================
 ; 3
 
+	;========================
 	; increment frame
 	inc	FRAMEL                                                  ; 5
 	bne	no_frame_oflo						; 2/3
@@ -266,21 +280,30 @@ frame_oflo:
         inc	FRAMEH                                                  ; 5
 no_frame_oflo:
 
-	;==============
-	lda	FRAMEL
-	lsr
-	lsr
-	sta	FRAMEL_DIV4
+	;====================================
+	; precalc FRAMEL/4 for drawing code
 
-	;==============
+	lda	FRAMEL							; 3
+	lsr								; 2
+	lsr								; 2
+	sta	FRAMEL_DIV4						; 3
 
-	lda	FRAMEL
-	rol
-	lda	FRAMEH
-	rol
-	and	#$7
-	tay
-	lda	fg_colors,Y
+	;===================================
+	; 16-bit FRAME value
+	;	bits 0x0310 used for color lookup
+
+;	lda	FRAMEL
+;	rol
+;	lda	FRAMEH
+;	rol
+
+;	and	#$7
+;	tay
+;	lda	fg_colors,Y
+
+	ldy	FG_COUNT
+	lda	vcs_desire,Y
+
 	sta	COLUPF							; 3
 
 ; 37
@@ -288,7 +311,7 @@ no_frame_oflo:
 	sta	VBLANK                  ; turn on beam			; 3
 
 	tax				; scanline=0
-	tay
+;	tay
 ; 41
 	sta	WSYNC							; 3
 
@@ -304,7 +327,7 @@ no_frame_oflo:
 parallax_playfield:
 	; comes in at 0/3 cycles
 
-	; X=0, Y=0
+	; X=0
 
 ; 3
 
@@ -375,15 +398,8 @@ zigzag:
 zigzag2:
 	.byte $40,$40,$20,$20, $40,$40,$20,$20
 
-fg_colors:
-	.byte $4E,$9E,$AE,$12, $4E,$9E,$AE,$7E
-
-fine_adjust_table:
-        ; left
-;	.byte $70,$60,$50,$40,$30,$20,$10,$00
-	; right -1 ... -8
-;	.byte $F0,$E0,$D0,$C0,$B0,$A0,$90,$80
-
+;fg_colors:
+;	.byte $4E,$9E,$AE,$12, $4E,$9E,$AE,$7E
 
 	;===============================
 	; play note
@@ -404,47 +420,31 @@ do_c:
 ; 7 / 11
 	sty	AUDC0,X		; store out instrument			; 4
 ; 11/15
-;	ror			; restore frequenchy			; 2
-;	and	#$1F		; mask off extra			; 2
-
 	lsr			; strips off top bit, so no mask	; 2
 	sta	AUDF0,X		; set frequency				; 4
 	rts								; 6
 ; 23/27
 
 
-; alternate
+
+; alternate F/9 volume channel 0
+; alternate 9/5 volume channel 1
+
+music_patterns:
+.byte 0,0,0,9
 
 music:
 .byte	$80|(60-32)	; 12,19		; C3
-.byte	$80|(60-32)	; 12,19		; C3
+.byte	$80|(50-32)	; 12,12		; G3
+.byte	$80|(45-32)	; 4,29		; C4
+.byte	28		; 4,19		; G4
+.byte	23		; 4,16		; A#4
+.byte	20		; 4,14		; C5
+.byte	28		; 4,19		; G4
+.byte	31		; 4,21		; F4
+.byte 0
+
 music2:
-.byte	$80|(50-32)	; 12,12		; G3
-.byte	$80|(45-32)	; 4,29		; C4
-.byte	28		; 4,19		; G4
-.byte	23		; 4,16		; A#4
-.byte	20		; 4,14		; C5
-.byte	28		; 4,19		; G4
-.byte	31		; 4,21		; F4
-
-.byte	$80|(60-32)	; 12,19		; C3
-.byte	$80|(50-32)	; 12,12		; G3
-.byte	$80|(45-32)	; 4,29		; C4
-.byte	28		; 4,19		; G4
-.byte	23		; 4,16		; A#4
-.byte	20		; 4,14		; C5
-.byte	28		; 4,19		; G4
-.byte	31		; 4,21		; F4
-
-.byte	$80|(60-32)	; 12,19		; C3
-.byte	$80|(50-32)	; 12,12		; G3
-.byte	$80|(45-32)	; 4,29		; C4
-.byte	28		; 4,19		; G4
-.byte	23		; 4,16		; A#4
-.byte	20		; 4,14		; C5
-.byte	28		; 4,19		; G4
-.byte	31		; 4,21		; F4
-
 .byte	$80|(60-32)	; 12,19		; C3
 .byte	$80|(50-32)	; 12,12		; G3
 .byte	$80|(45-32)	; 4,29		; C4
@@ -453,71 +453,7 @@ music2:
 .byte	18		; 4,14		; C5
 .byte	23		; 4,19		; G4
 .byte	28		; 4,21		; F4
-
-
 .byte 0
-
-
-
-.if 0
-music:
-.byte	$80|(60-32)	; 12,19		; C3
-music2:
-.byte	$80|(50-32)	; 12,12		; G3
-.byte	$80|(45-32)	; 4,29		; C4
-.byte	28		; 4,19		; G4
-.byte	23		; 4,16		; A#4
-.byte	20		; 4,14		; C5
-.byte	28		; 4,19		; G4
-.byte	31		; 4,21		; F4
-
-
-;music:
-.byte	$80|19		; 12,19		; C4
-;music2:
-.byte	$80|12		; 12,12		; G4
-.byte	29		; 4,29		; C5
-.byte	19		; 4,19		; G5
-.byte	16		; 4,16		; A#5
-.byte	14		; 4,14		; C6
-.byte	19		; 4,19		; G5
-.byte	21		; 4,21		; F5
-
-.byte	$80|19		; 12,19		; C4
-.byte	$80|12		; 12,12		; G4
-.byte	29		; 4,29		; C5
-.byte	19		; 4,19		; G5
-.byte	16		; 4,16		; A#5
-.byte	14		; 4,14		; C6
-.byte	19		; 4,19		; G5
-.byte	21		; 4,21		; F5
-
-.byte	$80|19		; 12,19		; C4
-.byte	$80|12		; 12,12		; G4
-.byte	29		; 4,29		; C5
-.byte	19		; 4,19		; G5
-.byte	16		; 4,16		; A#5
-.byte	14		; 4,14		; C6
-.byte	19		; 4,19		; G5
-.byte	21		; 4,21		; F5
-
-.byte	$80|19		; 12,19		; C4
-.byte	$80|12		; 12,12		; G4
-.byte	29		; 4,29		; C5
-.byte	19		; 4,19		; G5
-.byte	11		; 4,16		; D#6
-.byte	12		; 4,14		; D6
-.byte	16		; 4,19		; A#5
-.byte	19		; 4,21		; G5
-
-.byte	0
-.endif
-
-; alternate F/9 volume channel 0
-; alternate 9/5 volume channel 1
-
-; C4/G4/C5/G5/D#6/D6/A#5/G5
-;             11  12  16
 
 
 .segment "IRQ_VECTORS"
