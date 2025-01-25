@@ -8,6 +8,8 @@
 
 ; by Vince `deater` Weaver
 
+; music based on tune by mA2E
+
 .include "../../../vcs.inc"
 
 ; zero page addresses
@@ -24,6 +26,7 @@
 ;	$DF  = 223 bytes	merge overscan/vsync/vblank
 ;	$D2  = 210 bytes	set sprite locations at same time
 ;	$139 = 313 bytes	guess we're trying to do music
+;	$132 = 306 bytes	try to simplify zigzag code
 
 	;=============================
 	; clear out mem / init things
@@ -234,28 +237,32 @@ done_volume:
 ; 0
 	; zigzag when music hits?
 
-	lda	#8			; load ?			; 2
+	lda	#0			; load ?			; 2
 ;	ldx	FRAMEH			; get high frame		; 3
 ;	cpx	#4			; only start after 4 big frames	; 2
 ;	bcc	zigzag_start		; blt
 
+	ldx	MUSIC_HIT		; check if a music hit (?)	; 3
+	beq	zigzag_start		; if 0, start?			; 2/3
 
-	ldx	MUSIC_HIT		; check if music hit		; 2
-	beq	zigzag_start		; if 
-	dec	MUSIC_HIT
-	clc
-	adc	#$8
+	dec	MUSIC_HIT		; countdown the hit		; 5
+;	clc				;				; 2
+;	adc	#$8			; offset is 16 instead		; 2
+	lda	#$8
+
 zigzag_start:
-	ldx	#8
-	tay
-zigzag_loop:
-	lda	zigzag,Y						; 4
-	sta	ZIGZAG0,X						; 4
-	dey
-	dex								; 2
-	bne	zigzag_loop						; 2/3
+	sta	ZIGZAG_OFFSET
+;	ldx	#8			; load countdown		; 2
+;	tay				; move pointer to Y		; 2
 
-	; 2+ 13*8 -1 = 105
+;zigzag_loop:
+;	lda	zigzag,Y		; copy offset into zero page	; 4
+;	sta	ZIGZAG0,X						; 4
+;	dey
+;	dex								; 2
+;	bne	zigzag_loop						; 2/3
+
+;	; 2+ 13*8 -1 = 105
 
 	sta	WSYNC
 
@@ -270,6 +277,14 @@ zigzag_loop:
 frame_oflo:
         inc	FRAMEH                                                  ; 5
 no_frame_oflo:
+
+	;==============
+	lda	FRAMEL
+	lsr
+	lsr
+	sta	FRAMEL_DIV4
+
+	;==============
 
 	lda	FRAMEL
 	rol
@@ -310,60 +325,57 @@ parallax_playfield:
 	;============================
 	; if (scanline-(frame/4))&8 (every 8 on/off) flip
 
-	lda	FRAMEL		; get frame count/4			; 3
-	lsr								; 2
-	lsr								; 2
-	sta	TEMP2		; store?				; 3
-; 13
-	ldy	#$AA		; 1010 pattern				; 2
-
-	txa			; scanline in A				; 2
+	ldy	#$AA		; load 1010 pattern			; 2
+; 5
+	txa			; load scanline				; 2
 	sec								; 2
-	sbc	TEMP2		; subtract frame count/4		; 2
-	and	#$8		; mask					; 2
-; 23
+	sbc	FRAMEL_DIV4	; subtract off, moves at 1/4 speed	; 3
+; 12
+	and	#$8		; this controls height of tiny box	; 2
+; 14
 	beq	alternate_sprite0					; 2/3
 	ldy	#$55		; 0101 pattern				; 2
 alternate_sprite0:
-; 27
+; 18 worst case
 	sty	GRP0		; store sprite0				; 3
 	sty	GRP1		; store sprite1				; 3
-; 33
+; 24
 
 	;============================
 	; set playfield pattern
 	;============================
-	ldy	#$3C							; 2
-	txa								; 2
+	ldy	#$3C		; regular pattern			; 2
+	txa			; get scanline				; 2
 	sec								; 2
-	sbc	FRAMEL							; 2
-	and	#$20							; 2
-; 43
+	sbc	FRAMEL		; subtract frame			; 2
+	and	#$20		; only change every so often		; 2
+; 34
 	beq	alternate_pf0						; 2/3
-	ldy	#$C3							; 2
+	ldy	#$C3		; flipped pattern			; 2
 alternate_pf0:
-; 47
-	sty	PF2							; 3
-; 50
+; 38 worst case
+	sty	PF2		; set playfield				; 3
+; 41
 
 	;=================================
 	; do zig-zags
 
-	txa								; 2
-	adc	FRAMEL							; 3
-	and	#$7							; 2
+	txa				; x is scanline			; 2
+	adc	FRAMEL			; add in FRAME			; 3
+	and	#$7			; mask				; 2
+	adc	ZIGZAG_OFFSET		; which zigzag			; 3
+; 51
 	tay								; 2
-	lda	ZIGZAG0,Y						; 4+
+	lda	zigzag,Y						; 4+
 	sta	PF0							; 3
-
-; 63 worst case
+; 60 worst case
 
 	inx								; 2
-	cpx	#191							; 1
+	cpx	#191							; 3
 
-; 67
+; 65
 	sta	WSYNC							; 3
-; 70/0
+; 68/0
 ;
 	bne	parallax_playfield					; 2/3
 
@@ -393,6 +405,8 @@ play_note:
 	rol
 	bcc	do_c	; bra						; 3
 do_12:
+	;ldy	#4							; 2
+	sty	MUSIC_HIT	; setup zigzag shift			; 3
 	ldy	#12							; 2
 do_c:
 	sty	AUDC0,X							; 3
