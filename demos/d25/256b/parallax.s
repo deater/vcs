@@ -30,6 +30,7 @@
 ;	$134 = 308 bytes	back to stable 262 scanlines
 ;	$12F = 303 bytes	optimize sound playback a bit
 ;	$11F = 287 bytes	use patterns for a mini tracker
+;	$11B = 283 bytes	remove FRAMEH
 
 	;=============================
 	; clear out mem / init things
@@ -194,20 +195,22 @@ set_note_channel0:
 	;==================
 	; load next notes
 
-	lda	LAST_NOTE						; 3
+	lda	LAST_NOTE		; chan1 is echo of chan0	; 3
 	ldx	#1			; channel 1			; 2
 	jsr	play_note		; play_note			; 6+27
 ; 46
 	ldy	SOUND_POINTER						; 3
-	inc	SOUND_POINTER						; 5
+	inc	SOUND_POINTER		; point to next note		; 5
 ; 54
-	lda	music,Y							; 4+
+	lda	music,Y			; load note			; 4+
 ; 58
-	bne	not_end			; 0 means end			; 2/3
+	bne	not_end			; 0 means end of pattern	; 2/3
 
 	;====================================
-	; if at end, loop back to beginning
+	; if end of pattern, move to next
 ; 60
+next_pattern:
+	; FIXME: just use PATTERN_INDEX for FG_COUNT?
 	inc	FG_COUNT		; update color			; 5
 	inc	PATTERN_INDEX		; move to next pattern		; 5
 	lda	PATTERN_INDEX						; 3
@@ -216,69 +219,61 @@ set_note_channel0:
 	lda	music_patterns,X					; 4
 	sta	SOUND_POINTER						; 3
 ; 84
-
 	jmp	not_early		; bra				; 3
 
 not_end:
 ; 61
-	sta	LAST_NOTE
+	sta	LAST_NOTE		; save for later		; 3
 	ldx	#0			; channel 0			; 2
 	jsr	play_note		; play_note			; 6+27
-; 58
-;	; do channel 1
 
-;	ldx	SOUND_POINTER						; 3
-;	lda	music+1,X							; 4+
-;	ldx	#1			; channel 1			; 2
-; 67
-;	jsr	play_note		; play_note			; 6+27
-
-; 110
+; 99
 	lda	#$8			; note 8 frames long		; 2
 	sta	SOUND_COUNTDOWN						; 3
-; 115
+; 104
 	bne	not_early		; bra				; 3
 
 done_song_early:
-; 9 / 28 / 115
-	sta	WSYNC
+; 9
+	sta	WSYNC							; 3
 not_early:
-; 76 / 76 / 118
+; 76 / 87 / 107
 
-	dec	SOUND_COUNTDOWN						; 5
-	lda	SOUND_COUNTDOWN						; 3
-; 126
+	dec	SOUND_COUNTDOWN	; count down the note			; 5
+	lda	SOUND_COUNTDOWN	; also check value			; 3
+; 115
 	ldx	#$A		; preload useful constant		; 2
 	cmp	#4							; 2
 	bcc	quieter							; 2/3
-; 132
+; 121
 louder:			; louder first half of note
 	txa			; $A channel 1				; 2
 	ldx	#$f		; $F channel 0				; 2
 	bne	done_volume	; bra					; 3
 quieter:
-; 133
+; 122
 ;	ldx	#$A		; channel 0				; 2
 	lda	#$8		; channel 1				; 2
 done_volume:
-; 139 / 135
+; 124 / 128
 	stx	AUDV0		; set volume channel 0			; 3
 	sta	AUDV1		; set volume channel 1			; 3
-; 145 / 141
+; 130 / 134
 	sta	WSYNC
 
 	;================================================
 	; VBLANK scanline 36 -- init
 	;================================================
-; 3
-
+; 0
 	;========================
 	; increment frame
 	inc	FRAMEL                                                  ; 5
-	bne	no_frame_oflo						; 2/3
-frame_oflo:
-        inc	FRAMEH                                                  ; 5
-no_frame_oflo:
+;	bne	no_frame_oflo						; 2/3
+;frame_oflo:
+;       inc	FRAMEH                                                  ; 5
+;no_frame_oflo:
+
+; 5
 
 	;====================================
 	; precalc FRAMEL/4 for drawing code
@@ -287,32 +282,21 @@ no_frame_oflo:
 	lsr								; 2
 	lsr								; 2
 	sta	FRAMEL_DIV4						; 3
+; 15
+	; rotate through the playfield colors
 
-	;===================================
-	; 16-bit FRAME value
-	;	bits 0x0310 used for color lookup
-
-;	lda	FRAMEL
-;	rol
-;	lda	FRAMEH
-;	rol
-
-;	and	#$7
-;	tay
-;	lda	fg_colors,Y
-
-	ldy	FG_COUNT
-	lda	vcs_desire,Y
-
+	ldy	FG_COUNT						; 3
+	lda	vcs_desire,Y		; FIXME: look for best colors	; 4+
 	sta	COLUPF							; 3
 
-; 37
+; 25
 	lda	#0							; 2
 	sta	VBLANK                  ; turn on beam			; 3
+; 30
 
-	tax				; scanline=0
-;	tay
-; 41
+	tax				; scanline=0			; 2
+
+; 32
 	sta	WSYNC							; 3
 
 
