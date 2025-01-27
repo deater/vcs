@@ -36,8 +36,6 @@
 ;       optimize init code
 ;	generate zigzag2 from zigzag1?  lsr?
 ;	squish music player based on this song
-;	remove FG_COUNT
-;	fix possible negative value of sound_countdown causing clicks
 
 	;=============================
 	; clear out mem / init things
@@ -114,6 +112,8 @@ skip_vsync:
 	; already happened
 
 ; 4
+
+
 
 	;================================================
 	; VBLANK scanline 33 -- init
@@ -230,7 +230,7 @@ not_end:
 ; 61
 	sta	LAST_NOTE		; save for later		; 3
 	ldx	#0			; channel 0			; 2
-;	jsr	play_note		; play_note			; 6+27
+	jsr	play_note		; play_note			; 6+27
 
 ; 99
 	lda	#$8			; note 8 frames long		; 2
