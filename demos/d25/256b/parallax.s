@@ -31,7 +31,8 @@
 ;	$12F = 303 bytes	optimize sound playback a bit
 ;	$11F = 287 bytes	use patterns for a mini tracker
 ;	$11B = 283 bytes	remove FRAMEH
-;	$115 = 277 bytes	optimize init code
+;	$118 = 280 bytes	optimize init code
+;	$115 = 277 bytes	reuse PATTERN_INDEX as FG_COUNT
 
 ; TODO:
 ;	generate zigzag2 from zigzag1?  lsr?
@@ -48,6 +49,8 @@ vcs_desire:
 	; 5-byte version by Omegamatrix
 
 	; can assume S starts at $FD on 6502
+	;	note on stella need to disable random SP for this to happen
+
 	; A=??
 clear_loop:
 	asl			; should clear to 0 within 8 iterations
@@ -197,7 +200,7 @@ play_frame:
 
 song_countdown_smc:
 	lda	SOUND_COUNTDOWN						; 3
-	bpl	done_song_early						; 2/3
+	bne	done_song_early						; 2/3
 
 set_note_channel0:
 ; 8
@@ -219,8 +222,6 @@ set_note_channel0:
 	; if end of pattern, move to next
 ; 60
 next_pattern:
-	; FIXME: just use PATTERN_INDEX for FG_COUNT?
-	inc	FG_COUNT		; update color			; 5
 	inc	PATTERN_INDEX		; move to next pattern		; 5
 	lda	PATTERN_INDEX						; 3
 	and	#$3							; 2
@@ -234,7 +235,7 @@ not_end:
 ; 61
 	sta	LAST_NOTE		; save for later		; 3
 	ldx	#0			; channel 0			; 2
-;	jsr	play_note		; play_note			; 6+27
+	jsr	play_note		; play_note			; 6+27
 
 ; 99
 	lda	#$8			; note 8 frames long		; 2
@@ -289,7 +290,7 @@ done_volume:
 ; 15
 	; rotate through the playfield colors
 
-	ldy	FG_COUNT						; 3
+	ldy	PATTERN_INDEX						; 3
 	lda	vcs_desire,Y		; FIXME: look for best colors	; 4+
 	sta	COLUPF							; 3
 
@@ -366,7 +367,7 @@ alternate_pf0:
 ; 51
 	tay								; 2
 	lda	zigzag,Y						; 4+
-;	and	#$3e
+;	eor	#$c0
 	sta	PF0							; 3
 ; 60 worst case
 
@@ -384,6 +385,13 @@ alternate_pf0:
 
 zigzag:
 	.byte $80,$40,$20,$10, $10,$20,$40,$80
+
+;	1000.0000 0100.0000 0010.0000 0001.0000
+;	11
+;	0100.000  
+
+;	
+
 zigzag2:
 	.byte $40,$40,$20,$20, $40,$40,$20,$20
 
