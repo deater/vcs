@@ -33,6 +33,7 @@
 ;	$11B = 283 bytes	remove FRAMEH
 ;	$118 = 280 bytes	optimize init code
 ;	$115 = 277 bytes	reuse PATTERN_INDEX as FG_COUNT
+;	$114 = 276 bytes	some minor reuses of 0'd registers
 
 ; TODO:
 ;	generate zigzag2 from zigzag1?  lsr?
@@ -114,6 +115,8 @@ skip_vsync:
 	bne	delay_scanlines						; 2/3
 
 
+; Y=0
+
 	;========================
 	; VBLANK scanlines 0..32
 	;========================
@@ -167,10 +170,14 @@ skip_vsync:
         sta     RESP1			; set sprite1 xpos at 49	; 3
 ; 49
 
+; Y=0?  TODO, tya
+
 	;==========================
 	; zigzag with music
 
-	lda	#0			; default no zigzag		; 2
+	tya
+
+;	lda	#0			; default no zigzag		; 2
 
 	ldx	MUSIC_HIT		; check if a music hit (?)	; 3
 	beq	zigzag_start		; if 0, skip			; 2/3
@@ -180,8 +187,8 @@ skip_vsync:
 
 zigzag_start:
 	sta	ZIGZAG_OFFSET						; 3
-; 17 / 11
 
+; 17 / 11
 
 ; 66
 	sta	WSYNC
@@ -200,7 +207,7 @@ play_frame:
 
 song_countdown_smc:
 	lda	SOUND_COUNTDOWN						; 3
-	bne	done_song_early						; 2/3
+	bpl	done_song_early						; 2/3
 
 set_note_channel0:
 ; 8
@@ -228,53 +235,55 @@ next_pattern:
 	tax								; 2
 	lda	music_patterns,X					; 4
 	sta	SOUND_POINTER						; 3
-; 84
+; 79
 	jmp	not_early		; bra				; 3
 
 not_end:
-; 61
+; 63
 	sta	LAST_NOTE		; save for later		; 3
 	ldx	#0			; channel 0			; 2
 	jsr	play_note		; play_note			; 6+27
 
-; 99
+; 101
 	lda	#$8			; note 8 frames long		; 2
 	sta	SOUND_COUNTDOWN						; 3
-; 104
+; 106
 	bne	not_early		; bra				; 3
 
 done_song_early:
 ; 9
 	sta	WSYNC							; 3
 not_early:
-; 76 / 87 / 107
+; 76 / 82 /  109
 
 	dec	SOUND_COUNTDOWN	; count down the note			; 5
 	lda	SOUND_COUNTDOWN	; also check value			; 3
-; 115
+; 84 / 90 / 117
 	ldx	#$A		; preload useful constant		; 2
 	cmp	#4							; 2
 	bcc	quieter							; 2/3
-; 121
+; 90 / 96 / 123
 louder:			; louder first half of note
 	txa			; $A channel 1				; 2
 	ldx	#$f		; $F channel 0				; 2
 	bne	done_volume	; bra					; 3
 quieter:
-; 122
+; 91 / 97 / 124
 ;	ldx	#$A		; channel 0				; 2
 	lda	#$8		; channel 1				; 2
 done_volume:
-; 124 / 128
+; 97 / 103 / 130 / 93 / 99 / 126
 	stx	AUDV0		; set volume channel 0			; 3
 	sta	AUDV1		; set volume channel 1			; 3
-; 130 / 134
+; 103 / 109 / 136 / 99 / 105 / 132
+
 	sta	WSYNC
 
 	;================================================
 	; VBLANK scanline 36 -- init
 	;================================================
 ; 0
+
 	;========================
 	; increment frame
 	inc	FRAMEL                                                  ; 5
@@ -288,6 +297,7 @@ done_volume:
 	lsr								; 2
 	sta	FRAMEL_DIV4						; 3
 ; 15
+	;=======================================
 	; rotate through the playfield colors
 
 	ldy	PATTERN_INDEX						; 3
