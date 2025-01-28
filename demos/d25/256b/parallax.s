@@ -34,12 +34,12 @@
 ;	$118 = 280 bytes	optimize init code
 ;	$115 = 277 bytes	reuse PATTERN_INDEX as FG_COUNT
 ;	$114 = 276 bytes	some minor reuses of 0'd registers
+;	$112 = 274 bytes	shave a few more bytes off
+;	$10B = 267 bytes	hard-code music note assumptions
 
 ; TODO:
 ;	generate zigzag2 from zigzag1?  lsr?
 ;	squish music player based on this song
-;	remove FG_COUNT
-;	fix possible negative value of sound_countdown causing clicks
 ;	remove WSYNC from end of 35
 
 vcs_desire:
@@ -164,8 +164,10 @@ skip_vsync:
 ; 36
         sta     RESP0			; set sprite0 xpos at 39	; 3
 ; 39
-	pha	; combine for nop7					; 3
-	pla								; 4
+	;========================
+	; increment frame
+	inc	FRAMEL                                                  ; 5
+	nop								; 2
 ; 46
         sta     RESP1			; set sprite1 xpos at 49	; 3
 ; 49
@@ -175,22 +177,21 @@ skip_vsync:
 	;==========================
 	; zigzag with music
 
-	tya
-
+	tya								; 2
+; 51
 ;	lda	#0			; default no zigzag		; 2
 
 	ldx	MUSIC_HIT		; check if a music hit (?)	; 3
 	beq	zigzag_start		; if 0, skip			; 2/3
-
+; 56
 	dec	MUSIC_HIT		; countdown the hit		; 5
 	lda	#$8			; offset into zigzag table	; 2
 
 zigzag_start:
+; 57 / 63
 	sta	ZIGZAG_OFFSET						; 3
 
-; 17 / 11
-
-; 66
+; 60 / 66
 	sta	WSYNC
 	sta	HMOVE			; finalize fine adjust
 
@@ -206,8 +207,10 @@ play_frame:
 ; 3
 
 song_countdown_smc:
-	lda	SOUND_COUNTDOWN						; 3
-	bpl	done_song_early						; 2/3
+	lda	SOUND_POINTER
+;	lda	SOUND_COUNTDOWN						; 3
+	and	#$7
+	bne	done_song_early						; 2/3
 
 set_note_channel0:
 ; 8
@@ -218,37 +221,35 @@ set_note_channel0:
 	ldx	#1			; channel 1			; 2
 	jsr	play_note		; play_note			; 6+27
 ; 46
-	ldy	SOUND_POINTER						; 3
-	inc	SOUND_POINTER		; point to next note		; 5
-; 54
+
+;	ldy	SOUND_POINTER						; 3
+;	inc	SOUND_POINTER		; point to next note		; 5
+	lda	SOUND_POINTER
+	lsr
+	lsr
+	lsr				; have track+note
+	pha				; save
+	and	#7			; just get note
+	tay				; put in y
+	pla				; restore track+note
+	and	#$18
+	beq	m2
+m1:
 	lda	music,Y			; load note			; 4+
-; 58
-	bne	not_end			; 0 means end of pattern	; 2/3
+	jmp	skip
+m2:
+	lda	music2,Y			; load note			; 4+
+skip:
 
-	;====================================
-	; if end of pattern, move to next
-; 60
-next_pattern:
-	inc	PATTERN_INDEX		; move to next pattern		; 5
-	lda	PATTERN_INDEX						; 3
-	and	#$3							; 2
-	tax								; 2
-	lda	music_patterns,X					; 4
-	sta	SOUND_POINTER						; 3
-; 79
-	jmp	not_early		; bra				; 3
-
-not_end:
-; 63
 	sta	LAST_NOTE		; save for later		; 3
 	ldx	#0			; channel 0			; 2
 	jsr	play_note		; play_note			; 6+27
 
-; 101
-	lda	#$8			; note 8 frames long		; 2
-	sta	SOUND_COUNTDOWN						; 3
-; 106
-	bne	not_early		; bra				; 3
+; 100
+;	lda	#$8			; note 8 frames long		; 2
+;	sta	SOUND_COUNTDOWN						; 3
+; 105
+;	bne	not_early		; bra				; 3
 
 done_song_early:
 ; 9
@@ -256,8 +257,14 @@ done_song_early:
 not_early:
 ; 76 / 82 /  109
 
-	dec	SOUND_COUNTDOWN	; count down the note			; 5
-	lda	SOUND_COUNTDOWN	; also check value			; 3
+;	dec	SOUND_COUNTDOWN	; count down the note			; 5
+;	lda	SOUND_COUNTDOWN	; also check value			; 3
+	inc	SOUND_POINTER
+
+
+	lda	SOUND_POINTER
+	and	#$7
+
 ; 84 / 90 / 117
 	ldx	#$A		; preload useful constant		; 2
 	cmp	#4							; 2
@@ -284,11 +291,6 @@ done_volume:
 	;================================================
 ; 0
 
-	;========================
-	; increment frame
-	inc	FRAMEL                                                  ; 5
-
-; 5
 	;====================================
 	; precalc FRAMEL/4 for drawing code
 
@@ -296,7 +298,7 @@ done_volume:
 	lsr								; 2
 	lsr								; 2
 	sta	FRAMEL_DIV4						; 3
-; 15
+; 10
 	;=======================================
 	; rotate through the playfield colors
 
@@ -304,14 +306,14 @@ done_volume:
 	lda	vcs_desire,Y		; FIXME: look for best colors	; 4+
 	sta	COLUPF							; 3
 
-; 25
+; 20
 	lda	#0							; 2
 	sta	VBLANK                  ; turn on beam			; 3
-; 30
+; 25
 
 	tax				; scanline=0			; 2
 
-; 32
+; 27
 	sta	WSYNC							; 3
 
 
@@ -396,17 +398,8 @@ alternate_pf0:
 zigzag:
 	.byte $80,$40,$20,$10, $10,$20,$40,$80
 
-;	1000.0000 0100.0000 0010.0000 0001.0000
-;	11
-;	0100.000  
-
-;	
-
 zigzag2:
 	.byte $40,$40,$20,$20, $40,$40,$20,$20
-
-;fg_colors:
-;	.byte $4E,$9E,$AE,$12, $4E,$9E,$AE,$7E
 
 	;===============================
 	; play note
@@ -447,7 +440,7 @@ music:
 .byte	20		; 4,14		; C5
 .byte	28		; 4,19		; G4
 .byte	31		; 4,21		; F4
-.byte 0
+;.byte 0
 
 music2:
 .byte	$80|(60-32)	; 12,19		; C3
@@ -460,11 +453,12 @@ music2:
 .byte	28		; 4,21		; F4
 ;.byte 0
 
-music_patterns:
-.byte 0,0,0,9
+;music_patterns:
+;.byte 0,0,0,9
 
 
 .segment "IRQ_VECTORS"
 	.word vcs_desire	; NMI
 	.word vcs_desire	; RESET
 	.word vcs_desire	; IRQ
+
