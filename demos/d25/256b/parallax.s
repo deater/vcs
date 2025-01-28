@@ -31,33 +31,37 @@
 ;	$12F = 303 bytes	optimize sound playback a bit
 ;	$11F = 287 bytes	use patterns for a mini tracker
 ;	$11B = 283 bytes	remove FRAMEH
+;	$115 = 277 bytes	optimize init code
 
-; TODO: move music patterns later and re-use 0
-;       optimize init code
+; TODO:
 ;	generate zigzag2 from zigzag1?  lsr?
 ;	squish music player based on this song
 ;	remove FG_COUNT
 ;	fix possible negative value of sound_countdown causing clicks
+;	remove WSYNC from end of 35
+
+vcs_desire:
 
 	;=============================
 	; clear out mem / init things
 	;=============================
+	; 5-byte version by Omegamatrix
 
 	; can assume S starts at $FD on 6502
-
-vcs_desire:
-
-	sei			; disable interrupts			; 2
-	cld			; clear decimal mode			; 2
-	ldx	#0							; 2
-	txa								; 2
+	; A=??
 clear_loop:
-	dex								; 2
-	txs								; 2
-	pha								; 3
-	bne	clear_loop						; 2/3
-						;============================
-	; S = $FF, A=$0, x=$0, Y=??		;	8+(256*10)-1=2567 / 10B
+	asl			; should clear to 0 within 8 iterations
+	pha			; push on stack
+	tsx			; check if stack hits 0
+	bne	clear_loop
+
+; RIOT ram $80-$F6 clear, TIA clear except VSYNC
+; SP=$00, X=0, A=0, carry is clear
+
+	pha			; clear VSYNC, SP=$FF
+;	sei			; not really necssary?
+	cld			; we do use adc/sbc
+
 
 
 ;======================================================================
@@ -362,6 +366,7 @@ alternate_pf0:
 ; 51
 	tay								; 2
 	lda	zigzag,Y						; 4+
+;	and	#$3e
 	sta	PF0							; 3
 ; 60 worst case
 
@@ -414,8 +419,6 @@ do_c:
 ; alternate F/9 volume channel 0
 ; alternate 9/5 volume channel 1
 
-music_patterns:
-.byte 0,0,0,9
 
 music:
 .byte	$80|(60-32)	; 12,19		; C3
@@ -437,7 +440,10 @@ music2:
 .byte	18		; 4,14		; C5
 .byte	23		; 4,19		; G4
 .byte	28		; 4,21		; F4
-.byte 0
+;.byte 0
+
+music_patterns:
+.byte 0,0,0,9
 
 
 .segment "IRQ_VECTORS"
