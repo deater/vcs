@@ -35,7 +35,7 @@
 ;	$115 = 277 bytes	reuse PATTERN_INDEX as FG_COUNT
 ;	$114 = 276 bytes	some minor reuses of 0'd registers
 ;	$112 = 274 bytes	shave a few more bytes off
-;	$10B = 267 bytes	hard-code music note assumptions
+;	$10E = 270 bytes	hard-code music note assumptions
 
 ; TODO:
 ;	generate zigzag2 from zigzag1?  lsr?
@@ -207,82 +207,78 @@ play_frame:
 ; 3
 
 song_countdown_smc:
-	lda	SOUND_POINTER
-;	lda	SOUND_COUNTDOWN						; 3
-	and	#$7
+	lda	SOUND_POINTER						; 3
+	and	#$7							; 2
 	bne	done_song_early						; 2/3
 
 set_note_channel0:
-; 8
+; 10
 	;==================
 	; load next notes
 
 	lda	LAST_NOTE		; chan1 is echo of chan0	; 3
 	ldx	#1			; channel 1			; 2
 	jsr	play_note		; play_note			; 6+27
-; 46
-
-;	ldy	SOUND_POINTER						; 3
-;	inc	SOUND_POINTER		; point to next note		; 5
-	lda	SOUND_POINTER
-	lsr
-	lsr
-	lsr				; have track+note
-	pha				; save
-	and	#7			; just get note
-	tay				; put in y
-	pla				; restore track+note
-	and	#$18
-	beq	m2
+; 48
+	lda	SOUND_POINTER						; 3
+	lsr								; 2
+	lsr								; 2
+	lsr				; have track+note		; 2
+; 57
+	pha				; save				; 3
+	and	#7			; just get note			; 2
+	tay				; put in y			; 2
+	pla				; restore track+note		; 4
+; 68
+	and	#$18			; see if pattern 0		; 2
+	beq	m2							; 2/3
 m1:
+; 72
 	lda	music,Y			; load note			; 4+
-	jmp	skip
+	jmp	skip							; 3
 m2:
-	lda	music2,Y			; load note			; 4+
+; 73
+	lda	music2,Y			; load note		; 4+
 skip:
-
+; 79 / 77
 	sta	LAST_NOTE		; save for later		; 3
 	ldx	#0			; channel 0			; 2
 	jsr	play_note		; play_note			; 6+27
 
-; 100
-;	lda	#$8			; note 8 frames long		; 2
-;	sta	SOUND_COUNTDOWN						; 3
-; 105
-;	bne	not_early		; bra				; 3
+; 117 / 108
+	jmp	not_early						; 3
 
 done_song_early:
-; 9
+; 11
 	sta	WSYNC							; 3
 not_early:
-; 76 / 82 /  109
+; 76 / 111 / 120
 
-;	dec	SOUND_COUNTDOWN	; count down the note			; 5
-;	lda	SOUND_COUNTDOWN	; also check value			; 3
-	inc	SOUND_POINTER
+	inc	SOUND_POINTER						; 5
+; 81 / 116 / 125
 
+	lda	SOUND_POINTER						; 3
+	and	#$7							; 2
 
-	lda	SOUND_POINTER
-	and	#$7
-
-; 84 / 90 / 117
+; 86 / 121 / 130
 	ldx	#$A		; preload useful constant		; 2
 	cmp	#4							; 2
 	bcc	quieter							; 2/3
-; 90 / 96 / 123
 louder:			; louder first half of note
+; 92 / 127 / 136
+
 	txa			; $A channel 1				; 2
 	ldx	#$f		; $F channel 0				; 2
 	bne	done_volume	; bra					; 3
 quieter:
-; 91 / 97 / 124
+; 93 / 128 / 137
 ;	ldx	#$A		; channel 0				; 2
 	lda	#$8		; channel 1				; 2
 done_volume:
-; 97 / 103 / 130 / 93 / 99 / 126
+; 99 / 134 / 143 / 97 / 132 / 141
 	stx	AUDV0		; set volume channel 0			; 3
 	sta	AUDV1		; set volume channel 1			; 3
-; 103 / 109 / 136 / 99 / 105 / 132
+; 105 / 140 / 149 / 103 / 138 / 147
 
 	sta	WSYNC
 
