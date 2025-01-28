@@ -426,7 +426,6 @@ do_c:
 ; alternate F/9 volume channel 0
 ; alternate 9/5 volume channel 1
 
-
 music:
 .byte	$80|(60-32)	; 12,19		; C3
 .byte	$80|(50-32)	; 12,12		; G3
@@ -436,7 +435,6 @@ music:
 .byte	20		; 4,14		; C5
 .byte	28		; 4,19		; G4
 .byte	31		; 4,21		; F4
-;.byte 0
 
 music2:
 .byte	$80|(60-32)	; 12,19		; C3
@@ -447,11 +445,6 @@ music2:
 .byte	18		; 4,14		; C5
 .byte	23		; 4,19		; G4
 .byte	28		; 4,21		; F4
-;.byte 0
-
-;music_patterns:
-;.byte 0,0,0,9
-
 
 .segment "IRQ_VECTORS"
 	.word vcs_desire	; NMI
