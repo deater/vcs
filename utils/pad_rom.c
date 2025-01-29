@@ -131,6 +131,20 @@ int main(int argc, char **argv) {
 	}
 	else if (pad_type==PAD_MIRROR) {
 
+		char *output_ptr;
+
+		/* FIXME: support non-even multiples */
+		if (output_size%input_size!=0) {
+			fprintf(stderr,"Error!  %d not even multiple of %d\n",
+				output_size,input_size);
+			return -1;
+		}
+
+		output_ptr=output;
+		while(output_ptr!=output+output_size) {
+			memcpy(output_ptr,input,input_size);
+			output_ptr+=input_size;
+		}
 	}
 	else {
 		fprintf(stderr,"Unknown pad type!\n");
