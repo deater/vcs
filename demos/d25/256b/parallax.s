@@ -452,8 +452,12 @@ music2:
 .byte	23		; 4,19		; G4
 .byte	28		; 4,21		; F4
 
-.segment "IRQ_VECTORS"
-	.word vcs_desire	; NMI
-	.word vcs_desire	; RESET
-	.word vcs_desire	; IRQ
+
+.word	vcs_desire	; RESET vector
+.word	$0		; IRQ vector (unused)
+
+;.segment "IRQ_VECTORS"
+;	.word vcs_desire	; NMI
+;	.word vcs_desire	; RESET
+;	.word vcs_desire	; IRQ
 
