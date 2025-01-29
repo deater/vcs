@@ -10,6 +10,7 @@
 #include <errno.h>
 #include <fcntl.h>
 #include <string.h>
+#include <sys/stat.h>
 
 #define PAD_ZERO	0
 #define PAD_MIRROR	1
@@ -34,6 +35,7 @@ int main(int argc, char **argv) {
 	char *input,*output;
 	char *input_filename,*output_filename;
 	int result;
+	struct stat statbuf;
 
 	/* Check command line arguments */
 	while ((c = getopt (argc, argv,"hvs:mz"))!=-1) {
@@ -75,6 +77,23 @@ int main(int argc, char **argv) {
 	/* get arugment 2 which is output name */
 	output_filename=strdup(argv[optind]);
 
+	/* open input ROM */
+	input_fd=open(input_filename,O_RDONLY);
+	if (input_fd<0) {
+		fprintf(stderr,"Error opening input file %s (%s)\n",
+			input_filename,strerror(errno));
+		return -1;
+	}
+
+	/* get size of ROM */
+	result=fstat(input_fd,&statbuf);
+	if (result<0) {
+		fprintf(stderr,"Error getting file size of input\n");
+		return -1;
+	}
+
+	input_size=statbuf.st_size;
+
 	/* allocate space for input file data */
 	input=calloc(input_size,sizeof(char));
 	if (input==NULL) {
@@ -86,14 +105,6 @@ int main(int argc, char **argv) {
 	output=calloc(output_size,sizeof(char));
 	if (output==NULL) {
 		fprintf(stderr,"Error allocating room for output\n");
-		return -1;
-	}
-
-	/* open input ROM */
-	input_fd=open(input_filename,O_RDONLY);
-	if (input_fd<0) {
-		fprintf(stderr,"Error opening input file %s (%s)\n",
-			input_filename,strerror(errno));
 		return -1;
 	}
 
