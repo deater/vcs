@@ -38,6 +38,7 @@
 ;	$10E = 270 bytes	hard-code music note assumptions
 ;	$10A = 266 bytes	simplify zig-zag
 ;	$FD =  253 bytes	forgot to remove rest of zig-zag code
+;	$FC =  252 bytes	optimize setting X=scanline=0
 
 vcs_desire:
 
@@ -310,17 +311,15 @@ not_early:
 	sta	COLUPF							; 3
 
 ; 20
-	lda	#0							; 2
-	sta	VBLANK                  ; turn on beam			; 3
+	ldx	#0			; also scanline=0		; 2
+	stx	VBLANK                  ; turn on beam			; 3
 ; 25
 
-	ldy	#$AA		; load 1010 pattern			; 2
-	sty	GRP0
-	sty	GRP1
+	ldy	#$AA			; load 1010 pattern		; 2
+	sty	GRP0			; put in both sprits		; 3
+	sty	GRP1							; 3
 
-	tax				; scanline=0			; 2
-
-; 27
+; 33
 	sta	WSYNC							; 3
 
 
@@ -381,18 +380,17 @@ alternate_pf0:
 oops:
 	and	#$7			; mask				; 2
 ;	adc	ZIGZAG_OFFSET		; which zigzag			; 3
-; 
+;
 	tay								; 2
 	lda	zigzag,Y						; 4+
 	sta	PF0							; 3
-; 
-
+;
 	inx								; 2
 	cpx	#191							; 3
 
-; 
+;
 	sta	WSYNC							; 3
-; 
+;
 ;
 	bne	parallax_playfield					; 2/3
 
