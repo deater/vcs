@@ -52,8 +52,8 @@ CTRLPF	=	$0A	; control the playfield
 	CTRLPF_BALL_SIZE2=	$10
 	CTRLPF_BALL_SIZE4=	$20
 	CTRLPF_BALL_SIZE8=	$30
-REFP0	=	$0B
-REFP1	=	$0C
+REFP0	=	$0B	; reflect sprite0 (write $08 to it)
+REFP1	=	$0C	; reflect sprite1
 
 ; playfield is 20 bits, each 4 pixels wide, then repeated/reflected
 ;  PF0   PF1       PF2

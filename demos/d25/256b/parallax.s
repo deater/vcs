@@ -36,11 +36,8 @@
 ;	$114 = 276 bytes	some minor reuses of 0'd registers
 ;	$112 = 274 bytes	shave a few more bytes off
 ;	$10E = 270 bytes	hard-code music note assumptions
-
-; TODO:
-;	generate zigzag2 from zigzag1?  lsr?
-;	squish music player based on this song
-;	remove WSYNC from end of 35
+;	$10A = 266 bytes	simplify zig-zag
+;	$FD =  253 bytes	forgot to remove rest of zig-zag code
 
 vcs_desire:
 
@@ -177,19 +174,19 @@ skip_vsync:
 	;==========================
 	; zigzag with music
 
-	tya								; 2
+;	tya								; 2
 ; 51
 ;	lda	#0			; default no zigzag		; 2
 
-	ldx	MUSIC_HIT		; check if a music hit (?)	; 3
-	beq	zigzag_start		; if 0, skip			; 2/3
+;	ldx	MUSIC_HIT		; check if a music hit (?)	; 3
+;	beq	zigzag_start		; if 0, skip			; 2/3
 ; 56
-	dec	MUSIC_HIT		; countdown the hit		; 5
-	lda	#$8			; offset into zigzag table	; 2
+;	dec	MUSIC_HIT		; countdown the hit		; 5
+;	lda	#$8			; offset into zigzag table	; 2
 
 zigzag_start:
 ; 57 / 63
-	sta	ZIGZAG_OFFSET						; 3
+;	sta	ZIGZAG_OFFSET						; 3
 
 ; 60 / 66
 	sta	WSYNC
@@ -209,76 +206,82 @@ play_frame:
 song_countdown_smc:
 	lda	SOUND_POINTER						; 3
 	and	#$7							; 2
+
+	pha								; 3
+
+; 11
+	ldx	#$A		; preload useful constant		; 2
+	cmp	#4							; 2
+	bcc	quieter		; blt					; 2/3
+louder:				; louder first half of note
+; 17
+
+	txa			; $A channel 1				; 2
+	ldx	#$f		; $F channel 0				; 2
+	bne	done_volume	; bra					; 3
+quieter:
+; 18
+;	ldx	#$A		; channel 0				; 2
+	lda	#$8		; channel 1				; 2
+done_volume:
+; 24 / 20
+	stx	AUDV0		; set volume channel 0			; 3
+	sta	AUDV1		; set volume channel 1			; 3
+; 30 / 26
+
+	pla								; 4
+
 	bne	done_song_early						; 2/3
 
 set_note_channel0:
-; 10
+; 36 / 32
 	;==================
 	; load next notes
 
 	lda	LAST_NOTE		; chan1 is echo of chan0	; 3
 	ldx	#1			; channel 1			; 2
 	jsr	play_note		; play_note			; 6+27
-; 48
+; 74 / 70
 	lda	SOUND_POINTER						; 3
 	lsr								; 2
 	lsr								; 2
 	lsr				; have track+note		; 2
-; 57
+; 83 / 79
 	pha				; save				; 3
 	and	#7			; just get note			; 2
 	tay				; put in y			; 2
 	pla				; restore track+note		; 4
-; 68
+; 94 / 90
 	and	#$18			; see if pattern 0		; 2
 	beq	m2							; 2/3
 m1:
-; 72
+; 
 	lda	music,Y			; load note			; 4+
-	jmp	skip							; 3
+	bne	skip			; bra				; 3
 m2:
-; 73
-	lda	music2,Y			; load note		; 4+
+; 
+	lda	music2,Y		; load note			; 4+
 skip:
-; 79 / 77
+; 
 	sta	LAST_NOTE		; save for later		; 3
 	ldx	#0			; channel 0			; 2
 	jsr	play_note		; play_note			; 6+27
 
-; 117 / 108
-	jmp	not_early						; 3
+; 
+;	jmp	not_early						; 3
+	; A never 0
+	bne	not_early		; bra
+
 
 done_song_early:
-; 11
+; 37 / 33
 	sta	WSYNC							; 3
 not_early:
-; 76 / 111 / 120
+;
 
 	inc	SOUND_POINTER						; 5
-; 81 / 116 / 125
+; 
 
-	lda	SOUND_POINTER						; 3
-	and	#$7							; 2
-
-; 86 / 121 / 130
-	ldx	#$A		; preload useful constant		; 2
-	cmp	#4							; 2
-	bcc	quieter							; 2/3
-louder:			; louder first half of note
-; 92 / 127 / 136
-
-	txa			; $A channel 1				; 2
-	ldx	#$f		; $F channel 0				; 2
-	bne	done_volume	; bra					; 3
-quieter:
-; 93 / 128 / 137
-;	ldx	#$A		; channel 0				; 2
-	lda	#$8		; channel 1				; 2
-done_volume:
-; 99 / 134 / 143 / 97 / 132 / 141
-	stx	AUDV0		; set volume channel 0			; 3
-	sta	AUDV1		; set volume channel 1			; 3
-; 105 / 140 / 149 / 103 / 138 / 147
 
 	sta	WSYNC
 
@@ -298,7 +301,11 @@ done_volume:
 	;=======================================
 	; rotate through the playfield colors
 
-	ldy	PATTERN_INDEX						; 3
+	lda	FRAMEL
+	and	#$e0
+	tay
+
+;	ldy	FG_COLOR						; 3
 	lda	vcs_desire,Y		; FIXME: look for best colors	; 4+
 	sta	COLUPF							; 3
 
@@ -306,6 +313,10 @@ done_volume:
 	lda	#0							; 2
 	sta	VBLANK                  ; turn on beam			; 3
 ; 25
+
+	ldy	#$AA		; load 1010 pattern			; 2
+	sty	GRP0
+	sty	GRP1
 
 	tax				; scanline=0			; 2
 
@@ -333,21 +344,15 @@ parallax_playfield:
 	;============================
 	; if (scanline-(frame/4))&8 (every 8 on/off) flip
 
-	ldy	#$AA		; load 1010 pattern			; 2
-; 5
 	txa			; load scanline				; 2
 	sec								; 2
 	sbc	FRAMEL_DIV4	; subtract off, moves at 1/4 speed	; 3
-; 12
+; 10
 	and	#$8		; this controls height of tiny box	; 2
-; 14
-	beq	alternate_sprite0					; 2/3
-	ldy	#$55		; 0101 pattern				; 2
-alternate_sprite0:
-; 18 worst case
-	sty	GRP0		; store sprite0				; 3
-	sty	GRP1		; store sprite1				; 3
-; 24
+
+	sta	REFP0		; set earlier to $AA, reflect		; 3
+	sta	REFP1							; 3
+; 18
 
 	;============================
 	; set playfield pattern
@@ -357,34 +362,37 @@ alternate_sprite0:
 	sec								; 2
 	sbc	FRAMEL		; subtract frame			; 2
 	and	#$20		; only change every so often		; 2
-; 34
+; 28
 	beq	alternate_pf0						; 2/3
 	ldy	#$C3		; flipped pattern			; 2
 alternate_pf0:
-; 38 worst case
+; 32 worst case
 	sty	PF2		; set playfield				; 3
-; 41
+; 35
 
 	;=================================
 	; do zig-zags
 
 	txa				; x is scanline			; 2
 	adc	FRAMEL			; add in FRAME			; 3
+	ldy	LAST_NOTE						; 3
+	bpl	oops							; 2/3
+	ror								; 2
+oops:
 	and	#$7			; mask				; 2
-	adc	ZIGZAG_OFFSET		; which zigzag			; 3
-; 51
+;	adc	ZIGZAG_OFFSET		; which zigzag			; 3
+; 
 	tay								; 2
 	lda	zigzag,Y						; 4+
-;	eor	#$c0
 	sta	PF0							; 3
-; 60 worst case
+; 
 
 	inx								; 2
 	cpx	#191							; 3
 
-; 65
+; 
 	sta	WSYNC							; 3
-; 68/0
+; 
 ;
 	bne	parallax_playfield					; 2/3
 
@@ -394,8 +402,8 @@ alternate_pf0:
 zigzag:
 	.byte $80,$40,$20,$10, $10,$20,$40,$80
 
-zigzag2:
-	.byte $40,$40,$20,$20, $40,$40,$20,$20
+;zigzag2:
+;	.byte $40,$40,$20,$20, $40,$40,$20,$20
 
 	;===============================
 	; play note
