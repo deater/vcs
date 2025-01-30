@@ -1,5 +1,5 @@
 LINKER_SCRIPT = ../../../linker_script
-UTILS	= ./../../utils/
+UTILS	= ../../../utils/
 
 all:	parallax.bin parallax_padded.bin
 
