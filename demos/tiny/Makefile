@@ -1,7 +1,8 @@
 LINKER_SCRIPT = ../../linker_script
 UTILS = ../../utils
 
-all:	winter.rom omega1.rom omega2.rom
+all:	winter.rom \
+	omega1.rom omega2.rom omega3.rom omega4.rom
 
 
 ###
@@ -26,6 +27,31 @@ omega2.bin:	omega2.o
 omega2.o:	omega2.s
 	ca65 -o omega2.o omega2.s -l omega2.lst
 
+###
+
+omega3.rom:	omega3.bin
+	$(UTILS)/pad_rom -m omega3.bin omega3.rom
+
+omega3.bin:	omega3.o
+	ld65 -o omega3.bin omega3.o -C $(LINKER_SCRIPT)/atari2600_f800_32_rep.inc
+
+omega3.o:	omega3.s
+	ca65 -o omega3.o omega3.s -l omega3.lst
+
+
+###
+
+omega4.rom:	omega4.bin
+	$(UTILS)/pad_rom -m omega4.bin omega4.rom
+
+omega4.bin:	omega4.o
+	ld65 -o omega4.bin omega4.o -C $(LINKER_SCRIPT)/atari2600_f800_32_rep.inc
+
+omega4.o:	omega4.s
+	ca65 -o omega4.o omega4.s -l omega4.lst
+
+
+
 
 ###
 
@@ -43,6 +69,8 @@ winter.o:	winter.s
 clean:	
 	rm -f *~ *.o *.lst winter.bin winter.rom \
 		omega1.bin omega1.rom \
-		omega2.bin omega2.rom
+		omega2.bin omega2.rom \
+		omega3.bin omega3.rom \
+		omega4.bin omega4.rom
 
 
