@@ -1,4 +1,4 @@
-.include "../../vcs.inc"
+.include "../../../vcs.inc"
 
 ; reset vector at OFFSET - 4
 OFFSET = 31

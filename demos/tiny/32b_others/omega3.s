@@ -3,7 +3,7 @@
 
 ; last update Sept 11, 2018
 
-.include "../../vcs.inc"
+.include "../../../vcs.inc"
 
 ;    ORG $F800
 ;    .byte $FF

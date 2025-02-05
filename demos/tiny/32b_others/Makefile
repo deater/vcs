@@ -1,5 +1,5 @@
-LINKER_SCRIPT = ../../linker_script
-UTILS = ../../utils
+LINKER_SCRIPT = ../../../linker_script
+UTILS = ../../../utils
 
 all:	winter.rom \
 	omega1.rom omega2.rom omega3.rom omega4.rom

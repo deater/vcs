@@ -1,14 +1,14 @@
-; short 32 byte demo, rev b
+; short 32 byte demo, with sound! (rev b)
 ; by Omegamatrix
 
 ; last update Sept 11, 2018
 
-.include "../../vcs.inc"
+.include "../../../vcs.inc"
 
-;.org $F800
-;    .byte $FF
+;    ORG $F800
+ ;   .byte $FF
 
-.org $FFE0
+.ORG $FFE0
 
 Start:
 
@@ -19,29 +19,29 @@ loopClear:
 	tsx
 	bne	loopClear
 
-;RIOT ram $80-$F6 clear, TIA clear except VSYNC, SP=$00
+;RIOT ram $80-$F6 clear, TIA clear except VSYNC, SP=$00, X=0, A=0, carry is clear
 
 doVSYNC:
 	lda	#$0E << 2	; does two lines (non-Vsync), and then the regular 3 lines of VSYNC
 loopVSYNC:
 	sta	WSYNC
 	sta	VSYNC
-	sta	CTRLPF		; reflect for symmetrical PF2
+	sty	AUDC0+5,X	; write to each audio register
+	dex
 	lsr
 	bne	loopVSYNC
 
-	dex			; scroll color and shape
+	tax			; X=0
+	dey			; scroll color and shape
 
 loopKernel:
 	sta	WSYNC
-	dex
-	stx	PF2
-	stx	COLUPF
 	dey
+	sty	COLUBK
+	dex
 	bne	loopKernel
 .byte $0C  ; NOP, skip 2 bytes
 
 .ORG $FFFC
 	.word Start
-	beq	doVSYNC        ; always branch
-
+	beq	doVSYNC		; always branch
