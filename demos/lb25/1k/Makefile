@@ -16,16 +16,15 @@ lb25.zip:	lb25.bin
 	cp *.inc ./lb25_lb25/src
 	zip -r lb25.zip lb25_lb25
 
-
 ###
 
 lb25.bin:	lb25.o
-	ld65 -o lb25.bin lb25.o -C $(LINKER_SCRIPT)/atari2600_f000.inc
+	ld65 -o lb25.bin lb25.o -C $(LINKER_SCRIPT)/atari2600_f800_2k.inc
 
 lb25.o:	lb25.s \
 	zp.inc \
 	adjust_sprites.s \
-	desire_logo.inc \
+	lovebyte_logo.inc \
 	deetia2_player.s deetia2_trackdata.s
 	ca65 -o lb25.o lb25.s -l lb25.lst
 

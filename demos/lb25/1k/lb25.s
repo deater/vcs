@@ -182,11 +182,10 @@ same_effect:
 	; wait the rest
 	;=======================
 	; want to come in with 8 scanlines remaining
-	;	so 37 (of 45) on PAL
 	;	so 29 (of 37) on NTSC
 	; subtract 11 we already did
 
-	ldx	#18							; 2
+	ldx	#17							; 2
 
 le_vblank_loop:
 	sta     WSYNC							; 3
@@ -415,30 +414,32 @@ draw_logo:
 ; 0
 	sta	COLUBK							; 3
 ; 3
-	lda	desire_colors,Y						; 4
+;	lda	desire_colors,Y						; 4
+	lda	#$0E				; white
+	nop
 	sta	COLUPF							; 3
 ; 10
-	lda	desire_playfield0_left,Y	; playfield pattern 0	; 4
+	lda	lovebyte_playfield0_left,Y	; playfield pattern 0	; 4
 	sta	PF0			;				; 3
 	;   has to happen by 22 (GPU 68)
 ; 17
-	lda	desire_playfield1_left,Y	; playfield pattern 1	; 4
+	lda	lovebyte_playfield1_left,Y	; playfield pattern 1	; 4
 	sta	PF1			;				; 3
         ;  has to happen by 28 (GPU 84)
 ; 24
-	lda	desire_playfield2_left,Y	; playfield pattern 2	; 4
+	lda	lovebyte_playfield2_left,Y	; playfield pattern 2	; 4
 	sta	PF2							; 3
         ;  has to happen by 38 (GPU 116)	;
 ; 31
-	lda	desire_playfield0_right,Y	; left pf pattern 0     ; 4
+	lda	lovebyte_playfield0_right,Y	; left pf pattern 0     ; 4
 	sta	PF0				;                       ; 3
 	; has to happen 28-49 (GPU 84-148)
 ; 38
-	lda	desire_playfield1_right,Y	; left pf pattern 1	; 4
+	lda	lovebyte_playfield1_right,Y	; left pf pattern 1	; 4
 	sta	PF1				;			; 3
 	; has to happen 38-56 (GPU 116-170)
 ; 45
-	lda	desire_playfield2_right,Y	; left pf pattern 2	; 4
+	lda	lovebyte_playfield2_right,Y	; left pf pattern 2	; 4
 	sta	PF2				;			; 3
 	; has to happen 49-67 (GPU148-202)
 ; 52
@@ -452,7 +453,9 @@ draw_logo:
 ; 64
 noc:
 ; 64 / 61
-	lda	desire_bg_colors,Y					; 4
+;	lda	desire_bg_colors,Y					; 4
+	nop
+	nop
 ; 68
 done_logo:
 ;	sta	WSYNC							; 3
@@ -483,7 +486,9 @@ not_logo_start:
 
 	bcs	done_playfield						; 2/3
 ; 9
-	lda	desire_bg_colors+LOGO_SIZE
+;	lda	desire_bg_colors+LOGO_SIZE
+	nop
+	nop
 	cpy	#0
 ; 67
 	bne	draw_logo		; if so, draw it		; 2/3
@@ -514,7 +519,7 @@ bg_colors:
 
 .align $100
 
-.include "desire_logo.inc"
+.include "lovebyte_logo.inc"
 ;.include "fine_adjust.inc"
 
 	;=====================
