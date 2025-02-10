@@ -15,11 +15,12 @@ static unsigned char reverse_byte(unsigned char b) {
 }
 
 static void print_help(char *name) {
-	fprintf(stderr,"Usage:\t%s [-2] [-4] [-8] [-b col] [-n name] INFILE OUTFILE\n\n",name);
+	fprintf(stderr,"Usage:\t%s [-2] [-4] [-8] [-r] [-b col] [-n name] INFILE OUTFILE\n\n",name);
 	fprintf(stderr,"\t-g : generate background color data\n");
 	fprintf(stderr,"\t-2 : only draw every 2nd line\n");
 	fprintf(stderr,"\t-4 : only draw every 4th line\n");
 	fprintf(stderr,"\t-8 : only draw every 8th line\n");
+	fprintf(stderr,"\t-r : reverse top-to-bottom\n");
 	fprintf(stderr,"\t-n : name to prepend to labels\n");
 	fprintf(stderr,"\t-b : color to use for background (default 0)\n");
 	fprintf(stderr,"\t-p : use PAL palette\n");
@@ -53,6 +54,7 @@ int main(int argc, char **argv) {
 	int c,debug=0;
 	int generate_bg=0;
 	int is_pal=0,custom_ysize=0;
+	int reverse=0,out_index;
 
 	char input_filename[BUFSIZ],output_filename[BUFSIZ];
 	char *name=NULL;
@@ -62,7 +64,7 @@ int main(int argc, char **argv) {
 
 
 	/* Check command line arguments */
-	while ((c = getopt (argc, argv,"248b:gdhvn:py:"))!=-1) {
+	while ((c = getopt (argc, argv,"248b:gdhvn:pry:"))!=-1) {
 		switch (c) {
 		case 'n':
 			name=strdup(optarg);
@@ -78,6 +80,9 @@ int main(int argc, char **argv) {
 			break;
 		case 'p':
 			is_pal=1;
+			break;
+		case 'r':
+			reverse=1;
 			break;
 		case 'd':
 			fprintf(stderr,"DEBUG enabled\n");
@@ -139,6 +144,7 @@ int main(int argc, char **argv) {
 
 	if (debug) fprintf(stderr,"Skip = %d\n",skip);
 	fprintf(stderr,"Loaded image %d by %d\n",xsize,ysize);
+	if (reverse) fprintf(stderr,"+ Reversing image\n");
 
 	if (ysize>192) {
 		fprintf(stderr,"Y too big!\n");
@@ -190,13 +196,19 @@ int main(int argc, char **argv) {
 	fprintf(outfile,"\n");
 
 	/* generate left playfield table */
+
 	for(row=0;row<ysize;row++) {
-		playfield_left[row]=0;
+		out_index=row;
+		if (reverse) {
+			out_index=(ysize-1-row);
+		}
+		playfield_left[out_index]=0;
 		for(col=0;col<20;col++) {
-			playfield_left[row]<<=1;
-			if (image[row*xsize+col]!=background[row]) playfield_left[row]|=1;
+			playfield_left[out_index]<<=1;
+			if (image[row*xsize+col]!=background[row]) playfield_left[out_index]|=1;
 		}
 	}
+
 
 	if (name) {
 		fprintf(outfile,"\n%s_playfield0_left:\n",name);
@@ -231,10 +243,14 @@ int main(int argc, char **argv) {
 
 	/* generate right playfield table */
 	for(row=0;row<ysize;row++) {
-		playfield_right[row]=0;
+		out_index=row;
+		if (reverse) {
+			out_index=(ysize-1-row);
+		}
+		playfield_right[out_index]=0;
 		for(col=0;col<20;col++) {
-			playfield_right[row]<<=1;
-			if (image[row*xsize+col+20]!=background[row]) playfield_right[row]|=1;
+			playfield_right[out_index]<<=1;
+			if (image[row*xsize+col+20]!=background[row]) playfield_right[out_index]|=1;
 		}
 //		fprintf(outfile,"row=%d bg=%x %x\n",row,background[row],playfield_right[row]);
 	}
