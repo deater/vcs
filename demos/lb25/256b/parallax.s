@@ -1,14 +1,17 @@
 ; Parallax
 
+; 256 byte demo for Lovebyte 2025
+
+; by Vince `deater` Weaver / dSr
+
+; music based on tune by mA2E
+
 ; how this works:
 ;	mirrored display
 ;	left/right edge (PF0) is set to zigzag pattern based on scanline
 ;	center (PF2) is the wide checkerboard, drawn on top
 ;	two quad-sized sprites used for smaller background layer
 
-; by Vince `deater` Weaver
-
-; music based on tune by mA2E
 
 .include "../../../vcs.inc"
 
@@ -129,7 +132,9 @@ skip_vsync:
 
 	; other init
 ; 4
-	lda	#$86			; medium blue			; 2
+	lda	#$AA			; medium blue			; 2
+
+;	lda	#$86			; medium blue			; 2
 	sta	COLUP0							; 3
 	sta	COLUP1			; color of sprite grid		; 3
 ; 12
@@ -185,7 +190,7 @@ skip_vsync:
 ;	dec	MUSIC_HIT		; countdown the hit		; 5
 ;	lda	#$8			; offset into zigzag table	; 2
 
-zigzag_start:
+;zigzag_start:
 ; 57 / 63
 ;	sta	ZIGZAG_OFFSET						; 3
 
@@ -302,24 +307,28 @@ not_early:
 	;=======================================
 	; rotate through the playfield colors
 
-	lda	FRAMEL
-	and	#$e0
-	tay
+	lda	FRAMEL							; 3
+	and	#$e0							; 2
+	tay								; 2
 
-;	ldy	FG_COLOR						; 3
-	lda	vcs_desire,Y		; FIXME: look for best colors	; 4+
+	; this does $00, $20, $40, $60, ... $E0
+
+	; 5, 4, D, F not horrible
+
+	; TODO: find optimal offset for colors
+	lda	vcs_desire+$8,Y						; 4+
 	sta	COLUPF							; 3
 
-; 20
+; 24
 	ldx	#0			; also scanline=0		; 2
 	stx	VBLANK                  ; turn on beam			; 3
-; 25
+; 29
 
-	ldy	#$AA			; load 1010 pattern		; 2
+	ldy	#$AA			; load alternating 1010 pattern	; 2
 	sty	GRP0			; put in both sprits		; 3
 	sty	GRP1							; 3
 
-; 33
+; 37
 	sta	WSYNC							; 3
 
 

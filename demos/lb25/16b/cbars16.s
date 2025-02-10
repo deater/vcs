@@ -1,6 +1,8 @@
 ; cbars16 -- Attempt at 16 byte Atari 2600 demo
 
-; by Vince `deater` Weaver
+; by Vince `deater` Weaver / dSr
+
+; for Lovebyte 2025
 
 ; based on ideas from Omegamatrix and Wintermute
 
