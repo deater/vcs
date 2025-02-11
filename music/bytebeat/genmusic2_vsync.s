@@ -12,11 +12,14 @@
 
 .include "../../vcs.inc"
 
-COUNTER1 =	$80   	; t
-COUNTER2 =	$81	; t >> 6
-COUNTER3 =	$82	; t >> 7
-COUNTER4 =	$83	; t >> 13
-TEMP	 =	$84
+COUNTER1	= $80   	; t
+COUNTER2	= $81	; t >> 6
+COUNTER3	= $82	; t >> 7
+COUNTER4	= $83	; t >> 13
+TEMP	 	= $84
+
+FRAME_COUNT	= $85
+VSYNC_VALUE	= $86
 
 .org $FF80
 
@@ -37,13 +40,36 @@ clear_loop:
 	; RIOT ram $80-$F6 clear, TIA clear except VSYNC
 	; SP=$00, X=0, A=0, carry is clear
 
+;	pha			; make stack workable for jsr
+
 ;	sei			; not really necssary?
 	cld			; we do use adc/sbc
 
+
 sample_loop:
 	; repeat 64 times (COUNTER1)
-	ldx	#64
+	ldx	#64							; 2
+
+; 31
 output_loop:
+	dec	FRAME_COUNT						; 5
+	bne	skip_reset_vsync					; 2/3
+reset_vsync:
+	lda	#131
+	sta	FRAME_COUNT
+	lda	#$38							; 2
+	sta	VSYNC_VALUE						; 3
+
+; 10 /15
+
+skip_reset_vsync:
+	lda	VSYNC_VALUE						; 3
+	lsr								; 2
+	sta	VSYNC_VALUE						; 3
+	sta	WSYNC
+	sta	VSYNC							; 3
+; 21 / 26
+
 
 	; (t>>7|t|t>>6)*10+4*(t&t>>13|t>>6)
 	; (COUNTER1 | COUNTER2 | COUNTER3)*5 +
@@ -77,27 +103,37 @@ output_loop:
 ; 46
 	tay			; A proper value, masked with $1F	; 2
 ; 48
-	sta	WSYNC							; 3
-; 0
 	sta	AUDV0       	; 5-bit PCM				; 3
 	adc	#0		; ??? rounded?				; 2
 	sta	AUDV1							; 3
-;  8
+; 56
+
+	lda	VSYNC_VALUE						; 3
+	lsr								; 2
+	sta	VSYNC_VALUE						; 3
+	sta	WSYNC							; 3
+	sta	VSYNC							; 3
+
+; 67
+
+
+
+; 0
 	tya			; restore original			; 2
 	ora	#$50							; 2
 	sta	COLUPF		; set color				; 3
-; 15
+; 7
 	lda	PF1Tab,Y	; set pattern				; 4+
 	sta	PF1							; 3
 	lda	PF2Tab,Y						; 4+
 	sta	PF2							; 3
-; 29
+; 21
 
 	inc	COUNTER1	; t++					; 5
-; 34
+; 26
 	dex								; 2
 	bne	output_loop						; 2/3
-; 42
+; 30
 
 	;==============================
 	; here only every 1/64 of time
@@ -117,6 +153,9 @@ Counter3_OK:
 	jmp	sample_loop						; 3
 
 PF1Tab:
+PF2Tab:
+
+.if 0
 	.byte %00000000
 	.byte %00000000
 	.byte %00000000
@@ -136,6 +175,7 @@ PF1Tab:
 	.byte %01111111
 
 PF2Tab:
+
 	.byte %00000000
 	.byte %10000000
 	.byte %11000000
@@ -145,6 +185,7 @@ PF2Tab:
 	.byte %11111100
 	.byte %11111110
 	.byte %11111111
+.endif
 
 demo_end:
 
