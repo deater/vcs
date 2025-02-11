@@ -59,6 +59,18 @@ tiny5.bin:	tiny5.o
 tiny5.o:	tiny5.s
 	ca65 -o tiny5.o tiny5.s -l tiny5.lst
 
+###
+
+tiny7.rom:	tiny7.bin
+	$(UTILS)/pad_rom -m tiny7.bin tiny7.rom
+
+tiny7.bin:	tiny7.o
+	ld65 -o tiny7.bin tiny7.o -C $(LINKER_SCRIPT)/atari2600_f800_64_rep.inc
+
+tiny7.o:	tiny7.s
+	ca65 -o tiny7.o tiny7.s -l tiny7.lst
+
+
 
 
 
@@ -71,6 +83,7 @@ clean:
 		tiny2.bin tiny2.rom \
 		tiny3.bin tiny3.rom \
 		tiny4.bin tiny4.rom \
-		tiny5.bin tiny5.rom
+		tiny5.bin tiny5.rom \
+		tiny7.bin tiny7.rom
 
 
