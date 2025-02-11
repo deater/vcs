@@ -3,6 +3,11 @@
     ;(t>>7|t|t>>6)*10+4*(t&t>>13|t>>6)
     ;in 128 bytes on Atari VCS by Tjoppen
 
+
+; takes roughly 2 lines = 76*2 = 152 cycles
+	; 8kHz (original design) = 125us
+	; Atari 2600 = 1.19MHz = .84us = ~150 cycles
+
 .include "../../vcs.inc"
 
 COUNTER1 =	$80   	; t
@@ -31,58 +36,71 @@ SampleLoop:
 	; repeat 64 times (COUNTER1)
 	ldx	#64
 OutputLoop:
+
 	; (t>>7|t|t>>6)*10+4*(t&t>>13|t>>6)
 	; (COUNTER1 | COUNTER2 | COUNTER3)*5 + 2*(COUNTER1 & COUNTER4 | COUNTER2) >> 3
-	lda	COUNTER1
-	ora	COUNTER2
-	ora	COUNTER3
-	sta	TEMP
-	asl
-	asl
-	clc
-	adc	TEMP
-	sta	TEMP
-	lda	COUNTER1
-	and	COUNTER4
-	ora	COUNTER2
-	asl
-	clc
-	adc	TEMP
-	lsr
-	lsr
+; 0
+	lda	COUNTER1						; 3
+	ora	COUNTER2						; 3
+	ora	COUNTER3						; 3
+	sta	TEMP							; 3
+; 12
+	asl								; 2
+	asl								; 2
+	clc								; 2
+	adc	TEMP							; 3
+	sta	TEMP							; 3
+; 24
+	lda	COUNTER1						; 3
+	and	COUNTER4						; 3
+	ora	COUNTER2						; 3
+	asl								; 2
+	clc								; 2
+	adc	TEMP							; 3
+	lsr								; 2
+	lsr								; 2
+; 44
+
 ;
 	.byte	$4B		; and #n-lsr A
-	.byte	$1F
+	.byte	$1F		; same as and #$1f, lsr			; 2
 ;	asr	#%11111
-	tay
-	sta	WSYNC
-	sta	AUDV0       ;5-bit PCM
-	adc	#0
-	sta	AUDV1
-	tya
-	ora	#$50
-	sta	COLUPF
-	lda	PF1Tab,Y
-	sta	PF1
-	lda	PF2Tab,Y
-	sta	PF2
+; 46
+	tay								; 2
+; 48
+	sta	WSYNC							; 3
+; 0
+	sta	AUDV0       ;5-bit PCM					; 3
+	adc	#0							; 2
+	sta	AUDV1							; 3
+;  8
+	tya								; 2
+	ora	#$50							; 2
+	sta	COLUPF							; 3
+; 15
+	lda	PF1Tab,Y						; 4+
+	sta	PF1							; 3
+	lda	PF2Tab,Y						; 4+
+	sta	PF2							; 3
+; 29
 
-	inc	COUNTER1
+	inc	COUNTER1						; 5
+; 34
+	dex								; 2
+	bne	OutputLoop						; 2/3
+; 42
 
-	dex
-	bne	OutputLoop
-
-	inc	COUNTER2    ;t >> 6
-	lda	COUNTER2
-	and	#$7F
-	bne	Counter4OK
-	inc	COUNTER4
+	inc	COUNTER2    ;t >> 6					; 5
+	lda	COUNTER2						; 3
+	and	#$7F							; 2
+	bne	Counter4OK						; 2/3
+	inc	COUNTER4						; 5
 Counter4OK:
-	and	#$01
-	bne	Counter3OK
-	inc	COUNTER3
+	and	#$01							; 2
+	bne	Counter3OK						; 2/3
+	inc	COUNTER3						; 5
 Counter3OK:
-	jmp	SampleLoop
+	jmp	SampleLoop						; 3
 
 PF1Tab:
     .byte %00000000
