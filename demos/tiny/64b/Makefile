@@ -1,7 +1,7 @@
 LINKER_SCRIPT = ../../../linker_script
 UTILS = ../../../utils
 
-all:	tiny1.rom tiny2.rom tiny3.rom tiny4.rom tiny5.rom
+all:	tiny1.rom tiny2.rom tiny3.rom tiny4.rom tiny5.rom tiny7.rom
 
 
 ###
