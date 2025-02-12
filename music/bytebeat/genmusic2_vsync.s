@@ -26,7 +26,6 @@ TEMP	 	= $84
 
 FRAME_COUNT	= $85
 VSYNC_VALUE	= $86
-VBLANK_COUNT	= $87
 
 .org $FF80
 
@@ -51,20 +50,25 @@ clear_loop:
 ;	sei			; not really necssary?
 	cld			; we do use adc/sbc
 
-;	lda	#$02
-;	sta	VBLANK_COUNT
+	sta	RESP0				; set sprite position
+;	lda	#NUSIZ_THREE_COPIES_MED
+	lda	#NUSIZ_QUAD_SIZE
+	sta	NUSIZ0				; set sprite size/repeat
 
-;
 
-; 48
+; 43
 sample_loop:
 	; repeat 64 times (COUNTER1)
 	ldx	#64							; 2
 
-; 20 / 50
+; 15 / 45
 output_loop:
 
+	;==============================
+	; enable VBLANK at right time
+	;==============================
 	; want to write 2 if <20 || >116, 0 otherwise
+
 	ldy	FRAME_COUNT						; 3
 	cpy	#116	; carry clear if greater			; 2
 	rol								; 2
@@ -77,24 +81,24 @@ output_loop:
 
 	sta	VBLANK							; 3
 
-; 38 / 68
+; 33 / 63
 
 	dec	FRAME_COUNT						; 5
 	bne	skip_reset_vsync					; 2/3
 reset_vsync:
-; 45 / 75
-	lda	#131		; reset to 131*2 = 262 scanlines	; 2
+; 40 / 70
+	lda	#131		; ($83) reset to 131*2 = 262 scanlines	; 2
 	sta	FRAME_COUNT						; 3
-; 50 / 80
+; 45 / 75
 	lda	#$38		;					; 2
 	sta	VSYNC_VALUE						; 3
-; 46 / 66 / 55 / 85
+; 50 / 80 / 41 / 71
 skip_reset_vsync:
 	lsr	VSYNC_VALUE						; 5
-	lda	VSYNC_VALUE						; 8
-; 59 / 79 / 68 / 98
+	lda	VSYNC_VALUE						; 3
+; 58 / 88 / 49 / 79
 	sta	WSYNC							; 3
-; 62 / 82 / 73 / 101
+; 61 / 91 / 52 / 82
 
 ; 0
 	sta	VSYNC							; 3
@@ -110,13 +114,13 @@ skip_reset_vsync:
 	ora	COUNTER2						; 3
 	ora	COUNTER3						; 3
 	sta	TEMP		; temp=counter1|counter2|counter3	; 3
-; 12
+; 15
 	asl			; A=temp*4				; 2
 	asl								; 2
 	clc								; 2
 	adc	TEMP							; 3
 	sta	TEMP		; temp = (c1|c2|c3)*5			; 3
-; 24
+; 27
 	lda	COUNTER1						; 3
 	and	COUNTER4						; 3
 	ora	COUNTER2	; A=(c1&c4)|c2				; 3
@@ -125,33 +129,39 @@ skip_reset_vsync:
 	adc	TEMP		; A=(c1|c2|c3)*5 + ((c1&c4)|c2)*2	; 3
 	lsr								; 2
 	lsr								; 2
-; 44
+; 47
 	.byte	$4B,$1F		; and #$1F, lsr	(asr #1F)		; 2
-; 46
-	tay			; A proper value, masked with $1F	; 2
-; 48
+				; A is final value, masked with $1F
+	tay			; save in Y for later			; 2
+; 51
 	sta	AUDV0       	; 5-bit PCM				; 3
 	adc	#0		; ??? rounded?				; 2
 	sta	AUDV1							; 3
-; 56
+; 59
+
+	;=========================
+	; visualization
+	ora	#$60		; light blue				; 2
+	sta	COLUBK		; set background color			; 3
+	sty	a:GRP0
+
+; 64
 	lsr	VSYNC_VALUE						; 5
 	lda	VSYNC_VALUE						; 3
-	sta	WSYNC							; 3
-; 67
+;	sta	WSYNC							; 3
+; 75
 ; 0
 	sta	VSYNC							; 3
 
 ; 3
 	tya			; restore original			; 2
-	ora	#$60		; light blue				; 2
-	sta	COLUBK		; set background color			; 3
-; 10
 
+; 5
 	inc	COUNTER1	; t++					; 5
-; 15
+; 10
 	dex								; 2
 	bne	output_loop	; loop 64 times				; 2/3
-; 19
+; 14
 	;==============================
 	; here only every 1/64 of time
 
@@ -159,25 +169,24 @@ skip_reset_vsync:
 	lda	COUNTER2						; 3
 	and	#$7F		; mask off high bit			; 2
 	bne	Counter4_OK	; branch most of time			; 2/3
-; 31
+; 26
 
 	inc	COUNTER4	; only inc 1/128 of time (t>>13)	; 5
 
-; 32 / 36
+; 27 / 31
 Counter4_OK:
 	; TODO: lsr/bne makes interesting change
-;	and	#$01		; check bottom bit			; 2
-
+;	and	#$01		; check bottom bit			;
 	lsr			; check bottom bit			; 2
 	bcs	Counter3_OK						; 2/3
 
-; 36 / 40
+; 31 / 35
 	inc	COUNTER3	; only inc 1/2 of time (t>>7)		; 5
 
-; 37 / 41 / 45
+; 32 / 36 / 40
 Counter3_OK:
 	jmp	sample_loop						; 3
-; 48
+; 43
 
 PF1Tab:
 PF2Tab:
