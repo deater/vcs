@@ -42,6 +42,7 @@
 ;	$10A = 266 bytes	simplify zig-zag
 ;	$FD =  253 bytes	forgot to remove rest of zig-zag code
 ;	$FC =  252 bytes	optimize setting X=scanline=0
+;	$FE =  254 bytes	init stack to 0, can't depend on $FD
 
 vcs_desire:
 
@@ -52,18 +53,26 @@ vcs_desire:
 
 	; can assume S starts at $FD on 6502
 	;	note on stella need to disable random SP for this to happen
+	;	also on real hardware with harmony cart it's not FD :(
 
 	; A=??
+	txa
 clear_loop:
-	asl			; should clear to 0 within 8 iterations
-	pha			; push on stack
-	tsx			; check if stack hits 0
+	dex
+	txs
+	pha
 	bne	clear_loop
+
+
+;	asl			; should clear to 0 within 8 iterations
+;	pha			; push on stack
+;	tsx			; check if stack hits 0
+;	bne	clear_loop
 
 ; RIOT ram $80-$F6 clear, TIA clear except VSYNC
 ; SP=$00, X=0, A=0, carry is clear
 
-	pha			; clear VSYNC, SP=$FF
+;	pha			; clear VSYNC, SP=$FF
 ;	sei			; not really necssary?
 	cld			; we do use adc/sbc
 
@@ -462,8 +471,9 @@ music2:
 .byte	28		; 4,21		; F4
 
 
-.word	vcs_desire	; RESET vector
-.word	$0		; IRQ vector (unused)
+.word	vcs_desire-2	; RESET vector
+;.word	$0		; IRQ vector (unused)
+	ldx	#0
 
 ;.segment "IRQ_VECTORS"
 ;	.word vcs_desire	; NMI

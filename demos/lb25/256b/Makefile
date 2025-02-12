@@ -22,7 +22,7 @@ parallax.zip:	parallax.bin parallax_padded.bin
 ###
 
 parallax_padded.bin:	parallax.bin
-	$(UTILS)/pad_rom -z ./parallax.bin  parallax_padded.bin
+	$(UTILS)/pad_rom -m ./parallax.bin  parallax_padded.bin
 
 parallax.bin:	parallax.o
 	ld65 -o parallax.bin parallax.o -C $(LINKER_SCRIPT)/atari2600_ff00_raw.inc
