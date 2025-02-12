@@ -56,12 +56,12 @@ clear_loop:
 	sta	NUSIZ0				; set sprite size/repeat
 
 
-; 43
+; 39
 sample_loop:
 	; repeat 64 times (COUNTER1)
 	ldx	#64							; 2
 
-; 15 / 45
+; 15 / 41
 output_loop:
 
 	;==============================
@@ -69,7 +69,7 @@ output_loop:
 	;==============================
 	; want to write 2 if <20 || >116, 0 otherwise
 
-	ldy	FRAME_COUNT						; 3
+;	ldy	FRAME_COUNT						; 3
 	cpy	#116	; carry clear if greater			; 2
 	rol								; 2
 	cpy	#20	; carry clear if less				; 2
@@ -81,24 +81,25 @@ output_loop:
 
 	sta	VBLANK							; 3
 
-; 33 / 63
+; 33 / 59
 
-	dec	FRAME_COUNT						; 5
+	dey
+;	dec	FRAME_COUNT						; 5
 	bne	skip_reset_vsync					; 2/3
 reset_vsync:
-; 40 / 70
-	lda	#131		; ($83) reset to 131*2 = 262 scanlines	; 2
-	sta	FRAME_COUNT						; 3
-; 45 / 75
+; 40 / 66
+	ldy	#131		; ($83) reset to 131*2 = 262 scanlines	; 2
+;	sta	FRAME_COUNT						; 3
+; 45 / 71
 	lda	#$38		;					; 2
 	sta	VSYNC_VALUE						; 3
-; 50 / 80 / 41 / 71
+; 50 / 75 / 41 / 67
 skip_reset_vsync:
 	lsr	VSYNC_VALUE						; 5
 	lda	VSYNC_VALUE						; 3
-; 58 / 88 / 49 / 79
+; 58 / 84 / 49 / 75
 	sta	WSYNC							; 3
-; 61 / 91 / 52 / 82
+; 61 / 87 / 52 / 78
 
 ; 0
 	sta	VSYNC							; 3
@@ -132,64 +133,60 @@ skip_reset_vsync:
 ; 47
 	.byte	$4B,$1F		; and #$1F, lsr	(asr #1F)		; 2
 				; A is final value, masked with $1F
-	tay			; save in Y for later			; 2
-; 51
+; 49
 	sta	AUDV0       	; 5-bit PCM				; 3
 	adc	#0		; ??? rounded?				; 2
 	sta	AUDV1							; 3
-; 59
+; 57
 
 	;=========================
 	; visualization
 	ora	#$60		; light blue				; 2
 	sta	COLUBK		; set background color			; 3
-	sty	a:GRP0
+	sta	GRP0							; 3
 
-; 64
+; 65
 	lsr	VSYNC_VALUE						; 5
 	lda	VSYNC_VALUE						; 3
-;	sta	WSYNC							; 3
-; 75
+	sta	WSYNC							; 3
+; 76
 ; 0
 	sta	VSYNC							; 3
 
 ; 3
-	tya			; restore original			; 2
-
-; 5
 	inc	COUNTER1	; t++					; 5
-; 10
+; 8
 	dex								; 2
 	bne	output_loop	; loop 64 times				; 2/3
-; 14
+; 12
 	;==============================
 	; here only every 1/64 of time
 
 	inc	COUNTER2	; c2++ (t >> 6)				; 5
 	lda	COUNTER2						; 3
-	and	#$7F		; mask off high bit			; 2
-	bne	Counter4_OK	; branch most of time			; 2/3
-; 26
+	; if counter2 == 128 or counter2 == 0 then inc counter4
+	and	#$7F
+	bne	Counter4_OK						; 2/3
+; 22
 
 	inc	COUNTER4	; only inc 1/128 of time (t>>13)	; 5
 
-; 27 / 31
+; 23 / 27
 Counter4_OK:
 	; TODO: lsr/bne makes interesting change
 ;	and	#$01		; check bottom bit			;
+;	beq	Counter3_OK
 	lsr			; check bottom bit			; 2
 	bcs	Counter3_OK						; 2/3
 
-; 31 / 35
+; 27 / 31
 	inc	COUNTER3	; only inc 1/2 of time (t>>7)		; 5
 
-; 32 / 36 / 40
+; 28 / 32 / 36
 Counter3_OK:
 	jmp	sample_loop						; 3
-; 43
+; 39
 
-PF1Tab:
-PF2Tab:
 
 
 demo_end:
