@@ -11,6 +11,12 @@
 	; Atari 2600 = 1.19MHz = .84us = ~150 cycles
 
 
+	; so ideally
+	; VSYNC on at 0
+	; VSYNC off at 3
+	; VBLANK off at 40
+	; VBLANK on at 232
+
 .include "../../vcs.inc"
 
 COUNTER1	= $80   ; t
@@ -45,39 +51,41 @@ clear_loop:
 ;	sei			; not really necssary?
 	cld			; we do use adc/sbc
 
-; 62
+;
 
+; 48
 sample_loop:
 	; repeat 64 times (COUNTER1)
 	ldx	#64							; 2
-; 64
+;
 
 
-; 34
+; 20 / 50
 output_loop:
 	dec	FRAME_COUNT						; 5
 	bne	skip_reset_vsync					; 2/3
 reset_vsync:
-; 41
+; 27 / 57
 	lda	#131							; 2
 	sta	FRAME_COUNT						; 3
-	lda	#$38							; 2
+; 32 / 52
+	lda	#$02		;					; 2
 	sta	VSYNC_VALUE						; 3
-
-; 42 / 51
-
-skip_reset_vsync:
-	lda	VSYNC_VALUE						; 3
-	lsr								; 2
-	sta	VSYNC_VALUE						; 3
-; 50 / 59
 	sta	WSYNC							; 3
-; 53 / 62
-
+;40 / 60
 ; 0
 	sta	VSYNC							; 3
+	bne	oof		; bra					; 3
 
-; 3
+; 28 / 58
+
+skip_reset_vsync:
+	sta	WSYNC							; 3
+; 31 / 61
+
+oof:
+; 0 / 6
+
 
 	; (t>>7|t|t>>6)*10+4*(t&t>>13|t>>6)
 	; (COUNTER1 | COUNTER2 | COUNTER3)*5 +
@@ -87,13 +95,13 @@ skip_reset_vsync:
 	ora	COUNTER2						; 3
 	ora	COUNTER3						; 3
 	sta	TEMP		; temp=counter1|counter2|counter3	; 3
-; 15
+; 12 / 18
 	asl			; A=temp*4				; 2
 	asl								; 2
 	clc								; 2
 	adc	TEMP							; 3
 	sta	TEMP		; temp = (c1|c2|c3)*5			; 3
-; 27
+; 24 / 30
 	lda	COUNTER1						; 3
 	and	COUNTER4						; 3
 	ora	COUNTER2	; A=(c1&c4)|c2				; 3
@@ -102,44 +110,47 @@ skip_reset_vsync:
 	adc	TEMP		; A=(c1|c2|c3)*5 + ((c1&c4)|c2)*2	; 3
 	lsr								; 2
 	lsr								; 2
-; 47
+; 44 / 50
 
-;
 	.byte	$4B		; and #n-lsr A
 	.byte	$1F		; same as and #$1f, lsr			; 2
 ;	asr	#%11111
-; 49
+; 46 / 52
 	tay			; A proper value, masked with $1F	; 2
-; 51
+; 48 / 54
 	sta	AUDV0       	; 5-bit PCM				; 3
 	adc	#0		; ??? rounded?				; 2
 	sta	AUDV1							; 3
-; 59
-
-	lda	VSYNC_VALUE						; 3
-	lsr								; 2
-	sta	VSYNC_VALUE						; 3
+; 56 / 62
+	lda	#0							; 2
+	lsr	VSYNC_VALUE						; 5
+	beq	skip							; 2/3
+	lda	#2							; 2
+skip:
+; 66 / 72 / 67 / 73
 	sta	WSYNC							; 3
-; 70
+; 76
+; 0
 	sta	VSYNC							; 3
 
 ; 3
-
 	tya			; restore original			; 2
 	ora	#$50							; 2
 	sta	COLUBK		; set color				; 3
 ; 10
+
 ;	lda	PF1Tab,Y	; set pattern				; 4+
 ;	sta	PF1							; 3
 ;	lda	PF2Tab,Y						; 4+
 ;	sta	PF2							; 3
 ; 24
+; 10
 
 	inc	COUNTER1	; t++					; 5
-; 29
+; 15
 	dex								; 2
 	bne	output_loop						; 2/3
-; 33
+; 19
 	;==============================
 	; here only every 1/64 of time
 
@@ -147,22 +158,22 @@ skip_reset_vsync:
 	lda	COUNTER2						; 3
 	and	#$7F		; mask off high bit			; 2
 	bne	Counter4_OK	; branch most of time			; 2/3
-; 45
+; 31
 
 	inc	COUNTER4	; only inc 1/128 of time (t>>13)	; 5
 
-; 50 / 46
+; 32 / 36
 Counter4_OK:
 	and	#$01		; check bottom bit			; 2
 	bne	Counter3_OK						; 2/3
 
-; 54 / 50
+; 36 / 40
 	inc	COUNTER3	; only inc 1/2 of time (t>>7)		; 5
 
-; 59 / 55 / 51
+; 37 / 41 / 45
 Counter3_OK:
 	jmp	sample_loop						; 3
-; 62
+; 48
 
 PF1Tab:
 PF2Tab:
