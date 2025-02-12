@@ -1,22 +1,29 @@
-	;viznut's combination of xpansive's and varjohukka's stuff
-	;http://pouet.net/topic.php?which=8357&page=4
-	;(t>>7|t|t>>6)*10+4*(t&t>>13|t>>6)
-	;in 128 bytes on Atari VCS by Tjoppen
+; Purple Beat -- 128 byte Atari 2600 demo
 
-	; modified for vsync by deater
+; some byte beat, with valid NTSC vsync timings
+
+; by vince `deater` weaver / dSr
+
+; this is based off of Tjoppen's 128 byte demo (w/o sync)
+; which is based off of viznut's combination of xpansive's
+; and varjohukka's stuff from the pouet thread
+; http://pouet.net/topic.php?which=8357&page=4
+; (t>>7|t|t>>6)*10+4*(t&t>>13|t>>6)
 
 
-; takes roughly 2 lines = 76*2 = 152 cycles
-	; 8kHz (original design) = 125us
+	; takes roughly 2 lines = 76*2 = 152 cycles
+	; 8kHz (bytebeat frequency) = 125us
 	; Atari 2600 = 1.19MHz = .84us = ~150 cycles
 
-	; so ideally
+	; NTSC scyn timings, ideally
 	; VSYNC on at 0
 	; VSYNC off at 3
 	; VBLANK off at 40	/ 2 = 20 $14
 	; VBLANK on at 232	/ 2 =116 $74
 
-.include "../../vcs.inc"
+.include "../../../vcs.inc"
+
+; zero page RAM addresses
 
 COUNTER1	= $80   ; t
 COUNTER2	= $81	; t >> 6
@@ -24,12 +31,14 @@ COUNTER3	= $82	; t >> 7
 COUNTER4	= $83	; t >> 13
 TEMP	 	= $84
 
-FRAME_COUNT	= $85
 VSYNC_VALUE	= $86
 
 .org $FF80
 
 demo_start:
+	; try to get consistent start so we can center sprite
+
+	sta	WSYNC
 
 	; can assume S starts at $FD on 6502
 	;       note on stella need to disable random SP for this to happen
@@ -48,13 +57,18 @@ clear_loop:
 
 ;	pha			; make stack workable for jsr
 ;	sei			; not really necssary?
-	cld			; we do use adc/sbc
+
+	cld			; clear decimal mode (we do use adc/sbc)
+
+	lda	#NUSIZ_QUAD_SIZE
+	sta	NUSIZ0				; set sprite size to large
+
+	; nops to get sprite position in right place
+	inc	TEMP
+	nop
+	nop
 
 	sta	RESP0				; set sprite position
-;	lda	#NUSIZ_THREE_COPIES_MED
-	lda	#NUSIZ_QUAD_SIZE
-	sta	NUSIZ0				; set sprite size/repeat
-
 
 ; 41
 sample_loop:
@@ -82,6 +96,12 @@ output_loop:
 	sta	VBLANK							; 3
 
 ; 28 / 58
+
+	;==========================
+	; reset counters
+	;==========================
+	; when framecount = 0
+	; also start VSYNC
 
 	dey				; dec frame count		; 2
 	bne	skip_reset_vsync					; 2/3
@@ -137,15 +157,19 @@ skip_reset_vsync:
 	;=========================
 	; visualization
 	sta	GRP0							; 3
-	ora	#$60		; light blue				; 2
+	ora	#$60		; light purple				; 2
 	sta	COLUBK		; set background color			; 3
+	sty	PF1
 	; room for 3 more bytes of visualization...
 
 ; 65
+	;================================
+	; handle vsync for odd scanlines
+	;================================
 	lsr	VSYNC_VALUE						; 5
 	lda	VSYNC_VALUE						; 3
 ; 73
-	sta	WSYNC							; 3
+;	sta	WSYNC							; 3
 ; 76
 ; 0
 	sta	VSYNC							; 3
