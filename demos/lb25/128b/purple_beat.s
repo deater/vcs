@@ -15,7 +15,7 @@
 	; 8kHz (bytebeat frequency) = 125us
 	; Atari 2600 = 1.19MHz = .84us = ~150 cycles
 
-	; NTSC scyn timings, ideally
+	; NTSC sync timings, ideally
 	; VSYNC on at 0
 	; VSYNC off at 3
 	; VBLANK off at 40	/ 2 = 20 $14
@@ -39,9 +39,11 @@ demo_start:
 	; try to get consistent start so we can center sprite
 
 	sta	WSYNC
+	txs
 
-	; can assume S starts at $FD on 6502
+	; in theory can assume S starts at $FD on 6502
 	;       note on stella need to disable random SP for this to happen
+	;	possibly this not work with harmony cart?
 
 clear_loop:
 	asl			; should clear to 0 within 8 iterations
@@ -214,7 +216,7 @@ demo_end:
 	.res 128-(demo_end-demo_start)-4,$EA     ; nops
 
 
-	.word demo_start	; RESET vector
-	nop
-	nop
+	.word demo_start-2	; RESET vector
+
+	ldx	#0
 
