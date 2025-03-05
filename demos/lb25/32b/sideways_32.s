@@ -12,7 +12,9 @@
 demo_start:
 
 	; stack pointer $FD on startup on real hardware
-	; you have to configure that in stella developer mode
+	; 	you have to configure that in stella developer mode
+	;	sadly on my real hardware+harmony cart
+	;	 this isn't true so the output isn't always great
 
 	;=================================================
 	; clear out registers
@@ -122,5 +124,5 @@ kernel_loop:
 
 
 
-; 64 bytes
+; 32 bytes
 

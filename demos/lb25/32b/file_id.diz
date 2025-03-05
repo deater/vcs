@@ -1,0 +1,21 @@
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+sideways_32
+--------------------------------------
+32-byte Intro for Atari 2600
+Lovebyte 2025
+
+by deater / dSr
+
+Colored bars with some HMOVE sprite0
+side-scrolling.
+
+This code assumes the stack pointer
+starts at $F9
+
+If your stack pointer doesn't then
+there will be some artifacts on
+the screen (as seen in the lovebyte
+screen capture, as my 2600+harmony
+cart has the stack pointer elsewhere)
+
+--------------------------------------

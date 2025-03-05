@@ -1,0 +1,17 @@
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+cbars16
+--------------------------------------
+16-byte Intro for Atari 2600
+Lovebyte 2025
+
+by deater / dSr
+
+There have been a lot of 32B intros
+for Atari 2600, but maybe not many
+16B?
+
+glitches more on real hardware than
+on Stella, probably because not 
+turning off the beam for VBLANK
+
+--------------------------------------

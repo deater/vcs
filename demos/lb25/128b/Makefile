@@ -14,6 +14,7 @@ purple_beat.zip:	purple_beat.bin purple_beat_padded.bin
 	cp file_id.diz ./lovebyte2025_purple_beat
 	cp purple_beat_thumb.png ./lovebyte2025_purple_beat
 	cp purple_beat.s ./lovebyte2025_purple_beat
+	cp purple_beat_720p.mpv ./lovebyte2025_purple_beat
 	zip -r purple_beat.zip lovebyte2025_purple_beat
 
 ###
