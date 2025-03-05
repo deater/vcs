@@ -14,8 +14,22 @@ purple_beat.zip:	purple_beat.bin purple_beat_padded.bin
 	cp file_id.diz ./lovebyte2025_purple_beat
 	cp purple_beat_thumb.png ./lovebyte2025_purple_beat
 	cp purple_beat.s ./lovebyte2025_purple_beat
-	cp purple_beat_720p.mpv ./lovebyte2025_purple_beat
+	cp purple_beat_720p.mp4 ./lovebyte2025_purple_beat
 	zip -r purple_beat.zip lovebyte2025_purple_beat
+
+####
+
+submit_pouet:	purple_beat_pouet.zip
+
+purple_beat_pouet.zip:	purple_beat.bin purple_beat_padded.bin
+	mkdir -p lovebyte2025_purple_beat
+	cp purple_beat.bin ./lovebyte2025_purple_beat
+	cp purple_beat_padded.bin ./lovebyte2025_purple_beat
+	cp file_id.diz ./lovebyte2025_purple_beat
+	cp purple_beat_thumb.png ./lovebyte2025_purple_beat
+	cp purple_beat.s ./lovebyte2025_purple_beat
+	zip -r purple_beat_pouet.zip lovebyte2025_purple_beat
+
 
 ###
 

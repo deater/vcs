@@ -19,6 +19,20 @@ cbars16.zip:	cbars16.bin cbars16_padded.bin
 
 ###
 
+pouet_submit:	cbars16_pouet.zip
+
+cbars16_pouet.zip:	cbars16.bin cbars16_padded.bin
+	mkdir -p lovebyte2025_cbars16
+	cp cbars16.bin ./lovebyte2025_cbars16
+	cp cbars16_padded.bin ./lovebyte2025_cbars16
+	cp file_id.diz ./lovebyte2025_cbars16
+	cp cbars16_thumb.png ./lovebyte2025_cbars16
+	cp cbars16.s ./lovebyte2025_cbars16
+	zip -r cbars16_pouet.zip lovebyte2025_cbars16
+
+
+###
+
 cbars16_padded.bin:	cbars16.bin
 	$(UTILS)/pad_rom -m cbars16.bin cbars16_padded.bin
 

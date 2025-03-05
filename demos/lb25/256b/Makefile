@@ -17,6 +17,20 @@ parallax.zip:	parallax.bin parallax_padded.bin
 	cp parallax_720p.mp4 ./lovebyte2025_parallax
 	zip -r parallax.zip lovebyte2025_parallax
 
+###
+
+pouet_submit:	parallax_pouet.zip
+
+parallax_pouet.zip:	parallax.bin parallax_padded.bin
+	mkdir -p lovebyte2025_parallax
+	cp parallax.bin ./lovebyte2025_parallax
+	cp parallax_padded.bin ./lovebyte2025_parallax
+	cp file_id.diz ./lovebyte2025_parallax
+	cp parallax_thumb.png ./lovebyte2025_parallax
+	cp parallax.s ./lovebyte2025_parallax
+	zip -r parallax_pouet.zip lovebyte2025_parallax
+
+
 
 ###
 

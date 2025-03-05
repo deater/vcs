@@ -19,6 +19,20 @@ sideways_32.zip:	sideways_32.bin sideways_32_padded.bin
 
 ###
 
+pouet_submit:	sideways_32_pouet.zip
+
+sideways_32_pouet.zip:	sideways_32.bin sideways_32_padded.bin
+	mkdir -p lovebyte2025_sideways_32
+	cp sideways_32.bin ./lovebyte2025_sideways_32
+	cp sideways_32_padded.bin ./lovebyte2025_sideways_32
+	cp file_id.diz ./lovebyte2025_sideways_32
+	cp sideways_32_thumb.png ./lovebyte2025_sideways_32
+	cp sideways_32.s ./lovebyte2025_sideways_32
+	zip -r sideways_32_pouet.zip lovebyte2025_sideways_32
+
+
+####
+
 sideways_32_padded.bin:	sideways_32.bin
 	$(UTILS)/pad_rom -m sideways_32.bin sideways_32_padded.bin
 
