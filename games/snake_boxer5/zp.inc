@@ -104,3 +104,16 @@ COLLIDING		= $BD
 SECRET_UNLOCKED		= $BE
 SECRET_PROGRESS		= $BF
 
+; tt music player
+tt_timer                = $E0    ; current music timer value
+tt_cur_pat_index_c0     = $E1    ; current pattern index into tt_SequenceTable
+tt_cur_pat_index_c1     = $E2
+tt_cur_note_index_c0    = $E3    ; note index into current pattern
+tt_cur_note_index_c1    = $E4
+tt_envelope_index_c0    = $E5   ; index into ADSR envelope
+tt_envelope_index_c1    = $E6
+tt_cur_ins_c0           = $E7   ; current instrument
+tt_cur_ins_c1           = $E8
+tt_ptr                  = $E9   ; temporary
+tt_ptr2                 = $EA
+player_time_max         = $EB

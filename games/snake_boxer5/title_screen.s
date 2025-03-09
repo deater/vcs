@@ -425,8 +425,45 @@ spriteloop_snake_bottom:
 	; overscan
 	;==========================
 
-	ldx	#26
+	ldx	#17
 	jsr	common_overscan
+
+
+	;==========================
+	; play music
+	;==========================
+
+	lda	#12
+	sta	TIM64T
+
+	lda	tt_cur_pat_index_c0
+	cmp	#4
+	bcc	do_play_music
+
+	lda	#0
+	sta	AUDV0
+	sta	AUDV1
+	beq	done_music
+
+do_play_music:
+
+	jsr	play_music
+
+done_music:
+
+	; Measure player worst case timing
+;	lda	#12		; TIM_VBLANK
+;	sec
+;	sbc	INTIM
+;	cmp	player_time_max
+;	bcc	no_new_max
+;	sta	player_time_max
+;no_new_max:
+
+wait_for_vblank:
+	lda	INTIM
+	bne	wait_for_vblank
+
 
 
 	;============================

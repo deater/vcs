@@ -32,6 +32,7 @@ vid_title.o:	vid_title.s \
 	zp.inc \
 	videlectrix.s  title_screen.s \
 	title_data.inc \
+	title_music_player.s title_music_trackdata.s \
 	position.s sound_notes.s \
 	common_routines.s delay.s
 	ca65 -o vid_title.o vid_title.s -l vid_title.lst
