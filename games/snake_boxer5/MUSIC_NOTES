@@ -1,0 +1,28 @@
+
+export to dasm by TIATracker
+
+rename .asm to .s
+
+
+in trackdata:
+
+	do search/replace dc.b -> .byte
+
+	comment out the tt_PatternSpeeds: part
+	comment out the echo tracksize part
+
+	player
+
+	do search/replace MAC to .macro
+	get rid of leading . on all labels
+	change IF to .if
+	change ENDIF to .endif
+	change ELSE to .else
+	change ENDM to .endmacro
+
+	input variables file into beginning
+	put variable values in zero page
+
+	include the init file to the proper init in code
+
+	stick rts at end of player code

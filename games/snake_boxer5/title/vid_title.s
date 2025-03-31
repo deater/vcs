@@ -4,9 +4,9 @@
 
 ; by Vince `deater` Weaver <vince@deater.net>
 
-.include "../../vcs.inc"
+.include "../../../vcs.inc"
 
-.include "zp.inc"
+.include "../zp.inc"
 
 ; we're in bank0 here
 
@@ -80,13 +80,13 @@ do_title:
 	jmp	switch_to_bank1_and_start_game
 
 
-.include "position.s"
+.include "../position.s"
 
-.include "common_routines.s"
+.include "../common_routines.s"
 
 .include "sound_notes.s"
 
-.include "delay.s"
+.include "../delay.s"
 
 .align $100
 .include "title_data.inc"

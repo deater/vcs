@@ -4,9 +4,9 @@
 
 ; by Vince `deater` Weaver <vince@deater.net>
 
-.include "../../vcs.inc"
+.include "../../../vcs.inc"
 
-.include "zp.inc"
+.include "../zp.inc"
 
 ; this is bank1 (title is bank0) of an 8k cartridge
 
@@ -34,9 +34,9 @@ gameplay:
 
 	jmp	switch_to_bank0_and_start_game
 
-
-.include "common_routines.s"
-.include "random8.s"
+.include "../position.s"
+.include "../common_routines.s"
+.include "../random8.s"
 .include "sound_update.s"
 .include "sound_trigger.s"
 .include "sfx.inc"

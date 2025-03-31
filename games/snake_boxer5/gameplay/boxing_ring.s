@@ -1556,5 +1556,3 @@ switch_snake_direction:
 	rts								; 6
 ; 28
 
-
-.include "position.s"
