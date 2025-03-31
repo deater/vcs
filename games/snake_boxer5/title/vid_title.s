@@ -8,7 +8,10 @@
 
 .include "../zp.inc"
 
-; we're in bank0 here
+; we're in bank0 here (first 4k of 8k ROM)
+
+;==========================
+; bank switching code
 
 switch_to_bank1_and_start_game:
 	bit	$1FF9		; switch to bank1
@@ -20,6 +23,12 @@ switched_from_bank1_and_reset:
 	bit	$1FF9		; switch to bank1
 switched_from_bank1_and_title:
 	jmp	do_title
+
+
+;=======================
+; start code
+;=======================
+
 
 start:
 	sei		; disable interrupts
@@ -54,17 +63,18 @@ clear_loop:
 ; Set tt_timer and tt_cur_note_index_c0/1 to 0.
 ; All other variables can start with any value.
 ; =====================================================================
-        lda #0
-        sta tt_cur_pat_index_c0
-        lda #4
-        sta tt_cur_pat_index_c1
-        ; the rest should be 0 already from startup code. If not,
-        ; set the following variables to 0 manually:
-        ; - tt_timer
-        ; - tt_cur_pat_index_c0
-        ; - tt_cur_pat_index_c1
-        ; - tt_cur_note_index_c0
-        ; - tt_cur_note_index_c1
+
+	lda	#0
+	sta	tt_cur_pat_index_c0
+	lda	#4
+	sta	tt_cur_pat_index_c1
+	; the rest should be 0 already from startup code. If not,
+	; set the following variables to 0 manually:
+	; - tt_timer
+	; - tt_cur_pat_index_c0
+	; - tt_cur_pat_index_c1
+	; - tt_cur_note_index_c0
+	; - tt_cur_note_index_c1
 
 
 	;============================

@@ -3,13 +3,14 @@
 	;===========================
 	; ideally called with VBLANK disabled
 
-	lda	#120
+do_videlectrix_title:
+	lda	#120			; initial runner position
 	sta	RUNNER_X
 
-	lda	#9
+	lda	#9			; runner state (?)
 	sta	RUNNER_STATE
 
-	lda	#0
+	lda	#0			; clear some things to zero
 	sta	FRAME
 	sta	FRAMEH
 	sta	RUNNER_COUNT
@@ -33,7 +34,7 @@ level_frame:
 	;=================================
 	;=================================
 
-	ldx	#30
+	ldx	#30							; 2
 	jsr	common_delay_scanlines
 ; 10 cycles
 
@@ -42,32 +43,30 @@ level_frame:
 	;==============================
 	; update runner state
 
-	inc	FRAME							; 5
+	inc	FRAME		; increment frame count			; 5
 	bne	no_oflo							; 2/3
 	inc	FRAMEH							; 5
 no_oflo:
-	lda	FRAME							; 3
+
+	lda	FRAME		; only move every 1/32 frames		; 3
 	and	#$1f							; 2
 	bne	same_frame						; 2/3
 
-	lda	RUNNER_COUNT						; 3
+	lda	RUNNER_COUNT	; don't move beyond max state		; 3
 	cmp	#MAX_RUNNER_STATE					; 2
 	bcs	same_frame						; 2/3
 
 	inc	RUNNER_COUNT	; increment count each 32 frames (~0.5s); 5
 
-	ldx	RUNNER_COUNT		; lookup state for new count	; 3
+	ldx	RUNNER_COUNT	; lookup state for new count		; 3
 	lda	runner_state,X						; 4+
 	sta	RUNNER_STATE						; 3
 
-	cpx	#4		; start music after 1s?
-	bne	same_frame
+	cpx	#4		; start music after 1s?			; 2
+	bne	same_frame						; 2/3
 
-	ldy	#VID_THEME
-	sty	NOTE_POINTER
-
-;	ldy	#SFX_GAMEOVER
-;	jsr	trigger_sound
+	ldy	#VID_THEME	; set music pointer			; 2
+	sty	NOTE_POINTER						; 3
 
 same_frame:
 
