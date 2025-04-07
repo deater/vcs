@@ -1,3 +1,53 @@
+Snake Behavior.
+This is based on the Java port
+https://github.com/daniel-tran/snake-boxer-collection/
+
+When snake levels up:
+	xspeed+=.1
+	attack-multiplier+=.1
+	damageMultipler*=.9
+	chance_of_action_after_hurt+=.1
+	chance_change_direction=0.5
+	chance_block=0.4
+	chance_attack=0.75
+	chance_action_after_hurt=0.5
+	
+	returning to idle
+		50% chance of switching direction
+		if was_hurt,	brief invincibility to avoid stuck by hits
+	have a countdown (random) until switch direction?
+		when hits, pick random#, compare to chance_change_direction
+		to see if should or not
+	
+	action time
+		countdown next action timer
+		random.  attack/block/idle
+			so above defaults,
+				if random()<0.75, attack
+				else if <0.40, block.  this makes no sense
+
+	initial startup
+		behavior useranadombehavior=0
+		actionafterhurt=0
+		default behavior=2
+			claims real game behavior not change with time		
+
+	three behavior types:
+		0.  full random
+			direction/block/attack all random
+			hit after hurt =0.5
+		1.  mostly attack
+			chnagedir=0.75
+			attack=1.0
+			block=0.1
+		2. mostly block
+			changedir=0.25
+			changeblock=0.8
+			chanceattack=0.1
+		default:
+			
+
+
 Collision detect
 
 

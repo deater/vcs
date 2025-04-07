@@ -14,17 +14,19 @@
 
 
 start:
-switch_to_bank0_and_start_game:
-	bit	$1FF8
+switch_to_bank0_and_reset:
+	bit	$1FF8			; switch to bank0, execution continues
+					; at start of cartridge
 
 switched_from_bank0_and_start_game:
-	jmp	gameplay
+	jmp	gameplay		; get here if in bank0 switched to
+					; bank1
 
 switch_to_bank0_and_start_title:
-	bit	$1FF8
+	bit	$1FF8			; switch to bank0 and re-run title
 
-	jmp	gameplay
-
+	jmp	gameplay		; came from bank0?
+					; FIXME: is this needed?
 gameplay:
 
 .include "boxing_ring.s"
@@ -32,7 +34,7 @@ gameplay:
 	; if finish, restart game?
 	; maybe go to title instead of to videlectrix?
 
-	jmp	switch_to_bank0_and_start_game
+	jmp	switch_to_bank0_and_reset
 
 .include "../position.s"
 .include "../common_routines.s"

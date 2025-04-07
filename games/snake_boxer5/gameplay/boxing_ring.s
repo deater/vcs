@@ -1,10 +1,13 @@
-PUNCH_LENGTH = 15
-SNAKE_INJURE_TIME = 15
-SNAKE_KO_TIME	= 64
-SNAKE_ATTACK_LENGTH = 30
-BOXER_KO_TIME	= 64
+; game behavior constants
 
-SNAKE_ATTACK_MASK = $3f		; 1 time in 64
+INITIAL_SNAKE_SPEED	= 1
+PUNCH_LENGTH		= 15
+SNAKE_INJURE_TIME	= 15
+SNAKE_KO_TIME		= 64
+SNAKE_ATTACK_LENGTH	= 30
+BOXER_KO_TIME		= 64
+
+SNAKE_ATTACK_MASK	= $3f	; 1 time in 64
 				; TODO, make comparison with zero page
 				; value and not mask
 
@@ -20,9 +23,11 @@ SNAKE_ATTACK_MASK = $3f		; 1 time in 64
 	;===========================
 	; ideally called with VBLANK disabled in VBLANK line 28
 
+boxing_ring_init:
+
 ; 13
 
-	lda	#20							; 2
+	lda	#20			; set health			; 2
 	sta	SNAKE_HEALTH						; 3
 	sta	BOXER_HEALTH						; 3
 ; 21
@@ -30,12 +35,12 @@ SNAKE_ATTACK_MASK = $3f		; 1 time in 64
 					; press leftover from title
 ; 24
 
-	lda	#3							; 2
+	lda	#3			; set number of lives		; 2
 	sta	MANS							; 3
-	sta	RAND_C							; 3
+	sta	RAND_C			; seed random number generator	; 3
 
 ; 42
-	lda	#1							; 2
+	lda	#INITIAL_SNAKE_SPEED	; init snake speed (1)		; 2
 	sta	SNAKE_SPEED						; 3
 ; 47
 	sta	WSYNC
@@ -43,38 +48,46 @@ SNAKE_ATTACK_MASK = $3f		; 1 time in 64
 ;=============================
 
 ; 0
-	lda	#SNAKE_SPRITE_NEUTRAL	; 0				; 2
-	sta	SNAKE_WHICH_SPRITE					; 3
+	lda	#0			; set some values to 0		; 2
+	sta	SNAKE_WHICH_SPRITE	; SNAKE_SPRITE_NEUTRAL (0)	; 3
 ; 5
-	sta	SNAKE_STATE						; 3
-	sta	BOXER_WHICH_SPRITE					; 3
-	sta	BOXER_STATE						; 3
+	sta	SNAKE_STATE		; SNAKE_NEUTRAL (0)		; 3
+	sta	BOXER_WHICH_SPRITE	; BOXER_SPRITE_NEUTRAL (0)	; 3
+	sta	BOXER_STATE		; BOXER_NEUTRAL (0)		; 3
 ; 14
-;	lda	#0
-	sta	FRAME							; 3
+	sta	FRAME			; reset frame counter to 0	; 3
 	sta	FRAMEH							; 3
-	sta	BOXER_STATE						; 3
-	sta	SNAKE_KOS						; 3
-	sta	SNAKE_KOS_BCD						; 3
-	sta	SNAKE_X_LOW						; 3
-	sta	SNAKE_SPEED_LOW						; 3
-; 38
+	sta	SNAKE_KOS		; snake KOs			; 3
+	sta	SNAKE_KOS_BCD		; BCD version of KOs		; 3
+	sta	SNAKE_X_LOW		; low byte of snake position	; 3
+	sta	SNAKE_SPEED_LOW		; low byte of snake speed	; 3
+; 32
 
+	;===============================
+	; restart level
+	;===============================
 	; re-ceneter both, ring bell
 level_restart:
-
-	lda	#0
+; 32 / ??
+	lda	#0			; level not over		; 2
 	sta	LEVEL_OVER						; 3
-
-	lda	#SFX_BELL		; start with bell
-	sta	SFX_NEW
+; 37
+	lda	#SFX_BELL		; start with bell sound effect	; 2
+	sta	SFX_NEW							; 3
+; 47
 
 	lda	#64			; roughly center on screen	; 2
 	sta	BOXER_X							; 3
 	lda	#72							; 2
 	sta	SNAKE_X							; 3
-
+; 57
 	sta	WSYNC
+
+	;=================================
+	;=================================
+	; main boxing loop
+	;=================================
+	;=================================
 
 level_frame:
 
@@ -96,6 +109,11 @@ level_frame:
 	;=================================
 	; 37 lines of vertical blank
 	;=================================
+	;=================================
+
+
+	;=================================
+	; VBLANK0..VBLANK10
 	;=================================
 
 	ldx	#10

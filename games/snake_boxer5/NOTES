@@ -1,0 +1,18 @@
+12 lines score
+8 lines of rope
+1 line setup
+76 lines snake
+4 lines to setup boxer
+52 lines of boxer
+8 lines of rope...
+
+
+
+
+
+Boxer nose always same place except backs up a bit when hit
+
+the sprites never actually overlap, goes backward when hit (and only
+hits direct in middle) and snake goes up when hit
+
+health bar seems to be 20 for snake and 10 for you
