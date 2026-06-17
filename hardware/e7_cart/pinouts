@@ -1,0 +1,110 @@
+
+Top
+ |----------------------------|  Chips face TV
+ || ROM1  | | ROM2  | | E7   ||   
+ || U3    | | U2    | | U1   ||  non-chip side faces you
+ || 8k    | | 4k    | |      ||
+ ||       | |       | |      ||
+ ||       | |       | |      ||
+ ||       | |       | |      ||
+ ||       | |       | |      ||
+ ||       | |       | |      ||
+ |---/\---- ---/\---- |      ||
+ |------------------- |      ||
+ ||                 | |      ||
+ || RAM (U4)       <  |      ||
+ ||_________________| |__/\__||
+ |                            |
+ |    *-------*    ==O cap    |
+  \  GND     W1     * 128k   /
+   \                        /
+    \                      /
+     ||||||||||||||||||||||
+     13 ................24
+
+Based on kevtris here, verified myself too
+https://forums.atariage.com/topic/352717-boards-and-mattel-e7-backswing-options/
+
+
+40-pin "big game" E7 chip, mine is marked 
+	VTI
+	325
+	0098-0748
+	VC 2023
+
+ 1 - A12  (2600)		40 - +5V
+ 2 - A0   (2600)		39 - "128K"
+ 3 - A0R  (ROM/RAM)		38 - /OE (RAM)
+ 4 - A1   (2600)		37 - /CE ROM1 (4K)
+ 5 - A1R  (ROM/RAM)		36 - /CE ROM0 (8K)
+ 6 - A2   (2600)		35 - nc (maybe A13?)
+ 7 - A2R  (ROM/RAM)		34 - A11 (ROM) A8 (RAM)
+ 8 - A3   (2600)		33 - A12 (ROM) A9 (RAM)
+ 9 - A3R  (ROM/RAM)		32 - /WE (RAM)
+10 - A4   (2600)		31 - D0 (2600/RAM/ROM)
+11 - A4R  (ROM/RAM)		30 - D1 (2600/RAM/ROM)
+12 - A5   (2600)		29 - D2 (2600/RAM/ROM)
+13 - A5R  (ROM/RAM)		28 - D3 (2600/RAM/ROM)
+14 - A6   (2600)		27 - D4 (2600/RAM/ROM)
+15 - A6R  (ROM/RAM)		26 - D5 (2600/RAM/ROM)
+16 - A7   (2600)		25 - D6 (2600/RAM/ROM)
+17 - A7R  (ROM/RAM)		24 - D7 (2600/RAM/ROM)
+18 - A11  (2600)		23 - A8 (2600/ROM)
+19 - A10  (RAM)			22 - A9 (2600/ROM)
+20 - GND			21 - A10 (2600/ROM)
+ 
+ROM pinout, standard for 24-pin 8K roms, MCM67866
+Note, sadly does not match that of 8k EPROMs, needing adapter
+The MCM67866 matches many common vintage machines, including original
+IBM 5150 so adapters are available as the pinouts are close.
+
+ 1 - A7			24 - VCC
+ 2 - A6			23 - A8
+ 3 - A5			22 - A9
+ 4 - A4			21 - A12
+ 5 - A3			20 - /CE
+ 6 - A2			19 - A10
+ 7 - A1			18 - A11
+ 8 - A0			17 - D7
+ 9 - D0			16 - D6
+10 - D1			15 - D5
+11 - D2			14 - D4
+12 - GND		13 - D3
+
+2764 8k (64kbit) pinout, 28-pins
+
+ 1- VPP			28 - Vcc
+ 2- A12			27 - /P
+ 3 - A7			26 - NC
+ 4 - A6			25 - A8
+ 5 - A5			24 - A9
+ 6 - A4			23 - A11
+ 7 - A3			22 - /G
+ 8 - A2			21 - A10
+ 9 - A1			20 - /E
+10 - A0			19 - D7
+11 - D0			18 - D6
+12 - D1			17 - D5
+13 - D2			16 - D4
+14 - GND		15 - D3
+
+
+RAM pinout.  Mine is
+Toshiba TMI12009P-25A
+	8397 NAA
+Probably a 1kx8 SRAM.  -A might mean Pin 19/(A10) ignored/always high?
+
+Here is a 6116 pinout, which matches.  6116 is a 2k x 8 SRAM
+
+ 1 - A7			24 - VCC
+ 2 - A6			23 - A8
+ 3 - A5			22 - A9
+ 4 - A4			21 - /WE
+ 5 - A3			20 - /OE
+ 6 - A2			19 - A10
+ 7 - A1			18 - /CS
+ 8 - A0			17 - D7
+ 9 - D0			16 - D6
+10 - D1			15 - D5
+11 - D2			14 - D4
+12 - GND		13 - D3

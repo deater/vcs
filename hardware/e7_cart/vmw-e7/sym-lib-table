@@ -1,0 +1,4 @@
+(sym_lib_table
+  (version 7)
+  (lib (name "atari2600")(type "KiCad")(uri "/home/vince/research/vcs.git/hardware/e7_cart/kicad/atari2600.kicad_sym")(options "")(descr ""))
+)
