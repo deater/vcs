@@ -4,8 +4,8 @@ Top
  || ROM1  | | ROM2  | | E7   ||   
  || U3    | | U2    | | U1   ||  non-chip side faces you
  || 8k    | | 4k    | |      ||
- ||       | |       | |      ||
- ||       | |       | |      ||
+ ||       | |       | |      ||	 2600 socket is similar to EBC12DCWN
+ ||       | |       | |      ||  Roughly 1.3" wide on bottom
  ||       | |       | |      ||
  ||       | |       | |      ||
  ||       | |       | |      ||
