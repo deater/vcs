@@ -3087,7 +3087,7 @@
 		(pad "13" connect rect
 			(at 13.97 0 180)
 			(size 1.524 4.572)
-			(layers "F.Mask" "F.Cu")
+			(layers "F.Cu" "F.Mask")
 			(net 7 "D3")
 			(pinfunction "D3")
 			(pintype "bidirectional")
@@ -3249,6 +3249,16 @@
 		(uuid "0cbd1614-2298-4cc5-b218-490979bd2eb0")
 	)
 	(gr_line
+		(start 162.3314 40.64)
+		(end 91.7448 40.64)
+		(stroke
+			(width 0.05)
+			(type default)
+		)
+		(layer "Edge.Cuts")
+		(uuid "107c9bc6-444b-4db6-8611-310a76a57d09")
+	)
+	(gr_line
 		(start 143.256 129.286)
 		(end 143.256 116.586)
 		(stroke
@@ -3260,7 +3270,7 @@
 	)
 	(gr_line
 		(start 91.694 97.536)
-		(end 91.694 34.036)
+		(end 91.7448 40.64)
 		(stroke
 			(width 0.05)
 			(type default)
@@ -3290,7 +3300,7 @@
 	)
 	(gr_line
 		(start 162.306 97.536)
-		(end 162.306 34.036)
+		(end 162.3314 40.64)
 		(stroke
 			(width 0.05)
 			(type default)
@@ -3317,16 +3327,6 @@
 		)
 		(layer "Edge.Cuts")
 		(uuid "c2240ff7-ffc9-4107-b4b3-45cd7a783523")
-	)
-	(gr_line
-		(start 162.306 34.036)
-		(end 91.694 34.036)
-		(stroke
-			(width 0.05)
-			(type default)
-		)
-		(layer "Edge.Cuts")
-		(uuid "f863decf-a75a-47bd-84b0-2e6581a2dfdc")
 	)
 	(segment
 		(start 118.491 79.248)
