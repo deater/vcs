@@ -3087,7 +3087,7 @@
 		(pad "13" connect rect
 			(at 13.97 0 180)
 			(size 1.524 4.572)
-			(layers "*.Mask" "F.Cu")
+			(layers "F.Mask" "F.Cu")
 			(net 7 "D3")
 			(pinfunction "D3")
 			(pintype "bidirectional")
