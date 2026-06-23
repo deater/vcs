@@ -2909,6 +2909,22 @@
 			(embedded_fonts no)
 		)
 	)
+	(junction
+		(at 26.67 24.13)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "a639e9d8-a542-496a-bc1f-3af157bdc924")
+	)
+	(wire
+		(pts
+			(xy 26.67 24.13) (xy 39.37 24.13)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "0328e36e-441d-4f66-a2c7-d7480e82cbc7")
+	)
 	(global_label "A12"
 		(shape input)
 		(at 55.88 69.85 180)
@@ -5990,6 +6006,76 @@
 		)
 	)
 	(symbol
+		(lib_id "Device:C_US")
+		(at 39.37 27.94 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "18f644a3-d12d-4c80-a737-b7692ebff91f")
+		(property "Reference" "C2"
+			(at 43.18 26.9239 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "C_US"
+			(at 43.18 29.4639 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Capacitor_THT:C_Disc_D3.0mm_W1.6mm_P2.50mm"
+			(at 39.37 27.94 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 39.37 27.94 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "capacitor, US symbol"
+			(at 39.37 27.94 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "bd31ca65-4e54-41a3-b2b5-882081cd03a7")
+		)
+		(pin "2"
+			(uuid "603215ae-6fdc-4156-8260-c9f9e1035339")
+		)
+		(instances
+			(project "vmw-e7"
+				(path "/e1e1ce32-e8bd-40bc-a096-fc4c9939483f"
+					(reference "C2")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "Connector:Conn_01x02_Pin")
 		(at 86.36 24.13 0)
 		(unit 1)
@@ -6185,6 +6271,72 @@
 			(project ""
 				(path "/e1e1ce32-e8bd-40bc-a096-fc4c9939483f"
 					(reference "U5")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GNDREF")
+		(at 39.37 31.75 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "40668499-cd2c-46f2-8533-fa2f579d848e")
+		(property "Reference" "#PWR02"
+			(at 39.37 38.1 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GNDREF"
+			(at 39.37 36.83 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 39.37 31.75 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 39.37 31.75 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GNDREF\" , reference supply ground"
+			(at 39.37 31.75 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "4d94f335-21a0-4788-b041-4f595aaa07a2")
+		)
+		(instances
+			(project ""
+				(path "/e1e1ce32-e8bd-40bc-a096-fc4c9939483f"
+					(reference "#PWR02")
 					(unit 1)
 				)
 			)
