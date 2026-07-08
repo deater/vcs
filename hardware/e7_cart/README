@@ -47,8 +47,86 @@ info on RAM
 SC-3000 basic cartridge also has TMM2009 RAM
 	https://www.smspower.org/forums/12958-SC3000BasicLevelIIIABoardPictures
 
+	Undocumented by Toshiba, really hard to find info
+
+	The TMM2009-A (we have) is a 1k SRAM in a 2k SRAM package,
+		with A10 tied to 5V?
+	The TMM2009-B is the same but ground instead (which is maybe why
+		the A10/GND jumper is there
+
+
 atariage on E7 boards
 
 	https://forums.atariage.com/topic/352717-boards-and-mattel-e7-backswing-options/
 
+	Other boards that use the E7:
+	+ Masters of the Universe
+	+ Bump 'n Jump
 
+Update: July 2026
+
++ Made custom new board in Ki-cad (see the vmw-e7 directory)
+
++ Transferred known good chips from old board (desoldered) to new one:
+	works!
+
++ Used EPROM with same data using adapter sockets: ????
+
+	Have D2764D (64k-bit, 8k-byte) EPROMs
+
+	Burgertime memory layout is 12k across the two chips, one 4k one 8k
+
+	My attempt to rip the 4k ROM only gave the first 2k for some reason?
+	My EPROM burner isn't capable of reading the 8K roms
+
+	The prepared ROM dumps are 16k
+
+		It looks like the 4k ROM happens first, doubled
+6018 48ad f0f9		0000-07ff (0k-2k) 4k ROM bottom  (6e0-7ff all $00)
+0201 0804 f3b6		0800-0fff (2k-4k) data
+6018 48ad f0f9		1000-17ff (4k-6k) first 2k repeats?
+0201 0804 f3b6		1800-1fff (6k-8k)
+
+0000 0000 0000		2000-27ff (8k-10k)
+e8ad a2ff a9fd		2800-2fff (10k-12k) data
+0408 0102 0b20		3000-37ff (12k-14k) first 2k repeats?
+ffff ffff ffff		3800-3fff (14k-16k) 800-bff = $ff, a00-fff = $00
+
+
+
+			0000:1000 (but 6e0-7FF is $00 and 800-fff is $ff)
+
+
+	split the 16k ROM into two 8k chunks with the "dd" tool
+
+	UPD2764 @DIP28
+
+	minipro -y -p "UPD2764 @DIP28" -w bt_8k.bin
+
+	adapters are 2764-27512 to MCM68766 adapters from
+		(originally for use in IBM 5150)
+		"go4retro.com" 
+	https://minuszerodegrees.net/5150/motherboard/IBM%205150%20motherboard%20-%20Use%20of%202364%20adapter.htm
+	https://store.go4retro.com/2364-adapter/
+
+
+	In the end, it works!
+	
+
++ Change RAM to 2k version: ????
+	https://www.jameco.com/z/HM6116P-3-HITACHI-IC-6116P-3-CMOS-SRAM-16-384-Bit-2Kx8-150ns_42809.html
+
+	Try putting in an HM6116P
+		causes glitch?
+
+	should jumper RAM a10 to ground (there was a pin on the original
+		PCB to allow this)
+	didn't seem to help
+
+
++ Try EPROM programmed with Myst!  ???
+
+	dd if=myst.e7 of=myst_rom2.bin bs=1k count=8
+	dd if=myst.e7 of=myst_rom1.bin bs=1k count=8 skip=8
+
+	minipro -y -p "UPD2764 @DIP28" -w myst_rom2.bin
