@@ -2,6 +2,11 @@
 
 	lda	#$f
 	sta	BUTTON_COUNTDOWN
+	sta	NEW_TEST
+
+	lda	#$0
+	sta	DONE_TEST
+
 
 ; come in with 9 cycles?
 
@@ -33,11 +38,21 @@ start_test_frame:
 
 
 	;=======================
-	; scanline 36 -- ???
+	; scanline 36 -- check new test
 
-	inc	SCORE_LOW
-	dec	SCORE_HIGH
+	lda	NEW_TEST
+	beq	done_new_test
 
+	lda	#0
+	sta	NEW_TEST
+	sta	DONE_TEST
+
+	lda	#$10
+	sta	WHICH_PAGE
+
+	sta	E7_SET_BANK0	; start in BANK0?
+
+done_new_test:
 	sta	WSYNC
 
 	;=======================
@@ -204,20 +219,101 @@ blurgh:
 ; 68
 	sta	WSYNC
 ; 71
-	; begin of scanline 8
 
 
+	;==================================
+	;==================================
+	;==================================
+	; memory check
+	;==================================
+	;==================================
+	;==================================
+
+	;=================================
+	; scanline 8 = setup
+	;==================================
+
+	lda	DONE_TEST
+	bne	done_checking
+
+	lda	#$00						; 2
+	sta	EXPECTED_H					; 3
+	lda	#$00						; 2
+	sta	EXPECTED_L					; 3
+	sta	BAD_RESULT					; 3
+
+	lda	#$00						; 2
+	sta	INL						; 3
+	lda	WHICH_PAGE					; 3
+	sta	INH						; 3
+
+	sta	WSYNC
 
 
+	;==================================
+	;==================================
+	; scanline 9 - 137 = check 2 bytes
+	;==================================
+	;==================================
+
+	ldx	#$80						; 2
+	ldy	#0						; 2
+
+row_loop:
+
+
+compare_loop:
+	lda	(INL),Y						; 5
+	sta	SCORE_HIGH					; 3
+	cmp	EXPECTED_H					; 3
+	bne	bad_result					; 2/3
+
+	iny							; 2
+	lda	(INL),Y						; 5
+	sta	SCORE_LOW					; 3
+	cmp	EXPECTED_L					; 3
+	bne	bad_result					; 2/3
+
+	iny							; 2
+
+	clc							; 2
+	lda	EXPECTED_L					; 3
+	adc	#2						; 2
+	sta	EXPECTED_L					; 3
+	lda	#0						; 2
+	adc	EXPECTED_H					; 3
+	sta	EXPECTED_H					; 3
+
+	dex							; 2
+
+	sta	WSYNC
+	beq	done_checking
+	bne	row_loop
+
+bad_result:
+	lda	#$1
+	ora	BAD_RESULT
+	lda	#$20
+	sta	COLUPF
+
+
+done_checking:
 
 	;=============================================
 	;=============================================
 	;=============================================
 	;=============================================
 
-	; draw 184 lines
+	; draw 192-137 = 55 lines
+
+	lda	DONE_TEST
+	beq	not_done_test
 
 	ldx	#184
+	jmp	empty_loop
+
+not_done_test:
+	ldx	#55
 empty_loop:
 	sta	WSYNC
 	dex
@@ -229,9 +325,24 @@ empty_loop:
 	;==========================
 	;==========================
 
-	ldx	#29
+	ldx	#28
 	jsr	common_overscan
 
+
+	;==========================
+	; overscan 28
+	;==========================
+	; check for done page
+
+	inc	WHICH_PAGE
+	lda	WHICH_PAGE
+	cmp	#$18
+	bne	check_which_page_done
+
+	inc	DONE_TEST
+
+check_which_page_done:
+	sta	WSYNC
 
 	;==========================
 	; overscan 29
@@ -262,4 +373,8 @@ tdone_check_button:
 tdone_test:
 
 
+	inc	NEW_TEST
+
 	sta	WSYNC
+
+	jmp	start_test_frame
