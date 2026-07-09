@@ -1,4 +1,4 @@
-LINKER_SCRIPT = ../../linker_script
+LINKER_SCRIPT = ../../../linker_script
 
 all:	test.rom sc_screen.rom title_screen.rom game_over_screen.rom
 

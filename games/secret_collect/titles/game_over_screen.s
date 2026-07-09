@@ -4,7 +4,7 @@
 
 ; Draws an asymmetric playfield
 
-.include "../../vcs.inc"
+.include "../../../vcs.inc"
 
 ; zero page addresses
 
