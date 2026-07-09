@@ -6,7 +6,18 @@ CFLAGS = -Wall -O2
 LFLAGS =
 
 
-all:	e7_test.e7
+all:	e7_test.e7 e7_test_rom1.bin e7_test_rom2.bin
+
+###
+
+e7_test_rom1.bin:	e7_test.e7
+	dd if=e7_test.e7 of=e7_test_rom1.bin bs=1k count=8 skip=8
+
+e7_test_rom2.bin:	e7_test.e7
+	dd if=e7_test.e7 of=e7_test_rom2.bin bs=1k count=8
+
+
+
 
 ###
 
