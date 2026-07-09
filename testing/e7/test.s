@@ -22,12 +22,21 @@ start_test_frame:
 	;=============================
 
 
-.repeat 34
+.repeat 20
 	sta	WSYNC
 .endrepeat
 
 	;=======================
+	; scanline 21..35?
+
+.include "update_numbers.s"
+
+
+	;=======================
 	; scanline 36 -- ???
+
+	inc	SCORE_LOW
+	dec	SCORE_HIGH
 
 	sta	WSYNC
 

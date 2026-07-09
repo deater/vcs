@@ -1,7 +1,14 @@
 ; zero page addresses
 
-TEMP1		=	$90
-BUTTON_COUNTDOWN=	$94
+LEVEL		= $8B
+INL		= $8C
+INH		= $8D
+SCORE_LOW	= $8E
+SCORE_HIGH	= $8F
+
+TEMP1		= $90
+BUTTON_COUNTDOWN= $94
+MANS		= $96
 
 SCORE_SPRITE_LOW_0      =       $A0
 SCORE_SPRITE_LOW_1      =       $A1
@@ -21,6 +28,15 @@ SCORE_SPRITE_HIGH_6     =       $AD
 
 TEXT_COLOR              =       $AE
 LEVEL_COLOR		=	$AF
+
+MANS_SPRITE_0           =       $B0
+MANS_SPRITE_1           =       $B1
+MANS_SPRITE_2           =       $B2
+MANS_SPRITE_3           =       $B3
+MANS_SPRITE_4           =       $B4
+MANS_SPRITE_5           =       $B5
+MANS_SPRITE_6           =       $B6
+
 
 LEVEL_SPRITE0           =       $C0
 LEVEL_SPRITE1           =       $C1
