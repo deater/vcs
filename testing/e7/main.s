@@ -8,24 +8,15 @@
 
 .include "zp.inc"
 
-.if 0
-.include "locations.inc"
-
-.include "locations/level_locations.inc"
-.include "rom_bank5_routines.inc"
-.include "rom_bank6_routines.inc"
 
 	;==============================
 	;==============================
-.endif
 
 e7_test:
 	sei		; disable interrupts
 	cld		; clear decimal bit
 
 restart_test:
-
-.if 0
 
 	; init zero page and addresses to 0
 
@@ -43,13 +34,16 @@ clear_loop:
 	; var init
 	;==============================
 
-	lda	#$F8
-	sta	LIBRARY_PAGE_MASK
+;	lda	#$F8
+;	sta	LIBRARY_PAGE_MASK
 
 	;==============================
-	; Run intro
+	; Display Title Screen
 	;==============================
 
+.include "title_screen.s"
+
+.if 0
 	;=============================
 	; first run title (MYST logo)
 
@@ -111,21 +105,18 @@ load_new_level:
 	;===========================
 
 	.include "level_engine.s"
-
+.endif
 	;===========================
 	; common routines
 	;===========================
 
-	.include "zx02_optim.s"
-
-	.include "level_data.inc"
-;	.include "load_level.s"
-	.include "position.s"
 	.include "common_routines.s"
 
-;	.include "sound_update.s"
-	.include "sfx_data.inc"
-.endif
+	;==========================
+	; graphics
+	;==========================
+.align $100
+	.include "e7_title.inc"
 
 ; e7 signature for MAME */
 ; this is LDA $FFE5
