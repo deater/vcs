@@ -34,8 +34,9 @@ clear_loop:
 	; var init
 	;==============================
 
-;	lda	#$F8
-;	sta	LIBRARY_PAGE_MASK
+	lda	#$f
+	sta	BUTTON_COUNTDOWN
+
 
 	;==============================
 	; Display Title Screen
@@ -43,69 +44,12 @@ clear_loop:
 
 .include "title_screen.s"
 
-.if 0
-	;=============================
-	; first run title (MYST logo)
-
-	; title is now in BANK5
-
-	sta	E7_SET_BANK5		; title is in rom bank6
-	sta	E7_SET_256_BANK0	; not necessary?
-	jsr	do_title
-
-	;=============================
-	; then run cleft
-
-	; cleft is in BANK6
-
-	sta	E7_SET_BANK6		; cleft is in rom bank6
-	jsr	do_cleft
-
 	;==============================
-	; Show book (ROM bank 6)
+	; Run Tests
 	;==============================
-	; this all happens in bank 6...
 
-;	ldy	#LOCATION_ARRIVAL_N
-;	sty	CURRENT_LOCATION
-;	sty	LINK_DESTINATION
+.include "test.s"
 
-	; switch to bank 6
-;	sta	E7_SET_BANK6	; not necessary, already in bank6?
-
-;	jsr	book_common
-
-
-	;==========================
-	; DEBUG/debug
-	;	makes getting white page easier
-
-.if 0
-	dec	SWITCH_STATUS
-.else
-	nop
-	nop
-.endif
-
-
-	;==============================
-	; load in current level
-	;==============================
-load_new_level:
-;	jsr	load_level
-
-	; we inline it now to save 4 bytes
-
-	.include "load_level.s"
-
-	;===========================
-	;===========================
-	; main engine
-	;===========================
-	;===========================
-
-	.include "level_engine.s"
-.endif
 	;===========================
 	; common routines
 	;===========================
@@ -117,6 +61,7 @@ load_new_level:
 	;==========================
 .align $100
 	.include "e7_title.inc"
+	.include "number_font.inc"
 
 ; e7 signature for MAME */
 ; this is LDA $FFE5

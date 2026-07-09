@@ -129,11 +129,11 @@ done_loop:
 	; debounce
 
 	lda	BUTTON_COUNTDOWN					; 3
-	beq	twaited_button_enough					; 2/3
+	beq	waited_button_enough					; 2/3
 	dec	BUTTON_COUNTDOWN					; 5
 	jmp	done_check_button					; 3
 
-twaited_button_enough:
+waited_button_enough:
 
 	lda	INPT4		; check joystick button pressed		; 3
 	bpl	done_title_screen					; 2/3
