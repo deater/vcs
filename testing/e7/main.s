@@ -48,13 +48,15 @@ clear_loop:
 	; Run Tests
 	;==============================
 
-.include "test.s"
+	jsr	rom_tests
 
 	;===========================
 	; common routines
 	;===========================
 
 	.include "common_routines.s"
+	.include "rom_tests.s"
+	.include "print_numbers.s"
 
 	;==========================
 	; graphics
