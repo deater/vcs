@@ -81,7 +81,13 @@ onek_ram_write_loop:
 
 ; insert glitches to test
 
-.if 1
+.if 0
+	lda	#$dd
+	sta	$1280
+.endif
+
+.if 0
+	sta	E7_SET_256_BANK0
 	lda	#$dd
 	sta	$1830
 .endif

@@ -4,19 +4,19 @@ rom_tests:
 
 ; Testing screens
 
-	lda	#$f
-	sta	NEW_TEST		; set new test
+
+
 
 	lda	#$0			; reset some values
 	sta	DONE_TEST
 	sta	WHICH_TEST
-	sta	PF0			; is this needed?
-	sta	PF1
-	sta	PF2
-	sta	COLUBK			; clear background to black
+;	sta	PF0			; is this needed?
+;	sta	PF1
+;	sta	PF2
 
 	lda	#$10
 	sta	ROM_START		; this can vary if RAM
+	sta	NEW_TEST		; set new test (nonzero)
 
 	sta	WSYNC
 
@@ -61,7 +61,9 @@ start_test_frame:
 	sta	DONE_TEST	; reset done_test			; 3
 	sta	EXPECTED_L	; reset counter				; 3
 	sta	BAD_RESULT						; 3
-; 25
+	sta	COLUBK			; clear background to black
+
+; --
 	lda	WHICH_TEST	; set upper value based on test		; 3
 	tax			; in X for later			; 2
 	asl								; 2
@@ -307,3 +309,4 @@ not_ram:
 
 
 done_roms:
+	rts

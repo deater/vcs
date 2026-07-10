@@ -4,18 +4,14 @@ ram_tests:
 
 ; Testing screens
 
-
 	lda	#$f
-	sta	BUTTON_COUNTDOWN
 	sta	NEW_TEST
-.if 0
+
 	lda	#$0
-	sta	DONE_TEST
 	sta	WHICH_TEST
-	sta	COLUBK
 
 	sta	WSYNC
-.endif
+
 
 start_ram_test_frame:
 
@@ -54,37 +50,37 @@ start_ram_test_frame:
 	sta	NEW_TEST	; not done the test			; 3
 	sta	DONE_TEST						; 3
 	sta	EXPECTED_L	; address is 0				; 3
+	sta	COLUBK		; black background			; 3
+	sta	BAD_RESULT
+; 25
+	lda	WHICH_TEST						; 3
+	tax			; for later				; 2
+	asl								; 2
+	asl								; 2
+	asl								; 2
+	asl								; 2
+	sta	EXPECTED_H						; 3
+; 41
+	lda	#$f							; 2
+	sta	BUTTON_COUNTDOWN					; 3
+; 46
+	lda	#$ff							; 2
+	sta	DIGITS2							; 3
+	sta	DIGITS3							; 3
+; 54
 
-	lda	WHICH_TEST
-	tax
-	asl
-	asl
-	asl
-	asl
-	sta	EXPECTED_H
+	lda	#$18	; set output/input pointers			; 2
+	sta	OUTH							; 3
+	lda	#$19							; 2
+	sta	INH							; 3
 
-	lda	#$f
-	sta	BUTTON_COUNTDOWN
-
-	lda	#$ff
-	sta	DIGITS2
-	sta	DIGITS3
-
-	lda	#$18
-	sta	OUTH
-	lda	#$19
-	sta	INH
-
-; 19
-	lda	#$10							; 2
-	sta	WHICH_PAGE						; 3
-; 24
-;	ldx	WHICH_TEST
+; 64
+	; WHICH_TEST is in X
 	sta	E7_SET_256_BANK0,X	; start in BANK0?		; 3
-; 27
+; 67
 
 done_new_ram_test:
-; 12 / 27
+; 12/67
 	sta	WSYNC
 
 	;=======================
@@ -92,7 +88,6 @@ done_new_ram_test:
 
 	ldx	#0
 	stx	VBLANK
-;	ldy	#4			; ???
 	sta	WSYNC
 
 	;============================================
@@ -119,9 +114,9 @@ done_new_ram_test:
 
 	; Skip if DONE
 ; 6
-	lda	DONE_TEST					; 3
-	bne	ram_done_checking				; 2/3
-
+	lda	DONE_TEST						; 3
+	bne	skip_ram_test						; 2/3
+; 11
 
 	;===========================
 	; read back
@@ -129,34 +124,47 @@ done_new_ram_test:
 	ldy	#0							; 2
 ram_read_loop:
 	lda	$1900,Y							; 5
-	sta	DIGITS0
+	sta	RESULT_H
+	sta	DIGITS0							; 3
 	cmp	EXPECTED_H						; 3
-	bne	ram_bad_result
+	bne	ram_bad_result						; 2/3
 
 	tya								; 2
-	sta	DIGITS1
-	cmp	$1901,Y							; 5
-	bne	ram_bad_result
+	sta	DIGITS1							; 3
+	lda	$1901,Y							; 5
+	sta	RESULT_L
+	cmp	DIGITS1
+	bne	ram_bad_result						; 2/3
 
 ram_retry:
 	iny								; 2
-	iny
+	iny								; 2
 	bne	ram_read_loop						; 2/3
-	beq	ram_done_checking
+	beq	ram_done_checking		; bra			; 3
 
 ram_bad_result:
-	lda	EXPECTED_L
-	sta	DIGITS2
-	tay
-	sta	DIGITS3
+	lda	EXPECTED_H						; 3
+	sta	DIGITS2							; 3
+	tya								; 2
+	sta	DIGITS3							; 3
 
-	inc	BAD_RESULT
-	sta	COLUBK
-	jmp	ram_retry
+	lda	RESULT_H
+	sta	BAD_H
+	lda	RESULT_L
+	sta	BAD_L
+
+	inc	BAD_RESULT						; 5
+	lda	#$40							; 2
+	sta	COLUBK							; 3
+	jmp	ram_retry						; 3
 
 ram_done_checking:
 
+	inc	DONE_TEST
 	sta	WSYNC
+
+; 12 / 
+	jmp	did_ram_test
 
 	;=============================================
 	;=============================================
@@ -166,14 +174,26 @@ ram_done_checking:
 
 	; draw 192-137 = 55 lines
 
-	lda	DONE_TEST
-	beq	not_done_ram_test
 
-	ldx	#183
+skip_ram_test:
+	ldx	#184
 	jmp	ram_empty_loop
 
-not_done_ram_test:
-	ldx	#96
+did_ram_test:
+	lda	BAD_RESULT
+	beq	ram_was_ok
+
+	lda	BAD_L
+	sta	DIGITS1
+	lda	BAD_H
+	sta	DIGITS0
+
+ram_was_ok:
+
+	; 226, so + 36  97+36=133
+	; -15?
+;	ldx	#133
+	ldx	#118
 ram_empty_loop:
 	jsr	repeat_wsync
 
@@ -183,24 +203,8 @@ ram_empty_loop:
 	;==========================
 	;==========================
 
-	ldx	#28
+	ldx	#29
 	jsr	common_overscan
-
-
-	;==========================
-	; overscan 28
-	;==========================
-	; check for done page
-
-	inc	WHICH_PAGE
-	lda	WHICH_PAGE
-	cmp	#$18
-	bne	ram_check_which_page_done
-
-	inc	DONE_TEST
-
-ram_check_which_page_done:
-	sta	WSYNC
 
 	;==========================
 	; overscan 29
@@ -220,16 +224,16 @@ ram_test_continues:
 
 next_ram_test:
 
+	inc	NEW_TEST						; 5
+	inc	WHICH_TEST						; 5
 
-	inc	NEW_TEST
-	inc	WHICH_TEST
-
-	lda	WHICH_TEST
-	cmp	#5
-	beq	done_ram_test
+	lda	WHICH_TEST						; 3
+	cmp	#4							; 2
+	beq	done_ram_test						; 2/3
 
 	sta	WSYNC
 
 	jmp	start_ram_test_frame
 
 done_ram_test:
+	rts

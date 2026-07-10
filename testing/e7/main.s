@@ -73,7 +73,7 @@ again:
 	;==========================
 	; graphics
 	;==========================
-.align $100
+;.align $100
 	.include "e7_title.inc"
 	.include "number_font.inc"
 
