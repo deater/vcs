@@ -1,0 +1,18 @@
+Test ROM I developed when trying to figure out some issues with the
+RAM on an E7 burgertime cartridge (with custom ROM/RAM replacement).
+
+Run it to the title screen
+
+Press joystick button 6 times to step through the ROM tests.  If all goes
+well after each time you will have a black screen showing
+
+   07feffff
+
+0=rom bank, 7fe = it walked through 2k of ROM testing values
+ffff = no errors reported
+
+The ROM banks are written so the values PZZZ are written, where
+P is the page and ZZZ is th 10-bit address of the location.
+
+if the background color changes it means an unexpected value was returned
+and the right 4 hex digits should show the last address that didn't match.

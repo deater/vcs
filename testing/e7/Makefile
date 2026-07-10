@@ -87,7 +87,8 @@ main.bin:	main.o
 	ld65 -o main.bin main.o -C $(LINKER_SCRIPT)/atari2600_1a00_e7.inc
 
 main.o:	main.s zp.inc e7_title.inc title_screen.s common_routines.s \
-	update_numbers.s print_numbers.s number_font.inc rom_tests.s
+	update_numbers.s print_numbers.s number_font.inc rom_tests.s \
+	ram_tests.s
 	ca65 -o main.o main.s -l main.lst
 
 ###

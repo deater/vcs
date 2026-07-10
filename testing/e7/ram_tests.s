@@ -1,4 +1,4 @@
-rom_tests:
+ram_tests:
 
 
 	; comes in at unknown cycles, w/o last WSYNC
@@ -21,7 +21,7 @@ rom_tests:
 
 ; come in with 9 cycles?
 
-start_test_frame:
+start_ram_test_frame:
 
 	;=============================
 	; Start Vertical Blank
@@ -53,7 +53,7 @@ start_test_frame:
 	; scanline 36 -- check new test
 ; 6
 	lda	NEW_TEST						; 3
-	beq	done_new_test						; 2/3
+	beq	done_new_ram_test					; 2/3
 ; 11
 	lda	#0							; 2
 	sta	NEW_TEST						; 3
@@ -84,7 +84,7 @@ start_test_frame:
 	sta	E7_SET_BANK0,X	; start in BANK0?			; 3
 ; 27
 
-done_new_test:
+done_new_ram_test:
 ; 12 / 27
 	sta	WSYNC
 
@@ -119,7 +119,7 @@ done_new_test:
 	;==================================
 ; 6
 	lda	DONE_TEST					; 3
-	bne	done_checking					; 2/3
+	bne	ram_done_checking				; 2/3
 ; 11
 ;	lda	#$00						; 2
 ;	sta	EXPECTED_H					; 3
@@ -145,24 +145,24 @@ done_new_test:
 	ldx	#$80		; 128 pairs			; 2
 	ldy	#0						; 2
 ; 4
-row_loop:
+ram_row_loop:
 
 
-compare_loop:
+ram_compare_loop:
 	lda	(INL),Y						; 5
 	sta	DIGITS0						; 3
 	cmp	EXPECTED_H					; 3
-	bne	bad_result					; 2/3
-; 
+	bne	ram_bad_result					; 2/3
+;
 	iny							; 2
 	lda	(INL),Y						; 5
 	sta	DIGITS1					; 3
 	cmp	EXPECTED_L					; 3
-	bne	bad_result					; 2/3
+	bne	ram_bad_result					; 2/3
 
 	iny							; 2
 
-retry:
+ram_retry:
 	clc							; 2
 	lda	EXPECTED_L					; 3
 	adc	#2						; 2
@@ -174,10 +174,10 @@ retry:
 	dex							; 2
 
 	sta	WSYNC
-	beq	done_checking
-	bne	row_loop
+	beq	ram_done_checking
+	bne	ram_row_loop
 
-bad_result:
+ram_bad_result:
 	lda	EXPECTED_L
 ;	sta	BAD_L
 	sta	DIGITS2
@@ -187,9 +187,9 @@ bad_result:
 
 	inc	BAD_RESULT
 	sta	COLUBK
-	jmp	retry
+	jmp	ram_retry
 
-done_checking:
+ram_done_checking:
 
 	;=============================================
 	;=============================================
@@ -200,17 +200,17 @@ done_checking:
 	; draw 192-137 = 55 lines
 
 	lda	DONE_TEST
-	beq	not_done_test
+	beq	not_done_ram_test
 
 	ldx	#184
-	jmp	empty_loop
+	jmp	ram_empty_loop
 
-not_done_test:
+not_done_ram_test:
 	ldx	#55
-empty_loop:
+ram_empty_loop:
 	sta	WSYNC
 	dex
-	bne	empty_loop
+	bne	ram_empty_loop
 
 	;==========================
 	;==========================
@@ -230,11 +230,11 @@ empty_loop:
 	inc	WHICH_PAGE
 	lda	WHICH_PAGE
 	cmp	#$18
-	bne	check_which_page_done
+	bne	ram_check_which_page_done
 
 	inc	DONE_TEST
 
-check_which_page_done:
+ram_check_which_page_done:
 	sta	WSYNC
 
 	;==========================
@@ -245,37 +245,30 @@ check_which_page_done:
 	; debounce
 
 	lda	BUTTON_COUNTDOWN					; 3
-	beq	twaited_button_enough					; 2/3
+	beq	rwaited_button_enough					; 2/3
 	dec	BUTTON_COUNTDOWN					; 5
-	jmp	tdone_check_button					; 3
+	jmp	rdone_check_button					; 3
 
-twaited_button_enough:
+rwaited_button_enough:
 
 	lda	INPT4		; check joystick button pressed		; 3
-	bpl	tdone_test						; 2/3
+	bpl	rdone_test						; 2/3
 
-tdone_check_button:
+rdone_check_button:
 
 	sta	WSYNC
 
 	;================================
 	; once again
 
-	jmp	start_test_frame
+	jmp	start_ram_test_frame
 
-tdone_test:
+rdone_test:
 
 
 	inc	NEW_TEST
 	inc	WHICH_TEST
 
-	lda	WHICH_TEST
-	cmp	#7
-	beq	done_roms
-
 	sta	WSYNC
 
-	jmp	start_test_frame
-
-
-done_roms:
+	jmp	start_ram_test_frame

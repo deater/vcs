@@ -47,8 +47,12 @@ clear_loop:
 	;==============================
 	; Run Tests
 	;==============================
-
+again:
 	jsr	rom_tests
+
+	jsr	ram_tests
+
+	jmp	again
 
 	;===========================
 	; common routines
@@ -56,6 +60,7 @@ clear_loop:
 
 	.include "common_routines.s"
 	.include "rom_tests.s"
+	.include "ram_tests.s"
 	.include "print_numbers.s"
 	.include "update_numbers.s"
 
