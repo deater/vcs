@@ -9,6 +9,8 @@ DIGITS3		= $89
 LEVEL		= $8B
 INL		= $8C
 INH		= $8D
+OUTL		= $8E
+OUTH		= $8F
 
 
 TEMP1		= $90

@@ -12,14 +12,10 @@ ram_tests:
 	lda	#$0
 	sta	DONE_TEST
 	sta	WHICH_TEST
-	sta	PF0
-	sta	PF1
-	sta	PF2
 	sta	COLUBK
 
 	sta	WSYNC
 
-; come in with 9 cycles?
 
 start_ram_test_frame:
 
@@ -55,10 +51,10 @@ start_ram_test_frame:
 	lda	NEW_TEST						; 3
 	beq	done_new_ram_test					; 2/3
 ; 11
-	lda	#0							; 2
-	sta	NEW_TEST						; 3
+	lda	#0		; turn off new test			; 2
+	sta	NEW_TEST	; not done the test			; 3
 	sta	DONE_TEST						; 3
-	sta	EXPECTED_L					; 3
+	sta	EXPECTED_L	; address is 0				; 3
 
 	lda	WHICH_TEST
 	tax
@@ -66,8 +62,7 @@ start_ram_test_frame:
 	asl
 	asl
 	asl
-	sta	EXPECTED_H					; 3
-
+	sta	EXPECTED_H
 
 	lda	#$f
 	sta	BUTTON_COUNTDOWN
@@ -76,12 +71,17 @@ start_ram_test_frame:
 	sta	DIGITS2
 	sta	DIGITS3
 
+	lda	#$18
+	sta	OUTH
+	lda	#$19
+	sta	INH
+
 ; 19
 	lda	#$10							; 2
 	sta	WHICH_PAGE						; 3
 ; 24
 ;	ldx	WHICH_TEST
-	sta	E7_SET_BANK0,X	; start in BANK0?			; 3
+	sta	E7_SET_256_BANK0,X	; start in BANK0?		; 3
 ; 27
 
 done_new_ram_test:
@@ -114,75 +114,56 @@ done_new_ram_test:
 	;==================================
 	;==================================
 
-	;=================================
-	; scanline 8 = setup
 	;==================================
+	; RAM TEST
+	;=================================
+
+	; Skip if DONE
 ; 6
 	lda	DONE_TEST					; 3
 	bne	ram_done_checking				; 2/3
-; 11
-;	lda	#$00						; 2
-;	sta	EXPECTED_H					; 3
-	lda	#$00						; 2
-;	sta	EXPECTED_L					; 3
-	sta	BAD_RESULT					; 3
-; 24
-	lda	#$00						; 2
-	sta	INL						; 3
-	lda	WHICH_PAGE					; 3
-	sta	INH						; 3
-; 35
-	sta	WSYNC
+
+	; write our pattern to RAM
+
+	ldy	#0							; 2
+ram_write_loop:
+	lda	EXPECTED_H						; 3
+	sta	$1800,Y							; 5
+	tya								; 2
+	sta	$1801,Y							; 5
+	iny								; 2
+	iny								; 2
+
+	bne	ram_write_loop						; 2/3
+
+	; 2+(256*22)-1 = 5633 cycles = 75 scanlines?
 
 
-	;==================================
-	;==================================
-	; scanline 9 - 137 = check 2 bytes
-	;==================================
-	;==================================
+	;===========================
+	; read back
 
-; 0
-	ldx	#$80		; 128 pairs			; 2
-	ldy	#0						; 2
-; 4
-ram_row_loop:
+	ldy	#0							; 2
+ram_read_loop:
+	lda	$1900,Y							; 5
+	sta	DIGITS0
+	cmp	EXPECTED_H						; 3
+	bne	ram_bad_result
 
-
-ram_compare_loop:
-	lda	(INL),Y						; 5
-	sta	DIGITS0						; 3
-	cmp	EXPECTED_H					; 3
-	bne	ram_bad_result					; 2/3
-;
-	iny							; 2
-	lda	(INL),Y						; 5
-	sta	DIGITS1					; 3
-	cmp	EXPECTED_L					; 3
-	bne	ram_bad_result					; 2/3
-
-	iny							; 2
+	tya								; 2
+	sta	DIGITS1
+	cmp	$1901,Y							; 5
+	bne	ram_bad_result
 
 ram_retry:
-	clc							; 2
-	lda	EXPECTED_L					; 3
-	adc	#2						; 2
-	sta	EXPECTED_L					; 3
-	lda	#0						; 2
-	adc	EXPECTED_H					; 3
-	sta	EXPECTED_H					; 3
-
-	dex							; 2
-
-	sta	WSYNC
+	iny								; 2
+	iny
+	bne	ram_read_loop						; 2/3
 	beq	ram_done_checking
-	bne	ram_row_loop
 
 ram_bad_result:
 	lda	EXPECTED_L
-;	sta	BAD_L
 	sta	DIGITS2
-	lda	EXPECTED_H
-;	sta	BAD_H
+	tay
 	sta	DIGITS3
 
 	inc	BAD_RESULT
@@ -190,6 +171,8 @@ ram_bad_result:
 	jmp	ram_retry
 
 ram_done_checking:
+
+	sta	WSYNC
 
 	;=============================================
 	;=============================================
@@ -202,11 +185,11 @@ ram_done_checking:
 	lda	DONE_TEST
 	beq	not_done_ram_test
 
-	ldx	#184
+	ldx	#183
 	jmp	ram_empty_loop
 
 not_done_ram_test:
-	ldx	#55
+	ldx	#96
 ram_empty_loop:
 	sta	WSYNC
 	dex
