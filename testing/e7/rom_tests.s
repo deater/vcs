@@ -36,12 +36,12 @@ start_test_frame:
 	;=============================
 
 
-.repeat 20
+.repeat 15
 	sta	WSYNC
 .endrepeat
 
 	;=======================
-	; scanline 21..35?
+	; scanline 16..35?
 
 	jsr	update_numbers
 
@@ -58,6 +58,10 @@ start_test_frame:
 	sta	DONE_TEST						; 3
 	sta	EXPECTED_H					; 3
 	sta	EXPECTED_L					; 3
+
+	lda	#$ff
+	sta	DIGITS2
+	sta	DIGITS3
 
 ; 19
 	lda	#$10							; 2
@@ -132,13 +136,13 @@ row_loop:
 
 compare_loop:
 	lda	(INL),Y						; 5
-	sta	SCORE_HIGH					; 3
+	sta	DIGITS0						; 3
 	cmp	EXPECTED_H					; 3
 	bne	bad_result					; 2/3
 ; 
 	iny							; 2
 	lda	(INL),Y						; 5
-	sta	SCORE_LOW					; 3
+	sta	DIGITS1					; 3
 	cmp	EXPECTED_L					; 3
 	bne	bad_result					; 2/3
 
@@ -161,10 +165,11 @@ retry:
 
 bad_result:
 	lda	EXPECTED_L
-	sta	BAD_L
+;	sta	BAD_L
+	sta	DIGITS2
 	lda	EXPECTED_H
-	sta	BAD_H
-
+;	sta	BAD_H
+	sta	DIGITS3
 
 	inc	BAD_RESULT
 	sta	COLUBK

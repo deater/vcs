@@ -106,27 +106,38 @@ scoreloop:
 blurgh:
 
 ; 8
-	lda	score_bitmap0,X		; load sprite data		; 4+
+	; note: starting from bottom
+	; original code hard-coded zeros here
+
+
+	lda	DIGIT0_DATA_0,X		; load sprite data		; 4+
 	sta	GRP0			; 				; 3
 ; 15
-	lda	score_bitmap0,X	; load sprite data			; 4+
+	lda	DIGIT1_DATA_0,X		; load sprite data		; 4+
 	sta	GRP1			; 1->[GRP1], [GRP0 (0)]-->GRP0	; 3
 ; 22
 
-	; try to draw level number on right of screen
+	; originally code to draw number to playfield was here
 
 	lda	$80	; nop 3						; 3
 	nop								; 2
-	lda	$80							; 3
 
-	lda	LEVEL_SPRITE0,X						; 4
-	sta	PF0 							; 3
+	nop
+	nop
+	nop
+	nop
+	nop
+
+
+;	lda	$80							; 3
+;	lda	LEVEL_SPRITE0,X						; 4
+;	sta	PF0 							; 3
 
 ; 37
 
 	; need to write GRP0 at 44-47
-	lda	SCORE_SPRITE_HIGH_0,X	; load sprite data		; 4
-	ldy	SCORE_SPRITE_LOW_0,X					; 4
+	lda	DIGIT2_DATA_0,X		; load sprite data		; 4
+	ldy	DIGIT3_DATA_0,X						; 4
 
 ; 45
 

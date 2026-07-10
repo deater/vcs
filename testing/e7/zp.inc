@@ -1,10 +1,15 @@
 ; zero page addresses
 
+
+DIGITS0		= $86
+DIGITS1		= $87
+DIGITS2		= $88
+DIGITS3		= $89
+
 LEVEL		= $8B
 INL		= $8C
 INH		= $8D
-SCORE_LOW	= $8E
-SCORE_HIGH	= $8F
+
 
 TEMP1		= $90
 BUTTON_COUNTDOWN= $91
@@ -18,50 +23,39 @@ WHICH_PAGE	= $98
 BAD_L		= $99
 BAD_H		= $9A
 
-MANS		= $9F
 
-SCORE_SPRITE_LOW_0      =       $A0
-SCORE_SPRITE_LOW_1      =       $A1
-SCORE_SPRITE_LOW_2      =       $A2
-SCORE_SPRITE_LOW_3      =       $A3
-SCORE_SPRITE_LOW_4      =       $A4
-SCORE_SPRITE_LOW_5      =       $A5
-SCORE_SPRITE_LOW_6      =       $A6
+DIGIT0_DATA_0      =       $A0
+DIGIT0_DATA_1      =       $A1
+DIGIT0_DATA_2      =       $A2
+DIGIT0_DATA_3      =       $A3
+DIGIT0_DATA_4      =       $A4
+DIGIT0_DATA_5      =       $A5
+DIGIT0_DATA_6      =       $A6
 
-SCORE_SPRITE_HIGH_0     =       $A7
-SCORE_SPRITE_HIGH_1     =       $A8
-SCORE_SPRITE_HIGH_2     =       $A9
-SCORE_SPRITE_HIGH_3     =       $AA
-SCORE_SPRITE_HIGH_4     =       $AB
-SCORE_SPRITE_HIGH_5     =       $AC
-SCORE_SPRITE_HIGH_6     =       $AD
+DIGIT1_DATA_0     =       $A7
+DIGIT1_DATA_1     =       $A8
+DIGIT1_DATA_2     =       $A9
+DIGIT1_DATA_3     =       $AA
+DIGIT1_DATA_4     =       $AB
+DIGIT1_DATA_5     =       $AC
+DIGIT1_DATA_6     =       $AD
 
 TEXT_COLOR              =       $AE
 LEVEL_COLOR		=	$AF
 
-MANS_SPRITE_0           =       $B0
-MANS_SPRITE_1           =       $B1
-MANS_SPRITE_2           =       $B2
-MANS_SPRITE_3           =       $B3
-MANS_SPRITE_4           =       $B4
-MANS_SPRITE_5           =       $B5
-MANS_SPRITE_6           =       $B6
 
+DIGIT2_DATA_0	= $C0
+DIGIT2_DATA_1	= $C1
+DIGIT2_DATA_2	= $C2
+DIGIT2_DATA_3	= $C3
+DIGIT2_DATA_4	= $C4
+DIGIT2_DATA_5	= $C5
+DIGIT2_DATA_6	= $C6
 
-LEVEL_SPRITE0           =       $C0
-LEVEL_SPRITE1           =       $C1
-LEVEL_SPRITE2           =       $C2
-LEVEL_SPRITE3           =       $C3
-LEVEL_SPRITE4           =       $C4
-LEVEL_SPRITE5           =       $C5
-LEVEL_SPRITE6           =       $C6
-LEVEL_SPRITE7           =       $C7
-LEVEL_SPRITE8           =       $C8
-LEVEL_SPRITE9           =       $C9
-LEVEL_SPRITE10          =       $CA
-LEVEL_SPRITE11          =       $CB
-LEVEL_SPRITE12          =       $CC
-LEVEL_SPRITE13          =       $CD
-LEVEL_SPRITE14          =       $CE
-LEVEL_SPRITE15          =       $CF
-
+DIGIT3_DATA_0	= $C7
+DIGIT3_DATA_1	= $C8
+DIGIT3_DATA_2	= $C9
+DIGIT3_DATA_3	= $CA
+DIGIT3_DATA_4	= $CB
+DIGIT3_DATA_5	= $CC
+DIGIT3_DATA_6	= $CD
