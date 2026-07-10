@@ -11,9 +11,11 @@ rom_tests:
 
 	lda	#$0
 	sta	DONE_TEST
+	sta	WHICH_TEST
 	sta	PF0
 	sta	PF1
 	sta	PF2
+	sta	COLUBK
 
 	sta	WSYNC
 
@@ -56,8 +58,19 @@ start_test_frame:
 	lda	#0							; 2
 	sta	NEW_TEST						; 3
 	sta	DONE_TEST						; 3
-	sta	EXPECTED_H					; 3
 	sta	EXPECTED_L					; 3
+
+	lda	WHICH_TEST
+	tax
+	asl
+	asl
+	asl
+	asl
+	sta	EXPECTED_H					; 3
+
+
+	lda	#$f
+	sta	BUTTON_COUNTDOWN
 
 	lda	#$ff
 	sta	DIGITS2
@@ -67,7 +80,8 @@ start_test_frame:
 	lda	#$10							; 2
 	sta	WHICH_PAGE						; 3
 ; 24
-	sta	E7_SET_BANK0	; start in BANK0?			; 3
+;	ldx	WHICH_TEST
+	sta	E7_SET_BANK0,X	; start in BANK0?			; 3
 ; 27
 
 done_new_test:
@@ -253,6 +267,7 @@ tdone_test:
 
 
 	inc	NEW_TEST
+	inc	WHICH_TEST
 
 	sta	WSYNC
 
