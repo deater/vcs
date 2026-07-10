@@ -150,4 +150,4 @@ done_check_button:
 done_title_screen:
 
 
-	sta	WSYNC
+;	sta	WSYNC

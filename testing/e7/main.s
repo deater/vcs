@@ -57,6 +57,7 @@ clear_loop:
 	.include "common_routines.s"
 	.include "rom_tests.s"
 	.include "print_numbers.s"
+	.include "update_numbers.s"
 
 	;==========================
 	; graphics

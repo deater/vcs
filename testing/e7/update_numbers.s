@@ -1,13 +1,13 @@
 	;===============================================
 	;===============================================
-	; update score
+	; update numbers
 	;===============================================
 	;===============================================
 	; 14 scanlines to update top of screen sprites
 
 ; comes in with 4 cycles
 
-update_score:
+update_numbers:
 
 	;=====================
 	; setup digit pointers
@@ -208,3 +208,5 @@ level_write_loop:
 	sta	WSYNC							; 3
 
 ; 14 scanlines
+
+	rts

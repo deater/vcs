@@ -1,6 +1,8 @@
 rom_tests:
 
 
+	; comes in at unknown cycles, w/o last WSYNC
+
 ; Testing screens
 
 	lda	#$f
@@ -9,7 +11,11 @@ rom_tests:
 
 	lda	#$0
 	sta	DONE_TEST
+	sta	PF0
+	sta	PF1
+	sta	PF2
 
+	sta	WSYNC
 
 ; come in with 9 cycles?
 
@@ -37,25 +43,31 @@ start_test_frame:
 	;=======================
 	; scanline 21..35?
 
-.include "update_numbers.s"
+	jsr	update_numbers
 
+	; returns +6 cycles
 
 	;=======================
 	; scanline 36 -- check new test
+; 6
+	lda	NEW_TEST						; 3
+	beq	done_new_test						; 2/3
+; 11
+	lda	#0							; 2
+	sta	NEW_TEST						; 3
+	sta	DONE_TEST						; 3
+	sta	EXPECTED_H					; 3
+	sta	EXPECTED_L					; 3
 
-	lda	NEW_TEST
-	beq	done_new_test
-
-	lda	#0
-	sta	NEW_TEST
-	sta	DONE_TEST
-
-	lda	#$10
-	sta	WHICH_PAGE
-
-	sta	E7_SET_BANK0	; start in BANK0?
+; 19
+	lda	#$10							; 2
+	sta	WHICH_PAGE						; 3
+; 24
+	sta	E7_SET_BANK0	; start in BANK0?			; 3
+; 27
 
 done_new_test:
+; 12 / 27
 	sta	WSYNC
 
 	;=======================
@@ -63,11 +75,8 @@ done_new_test:
 
 	ldx	#0
 	stx	VBLANK
-	ldy	#4
+;	ldy	#4			; ???
 	sta	WSYNC
-
-
-
 
 	;============================================
 	;============================================
@@ -90,21 +99,21 @@ done_new_test:
 	;=================================
 	; scanline 8 = setup
 	;==================================
-
-	lda	DONE_TEST
-	bne	done_checking
-
+; 6
+	lda	DONE_TEST					; 3
+	bne	done_checking					; 2/3
+; 11
+;	lda	#$00						; 2
+;	sta	EXPECTED_H					; 3
 	lda	#$00						; 2
-	sta	EXPECTED_H					; 3
-	lda	#$00						; 2
-	sta	EXPECTED_L					; 3
+;	sta	EXPECTED_L					; 3
 	sta	BAD_RESULT					; 3
-
+; 24
 	lda	#$00						; 2
 	sta	INL						; 3
 	lda	WHICH_PAGE					; 3
 	sta	INH						; 3
-
+; 35
 	sta	WSYNC
 
 
@@ -114,9 +123,10 @@ done_new_test:
 	;==================================
 	;==================================
 
-	ldx	#$80						; 2
+; 0
+	ldx	#$80		; 128 pairs			; 2
 	ldy	#0						; 2
-
+; 4
 row_loop:
 
 
@@ -125,7 +135,7 @@ compare_loop:
 	sta	SCORE_HIGH					; 3
 	cmp	EXPECTED_H					; 3
 	bne	bad_result					; 2/3
-
+; 
 	iny							; 2
 	lda	(INL),Y						; 5
 	sta	SCORE_LOW					; 3
@@ -134,6 +144,7 @@ compare_loop:
 
 	iny							; 2
 
+retry:
 	clc							; 2
 	lda	EXPECTED_L					; 3
 	adc	#2						; 2
@@ -149,16 +160,21 @@ compare_loop:
 	bne	row_loop
 
 bad_result:
-	lda	#$1
-	ora	BAD_RESULT
-	lda	#$20
-	sta	COLUPF
+	lda	EXPECTED_L
+	sta	BAD_L
+	lda	EXPECTED_H
+	sta	BAD_H
 
+
+	inc	BAD_RESULT
+	sta	COLUBK
+	jmp	retry
 
 done_checking:
 
 	;=============================================
 	;=============================================
+	; pad out end
 	;=============================================
 	;=============================================
 

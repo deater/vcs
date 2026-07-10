@@ -15,6 +15,8 @@ DONE_TEST	= $95
 NEW_TEST	= $96
 WHICH_TEST	= $97
 WHICH_PAGE	= $98
+BAD_L		= $99
+BAD_H		= $9A
 
 MANS		= $9F
 
