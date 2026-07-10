@@ -1,28 +1,26 @@
 rom_tests:
 
-
 	; comes in at unknown cycles, w/o last WSYNC
 
 ; Testing screens
 
 	lda	#$f
-	sta	BUTTON_COUNTDOWN
-	sta	NEW_TEST
+;	sta	BUTTON_COUNTDOWN	; reset debounce
+	sta	NEW_TEST		; set new test
 
-	lda	#$0
+	lda	#$0			; reset some values
 	sta	DONE_TEST
 	sta	WHICH_TEST
-	sta	PF0
+	sta	PF0			; is this needed?
 	sta	PF1
 	sta	PF2
 	sta	COLUBK
 
 	lda	#$10
-	sta	ROM_START
+	sta	ROM_START		; this can vary if RAM
 
 	sta	WSYNC
 
-; come in with 9 cycles?
 
 start_test_frame:
 
@@ -40,10 +38,8 @@ start_test_frame:
 	; 37 lines of vertical blank
 	;=============================
 
-
-.repeat 15
-	sta	WSYNC
-.endrepeat
+	ldx	#15
+	jsr	repeat_wsync
 
 	;=======================
 	; scanline 16..35?
@@ -58,13 +54,17 @@ start_test_frame:
 	lda	NEW_TEST						; 3
 	beq	done_new_test						; 2/3
 ; 11
-	lda	#0							; 2
-	sta	NEW_TEST						; 3
-	sta	DONE_TEST						; 3
-	sta	EXPECTED_L					; 3
 
-	lda	WHICH_TEST
-	tax
+	; configure new test
+
+	lda	#0							; 2
+	sta	NEW_TEST	; reset new_test			; 3
+	sta	DONE_TEST	; reset done_test			; 3
+	sta	EXPECTED_L	; reset counter				; 3
+	sta	BAD_RESULT						; 3
+
+	lda	WHICH_TEST	; set upper value based on test
+	tax			; in X for later
 	asl
 	asl
 	asl
@@ -72,16 +72,16 @@ start_test_frame:
 	sta	EXPECTED_H					; 3
 
 
-	lda	#$f
+	lda	#$f		; reset button debounce
 	sta	BUTTON_COUNTDOWN
 
-	lda	#$ff
+	lda	#$ff		; clear out digits
 	sta	DIGITS2
 	sta	DIGITS3
 
 ; 19
-	lda	ROM_START						; 3
-	sta	WHICH_PAGE						; 3
+	lda	ROM_START	; setup where to start to read		; 3
+	sta	WHICH_PAGE	; ROM is $1000, RAM is $1400		; 3
 ; 24
 ;	ldx	WHICH_TEST
 	sta	E7_SET_BANK0,X	; start in BANK0?			; 3
@@ -96,7 +96,6 @@ done_new_test:
 
 	ldx	#0
 	stx	VBLANK
-;	ldy	#4			; ???
 	sta	WSYNC
 
 	;============================================
@@ -124,11 +123,8 @@ done_new_test:
 	lda	DONE_TEST					; 3
 	bne	done_checking					; 2/3
 ; 11
-;	lda	#$00						; 2
-;	sta	EXPECTED_H					; 3
 	lda	#$00						; 2
-;	sta	EXPECTED_L					; 3
-	sta	BAD_RESULT					; 3
+
 ; 24
 	lda	#$00						; 2
 	sta	INL						; 3
@@ -153,42 +149,54 @@ row_loop:
 
 compare_loop:
 	lda	(INL),Y						; 5
+	sta	RESULT_H					; 3
 	sta	DIGITS0						; 3
 	cmp	EXPECTED_H					; 3
-	bne	bad_result					; 2/3
-; 
+	bne	bad_result1					; 2/3
+;
 	iny							; 2
 	lda	(INL),Y						; 5
-	sta	DIGITS1					; 3
+	sta	RESULT_L					; 3
+	sta	DIGITS1						; 3
 	cmp	EXPECTED_L					; 3
-	bne	bad_result					; 2/3
-
+	bne	bad_result2					; 2/3
 	iny							; 2
 
 retry:
-	clc							; 2
-	lda	EXPECTED_L					; 3
+	clc			; 16 bit increment		; 2
+	lda	EXPECTED_L	; cycle invariant		; 3
 	adc	#2						; 2
 	sta	EXPECTED_L					; 3
 	lda	#0						; 2
 	adc	EXPECTED_H					; 3
 	sta	EXPECTED_H					; 3
 
-	dex							; 2
+	dex			; count down bytes remaining?	; 2
 
 	sta	WSYNC
 	beq	done_checking
 	bne	row_loop
 
-bad_result:
+bad_result1:
+	iny
+bad_result2:
+	iny
+
+	lda	RESULT_L
+	sta	BAD_L
+	lda	RESULT_H
+	sta	BAD_H
+
 	lda	EXPECTED_L
-;	sta	BAD_L
-	sta	DIGITS2
-	lda	EXPECTED_H
-;	sta	BAD_H
+	sta	BAD_ADDR_L
 	sta	DIGITS3
+	lda	EXPECTED_H
+	sta	BAD_ADDR_H
+	sta	DIGITS2
 
 	inc	BAD_RESULT
+
+	lda	#$40		; red
 	sta	COLUBK
 	jmp	retry
 
@@ -205,15 +213,23 @@ done_checking:
 	lda	DONE_TEST
 	beq	not_done_test
 
+	lda	BAD_RESULT
+	beq	not_bad_result
+
+	lda	BAD_L
+	sta	DIGITS0
+	lda	BAD_H
+	sta	DIGITS1
+
+not_bad_result:
+
 	ldx	#184
 	jmp	empty_loop
 
 not_done_test:
 	ldx	#55
 empty_loop:
-	sta	WSYNC
-	dex
-	bne	empty_loop
+	jsr	repeat_wsync
 
 	;==========================
 	;==========================

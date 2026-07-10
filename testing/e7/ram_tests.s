@@ -17,8 +17,6 @@ ram_tests:
 
 
 start_ram_test_frame:
-
-
 .if 0
 
 	;=============================
@@ -35,10 +33,8 @@ start_ram_test_frame:
 	; 37 lines of vertical blank
 	;=============================
 
-
-.repeat 15
-	sta	WSYNC
-.endrepeat
+	ldx	#15
+	jsr	repeat_wsync
 
 	;=======================
 	; scanline 16..35?
@@ -178,9 +174,7 @@ ram_done_checking:
 not_done_ram_test:
 	ldx	#96
 ram_empty_loop:
-	sta	WSYNC
-	dex
-	bne	ram_empty_loop
+	jsr	repeat_wsync
 
 	;==========================
 	;==========================
@@ -239,6 +233,12 @@ rdone_test:
 	inc	NEW_TEST
 	inc	WHICH_TEST
 
+	lda	WHICH_TEST
+	cmp	#5
+	beq	done_ram_test
+
 	sta	WSYNC
 .endif
 	jmp	start_ram_test_frame
+
+done_ram_test:

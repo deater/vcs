@@ -1,5 +1,11 @@
 ; zero page addresses
 
+
+
+
+RESULT_L	= $83
+RESULT_H	= $84
+
 ROM_START	= $85
 
 DIGITS0		= $86
@@ -23,9 +29,10 @@ DONE_TEST	= $95
 NEW_TEST	= $96
 WHICH_TEST	= $97
 WHICH_PAGE	= $98
-BAD_L		= $99
-BAD_H		= $9A
-
+BAD_ADDR_L	= $99
+BAD_ADDR_H	= $9A
+BAD_L		= $9B
+BAD_H		= $9C
 
 DIGIT0_DATA_0      =       $A0
 DIGIT0_DATA_1      =       $A1

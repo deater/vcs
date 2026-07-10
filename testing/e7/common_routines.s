@@ -33,8 +33,16 @@ common_vblank:
 
 ; 9 cycles in
 
-
-
+	;=============================
+	; repeat wsync
+	;=============================
+	; repeat count in X
+repeat_wsync:
+	sta	WSYNC
+	dex
+	bne	repeat_wsync
+	rts
+; 8 cycles
 
 	;=============================
 	; overscan

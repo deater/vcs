@@ -79,3 +79,9 @@ onek_ram_write_loop:
 	cpx	#4
 	bne	onek_ram_write_loop
 
+; insert glitches to test
+
+.if 1
+	lda	#$dd
+	sta	$1830
+.endif
