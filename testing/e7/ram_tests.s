@@ -1,6 +1,5 @@
 ram_tests:
 
-
 	; comes in at unknown cycles, w/o last WSYNC
 
 ; Testing screens
@@ -18,6 +17,9 @@ ram_tests:
 
 
 start_ram_test_frame:
+
+
+.if 0
 
 	;=============================
 	; Start Vertical Blank
@@ -122,21 +124,6 @@ done_new_ram_test:
 ; 6
 	lda	DONE_TEST					; 3
 	bne	ram_done_checking				; 2/3
-
-	; write our pattern to RAM
-
-	ldy	#0							; 2
-ram_write_loop:
-	lda	EXPECTED_H						; 3
-	sta	$1800,Y							; 5
-	tya								; 2
-	sta	$1801,Y							; 5
-	iny								; 2
-	iny								; 2
-
-	bne	ram_write_loop						; 2/3
-
-	; 2+(256*22)-1 = 5633 cycles = 75 scanlines?
 
 
 	;===========================
@@ -253,5 +240,5 @@ rdone_test:
 	inc	WHICH_TEST
 
 	sta	WSYNC
-
+.endif
 	jmp	start_ram_test_frame

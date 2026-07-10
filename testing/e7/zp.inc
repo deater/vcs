@@ -1,5 +1,6 @@
 ; zero page addresses
 
+ROM_START	= $85
 
 DIGITS0		= $86
 DIGITS1		= $87

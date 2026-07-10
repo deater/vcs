@@ -17,6 +17,9 @@ rom_tests:
 	sta	PF2
 	sta	COLUBK
 
+	lda	#$10
+	sta	ROM_START
+
 	sta	WSYNC
 
 ; come in with 9 cycles?
@@ -77,7 +80,7 @@ start_test_frame:
 	sta	DIGITS3
 
 ; 19
-	lda	#$10							; 2
+	lda	ROM_START						; 3
 	sta	WHICH_PAGE						; 3
 ; 24
 ;	ldx	WHICH_TEST
@@ -270,8 +273,17 @@ tdone_test:
 	inc	WHICH_TEST
 
 	lda	WHICH_TEST
-	cmp	#7
+	cmp	#8
 	beq	done_roms
+
+
+	cmp	#7
+	bne	not_ram
+
+	lda	#$14
+	sta	ROM_START
+
+not_ram:
 
 	sta	WSYNC
 

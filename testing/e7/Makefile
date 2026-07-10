@@ -88,7 +88,7 @@ main.bin:	main.o
 
 main.o:	main.s zp.inc e7_title.inc title_screen.s common_routines.s \
 	update_numbers.s print_numbers.s number_font.inc rom_tests.s \
-	ram_tests.s
+	ram_tests.s write_ram.s
 	ca65 -o main.o main.s -l main.lst
 
 ###
