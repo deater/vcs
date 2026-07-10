@@ -126,19 +126,10 @@ done_loop:
 	;==========================
 	; check for button press
 
-	; debounce
+	jsr	check_joypad_button
+	bcs	done_title_screen
 
-	lda	BUTTON_COUNTDOWN					; 3
-	beq	waited_button_enough					; 2/3
-	dec	BUTTON_COUNTDOWN					; 5
-	jmp	done_check_button					; 3
-
-waited_button_enough:
-
-	lda	INPT4		; check joystick button pressed		; 3
-	bpl	done_title_screen					; 2/3
-
-done_check_button:
+title_screen_continues:
 
 	sta	WSYNC
 

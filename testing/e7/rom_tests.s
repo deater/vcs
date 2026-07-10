@@ -5,7 +5,6 @@ rom_tests:
 ; Testing screens
 
 	lda	#$f
-;	sta	BUTTON_COUNTDOWN	; reset debounce
 	sta	NEW_TEST		; set new test
 
 	lda	#$0			; reset some values
@@ -14,7 +13,7 @@ rom_tests:
 	sta	PF0			; is this needed?
 	sta	PF1
 	sta	PF2
-	sta	COLUBK
+	sta	COLUBK			; clear background to black
 
 	lda	#$10
 	sta	ROM_START		; this can vary if RAM
@@ -62,33 +61,33 @@ start_test_frame:
 	sta	DONE_TEST	; reset done_test			; 3
 	sta	EXPECTED_L	; reset counter				; 3
 	sta	BAD_RESULT						; 3
+; 25
+	lda	WHICH_TEST	; set upper value based on test		; 3
+	tax			; in X for later			; 2
+	asl								; 2
+	asl								; 2
+	asl								; 2
+	asl								; 2
+	sta	EXPECTED_H						; 3
+; 41
 
-	lda	WHICH_TEST	; set upper value based on test
-	tax			; in X for later
-	asl
-	asl
-	asl
-	asl
-	sta	EXPECTED_H					; 3
+	lda	#$f		; reset button debounce			; 2
+	sta	BUTTON_COUNTDOWN					; 3
+; 46
+	lda	#$ff		; clear out digits			; 2
+	sta	DIGITS2							; 3
+	sta	DIGITS3							; 3
 
-
-	lda	#$f		; reset button debounce
-	sta	BUTTON_COUNTDOWN
-
-	lda	#$ff		; clear out digits
-	sta	DIGITS2
-	sta	DIGITS3
-
-; 19
+; 54
 	lda	ROM_START	; setup where to start to read		; 3
 	sta	WHICH_PAGE	; ROM is $1000, RAM is $1400		; 3
-; 24
+; 60
 ;	ldx	WHICH_TEST
-	sta	E7_SET_BANK0,X	; start in BANK0?			; 3
-; 27
+	sta	E7_SET_BANK0,X	; start in BANK0?			; 5
+; 65
 
 done_new_test:
-; 12 / 27
+; 12 / 65
 	sta	WSYNC
 
 	;=======================
@@ -123,27 +122,29 @@ done_new_test:
 	lda	DONE_TEST					; 3
 	bne	done_checking					; 2/3
 ; 11
-	lda	#$00						; 2
 
-; 24
 	lda	#$00						; 2
 	sta	INL						; 3
 	lda	WHICH_PAGE					; 3
 	sta	INH						; 3
-; 35
+; 22
+
+	;===========================
+	; init the scanning routine
+
+	ldx	#$80		; 128 pairs			; 2
+	ldy	#0						; 2
+; 26
+
 	sta	WSYNC
 
 
-	;==================================
-	;==================================
-	; scanline 9 - 137 = check 2 bytes
-	;==================================
-	;==================================
+	;===============================
+	; check two bytes per scanline
+	;===============================
 
-; 0
-	ldx	#$80		; 128 pairs			; 2
-	ldy	#0						; 2
-; 4
+; 0 / 5
+
 row_loop:
 
 
@@ -153,14 +154,16 @@ compare_loop:
 	sta	DIGITS0						; 3
 	cmp	EXPECTED_H					; 3
 	bne	bad_result1					; 2/3
-;
+; 16
 	iny							; 2
 	lda	(INL),Y						; 5
 	sta	RESULT_L					; 3
 	sta	DIGITS1						; 3
 	cmp	EXPECTED_L					; 3
 	bne	bad_result2					; 2/3
+; 34
 	iny							; 2
+; 36
 
 retry:
 	clc			; 16 bit increment		; 2
@@ -170,35 +173,41 @@ retry:
 	lda	#0						; 2
 	adc	EXPECTED_H					; 3
 	sta	EXPECTED_H					; 3
-
+; 54
 	dex			; count down bytes remaining?	; 2
-
+; 56 / 61
 	sta	WSYNC
-	beq	done_checking
-	bne	row_loop
+; 0
+	beq	done_checking					; 2/3
+; 2
+	bne	row_loop		; bra			; 3
+
 
 bad_result1:
-	iny
+; 17
+	iny							; 2
 bad_result2:
+; 19 / 25
 	iny
+; 21 / 27
 
-	lda	RESULT_L
-	sta	BAD_L
-	lda	RESULT_H
-	sta	BAD_H
+	lda	RESULT_L					; 3
+	sta	BAD_L						; 3
+	lda	RESULT_H					; 3
+	sta	BAD_H						; 3
 
-	lda	EXPECTED_L
-	sta	BAD_ADDR_L
-	sta	DIGITS3
-	lda	EXPECTED_H
-	sta	BAD_ADDR_H
-	sta	DIGITS2
+	lda	EXPECTED_L					; 3
+	sta	BAD_ADDR_L					; 3
+	sta	DIGITS3						; 3
+	lda	EXPECTED_H					; 3
+	sta	BAD_ADDR_H					; 3
+	sta	DIGITS2						; 3
 
-	inc	BAD_RESULT
+	inc	BAD_RESULT					; 5
 
-	lda	#$40		; red
-	sta	COLUBK
-	jmp	retry
+	lda	#$40		; red				; 2
+	sta	COLUBK						; 3
+	jmp	retry						; 3
 
 done_checking:
 
@@ -261,19 +270,10 @@ check_which_page_done:
 	;==========================
 	; check for button press
 
-	; debounce
+	jsr	check_joypad_button
+	bcs	done_test
 
-	lda	BUTTON_COUNTDOWN					; 3
-	beq	twaited_button_enough					; 2/3
-	dec	BUTTON_COUNTDOWN					; 5
-	jmp	tdone_check_button					; 3
-
-twaited_button_enough:
-
-	lda	INPT4		; check joystick button pressed		; 3
-	bpl	tdone_test						; 2/3
-
-tdone_check_button:
+current_test_continues:
 
 	sta	WSYNC
 
@@ -282,7 +282,7 @@ tdone_check_button:
 
 	jmp	start_test_frame
 
-tdone_test:
+done_test:
 
 
 	inc	NEW_TEST

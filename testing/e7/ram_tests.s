@@ -4,20 +4,21 @@ ram_tests:
 
 ; Testing screens
 
+
 	lda	#$f
 	sta	BUTTON_COUNTDOWN
 	sta	NEW_TEST
-
+.if 0
 	lda	#$0
 	sta	DONE_TEST
 	sta	WHICH_TEST
 	sta	COLUBK
 
 	sta	WSYNC
-
+.endif
 
 start_ram_test_frame:
-.if 0
+
 
 	;=============================
 	; Start Vertical Blank
@@ -206,20 +207,10 @@ ram_check_which_page_done:
 	;==========================
 	; check for button press
 
-	; debounce
+	jsr	check_joypad_button
+	bcs	next_ram_test
 
-	lda	BUTTON_COUNTDOWN					; 3
-	beq	rwaited_button_enough					; 2/3
-	dec	BUTTON_COUNTDOWN					; 5
-	jmp	rdone_check_button					; 3
-
-rwaited_button_enough:
-
-	lda	INPT4		; check joystick button pressed		; 3
-	bpl	rdone_test						; 2/3
-
-rdone_check_button:
-
+ram_test_continues:
 	sta	WSYNC
 
 	;================================
@@ -227,7 +218,7 @@ rdone_check_button:
 
 	jmp	start_ram_test_frame
 
-rdone_test:
+next_ram_test:
 
 
 	inc	NEW_TEST
@@ -238,7 +229,7 @@ rdone_test:
 	beq	done_ram_test
 
 	sta	WSYNC
-.endif
+
 	jmp	start_ram_test_frame
 
 done_ram_test:
