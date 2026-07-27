@@ -1,0 +1,71 @@
+; zero page addresses
+
+
+TEMP		= $81
+TEMPY		= $82
+RESULT_L	= $83
+RESULT_H	= $84
+
+ROM_START	= $85
+
+DIGITS0		= $86
+DIGITS1		= $87
+DIGITS2		= $88
+DIGITS3		= $89
+
+LEVEL		= $8B
+INL		= $8C
+INH		= $8D
+OUTL		= $8E
+OUTH		= $8F
+
+
+TEMP1		= $90
+BUTTON_COUNTDOWN= $91
+EXPECTED_L	= $92
+EXPECTED_H	= $93
+BAD_RESULT	= $94
+DONE_TEST	= $95
+NEW_TEST	= $96
+WHICH_TEST	= $97
+WHICH_PAGE	= $98
+BAD_ADDR_L	= $99
+BAD_ADDR_H	= $9A
+BAD_L		= $9B
+BAD_H		= $9C
+
+DIGIT0_DATA_0      =       $A0
+DIGIT0_DATA_1      =       $A1
+DIGIT0_DATA_2      =       $A2
+DIGIT0_DATA_3      =       $A3
+DIGIT0_DATA_4      =       $A4
+DIGIT0_DATA_5      =       $A5
+DIGIT0_DATA_6      =       $A6
+
+DIGIT1_DATA_0     =       $A7
+DIGIT1_DATA_1     =       $A8
+DIGIT1_DATA_2     =       $A9
+DIGIT1_DATA_3     =       $AA
+DIGIT1_DATA_4     =       $AB
+DIGIT1_DATA_5     =       $AC
+DIGIT1_DATA_6     =       $AD
+
+TEXT_COLOR              =       $AE
+LEVEL_COLOR		=	$AF
+
+
+DIGIT2_DATA_0	= $C0
+DIGIT2_DATA_1	= $C1
+DIGIT2_DATA_2	= $C2
+DIGIT2_DATA_3	= $C3
+DIGIT2_DATA_4	= $C4
+DIGIT2_DATA_5	= $C5
+DIGIT2_DATA_6	= $C6
+
+DIGIT3_DATA_0	= $C7
+DIGIT3_DATA_1	= $C8
+DIGIT3_DATA_2	= $C9
+DIGIT3_DATA_3	= $CA
+DIGIT3_DATA_4	= $CB
+DIGIT3_DATA_5	= $CC
+DIGIT3_DATA_6	= $CD

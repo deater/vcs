@@ -1,7 +1,7 @@
 CC = gcc
 CFLAGS = -g -Wall -O2
 
-all:	png2pf png2overlay png2sprite png2compact pad_rom
+all:	png2pf png2overlay png2sprite png2compact pad_rom rom_tool
 
 ###
 
@@ -50,10 +50,19 @@ pad_rom:		pad_rom.o
 pad_rom.o:		pad_rom.c
 	$(CC) $(CFLAGS) -c pad_rom.c
 
+###
+
+rom_tool:		rom_tool.o
+	$(CC) $(LFLAGS) -o rom_tool rom_tool.o
+
+rom_tool.o:		rom_tool.c
+	$(CC) $(CFLAGS) -c rom_tool.c
+
+
 
 ###
 
 clean:		
-		rm -f *~ *.o png2pf png2overlay png2sprite png2compact pad_rom
+		rm -f *~ *.o png2pf png2overlay png2sprite png2compact pad_rom rom_tool
 
 
