@@ -45,13 +45,30 @@ clear_loop:
 
 	lda	#$00
 	sta	READ_VALUE
+	sta	READ_256L
+	sta	READ_1KL
+	sta	WRITE_256L
+	sta	WRITE_1KL
 
-	lda	#$00
+	lda	#$19
+	sta	READ_256H
+	lda	#$18
+	sta	WRITE_256H
+
+	lda	#$14
+	sta	READ_1KH
+	lda	#$10
+	sta	WRITE_1KH
+
+	lda	#$5A
 	sta	WRITE_VALUE
+
+
+
 
 	; update all bytes
 
-	ldy	#7
+	ldy	#11
 ub_loop:
 	sty	TEMPY
 	jsr	update_byte
@@ -75,9 +92,8 @@ again:
 
 	.include "common_routines.s"
 	.include "memory_test.s"
-	.include "print_numbers.s"
+	.include "print_word.s"
 	.include "print_byte.s"
-	.include "update_numbers.s"
 	.include "print_string.s"
 	.include "update_byte.s"
 	.include "center_string.s"
