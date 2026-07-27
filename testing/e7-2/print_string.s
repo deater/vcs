@@ -4,92 +4,38 @@
 	;============================================
 	;============================================
 
-	; INL/INH points to string
+	; Y is which string to use
 
 	; comes in +6 from a jsr
 
 print_string:
 
-	;===================
-	; now scanline 0
-	;===================
-	; center the sprite position
-	; needs to be right after a WSYNC
-; 6
-	; to center exactly would want
-	;	sprite0: ??
-	;	sprite1: ??
+	; in theory doesn't touch Y?
 
-	ldx	#3		;					; 2
-; 2
+	jsr	center_string
 
-pspad_x:
-	dex			;					; 2
-	bne	pspad_x		;					; 2/3
+	; now +1 scanline + 9 cycles
 
-	; (5*X)-1 each time through
-	;	so if X=3 then 14
 
-	; X should be 0 here
-; 16
-	stx	VDELP0		; turn off delay			; 3
-	stx	VDELP1							; 3
-; 22
+	lda	string_table_l,Y
+	sta	INL
 
-;	lda	LEVEL_COLOR	; orange by default			; 3
-;	sta	COLUPF  	; set playfield color			; 3
-;	lda	$80		; nop3					; 3
+	lda	string_table_h,Y
+	sta	INH
 
-; 37
-
-	; want to be 37 here
-
-	; beam is at proper place
-	sta	RESP0							; 3
-	; 40 (GPU=120, want ??) +?
-	sta	RESP1							; 3
-	; 43 (GPU=129, want ??) +?
-
-; 43
-
-	lda	#$90		; opposite what you'd think		; 2
-	sta	HMP0							; 3
-	lda	#$A0							; 2
-	sta	HMP1							; 3
-; 53
-
-	; set color of sprite
-
-	lda	#$0E	; bright white					; 2
-	sta	COLUP0	; set sprite color				; 3
-	sta	COLUP1	; set sprite color				; 3
-
-; 61
 
 	; set to be 32 adjacent pixels
-
+; 9
 	lda	#NUSIZ_TWO_COPIES_CLOSE					; 2
 	sta	NUSIZ0							; 3
 	sta	NUSIZ1							; 3
+; 17
+	; set up loop vars
 
-; 69
-
-	sta	WSYNC							; 3
-
-	;===================
-	; now scanline 1
-	;===================
-; 0
-	sta	HMOVE	; adjust fine tune, must be after WSYNC		; 3
 	ldx	#6							; 2
-	ldy	#0
+	ldy	#0							; 2
+; 21
 
-;	jmp	blurgh	;						; 3
-
-; 8
-
-
-;.align	$100
 
 	;===================
 	; now scanline 1..7
@@ -113,34 +59,26 @@ stringloop:
 	iny								; 2
 ; 20
 
-	nop								; 2
-;	nop								; 2
-;	nop								; 2
-;	nop								; 2
-;	nop								; 2
-;	nop								; 2
-
-; 32
+; 20
 	; need to write GRP0 at 44-47
 	lda	(INL),Y		; load sprite data			; 5+
 	sta	TEMP							; 3
 	iny								; 2
-; 42
+; 30
 	lda	(INL),Y							; 5+
 	iny								; 2
-; 46
+; 37
 	sty	TEMPY							; 3
 	tay								; 2
-	lda	TEMP
-; 51
-
+	lda	TEMP							; 3
+; 45
 
 	sta	GRP0			;				; 3
 	; write at 48!!
 	sty	GRP1			;				; 3
 	; wrote at 51
 
-	ldy	TEMPY
+	ldy	TEMPY							; 3
 
 	dex								; 2
 	bpl	stringloop						; 2/3
@@ -152,7 +90,8 @@ stringloop:
 	; done drawing score
 	;
 
-	inc	TEMP1							; 5
+;	inc	TEMP1							; 5
+
 ; 60
 	; turn off sprites
 

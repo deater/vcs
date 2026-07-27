@@ -36,8 +36,12 @@ spad_x:
 	stx	VDELP1							; 3
 ; 22
 
-	lda	LEVEL_COLOR	; orange by default			; 3
-	sta	COLUPF  	; set playfield color			; 3
+	nop
+	nop
+	nop
+
+;	lda	LEVEL_COLOR	; orange by default			; 3
+;	sta	COLUPF  	; set playfield color			; 3
 ;	nop								; 2
 ;	nop								; 2
 ;	nop								; 2

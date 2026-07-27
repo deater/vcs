@@ -37,6 +37,30 @@ clear_loop:
 	lda	#$f
 	sta	BUTTON_COUNTDOWN
 
+	lda	#3
+	sta	BANK_256
+
+	lda	#4
+	sta	BANK_1K
+
+	lda	#$00
+	sta	READ_VALUE
+
+	lda	#$00
+	sta	WRITE_VALUE
+
+	; update all bytes
+
+	ldy	#7
+ub_loop:
+	sty	TEMPY
+	jsr	update_byte
+	ldy	TEMPY
+	dey
+	bpl	ub_loop
+
+
+
 	;==============================
 	; Run Tests
 	;==============================
@@ -51,10 +75,12 @@ again:
 
 	.include "common_routines.s"
 	.include "memory_test.s"
-;	.include "ram_tests.s"
 	.include "print_numbers.s"
+	.include "print_byte.s"
 	.include "update_numbers.s"
 	.include "print_string.s"
+	.include "update_byte.s"
+	.include "center_string.s"
 
 	;==========================
 	; graphics

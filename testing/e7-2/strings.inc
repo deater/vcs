@@ -38,6 +38,21 @@ string_256_write:
 .byte	$45,$57,$52,$24
 .byte	$72,$27,$57,$27
 
+string_table_l:
+
+.byte <string_256_bank,<string_1k_bank
+.byte <string_256_read,<string_256_write
+.byte <string_1k_read,<string_1k_write
+.byte <string_write_value,<string_read_value
+
+string_table_h:
+
+.byte >string_256_bank,>string_1k_bank
+.byte >string_256_read,>string_256_write
+.byte >string_1k_read,>string_1k_write
+.byte >string_write_value,>string_read_value
+
+
 .align	$100
 
 ; 1K..READ

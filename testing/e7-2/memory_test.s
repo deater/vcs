@@ -107,14 +107,11 @@ done_new_test:
 	; 256 bank
 	;===================================
 
-	lda	#<string_256_bank
-	sta	INL
-	lda	#>string_256_bank
-	sta	INH
+	ldy	#0
 
 	jsr	print_string
 
-	jsr	print_numbers
+	jsr	print_byte
 
 	; comes back +6 cycles
 
@@ -124,14 +121,11 @@ done_new_test:
 	; 1k bank
 	;===================================
 
-	lda	#<string_1k_bank
-	sta	INL
-	lda	#>string_1k_bank
-	sta	INH
+	ldy	#1
 
 	jsr	print_string
 
-	jsr	print_numbers
+	jsr	print_byte
 
 	; comes back +6 cycles
 
@@ -141,10 +135,7 @@ done_new_test:
 	; 256 read
 	;===================================
 
-	lda	#<string_256_read
-	sta	INL
-	lda	#>string_256_read
-	sta	INH
+	ldy	#2
 
 	jsr	print_string
 
@@ -159,10 +150,7 @@ done_new_test:
 	; 256 write
 	;===================================
 
-	lda	#<string_256_write
-	sta	INL
-	lda	#>string_256_write
-	sta	INH
+	ldy	#3
 
 	jsr	print_string
 
@@ -176,10 +164,7 @@ done_new_test:
 	; 1k read
 	;===================================
 
-	lda	#<string_1k_read
-	sta	INL
-	lda	#>string_1k_read
-	sta	INH
+	ldy	#4
 
 	jsr	print_string
 
@@ -194,10 +179,7 @@ done_new_test:
 	; 1k write
 	;===================================
 
-	lda	#<string_1k_write
-	sta	INL
-	lda	#>string_1k_write
-	sta	INH
+	ldy	#5
 
 	jsr	print_string
 
@@ -211,14 +193,11 @@ done_new_test:
 	; write value
 	;===================================
 
-	lda	#<string_write_value
-	sta	INL
-	lda	#>string_write_value
-	sta	INH
+	ldy	#6
 
 	jsr	print_string
 
-	jsr	print_numbers
+	jsr	print_byte
 
 	; comes back +6 cycles
 
@@ -229,14 +208,11 @@ done_new_test:
 	; read_value
 	;===================================
 
-	lda	#<string_read_value
-	sta	INL
-	lda	#>string_read_value
-	sta	INH
+	ldy	#7
 
 	jsr	print_string
 
-	jsr	print_numbers
+	jsr	print_byte
 
 	; comes back +6 cycles
 
@@ -254,7 +230,7 @@ done_new_test:
 	;=============================================
 	;=============================================
 
-	ldx	#40
+	ldx	#36
 	jsr	repeat_wsync
 
 	;==========================
