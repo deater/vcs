@@ -131,8 +131,8 @@ done_new_test:
 	ldy	#2
 	jsr	print_string
 
-	ldy	#0
-	ldy	#0
+	ldx	#4
+	ldy	#5
 	jsr	print_word
 
 	; comes back +6 cycles
@@ -145,11 +145,10 @@ done_new_test:
 	;===================================
 
 	ldy	#3
-
 	jsr	print_string
 
-	ldy	#0
-	ldy	#0
+	ldx	#6
+	ldy	#7
 	jsr	print_word
 
 	; comes back +6 cycles
@@ -161,11 +160,10 @@ done_new_test:
 	;===================================
 
 	ldy	#4
-
 	jsr	print_string
 
-	ldy	#0
-	ldy	#0
+	ldx	#8
+	ldy	#9
 	jsr	print_word
 
 	; comes back +6 cycles
@@ -178,11 +176,10 @@ done_new_test:
 	;===================================
 
 	ldy	#5
-
 	jsr	print_string
 
-	ldy	#0
-	ldy	#0
+	ldx	#$A
+	ldy	#$B
 	jsr	print_word
 
 	; comes back +6 cycles
@@ -230,7 +227,7 @@ done_new_test:
 	;=============================================
 	;=============================================
 
-	ldx	#31
+	ldx	#35
 	jsr	repeat_wsync
 
 	;==========================
