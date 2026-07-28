@@ -18,19 +18,20 @@ print_byte:
 
 	; cycles to loop
 
-	tya
+	tya					; multiply by 8
 	asl
 	asl
 	asl
 	clc
 
-	adc	#char_data_start
+	adc	#char_data_start		; add in start offset
 	sta	INL
 
 	lda	#0
 	sta	INH
 
-	ldx	#6							; 2
+;	ldx	#6							; 2
+	ldy	#6
 
 	; set to be just one copy
 
@@ -54,8 +55,6 @@ print_byte_loop:
 	sta	GRP1			; 1->[GRP1], [GRP0 (0)]-->GRP0	; 3
 ; 22
 	dey
-
-	dex								; 2
 	bpl	print_byte_loop						; 2/3
 	; aim for 76 if no WSYNC
 

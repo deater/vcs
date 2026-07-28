@@ -6,6 +6,8 @@
 
 	; comes in likely +12 cycles
 
+	; preserves Y
+
 center_string:
 
 	;===================
