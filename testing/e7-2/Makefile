@@ -90,7 +90,7 @@ main.bin:	main.o
 main.o:	main.s zp.inc common_routines.s \
 	print_word.s number_font.inc memory_test.s \
 	print_string.s strings.inc print_byte.s update_byte.s \
-	center_string.s
+	center_string.s joypad_routines.s
 	ca65 -o main.o main.s -l main.lst
 
 ###

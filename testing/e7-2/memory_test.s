@@ -4,9 +4,8 @@ memory_test:
 
 ; Testing screens
 
-	lda	#$0			; reset some values
-;	sta	DONE_TEST
-;	sta	WHICH_TEST
+	lda	#$5			; reset some values
+	sta	WHICH_ROW
 
 	sta	WSYNC
 
@@ -51,7 +50,7 @@ start_test_frame:
 ;	sta	DONE_TEST	; reset done_test			; 3
 ;	sta	EXPECTED_L	; reset counter				; 3
 ;	sta	BAD_RESULT						; 3
-	sta	COLUBK			; clear background to black
+;	sta	COLUBK			; clear background to black
 
 ; --
 ;	lda	WHICH_TEST	; set upper value based on test		; 3
@@ -63,8 +62,8 @@ start_test_frame:
 ;	sta	EXPECTED_H						; 3
 ; 41
 
-	lda	#$f		; reset button debounce			; 2
-	sta	BUTTON_COUNTDOWN					; 3
+;	lda	#$f		; reset button debounce			; 2
+;	sta	BUTTON_COUNTDOWN					; 3
 ; 46
 	lda	#$ff		; clear out digits			; 2
 ;	sta	DIGITS2							; 3
@@ -108,6 +107,9 @@ done_new_test:
 
 	; comes back +6 cycles
 
+	ldx	#1
+	jsr	update_row_color
+
 	sta	WSYNC
 
 	;===================================
@@ -121,6 +123,9 @@ done_new_test:
 	jsr	print_byte
 
 	; comes back +6 cycles
+
+	ldx	#2
+	jsr	update_row_color
 
 	sta	WSYNC
 
@@ -136,6 +141,9 @@ done_new_test:
 	jsr	print_word
 
 	; comes back +6 cycles
+
+	ldx	#3
+	jsr	update_row_color
 
 	sta	WSYNC
 
@@ -153,6 +161,9 @@ done_new_test:
 
 	; comes back +6 cycles
 
+	ldx	#4
+	jsr	update_row_color
+
 	sta	WSYNC
 
 	;===================================
@@ -167,6 +178,9 @@ done_new_test:
 	jsr	print_word
 
 	; comes back +6 cycles
+
+	ldx	#5
+	jsr	update_row_color
 
 	sta	WSYNC
 
@@ -184,6 +198,9 @@ done_new_test:
 
 	; comes back +6 cycles
 
+	ldx	#6
+	jsr	update_row_color
+
 	sta	WSYNC
 
 	;===================================
@@ -197,6 +214,9 @@ done_new_test:
 	jsr	print_byte
 
 	; comes back +6 cycles
+
+	ldx	#7
+	jsr	update_row_color
 
 	sta	WSYNC
 
@@ -212,6 +232,9 @@ done_new_test:
 	jsr	print_byte
 
 	; comes back +6 cycles
+
+	ldx	#0
+	jsr	update_row_color
 
 	sta	WSYNC
 
@@ -230,29 +253,58 @@ done_new_test:
 	ldx	#35
 	jsr	repeat_wsync
 
+
+
+
+
 	;==========================
 	;==========================
 	; overscan
 	;==========================
 	;==========================
 
-	ldx	#28
+	ldx	#27
 	jsr	common_overscan
 
+	;==========================
+	; overscan 27
+	;==========================
+	; check for down being pressed
+
+	jsr	check_joypad_down
+
+	bcc	check_joypad_down_done
+
+	; was pressed
+
+	inc	WHICH_ROW
+	lda	WHICH_ROW
+	and	#$7
+	sta	WHICH_ROW
+
+check_joypad_down_done:
+
+
+	sta	WSYNC
 
 	;==========================
 	; overscan 28
 	;==========================
-	; check for done page
+	; check for up / down pressed
 
-;	inc	WHICH_PAGE
-;	lda	WHICH_PAGE
-;	cmp	#$18
-;	bne	check_which_page_done
+	jsr	check_joypad_up					; 31 worse case
 
-;	inc	DONE_TEST
+	bcc	check_joypad_up_done
 
-;check_which_page_done:
+	; was pressed
+
+	dec	WHICH_ROW
+	lda	WHICH_ROW
+	and	#$7
+	sta	WHICH_ROW
+
+check_joypad_up_done:
+
 	sta	WSYNC
 
 	;==========================
@@ -297,4 +349,18 @@ not_ram:
 
 
 done_roms:
+	rts
+
+
+	; handle row highlighting
+	; if X=WHICH ROW, color on
+	; else, color off
+update_row_color:
+	lda	#0
+	cpx	WHICH_ROW
+	bne	row_color_set
+	lda	#$20
+
+row_color_set:
+	sta	COLUBK
 	rts

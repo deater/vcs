@@ -35,7 +35,7 @@ clear_loop:
 	;==============================
 
 	lda	#$f
-	sta	BUTTON_COUNTDOWN
+	sta	DEBOUNCE_COUNTDOWN
 
 	lda	#3
 	sta	BANK_256
@@ -49,6 +49,7 @@ clear_loop:
 	sta	READ_1KL
 	sta	WRITE_256L
 	sta	WRITE_1KL
+	sta	WHICH_ROW
 
 	lda	#$19
 	sta	READ_256H
@@ -97,6 +98,7 @@ again:
 	.include "print_string.s"
 	.include "update_byte.s"
 	.include "center_string.s"
+	.include "joypad_routines.s"
 
 	;==========================
 	; graphics

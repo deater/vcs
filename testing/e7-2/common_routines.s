@@ -59,31 +59,3 @@ common_delay_scanlines:
 	bne	common_delay_scanlines					; 2/3
 	rts								; 6
 
-
-
-	;===================================
-	; check joypad button, with debounce
-	;===================================
-	; returns carry set if pressed, carry clear otherwise
-
-check_joypad_button:
-
-	lda	BUTTON_COUNTDOWN					; 3
-	beq	waited_button_enough					; 2/3
-	dec	BUTTON_COUNTDOWN					; 5
-	jmp	done_check_button_nopress				; 3
-
-waited_button_enough:
-
-	lda	INPT4		; check joystick button pressed		; 3
-	bpl	done_check_button_press					; 2/3
-
-done_check_button_nopress:
-	clc
-	rts
-
-done_check_button_press:
-	sec
-	rts
-
-
