@@ -43,13 +43,15 @@ clear_loop:
 	lda	#4
 	sta	BANK_1K
 
-	lda	#$00
-	sta	READ_VALUE
-	sta	READ_256L
-	sta	READ_1KL
-	sta	WRITE_256L
-	sta	WRITE_1KL
-	sta	WHICH_ROW
+	; init code sets to 0
+
+;	lda	#$00
+;	sta	READ_VALUE
+;	sta	READ_256L
+;	sta	READ_1KL
+;	sta	WRITE_256L
+;	sta	WRITE_1KL
+;	sta	WHICH_ROW
 
 	lda	#$19
 	sta	READ_256H
@@ -63,9 +65,6 @@ clear_loop:
 
 	lda	#$5A
 	sta	WRITE_VALUE
-
-
-
 
 	; update all bytes
 
@@ -83,9 +82,9 @@ ub_loop:
 	; Run Tests
 	;==============================
 again:
-	jsr	memory_test
+	jmp	memory_test
 
-	jmp	again
+;	jmp	again
 
 	;===========================
 	; common routines
@@ -103,9 +102,10 @@ again:
 	;==========================
 	; graphics
 	;==========================
-.align $100
-	.include "number_font.inc"
+;.align $100
 	.include "strings.inc"
+	.include "number_font.inc"
+
 
 ; e7 signature for MAME */
 ; this is LDA $FFE5

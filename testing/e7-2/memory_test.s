@@ -2,13 +2,6 @@ memory_test:
 
 	; comes in at unknown cycles, w/o last WSYNC
 
-; Testing screens
-
-	lda	#$5			; reset some values
-	sta	WHICH_ROW
-
-	sta	WSYNC
-
 
 start_test_frame:
 
@@ -26,28 +19,8 @@ start_test_frame:
 	; 37 lines of vertical blank
 	;=============================
 
-	ldx	#35
+	ldx	#36
 	jsr	repeat_wsync
-
-	;=======================
-	; scanline 16..35?
-
-;	jsr	update_numbers
-
-	; returns +6 cycles
-
-	;=======================
-	; scanline 36 -- check new test
-; 6
-;	lda	NEW_TEST						; 3
-;	beq	done_new_test						; 2/3
-; 11
-
-
-	lda	#0							; 2
-
-; 12 / 65
-	sta	WSYNC
 
 	;=======================
 	; scanline 37 -- ???
@@ -213,7 +186,7 @@ start_test_frame:
 	;=============================================
 	;=============================================
 
-	ldx	#27
+	ldx	#26
 	jsr	repeat_wsync
 
 
@@ -228,9 +201,8 @@ start_test_frame:
 
 	jsr	check_joypad_button
 
-	bcs	button_was_pressed
-
-	jmp	check_joypad_button_extra
+;	bcs	button_was_pressed
+	bcc	check_joypad_button_extra	; bra
 
 button_was_pressed:
 	; was pressed
@@ -338,17 +310,162 @@ check_joypad_button_read:
 	sta	WSYNC
 
 
-
-
-
 	;==========================
 	;==========================
 	; overscan
 	;==========================
 	;==========================
 
-	ldx	#13
+	ldx	#1
 	jsr	common_overscan
+
+
+	;==============================
+	; overscan 0..12 (13 scanlines)
+	;==============================
+	; check for left being pressed
+	; + nothing pressed is 1 scanline
+	; + 8-bit value =  7 lines
+	; + 16-bit value = 13 lines
+
+
+	jsr	check_joypad_left
+
+	bcs	left_was_pressed
+
+	jmp	check_joypad_left_none
+
+left_was_pressed:
+	; was pressed
+
+	ldx	WHICH_ROW
+	lda	left_table_h,X
+	pha
+	lda	left_table_l,X
+	pha
+	rts
+
+left_table_l:
+.byte <(left_row_0-1),<(left_row_1-1),<(left_row_2-1)
+.byte <(left_row_3-1),<(left_row_4-1),<(left_row_5-1)
+.byte <(left_row_6-1),<(left_row_7-1)
+
+left_table_h:
+.byte >(left_row_0-1),>(left_row_1-1),>(left_row_2-1)
+.byte >(left_row_3-1),>(left_row_4-1),>(left_row_5-1)
+.byte >(left_row_6-1),>(left_row_7-1)
+
+
+left_row_0:
+	dec	BANK_256
+	lda	BANK_256
+	and	#3
+	sta	BANK_256
+	ldy	#0
+	beq	check_joypad_left_8	; bra
+
+left_row_1:
+	dec	BANK_1K
+	lda	BANK_1K
+	and	#7
+	sta	BANK_1K
+	ldy	#1
+	bne	check_joypad_left_8	; bra
+
+left_row_2:
+	sec
+	lda	READ_256L
+	sbc	#1
+	sta	READ_256L
+
+	lda	READ_256H
+	sbc	#0
+	sta	READ_256H
+
+	ldy	#4
+	jsr	update_byte
+	ldy	#5
+	bne	check_joypad_left_16	; bra
+
+left_row_3:
+
+	sec
+	lda	WRITE_256L
+	sbc	#1
+	sta	WRITE_256L
+	lda	WRITE_256H
+	sbc	#0
+	sta	WRITE_256H
+
+	ldy	#6
+	jsr	update_byte
+
+	ldy	#7
+	bne	check_joypad_left_16	; bra
+
+left_row_4:
+
+	sec
+	lda	READ_1KL
+	sbc	#1
+	sta	READ_1KL
+	lda	READ_1KH
+	sbc	#0
+	sta	READ_1KH
+
+	ldy	#8
+	jsr	update_byte
+
+	ldy	#9
+	bne	check_joypad_left_16	; bra
+
+left_row_5:
+	sec
+	lda	WRITE_1KL
+	sbc	#1
+	sta	WRITE_1KL
+	lda	WRITE_1KH
+	sbc	#0
+	sta	WRITE_1KH
+
+	ldy	#10
+	jsr	update_byte
+	ldy	#11
+	bne	check_joypad_left_16	; bra
+
+left_row_6:
+	dec	WRITE_VALUE
+	ldy	#2
+	bne	check_joypad_left_8	; bra
+
+left_row_7:
+	; do nothing
+
+
+check_joypad_left_none:
+
+	; delay 13 rows
+
+	ldx	#13
+	jsr	repeat_wsync
+
+	jmp	check_joypad_left_done
+
+check_joypad_left_8:
+
+	; delay 6 rows to get to 13
+
+	ldx	#6
+	jsr	repeat_wsync
+
+check_joypad_left_16:
+	jsr	update_byte
+
+
+
+check_joypad_left_done:
+	sta	WSYNC
+
 
 
 	;==============================
@@ -541,11 +658,15 @@ check_joypad_up_done:
 ;	jsr	check_joypad_button
 ;	bcs	done_test
 
-	sta	WSYNC
+;	sta	WSYNC
 
 	;================================
 	; once again
 
+	lda	DEBOUNCE_COUNTDOWN
+	beq	debounce_count_skip
+	dec	DEBOUNCE_COUNTDOWN
+debounce_count_skip:
 	jmp	start_test_frame
 
 

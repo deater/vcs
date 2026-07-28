@@ -1,4 +1,4 @@
-DEBOUNCE_VAL = 32
+DEBOUNCE_VAL = 12
 
 
 	;===================================
@@ -9,10 +9,11 @@ DEBOUNCE_VAL = 32
 check_joypad_button:
 ; 6
 	lda	DEBOUNCE_COUNTDOWN					; 3
-	beq	waited_button_enough					; 2/3
+	bne	common_check_not_pressed
+;	waited_button_enough					; 2/3
 ; 11
-	dec	DEBOUNCE_COUNTDOWN					; 5
-	jmp	common_check_not_pressed				; 3
+;	dec	DEBOUNCE_COUNTDOWN					; 5
+;	jmp	common_check_not_pressed				; 3
 ; 19
 
 waited_button_enough:
@@ -44,9 +45,10 @@ common_check_was_pressed:
 check_joypad_up:
 
 	lda	DEBOUNCE_COUNTDOWN					; 3
-	beq	waited_up_enough					; 2/3
-	dec	DEBOUNCE_COUNTDOWN					; 5
-	jmp	common_check_not_pressed				; 3
+	bne	common_check_not_pressed
+;	beq	waited_up_enough					; 2/3
+;	dec	DEBOUNCE_COUNTDOWN					; 5
+;	jmp	common_check_not_pressed				; 3
 
 waited_up_enough:
 
@@ -64,9 +66,10 @@ waited_up_enough:
 check_joypad_down:
 
 	lda	DEBOUNCE_COUNTDOWN					; 3
-	beq	waited_down_enough					; 2/3
-	dec	DEBOUNCE_COUNTDOWN					; 5
-	jmp	common_check_not_pressed				; 3
+	bne	common_check_not_pressed
+;	beq	waited_down_enough					; 2/3
+;	dec	DEBOUNCE_COUNTDOWN					; 5
+;	jmp	common_check_not_pressed				; 3
 
 waited_down_enough:
 
@@ -84,9 +87,10 @@ waited_down_enough:
 check_joypad_right:
 
 	lda	DEBOUNCE_COUNTDOWN					; 3
-	beq	waited_right_enough					; 2/3
-	dec	DEBOUNCE_COUNTDOWN					; 5
-	jmp	common_check_not_pressed				; 3
+	bne	common_check_not_pressed
+;	beq	waited_right_enough					; 2/3
+;	dec	DEBOUNCE_COUNTDOWN					; 5
+;	jmp	common_check_not_pressed				; 3
 
 waited_right_enough:
 
@@ -104,9 +108,11 @@ waited_right_enough:
 check_joypad_left:
 
 	lda	DEBOUNCE_COUNTDOWN					; 3
-	beq	waited_left_enough					; 2/3
-	dec	DEBOUNCE_COUNTDOWN					; 5
-	jmp	common_check_not_pressed				; 3
+	bne	common_check_not_pressed
+
+;	beq	waited_left_enough					; 2/3
+;	dec	DEBOUNCE_COUNTDOWN					; 5
+;	jmp	common_check_not_pressed				; 3
 
 waited_left_enough:
 

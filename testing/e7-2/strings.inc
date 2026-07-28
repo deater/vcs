@@ -38,6 +38,20 @@ string_256_write:
 .byte	$45,$57,$52,$24
 .byte	$72,$27,$57,$27
 
+
+
+;.align	$100
+
+; 1K..READ
+string_1k_read:
+.byte	$25,$00,$67,$26
+.byte	$65,$00,$54,$55
+.byte	$25,$00,$54,$55
+.byte	$26,$00,$67,$75
+.byte	$25,$00,$64,$55
+.byte	$25,$00,$54,$55
+.byte	$75,$00,$57,$56
+
 string_table_l:
 
 .byte <string_256_bank,<string_1k_bank
@@ -52,18 +66,6 @@ string_table_h:
 .byte >string_1k_read,>string_1k_write
 .byte >string_write_value,>string_read_value
 
-
-.align	$100
-
-; 1K..READ
-string_1k_read:
-.byte	$25,$00,$67,$26
-.byte	$65,$00,$54,$55
-.byte	$25,$00,$54,$55
-.byte	$26,$00,$67,$75
-.byte	$25,$00,$64,$55
-.byte	$25,$00,$54,$55
-.byte	$75,$00,$57,$56
 
 ; 1K.WRITE
 string_1k_write:
