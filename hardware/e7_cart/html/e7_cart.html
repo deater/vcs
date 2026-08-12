@@ -42,8 +42,8 @@ The demake was developed on Linux and tested via the Stella emulator.
 It does run on real hardware.
 You can test it with the Harmony Cartridge, with is an emulated
 cartridge that can run ROM files off of an SD card.
-I also had a custom catridge made, but this one too is emulated with
-a Melody board which is similar to the Harmony catrdige, just running
+I also had a custom cartridge made, but this one too is emulated with
+a Melody board which is similar to the Harmony cartridge, just running
 the ROM off of flash.
 <br><br>
 These cartridges have 70MHz 32-bit ARM microcontrollers
@@ -65,7 +65,7 @@ I began wondering, could I get Atari 2600 Myst running using
 
 <hr>
 
-<h2>Fitting Myst into a 16k Catridge</h2>
+<h2>Fitting Myst into a 16k Cartridge</h2>
 
 The Atari VCS lasted a long time, and toward the end of their run
 companies started using advanced bank-switching to fit more ROM onto
@@ -96,7 +96,7 @@ the cartridge slot did not have the 6502 read/write line available.
 The way developers got around this was by reserving some address space
 for reads, some for writes.
 So you might have a 1k region and so storing to the bottom half would
-write the value to RAM, wheras if you wanted to read you'd read from
+write the value to RAM, whereas if you wanted to read you'd read from
 the top half, and extra logic involved made sure the read/write
 pins got set properly for the RAM chip.
 <br><br>
@@ -156,46 +156,90 @@ functionality, so it seemed like a good source to get a chip.
 
 <hr>
 
-<h2>Part 1: Desoldering a BugertTime cartridge</h2>
+<h2>Obtaining Many Burgertime Cartridges</h2>
 
-Just to be safe I acuired a bunch of Burgertime cartridges.
+Just to be safe I acquired a bunch of Burgertime cartridges.
 There are two variants: one with through hole chips (Made in USA)
 and one with epoxy blobs for the E7 and ROM chips (Made in Singapore).
-I ended up with 6 cartriges.  Only 3 of them actually ran the game, 
-the others glitched or had other issues.
+I ended up with 6 cartridges (eventually I bought a few more later).
+Only 3 of them actually ran the game
+properly, the others glitched or had other issues.
+<br><br>
 
-In theory to play Myst on one of these it should be as simple as
+<center><img src="2016_lots_of_burgertime.jpg" Alt="6 different Burgertime Cartridges"></center>
+<center>
+<img src="1993_through_hole.jpg" alt="Burgertime Board Through-Hole">
+<img src="2018_blob.jpg" alt="Burgertime Epoxy Blob">
+</center>
+
+<hr>
+
+<h2>Attempting a Burgertime Cartridge Conversion</h2>
+
+In theory converting a Burgertime cartridge to Myst should be as simple as:
 <ol>
 <li>Replacing the ROMs with ones with my own code
 <li>Upgrading the RAM from a 1k SRAM to 2k
 </ol>
 
-It turns out in the end there was nothing simple about this.
+It turns out in the end there was nothing simple about this at all.
+<br><br>
 
-The ROMs are in the ZZZZZ pinout (used in IBM 5150 BIOS and Commodore 64)
-but that doesn't match the standard 27C64 8k EPROM format.  You can
-get adapters, and I did from ZZZZZ but the footprint is too big
-to fit on the circuit board.
+I tried desoldering the boards with solder wick and a solder pump.
+That was a mistake.  I ended up lifting a lot of pads and losing
+a bunch of pins.  I eventually got a "real" Hakko desoldering gun
+and it was worth the price.
+<br><br>
 
-The RAM is the Toshiba ZZZZZ which is nearly completely undocumented, even
-by Toshiba back in the day.  It was used a few other places and it can
+The ROMs are in the MCM67866 24-pin pinout
+(same as that for ROMs used in IBM 5150 BIOS and Commodore 64).
+This pinout *does not* match the standard 28-pin 27C64 8k EPROM format.
+You can get adapters, and I did some 
+<a href="https://store.go4retro.com/2364-adapter/">
+"2364 Adapters" from go4retro</a> but the footprint 
+for the adapters is too big to fit on the existing circuit board.
+<br><br>
+
+The RAM is a 1k Toshiba SRAM TMI12009P-25A which is nearly
+completely undocumented, even by Toshiba back in the day.
+It was used a few other places and it can
 be seen that the pinout is essentially the same as that of 6116 2k SRAM
 so the hope was one of those could be dropped in place.
+(Note from later: no, no it couldn't).
+<br><br>
 
+To try to test things out I made the below monstrosity on a breadboard,
+poorly desoldered chips soldered to sockets, an IC test clip, ands lots
+of wires.  The E7 chip was left on the board, with the bus wires
+going to the breadboard.  If this had worked playing Burgertime then in
+theory I could have dropped the RAM/ROM onto the breadboard to test
+Myst!
+<br><br>
 
-I made this monstrosity trying to grab the signals off the cart with the E7
-in place and routing them to a breadboard.  This was made difficult because
-my desoldering lifted a bunch of pads until I got a proper desolder gun
-instead of a suction pump.  It didn't work. though someone suggested
-if I had added enough decoupling capacitors maybe it would.
+<center>
+<img src="1995_monstrosity.jpg" alt="I say there monstrosity, do you know the times?">
+</center>
+<br><br>
 
-Then life got busy and that's where the project stood for 2 years.
+As you can guess, it didn't work.  Though someone on atariage later
+claimed if I had thrown enough decoupling
+capacitors to it maybe it would have.
+
+<hr>
+
+<h2>Delaying Two Years</h2>
+
+Life got busy and that's where this project stood for 2 years.
+<br><br>
+But then I picked it up again Summer of 2026.
+
+<hr>
 
 <h2>Part 2: Custom PCB</h2>
 
 I decided to pick this project back up.  I fired up KiCAD and
 made a replica E7 cartridge, but with extra spacing to allow the
-ROM adapaters to fit, as well as bring out some of the pins for debugging.
+ROM adapters to fit, as well as bring out some of the pins for debugging.
 
 This was my first major project with KiCAD, previous had used gEDA and
 it took a bit of getting used to but worked out in the end.  I mostly missed
@@ -222,13 +266,13 @@ ignore the extra large bypass caps, couldn't find smaller ones.
 Disappointing.  But wasn't ready to give up.  What could be keeping the
 ROMs from working.
 
-Worte an E7 tester ROM to put in and try to find out.  Wasted time
+Wrote an E7 tester ROM to put in and try to find out.  Wasted time
 on a fancy splash screen.
 
 With the original 1k RAM in, it worked and all 4 banks of the 256k chunks
 seemed to work, but of course accessing the 1k not there didn't work.
 
-Alarmingly it would reset a lot when the ful 2k installed, almost like
+Alarmingly it would reset a lot when the full 2k installed, almost like
 it was fighting the bus.  The Toshiba chip the A10 line acts as an extra
 chip select so maybe if that's the case it might end up fighting things.
 
@@ -260,12 +304,12 @@ Of the number I got, only one totally working of DIP type.
 
 Board has E7 mapper, two ROMs (one 8k, one 4k) and
 	TMM2009P-25A which is really hard to find, but probably
-	1K SRAM (vaguely pin comaptible with 6116)
+	1K SRAM (vaguely pin compatible with 6116)
 	But the -A means 1k with the A10 line always high?
 	Investigating
 
 Using TL866 to dump roms
-	linux minipro tool
+	Linux minipro tool
 
 	minipro -y -p "2732A @DIP24"  -r 4k_dump.rom
 
@@ -435,6 +479,6 @@ main.s:
 <hr>
 <a href="">Back to the Atari 2600 Myst page</a><br>
 <a href="">Back to my Atari 2600 Demakes page</a><br>
-
+<a href="">Back to my homepage</a><br>
 </body>
 </html>
