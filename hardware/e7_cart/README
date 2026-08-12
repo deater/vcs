@@ -130,3 +130,14 @@ ffff ffff ffff		3800-3fff (14k-16k) 800-bff = $ff, a00-fff = $00
 	dd if=myst.e7 of=myst_rom1.bin bs=1k count=8 skip=8
 
 	minipro -y -p "UPD2764 @DIP28" -w myst_rom2.bin
+
+
+
+Further update
+	https://forums.atariage.com/topic/352627-is-this-a-prototype-or-a-bootleg/
+	Unreleased AD&D Towers of Mystery board is E7 with 2k of RAM!
+	Pictures of the prototype use TC5516AP RAM which has again slightly
+		different CS/OE behavior.  Hmmmm.
+
+	https://www.atarimania.com/game-atari-2600-vcs-advanced-dungeons--dragons-tower-of-mystery-cartridge_15999.html
+https://www.atariprotos.com/2600/software/towerofmystery/towerofmystery.htm
