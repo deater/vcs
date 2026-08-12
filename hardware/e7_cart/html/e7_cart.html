@@ -1,65 +1,160 @@
 <html>
 <head><title>Custom Atari 2600 Code on vintage E7 Cart</title></head>
 
-<h1>Running Custom Atari VCS Code on a vintage E7 Cartridge</h1>
+<body bgcolor="#000000" text="#ffffff">
 
-<h2>Background<h2>
+<center><h1>Running Anachronistic Demakes on Vintage Atari VCS Hardware</h1></center>
+<center><h3>Custom Atari 2600 Code on an actual E7 Cartridge</h3></centeR>
 
-As a fun followup to my <a href="">Apple II Myst demake</a> I thought
-I would see how much of the game I could fit on an Atari 2600/VCS.
-Despite only being a limited subset of the game (though the full
-speedrun route is possible) this was a
-<a href="">much more popular project</a> and got a lot of press.
+<center><img src="2007_board_small.jpg" alt="Custom-made E7 compatible circuit board"></center>
+
+<hr>
+
+<h2>Background on the Myst demakes</h2>
+
+As a fun followup to my
+<a href="http://www.deater.net/weave/vmwprod/mist/">
+Apple II Myst demake</a> I thought I would see how much of the game I
+could fit on the much more hardware constrained Atari 2600/VCS.
+As a reminder, 
+the original MYST was one of the first CD-ROM games with hundreds
+of megabytes of pre-rendered graphics, and generally Atari 2600 cartridges
+maxed out at 4k, maybe 32k if you did complex bank-switching.
+<br><br>
+The 
+<a href="http://www.deater.net/weave/vmwprod/myst_vcs/">
+Atari VCS version</a> ended up being a limited subset of the original game
+(although the full speedrun route is possible).
+This version ended up unexpectedly popular and
+<a href="https://arstechnica.com/gaming/2023/06/30-years-later-myst-demake-for-atari-2600-reminds-us-how-far-weve-come/">
+got a lot of press coverage</a>.
 <br><br>
 
-<img src="" alt="Atari 2600 Myst Screenshot">
+<center>
+<img src="myst_cabin_s_screen_small.png" alt="Atari 2600 Myst Screenshot">
+</center>
 
-This was fun, and runs on real hardware, but by using a Harmony Cartridge
-or similar.  This cartridge has a full 32-bit ARM processor in it and
-can read ROMs off of an SD-card.  This is great for development, but
+<hr>
+
+<h2>Running on a Harmony Cartridge</h2>
+
+The demake was developed on Linux and tested via the Stella emulator.
+It does run on real hardware.
+You can test it with the Harmony Cartridge, with is an emulated
+cartridge that can run ROM files off of an SD card.
+I also had a custom catridge made, but this one too is emulated with
+a Melody board which is similar to the Harmony catrdige, just running
+the ROM off of flash.
+<br><br>
+These cartridges have 70MHz 32-bit ARM microcontrollers
+on them handling the bank-switching and other signaling needed to
+emulate high-end cartridge mappers.
+This is great for development, but
 not something that would have been available back in 1977 when the
 console debuted.  In fact the ARM chip inside of it would have had
-workstation to supercomputing amounts of power back then.  So I was wondering,
-could I get Atari 2600 Myst running using the actual technology of the time?
+workstation to supercomputing amounts of power back then.
+<br><br>
+I began wondering, could I get Atari 2600 Myst running using 
+1980s vintage technology without any ARM micro-controllers?
 <br><br>
 
-<img src="" alt="Harmony Cartridge">
+<center>
+<img src="2021_harmony_cart.jpg" alt="Harmony Cartridge">
+<img src="myst_cart.jpg" alt="Atari 2600 custom Myst cartridge (Melody)">
+</center>
 
-First some info on the E7 "Big Game" mapper from M-Network (Mattel).
+<hr>
 
+<h2>Fitting Myst into a 16k Catridge</h2>
+
+The Atari VCS lasted a long time, and toward the end of their run
+companies started using advanced bank-switching to fit more ROM onto
+a cartridge than the natural 4k limit.
 The Atari VCS/2600 has the 6507 processor in it, which is a 6502 chip
-but in a smaller package to save money.  It only has enough address
+but in a smaller package to save money.
+It only has enough address
 lines to access 8k of memory, but the Atari 2600 didn't bring all those
-pins out so the maximum you could address was 4k.  Most early games
+pins out, limiting the address space to 4k.
+Most early games
 were 2k or 4k ROMs, but that quickly turned out not to be enough so
 later various mapper schemes came up to bank-switch larger amounts of
-storage into the address space.  At the time you could get up to 32k
-of ROM and usually by accessing special soft-switch memory addresses
-you could swap in ROM into the 4k region as needed.
+storage into the address space..
+<br><br>
 
-For Atari MYST I picked the E7 mapper not only because it could handle 16k
-of ROM, but also it in theory supported up to 2k of RAM.  The Atari 2600
-itself comes with only 128 bytes (yes, bytes) of RAM.  To fit as many scenes
-from Myst as I could I wanted to use compression, but due to the race-the-beam
+Back in the 1980s you could get cartridges that mapped up to 32k
+of ROM.
+Generally chunks of ROM could be bank-switched after accessing
+special soft-switch memory addresses.
+Coding for this could get exciting if you were swapping the ROM
+out in the middle of executing code from it.
+<br><br>
+
+The Atari VCS only had 128 bytes of general purpose RAM built in.
+So just half of the 6502 zero page, and it was also shared with the stack.
+Some cartridges added extra RAM too, though that was complicated because
+the cartridge slot did not have the 6502 read/write line available.
+The way developers got around this was by reserving some address space
+for reads, some for writes.
+So you might have a 1k region and so storing to the bottom half would
+write the value to RAM, wheras if you wanted to read you'd read from
+the top half, and extra logic involved made sure the read/write
+pins got set properly for the RAM chip.
+<br><br>
+
+To fit as many scenes
+from Myst as I could I needed to use compression, but due to the race-the-beam
 nature of the graphics it would be much easier if I could decompress the
-graphics to a staging area bigger than 128 bytes.  So that's what I did.
-The E7 supports up to 2k of RAM.  A 1k region you can swap in instead of ROM,
-and also another 1k region you could swap in 256 bytes at a time.
+graphics to a staging area bigger than 128 bytes.
+When you enter a new level the compressed graphics data is copied to
+the 256-byte RAM window.  Then the ROM is swapped out and the 1k
+RAM range is banked in, and the 256-byte RAM is decompressed to the 1k
+range.
 
-Getting RAM on a 2600 is a bit of a pain as it was only expected to use ROM
-so none of the read/write signals come out to the cartridge socket.
-So for this to work there is a hack where if you want to access 1k, you'll
-have two 1k regions, one for reads, one for writes.  If you write to the
-write region your mapper is reponsible for setting up the signals to
-make sure writes happen.
+<hr>
 
-So in theory it was possible to support 16k of ROM and 2k of RAM in 1983
-if you had access to this mapper.  Where could I find some?
+<h2>The E7 M-Network "Big Game" Mapper</h2>
 
-It turns out there were three commercially released games that had E7 on
-board.  Burgertime, Masters of the Universe, and Bump 'N' Jump.
-Burgertime is the only one of these that used the RAM functionality,
-so it seemed like a good source to get a chip.
+
+For Atari VCS MYST I picked the E7 "Big Game" mapper from M-Networks
+(Mattel).
+Released in 1983, this chip could not only handle 16k
+of ROM, but also it (in theory) supports up to 2k of RAM.
+Your primary ROM was 1.5k at the top of the address space that
+is always mapped in.
+By hitting a set of soft-switches near the end of memory you could
+map in 7 different 2k chunks of ROM at the bottom of the address space.
+You can also swap in 256 bytes of RAM in the remaining 512 byte
+space (the bottom half for writes, top for reads).
+Finally, instead of ROM, you can bank-switch in an additional 1k
+of RAM to the bottom address space.
+<br><br>
+
+This mapper seemed like a good fit for the Myst demake.
+The question was where I could get such a chip?
+<br><br>
+
+In the table below you can see that only a few games were released
+using the chip before M-Networks was shut down.
+Of these, Burgertime is the only one of these that used the RAM
+functionality, so it seemed like a good source to get a chip.
+<br><br>
+
+<center><b>Known Users of the M-Network E7 Mapper</b></center>
+
+<center>
+<table border=yes>
+<tr><th>Game Name</th><th>Released</th><th>Ram on Board</th><th>256 byte bank usage</th><th>1k bank usage</th></tr>
+<tr><td>Bump 'N' Jump</td><td>Yes</td><td>No</td><td>N/A</td><td>N/A</td></tr>
+<tr><td>Burgertime</td><td>Yes</td><td>1k</td><td>1 bank used</td><td>no</td></tr>
+<tr><td>Masters of the Universe</td><td>Yes</td><td>No</td><td>N/A</td><td>N/A</td></tr>
+<tr><td>AD&amp;D Tower of Mystery</td><td>No</td><td>2k</td><td>many banks used</td><td>no</td></tr>
+<tr><td>In Search of the Golden Skull</td><td>No</td><td>2k(?)</td><td>?</td><td>?</td></tr>
+<tr><td>Locomotion</td><td>No</td><td>1k(?)</td><td>?</td><td>?</td></tr>
+<tr><td>Myst</td><td>No</td><td>2k</td><td>1 bank used</td><td><b>YES</b></tr></tr>
+</table>
+</center>
+
+<hr>
 
 <h2>Part 1: Desoldering a BugertTime cartridge</h2>
 
