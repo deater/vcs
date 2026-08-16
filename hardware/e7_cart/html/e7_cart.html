@@ -326,7 +326,9 @@ Firing it up, and it works!<br>
 
 	Tried running a burnt copy of the MYST ROMs, just in case it might work.
 	The title screen worked but whenever it tried to hit the RAM
-	it would glitch out.
+	it would glitch out.<br>
+
+<img src="2013_broken_myst.jpg" alt="broken vcs myst">
 
 <br><br>
 
@@ -362,41 +364,79 @@ four 256-byte chunks.  Accessing the 1k chunk didn't, but that
 was expected as it didn't exist.
 <br><br>
 
-Alarmingly it would reset a lot when the full 2k installed, almost like
-it was fighting the bus.  The Toshiba chip the A10 line acts as an extra
-chip select so maybe if that's the case it might end up fighting things.
+Alarmingly it would reset a lot when the 6116 2k SRAM was installed,
+almost like it was fighting the bus.<br><br>
 
-So the E7 test that tried to write values to all of RAM then read it back
-just didn't work.  The 256-byte chunks returned all zero and the other didn't
-seem to get the right values.
+The tester would try to write values to all of the RAM areas, then read
+them back, then have the screen go red with an address if unexpected
+values were read back.  Things essentially always failed with this
+RAM installed, so it looks like I'd have to write a better test.
+<br>
 
-I'm going to have to get some HW debugging to see what's happening
+<img src="2028_e7_tester_screen2.jpg" alt="e7 tester error screen">
+<br><br>
 
-
-<h2>Part 3: Hardware Debugging</h2>
-
-The next step is to get a logic analyzer of some sort and find out
-what signals are happening.  I also got some 28C64 EEPROMs
-(electrically erasable, rather than UV-erasable) as I don't have a UV
-eraser and only have so many blank chips to work with.
-
-<h2>Aside on All the RAM</h2>
-	TMM2009P-25A which is really hard to find, but probably
-	1K SRAM (vaguely pin compatible with 6116)
-	But the -A means 1k with the A10 line always high?
-	Investigating
 <hr>
 
-update with TMM2116 RAM.
+<h2>Checking on Atariage Forums</h2>
+
+I have been posting about this on the atariage forums.  Even got
+responses from kevtris (who originally described the E7 behavior in his
+well-known mappers document) and a few people who have also written
+E7 games.  A lot of the reverse engineering work happened 25+ years ago and so
+details are fuzzy and it was suggested I break out a logic analyzer.
+
+<hr>
+
+<h2>Time for a Logic Analyzer</h2>
+
+I know it sounds unlikely but I didn't have a logic analyzer in my lab.
+I had an ancient bus pirate but that was never the best, so I ordered
+one of the cheap sparkfun usb logic analyzers.  While I was at it I also
+ordered some 28C64 EEPROMs (electrically-erasable, rather than UV
+erasable 27C64) mostly because I don't have a UV-eraser and if doing
+devel might blow through my stock of 27C64s pretty quickly.
+<br><br>
+
+Back to the waiting game for packages to arrive.
+
+<hr>
+
+<h2>Revisiting the RAM situation with the TMM2116 2k SRAM</h2>
+
+While waiting I looked into the RAM situation again.
+The TMM2009-25A on the board is really hard to find, and while it
+was pin compatible with the 6116 maybe that's not good enough?
+<br><br>
+
+Toshiba actually sold a lot of 2k SRAMs, it seemed plausible the 
+TMM2116 might be a better match.  Data sheets for this chip do 
+exist, and looking at them it turns out that its signalling is
+different enough from a 6116 it would be worth trying.
+<br><br>
+
+So I ordered TMM2116 RAM, from two sources on e-bay.
+Tracking through the USPS can be frustrating, one chip was coming from
+nearby, one from California. They managed to pass in the system and the
+one from CA got to the local distribution hub a day after the other
+but still arrived a day earlier somehow.
+<br><br>
+
+It didn't work, though it works better than the 6116 RAM did.
+Burgertime works, and all four 256-byte RAM banks access fine.
+Enabling the 1k RAM window though makes all RAM (including the 256-byte
+window) not work.
 
 
 
 My diagnostic still fails :(
 
-1985 datecode
 
-Burgertime works fine!  Implying that 256 byte reads/writes are implemented
-right
+TODO:
+graphic of actual vs expected
+
+Aside on what Myst does/wants
+
 
 Myst gets further, sort of corrupted, but decompression is definitely happening.
 
@@ -431,20 +471,38 @@ main.s:
 		the first 16 bytes of the large RAM window copies to 
 			zero page
 
+
+
+
+<hr>
+
+<h2>Writing a new E7 Test ROM</h2>
+
+TODO: pic of it + EEPROM
+
+<hr>
+
+<h2>Finally Using Logic Analyzer</h2>
+
+Test probes not optimal.
+Did have a 24-pin chip clip from a colleague who retired which helped.
+Tried using the bus-pirate test clips but was sitting in sun 10 years
+and the plastic disintegrated.
+
+Luckily I raided my pile of neglected adafruit purchases and found some
+clips still in bag that I soldered onto and could use.
+
+
 <h2>RAM Struggles again</h2>
 
-Ordered 2116
+About this time when looking I discovered there were unreleased games
+that had used E7 carts (See the table at the beginning) that had 2k
+of RAM installed, and there are pictures of the boards!
 
-also asked on atariage, kevtris and stella developer
-
-<h2>RAM Struggles again</h2>
-
-Up until this point I had only known about the E7 carts that had been
-reelased, with only Burgertime using RAM.
-<br><br>
-Doing some more research found out about the prototypes from the table
-earlier.  They were using TMM??? RAM which is yet another different
-behavior of the /CS and /OE lines.
+The best one is
+<a href="">AD&D Tower of Mystery</a> where you can clearly see it is using
+Toshiba TC5116 2k SRAM, which is simialr to but has different behavior
+than the TMM2116.  Urgh.
 
 Even more this was an actual 2k part!  So maybe it was known working?
 So I ordered some in hopes I could drop it in and solve my problems.
@@ -456,6 +514,15 @@ more from another vendor and they more or less arrived the same day).
 
 Dropped in the part.  Didn't work.  Back to the logic analyzer.
 	
+(It'd be nice to have better pictures of the boards, especially the backs.
+The prototype board not only has 2k of SRAM but.  It also appears that the
+/OE and A10 lines are connected from the pictures, which is an odd thing
+to do and would only work if only the 256-byte ranges were used.
+I later investigated the source code for that game and sure enough it
+only uses the 256-byte ranges, it never uses the 1k range.
+
+
+
 <hr>
 
 <h2>E-mailing people who were there</h2>
@@ -486,20 +553,36 @@ Did things in batches, most of the signals were as expected.
 
 Had to refresh my 6502 knowledge to remember what I'd actua
 
+TODO: brief description
+
 TODO: plot1 showing 
 
 TODO: plot2 showing the /WE again
 
+<hr>
 
 <h2>Things Left to Try</h2>
 
 Or gate?
 
+<hr>
 
+<h1>Resources</h1>
+
+You can get the source code for the tests, as well as the KiCad files
+from the boards inside of my
+<a href="https://github.com/deater/vcs">Atari VCS git repository</a>
+
+under the testing/e7* and hardware/e7_cart directories respectively.
 
 <hr>
+
 <a href="">Back to the Atari 2600 Myst page</a><br>
 <a href="">Back to my Apple II / Atari 2600 Demakes page</a><br>
 <a href="">Back to my homepage</a><br>
+<hr>
+
+<center>This project (like all of my projects) is 100% AI-free</center>
+
 </body>
 </html>
