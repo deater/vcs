@@ -72,9 +72,9 @@ companies started using advanced bank-switching to fit more ROM onto
 a cartridge than the natural 4k limit.
 The Atari VCS/2600 has the 6507 processor in it, which is a 6502 chip
 but in a smaller package to save money.
-It only has enough address
-lines to access 8k of memory, but the Atari 2600 didn't bring all those
-pins out, limiting the address space to 4k.
+It only has enough address lines to access 8k of memory,
+but the A12 line is used to select between internal addresses and
+the cartridge which limits programs to 4k.
 Most early games
 were 2k or 4k ROMs, but that quickly turned out not to be enough so
 later various mapper schemes came up to bank-switch larger amounts of
@@ -141,18 +141,29 @@ functionality, so it seemed like a good source to get a chip.
 
 <center><b>Known Users of the M-Network E7 Mapper</b></center>
 
+
 <center>
+1980s users on real hardware
 <table border=yes>
-<tr><th>Game Name</th><th>Released</th><th>Ram on Board</th><th>256 byte bank usage</th><th>1k bank usage</th></tr>
-<tr><td>Bump 'N' Jump</td><td>Yes</td><td>No</td><td>N/A</td><td>N/A</td></tr>
+<tr><th>Game Name</th><th>Commercial Release</th><th>Ram on Board</th><th>256 byte bank usage</th><th>1k bank usage</th></tr>
+<tr><td>Bump 'N' Jump</td><td>Yes</td><td>None</td><td>N/A</td><td>N/A</td></tr>
+<tr><td>Masters of the Universe</td><td>Yes</td><td>None</td><td>N/A</td><td>N/A</td></tr>
 <tr><td>Burgertime</td><td>Yes</td><td>1k</td><td>1 bank used</td><td>no</td></tr>
-<tr><td>Masters of the Universe</td><td>Yes</td><td>No</td><td>N/A</td><td>N/A</td></tr>
 <tr><td>AD&amp;D Tower of Mystery</td><td>No</td><td>2k</td><td>many banks used</td><td>no</td></tr>
 <tr><td>In Search of the Golden Skull</td><td>No</td><td>2k(?)</td><td>?</td><td>?</td></tr>
 <tr><td>Locomotion</td><td>No</td><td>1k(?)</td><td>?</td><td>?</td></tr>
-<tr><td>Myst</td><td>No</td><td>2k</td><td>1 bank used</td><td><b>YES</b></tr></tr>
 </table>
 </center>
+
+<center>
+Modern, developed under emulator
+<table border=yes>
+<tr><th>Game Name</th><th>Commercial Release</th><th>Ram on Board</th><th>256 byte bank usage</th><th>1k bank usage</th></tr>
+<tr><td>Myst</td><td>No</td><td>2k</td><td>1 bank used</td><td><b>YES</b></tr></tr>
+<tr><td>Elite</td><td>No</td><td>2k</td><td>?</td><td><b>YES</b></tr></tr>
+</table>
+</center>
+
 
 <hr>
 
@@ -235,42 +246,121 @@ But then I picked it up again Summer of 2026.
 
 <hr>
 
-<h2>Part 2: Custom PCB</h2>
+<h2>Custom PCB</h2>
 
-I decided to pick this project back up.  I fired up KiCAD and
-made a replica E7 cartridge, but with extra spacing to allow the
-ROM adapters to fit, as well as bring out some of the pins for debugging.
+After a few years I finally had some time to restart this project.
+<br><br>
 
-This was my first major project with KiCAD, previous had used gEDA and
-it took a bit of getting used to but worked out in the end.  I mostly missed
-autorouting.  I never used it for the whole project, but it was nice sometimes
-if you had a troublesome signal to see what the autorouter would do with it
-to help guide you.
+Since trying to use the existing cartridge was a dead-end I decided it
+was time to make a custom printed circuit board.
+I fired up KiCAD and made a replica E7 cartridge, but with extra spacing
+to allow the ROM adapters to fit and also brought out some extra pins
+for debugging.
+<br><br>
 
-Sent it off then waited a few weeks for the boards to return.
+This was my first major project with KiCAD.
+I previous,y had used gEDA for things like this, and it took a bit of
+getting used to it.
+I mostly missed autorouting.
+I never auto-routed entire projects, but it could be nice sometimes
+to use it on troublesome signals to get some hints on what might be workable
+paths.
+<br><br>
 
-And the following steps
+I got something reasonable put together, then it was time to send it off
+and wait a few weeks for the finished project to arrive.
+<br><br>
 
-<ol>
-<li>Populate with all the chips from a known-good Burgertime to see if it
-	worked.  It did!
-<li>Swap the ROMs with burned EPROM copies of Burgertime to see if the
-	EPROM/ROM adapter worked.  It did!
-<li>Try updating the TZZZ RAM to 6116 2k.  Sadly it glitched out.  Oh no.
-<li>Tried running a burnt copy of the MYST ROMs.  The title screen worked
-	but whenever it tried to hit the RAM it would glitch out.
-</ol>
+<center>
+<img src="1987_kicad_pcb.jpg" alt="finished board alongside kicad showing same board">
+</center>
 
-ignore the extra large bypass caps, couldn't find smaller ones.
+<hr>
 
-Disappointing.  But wasn't ready to give up.  What could be keeping the
-ROMs from working.
+<h2>Populating/Testing the PCB</h2>
 
-Wrote an E7 tester ROM to put in and try to find out.  Wasted time
-on a fancy splash screen.
+Time to see if my board worked.
 
-With the original 1k RAM in, it worked and all 4 banks of the 256k chunks
-seemed to work, but of course accessing the 1k not there didn't work.
+<h3>Step 1: Populate board with chips from known-good Burgertime Cartridge</h3>
+
+It works!
+	<br><br>
+	<center>
+	<img src="1998_working_original.jpg" alt="populated PCB">
+	<img src="1997_btime_working.jpg" alt="atari 2600 playing burgertime from custom board">
+	</center>
+<br><br>
+
+<h3>Step 2: Try using burnt EPROM copies of the game using the adapters</h3>
+
+Burning a 27C64 8K EPROM in my minipro burner using Linux.<br>
+<img src="1999_eprom_burner.jpg" alt="minipro EPROM burner">
+<br><br>
+One of the EPROM to ROM adapters I'll be using.  Notice it is a lot
+wider than a 24-pin DIP socket which is why I had to make the custom
+PCB.<br>
+<img src="2002_eprom_adapter.jpg" alt="EPROM to ROM socket adapter">
+<br><br>
+Here's the board populated with the EPROMs.  You can also see I only
+had large 0.1uF capacitors and yes they were continually getting
+in the way.<br>
+<img src="2004_populated_board.jpg" alt="PCB populated with EPROMs">
+<br><br>
+Firing it up, and it works!<br>
+<img src="2008_bt_working.jpg" alt="EPROM burgertime working">
+<br><br>
+
+
+
+
+<br><br>
+
+<h3>Step 3: Try updating the TMM2009 1k SRAM to 6116 2k SRAM</h3>
+
+	It didn't work.  Oh no.<br>
+
+<img src="2010_burgertime_glitch.jpg" alt="glitched burger time">
+
+
+<br><br>
+
+	Tried running a burnt copy of the MYST ROMs, just in case it might work.
+	The title screen worked but whenever it tried to hit the RAM
+	it would glitch out.
+
+<br><br>
+
+So things aren't working, time to debug.
+
+<hr>
+
+<h2>Writing the first E7 Tester ROM</h2>
+
+To figure out what's going on needed to isolate exactly what was
+breaking when using the 6116 RAM chips.
+<br><br>
+
+So I wrote a tester in 6502 assembly that would do some reads/writes
+when you press the joystick buttons.  That sounds like a relatively
+simple thing to write, but on the Atari 2600 nothing is easy.
+I'll spare you the rundown on things, but it only has 128 bytes of RAM,
+the closest analogue to a framebuffer is 20 bits (that's bits, not bytes)
+and you have to draw each 60Hz frame by racing the beam.
+So just doing the equivalent of a printf() of a memory address involves
+careful cycle-counting and byte-rationing.<br><br>
+
+Also on the E7 cart the always-mapped in area is only 1.5kB of code, and
+fitting things in that size is also a challenge.  It doesn't help that 
+I wasted a fairly large chunk of it for this really cool title screen:
+<br>
+
+<img src="2022_e7_tester.jpg" alt="e7 tester title screen with e7 board in front">
+<br><br>
+
+With the original 1k SRAM installed, the test worked fine on all
+four 256-byte chunks.  Accessing the 1k chunk didn't, but that
+was expected as it didn't exist.
+<br><br>
 
 Alarmingly it would reset a lot when the full 2k installed, almost like
 it was fighting the bus.  The Toshiba chip the A10 line acts as an extra
@@ -290,142 +380,11 @@ what signals are happening.  I also got some 28C64 EEPROMs
 (electrically erasable, rather than UV-erasable) as I don't have a UV
 eraser and only have so many blank chips to work with.
 
-
-
-
-Working on plan to put this on a real E7 cartridge.
-Sacrificing a burgertime cart
-
-Bought a bunch.  Singapore is epoxy blob, but made in US
-	has through-hole DIP
-
-Of the number I got, only one totally working of DIP type.
-	Possibly known they go bad?
-
-Board has E7 mapper, two ROMs (one 8k, one 4k) and
+<h2>Aside on All the RAM</h2>
 	TMM2009P-25A which is really hard to find, but probably
 	1K SRAM (vaguely pin compatible with 6116)
 	But the -A means 1k with the A10 line always high?
 	Investigating
-
-Using TL866 to dump roms
-	Linux minipro tool
-
-	minipro -y -p "2732A @DIP24"  -r 4k_dump.rom
-
-Compare ROMs:
-	the 4k rom matches!
-
-Added complication:
-	the pinout for the 8k ROMs is the MCM68766 format
-	however as far as I can tell this is a somewhat obscure
-	non-standard format (24-pin DIP for 8k) and though it is found
-	in old machines, like the IBM 5150, you need an adapter to
-	a 27C64 DIP28 if you want to read/write to it with regular
-	equipment.
-
-	They do sell adapters so I guess I'll try that, though I am worried
-	a bit about clearance issues
-
-
-
-.  The minipro can't read it
-
-
-
-Helpful links:
-
-info on RAM
-	https://x.com/RetroWizzard/status/1395835483888967693
-
-
-SC-3000 basic cartridge also has TMM2009 RAM
-	https://www.smspower.org/forums/12958-SC3000BasicLevelIIIABoardPictures
-
-	Undocumented by Toshiba, really hard to find info
-
-	The TMM2009-A (we have) is a 1k SRAM in a 2k SRAM package,
-		with A10 tied to 5V?
-	The TMM2009-B is the same but ground instead (which is maybe why
-		the A10/GND jumper is there
-
-
-atariage on E7 boards
-
-	https://forums.atariage.com/topic/352717-boards-and-mattel-e7-backswing-options/
-
-	Other boards that use the E7:
-	+ Masters of the Universe
-	+ Bump 'n Jump
-
-Update: July 2026
-
-+ Made custom new board in Ki-cad (see the vmw-e7 directory)
-
-+ Transferred known good chips from old board (desoldered) to new one:
-	works!
-
-+ Used EPROM with same data using adapter sockets: ????
-
-	Have D2764D (64k-bit, 8k-byte) EPROMs
-
-	Burgertime memory layout is 12k across the two chips, one 4k one 8k
-
-	My attempt to rip the 4k ROM only gave the first 2k for some reason?
-	My EPROM burner isn't capable of reading the 8K roms
-
-	The prepared ROM dumps are 16k
-
-		It looks like the 4k ROM happens first, doubled
-6018 48ad f0f9		0000-07ff (0k-2k) 4k ROM bottom  (6e0-7ff all $00)
-0201 0804 f3b6		0800-0fff (2k-4k) data
-6018 48ad f0f9		1000-17ff (4k-6k) first 2k repeats?
-0201 0804 f3b6		1800-1fff (6k-8k)
-
-0000 0000 0000		2000-27ff (8k-10k)
-e8ad a2ff a9fd		2800-2fff (10k-12k) data
-0408 0102 0b20		3000-37ff (12k-14k) first 2k repeats?
-ffff ffff ffff		3800-3fff (14k-16k) 800-bff = $ff, a00-fff = $00
-
-
-
-			0000:1000 (but 6e0-7FF is $00 and 800-fff is $ff)
-
-
-	split the 16k ROM into two 8k chunks with the "dd" tool
-
-	UPD2764 @DIP28
-
-	minipro -y -p "UPD2764 @DIP28" -w bt_8k.bin
-
-	adapters are 2764-27512 to MCM68766 adapters from
-		(originally for use in IBM 5150)
-		"go4retro.com" 
-	https://minuszerodegrees.net/5150/motherboard/IBM%205150%20motherboard%20-%20Use%20of%202364%20adapter.htm
-	https://store.go4retro.com/2364-adapter/
-
-
-	In the end, it works!
-	
-
-+ Change RAM to 2k version: ????
-	https://www.jameco.com/z/HM6116P-3-HITACHI-IC-6116P-3-CMOS-SRAM-16-384-Bit-2Kx8-150ns_42809.html
-
-	Try putting in an HM6116P
-		causes glitch?
-
-	should jumper RAM a10 to ground (there was a pin on the original
-		PCB to allow this)
-	didn't seem to help
-
-
-+ Try EPROM programmed with Myst!  ???
-
-	dd if=myst.e7 of=myst_rom2.bin bs=1k count=8
-	dd if=myst.e7 of=myst_rom1.bin bs=1k count=8 skip=8
-
-	minipro -y -p "UPD2764 @DIP28" -w myst_rom2.bin
-
 <hr>
 
 update with TMM2116 RAM.
@@ -471,14 +430,76 @@ main.s:
 
 		the first 16 bytes of the large RAM window copies to 
 			zero page
-	
 
+<h2>RAM Struggles again</h2>
+
+Ordered 2116
+
+also asked on atariage, kevtris and stella developer
+
+<h2>RAM Struggles again</h2>
+
+Up until this point I had only known about the E7 carts that had been
+reelased, with only Burgertime using RAM.
+<br><br>
+Doing some more research found out about the prototypes from the table
+earlier.  They were using TMM??? RAM which is yet another different
+behavior of the /CS and /OE lines.
+
+Even more this was an actual 2k part!  So maybe it was known working?
+So I ordered some in hopes I could drop it in and solve my problems.
+
+(Ordered some on e-bay.  Tried to order from American supplier to avoid
+maybe counterfeit from overseas, but pretty sure the first I ordered
+from was just drop shipping and it took forever to arrive, so I ordered
+more from another vendor and they more or less arrived the same day).
+
+Dropped in the part.  Didn't work.  Back to the logic analyzer.
+	
+<hr>
+
+<h2>E-mailing people who were there</h2>
+
+In desperation tried e-mailing one of the authors of the "Tower of Mystery"
+game and asked if all 2k of RAM worked.
+They actually replied, but said it had been so long they can't
+remember much about the E7 chip.  Though they did say that when coding
+they'd max out whatever resources were available... which could in 
+theory imply it didn't work.
+
+<hr>
+
+<h2>Back to the Logic Analyzer</h2>
+
+Went back and took a lot of data with the Logic Analyzer again.
+Triggering on the RAM /OE line as that's the easiest way to find
+SRAM accesses in the huge pile of signals.
+
+The logic analyzer only can probe 8 signals at once, which is limiting
+as ideally we'd track most of the 40 pins on the E7 chip.
+
+Did things in batches, most of the signals were as expected.
+<ul>
+<li>
+</ul>
+
+
+Had to refresh my 6502 knowledge to remember what I'd actua
+
+TODO: plot1 showing 
+
+TODO: plot2 showing the /WE again
+
+
+<h2>Things Left to Try</h2>
+
+Or gate?
 
 
 
 <hr>
 <a href="">Back to the Atari 2600 Myst page</a><br>
-<a href="">Back to my Atari 2600 Demakes page</a><br>
+<a href="">Back to my Apple II / Atari 2600 Demakes page</a><br>
 <a href="">Back to my homepage</a><br>
 </body>
 </html>
