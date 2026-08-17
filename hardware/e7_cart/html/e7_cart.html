@@ -750,12 +750,52 @@ Sadly, things still didn't work.<br>
 
 <hr>
 
-<h2>Next Steps</h2>
+<h2>One Last Attempt with the Logic Analyzer</h2>
 
-Maybe more looking with a logic analyzer?  It's becoming increasingly
-plausible that it's just not possible to use all 2k of the SRAM when
-using an E7 mapper from the Burgertime cartridge.
+I ran the logic analyzer with the OR gate on.  The /WE signal
+now looked the same in the RAM and no-RAM case.  Still not working.
+<br><br>
+
+I then *completely removed* the RAM chip and tried looking at traces.
+When doing a write the data bus is definitely not getting the $5A
+data to write.  So it's not the RAM chip messing with the bus, it's
+something else.
+<br><br>
+
+Quite possibly it's the E7 chip itself (it's a mystery why
+it even has the data lines gones into it because they shouldn't be
+necessary).  It's weird though as the data lines come right from the
+Atari, the E7 chip isn't able to tri-state or intercept them (though it
+could be accidentally or on purpose driving values out on it).
+
 <br>
+
+<hr>
+
+<h2>What Now?</h2>
+
+I've run out of summer so won't have much time to work on this more.
+<br><br>
+
+It's becoming more and more likely that the E7 mapper is just broken
+with the 1k RAM range enabled, but since no games used it, it didn't matter
+if they shipped the broken chips.  Maybe it was fixed in a later revision
+but who knows.
+<br><br>
+
+More out there things to try:
+<ul>
+<li>Try seeing if things work if I just don't hook the data lines
+	up to the E7?
+<li>Try to track down someone who worked at Mattel who remembers
+	what the deal it	
+<li>Obtain one of the other E7 carts (Masters of the Universe?)
+	and see what kind of E7 chip is in them.
+	This is not optimal, just opening the cartridges non-destructively
+	to look is nearly impossible.
+<li>Find someone to de-cap the various versions of the chip to see
+	if any of them might be different
+</ul>
 
 <hr>
 <hr>
