@@ -714,15 +714,51 @@ the working and not-working test cases.
 
 <hr>
 
-<h2>Next Steps</h2>
+<h2>Trying an OR gate</h2>
 
-Since a pullup didn't help, one thing that might would be doing a 
-logical OR of the /WE line and the /OE line which should maybe force
-the signal to match the expected one.  That's the next thing I will
-be trying.
+Since a pullup didn't help, one thing that might work would
+be replacing the /WE line going to the RAM chip with a logical
+OR of the /WE and /OE lines.  That would at least make that
+signal match more closely what the "working" trace looks like.
+<br><br>
 
+I guess I should check my stash of ICs from my childhood
+(yes I did electronics as a kid, mostly based on Forrest Mims books from
+Radio shack).  They've been sitting there in my IBM box in anti-static
+foam being lonely the past 30 years.  It's mostly 7400 and 4000 series
+logic, 7-segment LED displays, 555 timers and 741 op-amps.  
+Mostly sourced from Radio Shack, JDR micro-devices, and
+some old parts Apple II machines my high school was throwing out.
+If you look closely mixed in are the parts for the sadly never-realized
+plan to build a custom z80 computer based on some TAB book the
+library was throwing out.
+<br>
+<img src="2085_childhood_chips1.jpg" alt="lots of ICs in anti-static foam"><br>
+<img src="2085_childhood_chips2.jpg" alt="flip side of the anti-static foam showing ICs on back"><br>
+<br><br>
+
+I apparently had foresight and the 74LS chips are in order by part number.
+After more trouble than it should have been I found a 5V supply and
+verified the chip was still OR-ing after all these years:<br>
+<img src="2087_or_gate.jpg">
+
+So I lifted the /WE pin on the RAM and then hooked up the OR-gate.
+Sadly, things still didn't work.<br>
+<img src="2090_inplace.jpg" alt="E7 cart with extra OR gate">
+<br><br>
 
 <hr>
+
+<h2>Next Steps</h2>
+
+Maybe more looking with a logic analyzer?  It's becoming increasingly
+plausible that it's just not possible to use all 2k of the SRAM when
+using an E7 mapper from the Burgertime cartridge.
+<br>
+
+<hr>
+<hr>
+
 
 <h1>Resources</h1>
 
