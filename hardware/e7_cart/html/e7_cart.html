@@ -471,7 +471,7 @@ You might say, can you decompress to the four 256-byte windows instead?
 The answer is no.  We are using ZX02 compression and it's the type that
 can depend on already decompressed data as a data source and so you can't
 swap out previously decompressed data mid-decompression without breaking
-thigns (or at least taking that into account when encrypting, and it would
+things (or at least taking that into account when encrypting, and it would
 be a lot of work to do that).
 <br>
 
@@ -479,92 +479,246 @@ be a lot of work to do that).
 
 <h2>Writing a new E7 Test ROM</h2>
 
-TODO: pic of it + EEPROM
+To do some better testing I needed to write a better test ROM.
+Sadly I had to get rid of the fancy title screen to make room.
+This new one lets you pick the various bank-switches, as well as
+picking the addresses to read and write and you can adjust the
+addresses by hitting left/right on the joystick, and can trigger
+reads and writes by firing the joystick.
+<br><br>
+Here's the new interface:<br>
+<img src="2060_new_e7_test.jpg" alt="new e7 test cartridge interface">
+<br><br>
+
+And here I am burning it to one of the new 28C64 EEPROMs:
+<br>
+<img src="2061_eeprom.jpg" alt="burning an EEPROM">
+<br>
 
 <hr>
 
 <h2>Finally Using Logic Analyzer</h2>
 
-Test probes not optimal.
-Did have a 24-pin chip clip from a colleague who retired which helped.
-Tried using the bus-pirate test clips but was sitting in sun 10 years
+As I mentioned I got one of the cheap Sparkfun USB logic analyzers.
+It doesn't really come with test probes as much as just some female-female
+jumper wires.
+Luckily I did have an old 24-pin DIP test clip that a retiring
+colleague had left me, which helped.
+<br><br>
+I also needed some individual test probes.  I tried
+using my old bus-pirate test clips but they had been sitting in sun 10 years
 and the plastic disintegrated.
-
+<br><br>
 Luckily I raided my pile of neglected adafruit purchases and found some
 clips still in bag that I soldered onto and could use.
+<br><br>
+
+Disintegrated test clip:<br>
+<img src="2065_broken_clip.jpg" alt="disintegrated test clip">
+<br><br>
+Lucky stash of new-old stock test clips:<br>
+<img src="2064_adafruit_clips.jpg" alt="adafruit test clips">
+<br><br>
+Here's what the test rig looked like for the initial tests,
+though possibly I had it wired
+up wrong for this picture but eventually remembered where pin1 was.
+<br>
+<img src="2066_test_rig.jpg">
+<br><br>
+
+<hr>
+
+<h2>Initial Logic Analyzer Results</h2>
+
+With only 8 pins to work with these first measurements I tried to pick
+a subset that could tell me what was going on.<br><br>
+
+Here are the results with ROM banked in and a write to the 256-byte window
+showing a working write to the SRAM.  All of the various signals
+seem reasonable:<br>
+<img src="test2_256_bank_1800.png" alt="256 byte results"><br><br>
+
+Here is a write when the 1k-RAM bank is enabled, which doesn't work.
+In this case the /WE (write enable, active low) signal seems to either
+be floating or otherwise going low a lot of times that it doesn't
+during the good writes.  We'll come back to this later.<br>
+<img src="test2_1k_bank7_1000.png" alt="1k bank7 results">
+<br><br>
+
+<hr>
+
+<h2>More SRAM doubts</h2>
+
+About this time is when I discovered there were unreleased games
+that had used the E7 mapper (see the table at the beginning of this
+document).  There were pictures of some of these, and they actually
+had 2k of RAM installed.
+<br><br>
+
+The best documented one is
+<a href="https://www.atariprotos.com/2600/software/towerofmystery/towerofmystery.htm">AD&D Tower of Mystery</a>
+where you can clearly see it is using
+Toshiba TC5116 2k SRAM.
+<br><br>
+
+There is a data sheet available for this, and it turns out it does have
+slightly different behavior on chip selects than the TMM2116 we were using.
+<br><br>
+
+Since in theory this was a real working prototype for an actual working
+game, maybe this is the secret to getting things working?
+<br><br>
 
 
-<h2>RAM Struggles again</h2>
-
-About this time when looking I discovered there were unreleased games
-that had used E7 carts (See the table at the beginning) that had 2k
-of RAM installed, and there are pictures of the boards!
-
-The best one is
-<a href="">AD&D Tower of Mystery</a> where you can clearly see it is using
-Toshiba TC5116 2k SRAM, which is simialr to but has different behavior
-than the TMM2116.  Urgh.
-
-Even more this was an actual 2k part!  So maybe it was known working?
 So I ordered some in hopes I could drop it in and solve my problems.
+(I ordered on e-bay.  I tried to order from American supplier fora  quicker
+response and to maybe avoid counterfeit parts from overseas, but it took
+long enough that I am pretty sure the vendor was just drop shipping 
+from China and it took forever to arrive.  So I ordered
+more chips from another vendor and of course they all
+more or less arrived the same day).
+<br><br>
 
-(Ordered some on e-bay.  Tried to order from American supplier to avoid
-maybe counterfeit from overseas, but pretty sure the first I ordered
-from was just drop shipping and it took forever to arrive, so I ordered
-more from another vendor and they more or less arrived the same day).
-
-Dropped in the part.  Didn't work.  Back to the logic analyzer.
+I Dropped in the new RAM...  and it failed the same way the 2116 did.
+Urgh.
+<br><br>
 	
-(It'd be nice to have better pictures of the boards, especially the backs.
-The prototype board not only has 2k of SRAM but.  It also appears that the
-/OE and A10 lines are connected from the pictures, which is an odd thing
+It wuld have been nice to have better pictures of the prototype boards,
+if only the back of them.
+The prototype board not only has 2k of SRAM but it has a different
+layout from Burgertime and is using 28-pin EPROMs as well.
+From the picture online it also appears that the
+/OE and A10 lines are connected, which is an odd thing
 to do and would only work if only the 256-byte ranges were used.
+<br><br>
+
 I later investigated the source code for that game and sure enough it
 only uses the 256-byte ranges, it never uses the 1k range.
+So my hopes for proof that someone else has used the full memory range
+of the E7 were squashed.
 
+<br><br>
+
+TODO: maybe show the different decoder layout diagrams for the
+three memory chips.
 
 
 <hr>
 
 <h2>E-mailing people who were there</h2>
 
-In desperation tried e-mailing one of the authors of the "Tower of Mystery"
-game and asked if all 2k of RAM worked.
+While looking at the prototypes I raelized that one of the authors of the
+"Tower of Mystery" prototype was still around and on the internet.
+So I e-mailed them and asked if all 2k of RAM ever worked on the E7 board.
+<br><br>
 They actually replied, but said it had been so long they can't
 remember much about the E7 chip.  Though they did say that when coding
 they'd max out whatever resources were available... which could in 
-theory imply it didn't work.
+theory imply it didn't work or else they would have.
 
 <hr>
 
 <h2>Back to the Logic Analyzer</h2>
 
-Went back and took a lot of data with the Logic Analyzer again.
-Triggering on the RAM /OE line as that's the easiest way to find
-SRAM accesses in the huge pile of signals.
+Decided it was time to try to get mostly full coverage of some
+read/write operations using the logic analyzer.
+<br><br>
 
+I was triggering on the RAM /OE line as that's the easiest way to find
+SRAM accesses in the huge pile of signals.
+<br><br>
 The logic analyzer only can probe 8 signals at once, which is limiting
 as ideally we'd track most of the 40 pins on the E7 chip.
+<br><br>
+I did things in four batches.  There were two pins I skipped and I had
+to move the test clip once in the middle.  I set the analyzer to read
+20 million samples at 4MHz.  (The 6507 in the Atari VCS runs at 1.19MHz
+so not a very even number. Also wasn't sure how much to sample as I am
+sure there are some sub-cycle timings going on).
+<br><br>
 
-Did things in batches, most of the signals were as expected.
+I won't show all the results, but some interesting results for those
+very curious:<br>
 <ul>
-<li>
+<li>The 128k pin does seem (as theorized) to be the or of the
+	ROM0 chip select and the ROM1 chip select (for use if you want to use
+	one 128kbit [16kB] EPROMs instead of two 8kB ones)
+<li>The NC pin is possibly the A13 pin if you want to use 16kB EPROMs but
+	I didn't test enough addresses to verify
+<li>The ROM0/ROM1 chip selects never are active when the RAM one is,
+	which negates the theory maybe somehow they are left active
+	when RAM is going
+<li>The address lines for the SRAM always seem to give the proper
+	expected values for accessing the various regions
+<li>I verified the weird issue that with the 1k RAM enabled the /WE line
+	seems to almost be masked with the RAM-A8 in rather than holding
+	high when RAM /OE is high.
+<li>When reading the data bus it was clear that when the 1k RAM area is
+	active, the value the CPU tries to write to memory is somehow
+	disappearing and never makes it to the data bus.  Odd.
+<li>The A12 (cartridge select signal) does not match what I expect,
+	with it low when I'd expect high.  I might be misunderstanding
+	what's going on though because otherwise nothing should work
+	if somehow that is broken.
 </ul>
 
+<br>
 
-Had to refresh my 6502 knowledge to remember what I'd actua
+I had to refresh my 6502 knowledge to know what to expect on the data bus.
+For the write I was doing essentially a STA ($82),Y indexed write.
+This takes 5 cycles.  This should look like:
+<ul>
+<li>$91 - the opcode for the STA instruction being read from the PC
+<li>$82 - the address from the zero page we are loading the address from
+<li>$01 - the low byte of the address
+<li>$18 - the high byte of the adress
+<li>$5A - the value we are writing out to SRAM (in the accumulator)
+</ul>
 
-TODO: brief description
+<br>
+Here is an annotated trace showing a working 256-byte load, plus
+some of the preceding instructions showing the setup.
+Sorry for the hand annotations, I was using the GIMP and for some reason
+the font/text tool is really a pain to use with current versions.
+<br>
+<img src="decode_6502_sta_bank4_small.png" alt="working load">
+<br><br>
 
-TODO: plot1 showing 
+And here is a not-working one showing the missing $5A value from
+the CPU.
+Instead what gets written is the unchanged $18 from the previous cycle,
+maybe implying the bus was left floating with the previous value?
+<br>
+<img src="decode_6502_sta_bank7_small.png" alt="broken load">
+<br><br>
 
-TODO: plot2 showing the /WE again
+I went back and looked at the signals, and yes the /WE issue is
+still present:<br>
+<img src="decode_6502_we.png" alt="we issue">
+<br><br>
+
+In case it was somehow the chip leaving /WE floating I did try hooking
+a weak pullup (10k to 5V) to the /WE pin, but that didn't change
+anything so it looks like the E7 is actively driving the weird
+signal on /WE we are seeing.
+<br><br>
+
+I double checked the TC5116 datasheet, and the /WE signal being low
+before /CS,/OE going low should just tri-state the data output lines
+so I would think that /WE being low earlier like shown shouldn't affect
+things, but it does seem to be the only obvious difference between
+the working and not-working test cases.
+<br><br>
 
 <hr>
 
-<h2>Things Left to Try</h2>
+<h2>Next Steps</h2>
 
-Or gate?
+Since a pullup didn't help, one thing that might would be doing a 
+logical OR of the /WE line and the /OE line which should maybe force
+the signal to match the expected one.  That's the next thing I will
+be trying.
+
 
 <hr>
 
