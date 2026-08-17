@@ -141,3 +141,42 @@ Further update
 
 	https://www.atarimania.com/game-atari-2600-vcs-advanced-dungeons--dragons-tower-of-mystery-cartridge_15999.html
 https://www.atariprotos.com/2600/software/towerofmystery/towerofmystery.htm
+
+
+Here's a bit of info on what is going on in the Myst game.
+
+The title screen / intro loads fine  as it only uses ROM
+
+The linking book at the start runs fine as it only 
+	uses some of the 256-byte RAM window for animation
+	
+main.s:
+	sets ROM window to BANK5
+	sets small RAM window to BANK0
+
+	displays title (bank6_intro/title.s)
+		yes the code is in bank6 dir but actually lives in BANK5
+
+	sets ROM window to BANK6
+	runs cleft animation	(bank6_intro/cleft)
+	runs book animation (bank6_intro/book)
+
+	book animation uses 256byte RAM window only
+		data decompresses from ROM BANK6 to 256-byte RAM bank
+
+	actual gameplay more complicated:
+		copies 256 bytes of compresses data from ROM to RAM
+		(can't decompress directly from ROM to big-RAM as
+		can't be mapped in at same time)
+		
+		enables RAM into the 1k ROM window
+
+		decompresses 256 bytes of data from small RAM window
+			to big RAM window
+
+		the first 16 bytes of the large RAM window copies to 
+			zero page
+
+
+
+

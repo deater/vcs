@@ -409,7 +409,7 @@ The TMM2009-25A on the board is really hard to find, and while it
 was pin compatible with the 6116 maybe that's not good enough?
 <br><br>
 
-Toshiba actually sold a lot of 2k SRAMs, it seemed plausible the 
+Toshiba actually sold a lot of models of 2k SRAMs, it seemed plausible the 
 TMM2116 might be a better match.  Data sheets for this chip do 
 exist, and looking at them it turns out that its signalling is
 different enough from a 6116 it would be worth trying.
@@ -422,57 +422,58 @@ one from CA got to the local distribution hub a day after the other
 but still arrived a day earlier somehow.
 <br><br>
 
-It didn't work, though it works better than the 6116 RAM did.
-Burgertime works, and all four 256-byte RAM banks access fine.
+<hr>
+
+<h2>Testing the TMM2116 2k SRAM</h2>
+
+It didn't work, though it works better than the 6116 RAM did.<br><br>
+
+Burgertime works, and all four 256-byte RAM banks access fine.<br><br>
+
 Enabling the 1k RAM window though makes all RAM (including the 256-byte
 window) not work.
+Myst gets much further, but the actual gameplay glitches.<br><br>
 
+Proper myst level in stella emulator:<br>
+<img src="stella_comparison.jpg" alt="myst level in emulator">
+<br><br>
 
+What is looks like with TMM2116 chip in:<br>
+<img src="2056_myst_broken.jpg" alt="broken myst level">
+<br><br>
 
-My diagnostic still fails :(
+Here's a bit of info on what is going on in the Myst game.
+<ul>
+<li>The title screen / intro loads fine  as it only uses ROM BANK5/6
+<li>The linking book at the start runs fine as it only 
+	uses some of the 256-byte RAM window for animation.
+	It decompresses data from ROM BANK6 to RAM 256-bank0
+<li>The actual gameplay is more complicated:
+	<ul>
+	<li>First it copies 256 bytes of compressed data from ROM to
+		256-byte RAM
+		(it can't decompress directly from ROM to 1k-RAM as
+		the extra ROM pages and the 1k RAM window can't be
+		mapped at the same time)
+	<li>It then enables the 1k-RAM window
+	<li>Next it decompresses the 256 bytes of data from the 256B RAM window
+			to the 1k RAM window.
+			The decompressed data describes how to draw the
+			screen and is roughly 512 bytes of playfield
+			graphics, colors, sprite overlay, and missile overlay.
+	<li>Finally it copies the first 16 bytes of the decompressed data
+		to the zero page (this holds the level config info)
+	</ul>
+</ul>
 
-
-TODO:
-graphic of actual vs expected
-
-Aside on what Myst does/wants
-
-
-Myst gets further, sort of corrupted, but decompression is definitely happening.
-
-Title screen is fine: only uses ROM
-
-Linking book fine: uses some RAM for animation?
-	
-main.s:
-	sets ROM window to BANK5
-	sets small RAM window to BANK0
-
-	displays title (bank6_intro/title.s)
-		yes the code is in bank6 dir but actually lives in BANK5
-
-	sets ROM window to BANK6
-	runs cleft animation	(bank6_intro/cleft)
-	runs book animation (bank6_intro/book)
-
-	book animation uses 256byte RAM window only
-		data decompresses from ROM BANK6 to 256-byte RAM bank
-
-	actual gameplay more complicated:
-		copies 256 bytes of compresses data from ROM to RAM
-		(can't decompress directly from ROM to big-RAM as
-		can't be mapped in at same time)
-		
-		enables RAM into the 1k ROM window
-
-		decompresses 256 bytes of data from small RAM window
-			to big RAM window
-
-		the first 16 bytes of the large RAM window copies to 
-			zero page
-
-
-
+So as you can see the game won't work unless the 1k RAM window is implemented.
+You might say, can you decompress to the four 256-byte windows instead?
+The answer is no.  We are using ZX02 compression and it's the type that
+can depend on already decompressed data as a data source and so you can't
+swap out previously decompressed data mid-decompression without breaking
+thigns (or at least taking that into account when encrypting, and it would
+be a lot of work to do that).
+<br>
 
 <hr>
 
