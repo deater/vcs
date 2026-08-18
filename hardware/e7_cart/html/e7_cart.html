@@ -10,6 +10,20 @@
 
 <hr>
 
+<h2>TL;DR</h2>
+
+I wanted to run a modern "demake" of Myst for the Atari 2600/VCS 
+that was developed under an emulator on actual vintage 1980s hardware.
+The target was the M-Networks "E7" chip that allowed 16k of ROM and
+2k of RAM, but it turns out possibly no one had ever used all 2k of RAM
+before.  In theory it should have been as easy as getting a Burgertime
+cartridge, swapping out the ROMs with my code, and upgrading the SRAM
+chip from 1k to 2k.  This turned into a multi-year ordeal but in the
+end (spoiler) I did get it working.
+
+<hr>
+
+
 <h2>Background on the Myst demakes</h2>
 
 As a fun followup to my
@@ -764,7 +778,7 @@ something else.
 <br><br>
 
 Quite possibly it's the E7 chip itself (it's a mystery why
-it even has the data lines gones into it because they shouldn't be
+it even has the data lines going into it because they shouldn't be
 necessary).  It's weird though as the data lines come right from the
 Atari, the E7 chip isn't able to tri-state or intercept them (though it
 could be accidentally or on purpose driving values out on it).
@@ -773,29 +787,76 @@ could be accidentally or on purpose driving values out on it).
 
 <hr>
 
-<h2>What Now?</h2>
+<h2>One Last Longshot</h2>
 
 I've run out of summer so won't have much time to work on this more.
 <br><br>
 
-It's becoming more and more likely that the E7 mapper is just broken
-with the 1k RAM range enabled, but since no games used it, it didn't matter
-if they shipped the broken chips.  Maybe it was fixed in a later revision
-but who knows.
+I had been thinking, if it's the D7..D0 data bus being driven with
+the wrong values, and those seemingly are being messed up by the E7 chip
+itself, why not just leave them unconnected?
 <br><br>
 
-More out there things to try:
+So I used some pin headers to extend the socket for all pins except the
+data bus:<br>
+
+<img src="2092_socket_hack.jpg" alt="modified socket">
+<br><br>
+
+It's hard to tell but those 8 pins aren't touching.
+Tempted to make a "floating bus" joke here.  Really, they probably
+should be pulled to ground or something.<br>
+
+<img src="2094_floating_bus.jpg" alt="data bus disconnected">
+<br><br>
+
+And now to fire it up....
+
+<hr>
+
+<h2>Success!!!!!</h2>
+
+With the data bus disconnected, the E7-test program let me read/write
+RAM properly even with BANK7 in!!!
+<br><br>
+
+Next step was to put the Myst EPROMs in.  Which I managed to do upside-down
+(ugh).   But I fixed that... and it worked!  Finally!
+<br><br>
+
+<img src="2095_myst1.jpg" alt="atari vcs myst at the docks">
+<img src="2096_myst2.jpg" alt="atari vcs myst at the clock">
+
+<br><br>
+
+Weird that I might be the first person to ever successfully run an E7
+mapper using all 2k of the SRAM.  And if I'm not, I'm probably the first
+person to do it in the last 40 years.
+
+<hr>
+
+<h2>Increasingly Desperate Things I was Considering</h2>
+
+I never give up easy on these projects so I had been considering
+a few extra steps if it hadn't ended up working:
 <ul>
-<li>Try seeing if things work if I just don't hook the data lines
-	up to the E7?
 <li>Try to track down someone who worked at Mattel who remembers
 	what the deal it	
 <li>Obtain one of the other E7 carts (Masters of the Universe?)
 	and see what kind of E7 chip is in them.
 	This is not optimal, just opening the cartridges non-destructively
-	to look is nearly impossible.
+	to look is nearly impossible.  I had actually given in and
+	have Bump 'n' Jump and Masters of the Universe carts currently
+	on their way here, though I am 99% since they were made in
+	Singapore they'd be the COB/epoxy-blob variants.
+<li>Saw apart an epoxy-blob E7 chip, wire up the pins and see if
+	it's a newer version that worked better
 <li>Find someone to de-cap the various versions of the chip to see
 	if any of them might be different
+<li>Maybe give up and assume the E7 mapper was just broken
+	with the 1k RAM range enabled, but since no games used it,
+	it didn't matter if they shipped the broken chips.
+	Maybe it was fixed in a later revision but who knows.
 </ul>
 
 <hr>
