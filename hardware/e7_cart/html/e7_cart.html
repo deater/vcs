@@ -85,7 +85,7 @@ The Atari VCS lasted a long time, and toward the end of their run
 companies started using advanced bank-switching to fit more ROM onto
 a cartridge than the natural 4k limit.
 The Atari VCS/2600 has the 6507 processor in it, which is a 6502 chip
-but in a smaller package to save money.
+but in a pin-reduced smaller package to save money.
 It only has enough address lines to access 8k of memory,
 but the A12 line is used to select between internal addresses and
 the cartridge which limits programs to 4k.
@@ -104,7 +104,7 @@ out in the middle of executing code from it.
 <br><br>
 
 The Atari VCS only had 128 bytes of general purpose RAM built in.
-So just half of the 6502 zero page, and it was also shared with the stack.
+So just half of the 6502 zero page, and this was also shared with the stack.
 Some cartridges added extra RAM too, though that was complicated because
 the cartridge slot did not have the 6502 read/write line available.
 The way developers got around this was by reserving some address space
@@ -225,30 +225,34 @@ You can get adapters, and I did some
 for the adapters is too big to fit on the existing circuit board.
 <br><br>
 
-The RAM is a 1k Toshiba SRAM TMI12009P-25A which is nearly
+The RAM is a 1k Toshiba SRAM TMM2009P-25A which is nearly
 completely undocumented, even by Toshiba back in the day.
-It was used a few other places and it can
-be seen that the pinout is essentially the same as that of 6116 2k SRAM
+It was used a few other retro systems and it can
+be seen that the pinout is essentially the same as that of the
+more common 6116 2k SRAM
 so the hope was one of those could be dropped in place.
 (Note from later: no, no it couldn't).
 <br><br>
 
-To try to test things out I made the below monstrosity on a breadboard,
-poorly desoldered chips soldered to sockets, an IC test clip, ands lots
-of wires.  The E7 chip was left on the board, with the bus wires
-going to the breadboard.  If this had worked playing Burgertime then in
-theory I could have dropped the RAM/ROM onto the breadboard to test
-Myst!
+To try to test things out I made the below monstrosity out of the
+harvested poorly desoldered chips.  Some of the chips lost their pins
+in the process so were soldered into sockets so they'd still work.
+The E7 chip was left on the board, and a ribbon cable was made to
+grab the signals from the ROM socket and take them to the breadboard.
+A testing clip was used to get a few additional signals.
+<br>
+
+<img src="1995_monstrosity.jpg" alt="I say there monstrosity, do you know the times?">
 <br><br>
 
-<center>
-<img src="1995_monstrosity.jpg" alt="I say there monstrosity, do you know the times?">
-</center>
+If this had worked with the existing Burgertime chips then in
+theory it would have been straightforward to swap out the RAM/ROM
+in order to play Myst!
 <br><br>
 
 As you can guess, it didn't work.  Though someone on atariage later
-claimed if I had thrown enough decoupling
-capacitors to it maybe it would have.
+theorized that if I had thrown enough decoupling
+capacitors on there it maybe could have worked.
 
 <hr>
 
@@ -262,7 +266,7 @@ But then I picked it up again Summer of 2026.
 
 <h2>Custom PCB</h2>
 
-After a few years I finally had some time to restart this project.
+After the long hiatus I finally had some time to restart this project.
 <br><br>
 
 Since trying to use the existing cartridge was a dead-end I decided it
@@ -273,8 +277,8 @@ for debugging.
 <br><br>
 
 This was my first major project with KiCAD.
-I previous,y had used gEDA for things like this, and it took a bit of
-getting used to it.
+I previously had used gEDA for things like this, and it took a bit of
+getting used to.
 I mostly missed autorouting.
 I never auto-routed entire projects, but it could be nice sometimes
 to use it on troublesome signals to get some hints on what might be workable
@@ -285,9 +289,7 @@ I got something reasonable put together, then it was time to send it off
 and wait a few weeks for the finished project to arrive.
 <br><br>
 
-<center>
 <img src="1987_kicad_pcb.jpg" alt="finished board alongside kicad showing same board">
-</center>
 
 <hr>
 
@@ -298,11 +300,9 @@ Time to see if my board worked.
 <h3>Step 1: Populate board with chips from known-good Burgertime Cartridge</h3>
 
 It works!
-	<br><br>
-	<center>
+<br><br>
 	<img src="1998_working_original.jpg" alt="populated PCB">
 	<img src="1997_btime_working.jpg" alt="atari 2600 playing burgertime from custom board">
-	</center>
 <br><br>
 
 <h3>Step 2: Try using burnt EPROM copies of the game using the adapters</h3>
@@ -381,10 +381,11 @@ was expected as it didn't exist.
 Alarmingly it would reset a lot when the 6116 2k SRAM was installed,
 almost like it was fighting the bus.<br><br>
 
-The tester would try to write values to all of the RAM areas, then read
+The testing code would try to write values to all of the RAM areas, then read
 them back, then have the screen go red with an address if unexpected
-values were read back.  Things essentially always failed with this
-RAM installed, so it looks like I'd have to write a better test.
+values were read back.  
+Most of the tests failed with the 6116 
+RAM installed, so it looked like I'd have to write a better test.
 <br>
 
 <img src="2028_e7_tester_screen2.jpg" alt="e7 tester error screen">
@@ -394,11 +395,15 @@ RAM installed, so it looks like I'd have to write a better test.
 
 <h2>Checking on Atariage Forums</h2>
 
-I have been posting about this on the atariage forums.  Even got
-responses from kevtris (who originally described the E7 behavior in his
-well-known mappers document) and a few people who have also written
-E7 games.  A lot of the reverse engineering work happened 25+ years ago and so
-details are fuzzy and it was suggested I break out a logic analyzer.
+I gave regular updates on this project on the atariage forums.  I even got
+responses from kevtris (who is the one who originally described the E7
+mapper behavior in his well-known mappers document).
+I also got feedback from some developers who have also written
+E7 games.
+<br><br>
+It turns out most of the E7 reverse engineering
+work happened 25+ years ago and so
+details were fuzzy and it was suggested I break out a logic analyzer.
 
 <hr>
 
@@ -408,8 +413,8 @@ I know it sounds unlikely but I didn't have a logic analyzer in my lab.
 I had an ancient bus pirate but that was never the best, so I ordered
 one of the cheap sparkfun usb logic analyzers.  While I was at it I also
 ordered some 28C64 EEPROMs (electrically-erasable, rather than UV
-erasable 27C64) mostly because I don't have a UV-eraser and if doing
-devel might blow through my stock of 27C64s pretty quickly.
+erasable 27C64) mostly because I don't have a UV-eraser and I was
+blowing through my stock of blank 27C64s pretty quickly.
 <br><br>
 
 Back to the waiting game for packages to arrive.
@@ -419,17 +424,21 @@ Back to the waiting game for packages to arrive.
 <h2>Revisiting the RAM situation with the TMM2116 2k SRAM</h2>
 
 While waiting I looked into the RAM situation again.
-The TMM2009-25A on the board is really hard to find, and while it
-was pin compatible with the 6116 maybe that's not good enough?
 <br><br>
 
-Toshiba actually sold a lot of models of 2k SRAMs, it seemed plausible the 
-TMM2116 might be a better match.  Data sheets for this chip do 
+Toshiba actually sold a lot of models of 2k SRAMs, it seemed plausible that
+something made by them might be a better match to their 1k RAM than the
+6116 by a different manufacturer.
+<br><br>
+
+I picked the Toshiba TMM2116 as one to try.
+Data sheets for this chip do 
 exist, and looking at them it turns out that its signalling is
-different enough from a 6116 it would be worth trying.
+different enough from a 6116 it plausibly could be causing
+the issues we were seeing.
 <br><br>
 
-So I ordered TMM2116 RAM, from two sources on e-bay.
+So I ordered some TMM2116 chips, from two sources on e-bay.
 Tracking through the USPS can be frustrating, one chip was coming from
 nearby, one from California. They managed to pass in the system and the
 one from CA got to the local distribution hub a day after the other
@@ -440,9 +449,9 @@ but still arrived a day earlier somehow.
 
 <h2>Testing the TMM2116 2k SRAM</h2>
 
-It didn't work, though it works better than the 6116 RAM did.<br><br>
+Sadly it didn't work, though it works better than the 6116 RAM did.<br><br>
 
-Burgertime works, and all four 256-byte RAM banks access fine.<br><br>
+Burgertime now works, and all four 256-byte RAM banks access fine.<br><br>
 
 Enabling the 1k RAM window though makes all RAM (including the 256-byte
 window) not work.
@@ -544,7 +553,7 @@ up wrong for this picture but eventually remembered where pin1 was.
 
 <h2>Initial Logic Analyzer Results</h2>
 
-With only 8 pins to work with these first measurements I tried to pick
+With only 8 pins to work with for these first measurements I tried to pick
 a subset that could tell me what was going on.<br><br>
 
 Here are the results with ROM banked in and a write to the 256-byte window
@@ -585,7 +594,7 @@ game, maybe this is the secret to getting things working?
 
 
 So I ordered some in hopes I could drop it in and solve my problems.
-(I ordered on e-bay.  I tried to order from American supplier fora  quicker
+(I ordered on e-bay.  I tried to order from American supplier for a quicker
 response and to maybe avoid counterfeit parts from overseas, but it took
 long enough that I am pretty sure the vendor was just drop shipping 
 from China and it took forever to arrive.  So I ordered
@@ -593,13 +602,13 @@ more chips from another vendor and of course they all
 more or less arrived the same day).
 <br><br>
 
-I Dropped in the new RAM...  and it failed the same way the 2116 did.
+I dropped in the new RAM...  and it failed the same way the 2116 did.
 Urgh.
 <br><br>
 	
-It wuld have been nice to have better pictures of the prototype boards,
-if only the back of them.
-The prototype board not only has 2k of SRAM but it has a different
+It would have been nice to have better pictures of the unreleased
+prototype games, epsecially of the traces on the back.
+The AD&amp;D prototype board not only has 2k of SRAM but it has a different
 layout from Burgertime and is using 28-pin EPROMs as well.
 From the picture online it also appears that the
 /OE and A10 lines are connected, which is an odd thing
@@ -622,7 +631,7 @@ three memory chips.
 <h2>E-mailing people who were there</h2>
 
 While looking at the prototypes I raelized that one of the authors of the
-"Tower of Mystery" prototype was still around and on the internet.
+"AD&amp;D Tower of Mystery" prototype was still around and on the internet.
 So I e-mailed them and asked if all 2k of RAM ever worked on the E7 board.
 <br><br>
 They actually replied, but said it had been so long they can't
@@ -634,38 +643,42 @@ theory imply it didn't work or else they would have.
 
 <h2>Back to the Logic Analyzer</h2>
 
-Decided it was time to try to get mostly full coverage of some
+I decided it was finally time to try to get more complete coverage of
 read/write operations using the logic analyzer.
 <br><br>
 
 I was triggering on the RAM /OE line as that's the easiest way to find
 SRAM accesses in the huge pile of signals.
 <br><br>
-The logic analyzer only can probe 8 signals at once, which is limiting
+The logic analyzer can only probe 8 signals at once, which is limiting
 as ideally we'd track most of the 40 pins on the E7 chip.
 <br><br>
-I did things in four batches.  There were two pins I skipped and I had
-to move the test clip once in the middle.  I set the analyzer to read
+I did things in four batches.  This allowed measuring all but two of
+the pins (I was too lazy to do a fifth batch for just those two pins).
+I only had a 24-pin test clip so I had to move that halfway through the
+testing.
+<br><br>
+I set the analyzer to read
 20 million samples at 4MHz.  (The 6507 in the Atari VCS runs at 1.19MHz
-so not a very even number. Also wasn't sure how much to sample as I am
-sure there are some sub-cycle timings going on).
+so not a nice even multiple. I also wasn't sure how fast to sample as I am
+sure there are some sub-cycle timings going on that might be relevant).
 <br><br>
 
-I won't show all the results, but some interesting results for those
-very curious:<br>
+I won't show all the results, but some interesting highlights for the
+curious:<br>
 <ul>
-<li>The 128k pin does seem (as theorized) to be the or of the
+<li>The 128k pin does seem (as theorized) to be the OR of the
 	ROM0 chip select and the ROM1 chip select (for use if you want to use
-	one 128kbit [16kB] EPROMs instead of two 8kB ones)
+	one 128kbit [16kB] EPROM instead of two 8kB ones)
 <li>The NC pin is possibly the A13 pin if you want to use 16kB EPROMs but
 	I didn't test enough addresses to verify
-<li>The ROM0/ROM1 chip selects never are active when the RAM one is,
-	which negates the theory maybe somehow they are left active
-	when RAM is going
+<li>The ROM0/ROM1 chip selects are never active when the RAM one is,
+	which negates the theory maybe somehow the problem is that
+	they are left active when RAM is going
 <li>The address lines for the SRAM always seem to give the proper
-	expected values for accessing the various regions
+	expected values for accessing the various memory regions
 <li>I verified the weird issue that with the 1k RAM enabled the /WE line
-	seems to almost be masked with the RAM-A8 in rather than holding
+	seems to almost be masked with the RAM-A8 signal rather than holding
 	high when RAM /OE is high.
 <li>When reading the data bus it was clear that when the 1k RAM area is
 	active, the value the CPU tries to write to memory is somehow
@@ -686,7 +699,7 @@ This takes 5 cycles.  This should look like:
 <li>$82 - the address from the zero page we are loading the address from
 <li>$01 - the low byte of the address
 <li>$18 - the high byte of the adress
-<li>$5A - the value we are writing out to SRAM (in the accumulator)
+<li>$5A - the value we are writing out to SRAM (from the accumulator register)
 </ul>
 
 <br>
@@ -700,7 +713,7 @@ a typo it should be $1801.
 <img src="decode_6502_sta_bank4_small.png" alt="working load">
 <br><br>
 
-And here is a not-working one showing the missing $5A value from
+And here is a not-working write transaction showing the missing $5A value from
 the CPU.
 Instead what gets written is the unchanged $18 from the previous cycle,
 maybe implying the bus was left floating with the previous value?
@@ -741,18 +754,19 @@ I guess I should check my stash of ICs from my childhood
 Radio shack).  They've been sitting there in my
 "IBM PC Network Baseband Extender" box in anti-static
 foam being lonely the past 30 years.  It's mostly 7400 and 4000 series
-logic, 7-segment LED displays, 555 timers and 741 op-amps.  
+logic, 7-segment LED displays, 555 timers, 3909 LED blinkers, and 741 op-amps.  
 Mostly sourced from Radio Shack, JDR micro-devices, and
-some old parts Apple II machines my high school was throwing out.
+some rescued chips scavenged from Apple II machines my high school was
+getting rid of.
 If you look closely mixed in are the parts for the sadly never-realized
-plan to build a custom z80 computer based on some TAB book the
-library was throwing out.
+plan to build a custom z80 computer based on some TAB book acquired at a
+local library booksale.
 <br>
 <img src="2085_childhood_chips1.jpg" alt="lots of ICs in anti-static foam"><br>
 <img src="2086_childhood_chips2.jpg" alt="flip side of the anti-static foam showing ICs on back"><br>
 <br><br>
 
-I apparently had foresight and the 74LS chips are in order by part number.
+I apparently had foresight and the 74LS chips were ordered by part number.
 After more trouble than it should have been I found a 5V supply and
 verified the chip was still OR-ing after all these years:<br>
 <img src="2087_or_gate.jpg">
@@ -767,7 +781,7 @@ Sadly, things still didn't work.<br>
 
 <h2>One Last Attempt with the Logic Analyzer</h2>
 
-I ran the logic analyzer with the OR gate on.  The /WE signal
+I ran the logic analyzer with the OR gate attached.  The /WE signal
 now looked the same in the RAM and no-RAM case.  Still not working.
 <br><br>
 
@@ -780,8 +794,9 @@ something else.
 Quite possibly it's the E7 chip itself (it's a mystery why
 it even has the data lines going into it because they shouldn't be
 necessary).  It's weird though as the data lines come right from the
-Atari, the E7 chip isn't able to tri-state or intercept them (though it
-could be accidentally or on purpose driving values out on it).
+6507 on the Atari, the E7 chip isn't able to tri-state or intercept them.
+(though it could be accidentally or on purpose driving values onto the
+data bus when it shouldn't be).
 
 <br>
 
