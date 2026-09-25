@@ -178,5 +178,8 @@ main.s:
 			zero page
 
 
-
-
+Related work:
+	https://xayax.net/bang!/
+	Made demo for 32k/128Byte Atari SARA "SuperChip"
+	Also made a "real" cart using salvaged SARA chip
+	RAM has more limitations than E7
