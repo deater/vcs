@@ -1,0 +1,108 @@
+LINKER_SCRIPT = ../../linker_script
+CALC_ADDRESS = ../../utils/calc_address
+ROM_TOOL = ../../utils/rom_tool
+
+all:	ds.e7
+
+###
+
+roms:	ds_rom1.bin ds_rom2.bin
+
+ds_rom1.bin:      ds.e7
+	dd if=ds.e7 of=ds_rom1.bin bs=1k count=8 skip=8
+
+ds_rom2.bin:	ds.e7
+	dd if=ds.e7 of=ds_rom2.bin bs=1k count=8
+
+###
+
+submit:	ds.zip
+
+ds.zip: ds.e7
+	mkdir -p demosplash2026_ds
+	mkdir -p demosplash2026_ds/src
+	cp ds.e7 ./demosplash2026_ds
+	cp file_id.diz ./demosplash2026_ds
+	cp ds_thumb.png ./demosplash2026_ds
+	cp *.s ./demosplash2026_ds/src
+	cp *.inc ./demosplash2026_ds/src
+	zip -r ds.zip demosplash2026_ds
+
+
+
+###
+
+ds.e7:	ds.o
+	ld65 -o ds.e7 ds.o -C $(LINKER_SCRIPT)/atari2600_e7.inc
+
+ds.o:	ds.s main.bin \
+	rom_bank0.bin \
+	rom_bank1.bin \
+	rom_bank2.bin \
+	rom_bank3.bin \
+	rom_bank4.bin \
+	rom_bank5.bin \
+	rom_bank6.bin \
+	zero_2k.bin \
+	zero_512.bin
+	ca65 -o ds.o ds.s
+
+###
+
+###
+
+rom_bank0.bin:	$(ROM_TOOL)
+	$(ROM_TOOL) 0 > rom_bank0.bin
+
+rom_bank1.bin:	$(ROM_TOOL)
+	$(ROM_TOOL) 1 > rom_bank1.bin
+
+rom_bank2.bin:	$(ROM_TOOL)
+	$(ROM_TOOL) 2 > rom_bank2.bin
+
+rom_bank3.bin:	$(ROM_TOOL)
+	$(ROM_TOOL) 3 > rom_bank3.bin
+
+rom_bank4.bin:	$(ROM_TOOL)
+	$(ROM_TOOL) 4 > rom_bank4.bin
+
+rom_bank5.bin:	$(ROM_TOOL)
+	$(ROM_TOOL) 5 > rom_bank5.bin
+
+rom_bank6.bin:	$(ROM_TOOL)
+	$(ROM_TOOL) 6 > rom_bank6.bin
+
+###
+
+zero_2k.bin:	
+	dd if=/dev/zero of=zero_2k.bin bs=1k count=2
+
+###
+
+zero_512.bin:	
+	dd if=/dev/zero of=zero_512.bin bs=256 count=2
+
+###
+
+
+###
+
+main.bin:	main.o
+	ld65 -o main.bin main.o -C $(LINKER_SCRIPT)/atari2600_1a00_e7.inc
+
+main.o:	main.s zp.inc
+	ca65 -o main.o main.s -l main.lst
+
+###
+
+###
+
+clean:	
+	rm -f *~ *.o *.lst ds.rom
+
+#		common_routines.inc \
+#		rom_bank5_routines.inc rom_bank6_routines.inc
+#	cd locations && make clean
+#	cd bank5_clock && make clean
+#	cd bank6_intro && make clean
+#	cd empty && make clean
