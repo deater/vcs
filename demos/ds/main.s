@@ -30,67 +30,37 @@ clear_loop:
 
 	; S=$FF, A=$00, X=$00, Y=??
 
-.if 0
+
 	;==============================
 	; var init
 	;==============================
 
-	lda	#$f
-	sta	DEBOUNCE_COUNTDOWN
 
-	lda	#3
-	sta	BANK_256
+;	lda	#3
+;	sta	BANK_256
 
-	lda	#4
-	sta	BANK_1K
+;	lda	#4
+;	sta	BANK_1K
 
 	; init code sets to 0
 
-;	lda	#$00
-;	sta	READ_VALUE
-;	sta	READ_256L
-;	sta	READ_1KL
-;	sta	WRITE_256L
-;	sta	WRITE_1KL
-;	sta	WHICH_ROW
-
-	lda	#$19
-	sta	READ_256H
-	lda	#$18
-	sta	WRITE_256H
-
-	lda	#$14
-	sta	READ_1KH
-	lda	#$10
-	sta	WRITE_1KH
-
-	lda	#$5A
-	sta	WRITE_VALUE
-
-	; update all bytes
-
-	ldy	#11
-ub_loop:
-	sty	TEMPY
-	jsr	update_byte
-	ldy	TEMPY
-	dey
-	bpl	ub_loop
-.endif
-
-
 	;==============================
-	; Run Tests
+	; Run Scenes
 	;==============================
 again:
-	jmp	again
+	jsr	title_screen	; wastes 2 bytes of stack?
 
-.if 0
+
 	;===========================
 	; common routines
 	;===========================
 
 	.include "common_routines.s"
+
+.align $100
+	.include "title_screen.s"
+
+.if 0
 	.include "memory_test.s"
 	.include "print_word.s"
 	.include "print_byte.s"

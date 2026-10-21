@@ -90,7 +90,8 @@ zero_512.bin:
 main.bin:	main.o
 	ld65 -o main.bin main.o -C $(LINKER_SCRIPT)/atari2600_1a00_e7.inc
 
-main.o:	main.s zp.inc
+main.o:	main.s zp.inc \
+	common_routines.s title_screen.s
 	ca65 -o main.o main.s -l main.lst
 
 ###
@@ -99,8 +100,7 @@ main.o:	main.s zp.inc
 
 clean:	
 	rm -f *~ *.o *.lst ds.rom
-
-#		common_routines.inc \
+#	common_routines.inc \
 #		rom_bank5_routines.inc rom_bank6_routines.inc
 #	cd locations && make clean
 #	cd bank5_clock && make clean
