@@ -31,11 +31,17 @@ start_frame:
 	sta	WSYNC
 
 	;=======================
-	; scanline 37 -- ???
+	; scanline 37 -- config
 
-	ldx	#0
-	stx	VBLANK
-	ldy	#4
+	lda	#178	; playfield color (dark green)
+	sta	COLUPF
+
+
+
+	ldy	#0
+	sty	VBLANK
+
+	ldx	#192		; lines
 	sta	WSYNC
 
 
@@ -47,9 +53,49 @@ start_frame:
 	; draw 192 lines
 	; need to race beam to draw other half of playfield
 
+checker_loop:
 
-	ldx	#192
-	jsr	repeat_wsync
+;  PF0   PF1       PF2
+; |4567|76543210|01234567
+;  1010 10101010 10101010
+
+
+	txa
+	and	#$4
+	bne	checker_odd
+checker_even:
+	lda	#$55
+	ldy	#$aa
+	bne	checker_common		; bra
+checker_odd:
+	lda	#$aa
+	ldy	#$55
+checker_common:
+
+	sta	PF0
+	sta	PF2
+
+	sty	PF1
+
+;	lda	#NUSIZ_QUAD_SIZE
+;	sta	NUSIZ0
+
+
+;	lda	#14
+;	sta	COLUP0
+
+;	lda	#$AA
+;	sta	GRP0
+
+
+	dex
+	beq	done_checker
+
+	sta	WSYNC
+	jmp	checker_loop
+
+done_checker:
+	sta	WSYNC
 
 .if 0
 	lda	$80		; nop3
