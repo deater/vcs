@@ -6,6 +6,25 @@ all:	ds.e7
 
 ###
 
+
+ds.e7:	ds.o
+	ld65 -o ds.e7 ds.o -C $(LINKER_SCRIPT)/atari2600_e7.inc
+
+ds.o:	ds.s main.bin \
+	rom_bank0.bin \
+	rom_bank1.bin \
+	rom_bank2.bin \
+	rom_bank3.bin \
+	rom_bank4.bin \
+	rom_bank5.bin \
+	bank6_music/bank6_music.bin \
+	zero_2k.bin \
+	zero_512.bin
+	ca65 -o ds.o ds.s
+
+
+#####
+
 roms:	ds_rom1.bin ds_rom2.bin
 
 ds_rom1.bin:      ds.e7
@@ -30,22 +49,7 @@ ds.zip: ds.e7
 
 
 
-###
 
-ds.e7:	ds.o
-	ld65 -o ds.e7 ds.o -C $(LINKER_SCRIPT)/atari2600_e7.inc
-
-ds.o:	ds.s main.bin \
-	rom_bank0.bin \
-	rom_bank1.bin \
-	rom_bank2.bin \
-	rom_bank3.bin \
-	rom_bank4.bin \
-	rom_bank5.bin \
-	rom_bank6.bin \
-	zero_2k.bin \
-	zero_512.bin
-	ca65 -o ds.o ds.s
 
 ###
 
@@ -69,8 +73,17 @@ rom_bank4.bin:	$(ROM_TOOL)
 rom_bank5.bin:	$(ROM_TOOL)
 	$(ROM_TOOL) 5 > rom_bank5.bin
 
-rom_bank6.bin:	$(ROM_TOOL)
-	$(ROM_TOOL) 6 > rom_bank6.bin
+#rom_bank6.bin:	$(ROM_TOOL)
+#	$(ROM_TOOL) 6 > rom_bank6.bin
+
+###
+
+bank6_music/bank6_music.bin:	
+	cd bank6_music && make
+
+bank6_routines.inc:	bank6_music/bank6_music.bin
+	$(CALC_ADDRESS) -a 0x1000 -s play_music bank6_music/bank6_music.lst > bank6_routines.inc
+
 
 ###
 
@@ -91,18 +104,22 @@ main.bin:	main.o
 	ld65 -o main.bin main.o -C $(LINKER_SCRIPT)/atari2600_1a00_e7.inc
 
 main.o:	main.s zp.inc \
-	common_routines.s title_screen.s
+	common_routines.s title_screen.s \
+	bank6_routines.inc
 	ca65 -o main.o main.s -l main.lst
+
 
 ###
 
 ###
 
 clean:	
-	rm -f *~ *.o *.lst ds.rom
+	rm -f *~ *.o *.lst ds.rom \
+	bank6_routines.inc
+	cd bank6_music && make clean
+
 #	common_routines.inc \
 #		rom_bank5_routines.inc rom_bank6_routines.inc
 #	cd locations && make clean
 #	cd bank5_clock && make clean
-#	cd bank6_intro && make clean
 #	cd empty && make clean

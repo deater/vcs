@@ -20,10 +20,16 @@ start_frame:
 	; 37 lines of vertical blank
 	;=============================
 
+	ldx	#23
+	jsr	repeat_wsync
 
-.repeat 34
-	sta	WSYNC
-.endrepeat
+	;=========================
+	; play music
+	;=========================
+	; takes 11 lines?
+
+	sta	E7_SET_BANK6	;
+	jsr	play_music
 
 	;=======================
 	; scanline 36 -- ???

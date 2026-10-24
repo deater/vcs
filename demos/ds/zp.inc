@@ -106,20 +106,19 @@ WRITE_256_H_DATA_4	= $DC
 WRITE_256_H_DATA_5	= $DD
 WRITE_256_H_DATA_6	= $DE
 
-WRITE_1K_L_DATA_0	= $E0
-WRITE_1K_L_DATA_1	= $E1
-WRITE_1K_L_DATA_2	= $E2
-WRITE_1K_L_DATA_3	= $E3
-WRITE_1K_L_DATA_4	= $E4
-WRITE_1K_L_DATA_5	= $E5
-WRITE_1K_L_DATA_6	= $E6
 
-WRITE_1K_H_DATA_0	= $E8
-WRITE_1K_H_DATA_1	= $E9
-WRITE_1K_H_DATA_2	= $EA
-WRITE_1K_H_DATA_3	= $EB
-WRITE_1K_H_DATA_4	= $EC
-WRITE_1K_H_DATA_5	= $ED
-WRITE_1K_H_DATA_6	= $EE
+; tt music player
+tt_timer                = $E0    ; current music timer value
+tt_cur_pat_index_c0     = $E1    ; current pattern index into tt_SequenceTable
+tt_cur_pat_index_c1     = $E2
+tt_cur_note_index_c0    = $E3    ; note index into current pattern
+tt_cur_note_index_c1    = $E4
+tt_envelope_index_c0    = $E5   ; index into ADSR envelope
+tt_envelope_index_c1    = $E6
+tt_cur_ins_c0           = $E7   ; current instrument
+tt_cur_ins_c1           = $E8
+tt_ptr                  = $E9   ; temporary
+tt_ptr2                 = $EA
+player_time_max         = $EB
 
 

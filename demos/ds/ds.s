@@ -19,6 +19,6 @@
 .incbin	"rom_bank3.bin"			; 2k
 .incbin	"rom_bank4.bin"			; 2k
 .incbin	"rom_bank5.bin"			; 2k
-.incbin	"rom_bank6.bin"			; 2k
+.incbin	"bank6_music/bank6_music.bin"	; 2k
 .incbin	"zero_512.bin"			; 512 bytes
 .incbin	"main.bin"			; 1.5k
