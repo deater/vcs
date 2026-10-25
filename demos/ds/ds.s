@@ -13,7 +13,7 @@
 ; by Vince `deater` Weaver <vince@deater.net>
 
 
-.incbin	"rom_bank0.bin"			; 2k
+.incbin	"bank0_title/bank0_title.bin"	; 2k
 .incbin	"rom_bank1.bin"			; 2k
 .incbin	"rom_bank2.bin"			; 2k
 .incbin	"rom_bank3.bin"			; 2k
