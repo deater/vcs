@@ -8,6 +8,7 @@
 
 .include "zp.inc"
 
+.include "bank0_routines.inc"
 .include "bank6_routines.inc"
 
 	;==============================
@@ -54,6 +55,10 @@ clear_loop:
 	; Run Scenes
 	;==============================
 again:
+
+	sta	E7_SET_BANK0
+	jsr	do_title
+
 	jsr	title_screen	; wastes 2 bytes of stack?
 
 
@@ -61,6 +66,7 @@ again:
 	; common routines
 	;===========================
 
+	.include "zx02_optim.s"
 	.include "common_routines.s"
 
 .align $100

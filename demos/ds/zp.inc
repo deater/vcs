@@ -1,18 +1,6 @@
 ; zero page addresses
 
-data_bytes = $80
-BANK_256	= $80
-BANK_1K		= $81
-WRITE_VALUE	= $82
-READ_VALUE	= $83
-READ_256L	= $84
-READ_256H	= $85
-WRITE_256L	= $86
-WRITE_256H	= $87
-READ_1KL	= $88
-READ_1KH	= $89
-WRITE_1KL	= $8A
-WRITE_1KH	= $8B
+DONE_TITLE	= $80
 
 INL		= $8C
 INH		= $8D
@@ -90,21 +78,20 @@ READ_1K_H_DATA_4	= $CC
 READ_1K_H_DATA_5	= $CD
 READ_1K_H_DATA_6	= $CE
 
-WRITE_256_L_DATA_0	= $D0
-WRITE_256_L_DATA_1	= $D1
-WRITE_256_L_DATA_2	= $D2
-WRITE_256_L_DATA_3	= $D3
-WRITE_256_L_DATA_4	= $D4
-WRITE_256_L_DATA_5	= $D5
-WRITE_256_L_DATA_6	= $D6
 
-WRITE_256_H_DATA_0	= $D8
-WRITE_256_H_DATA_1	= $D9
-WRITE_256_H_DATA_2	= $DA
-WRITE_256_H_DATA_3	= $DB
-WRITE_256_H_DATA_4	= $DC
-WRITE_256_H_DATA_5	= $DD
-WRITE_256_H_DATA_6	= $DE
+; for the zx02 decompression
+
+offset		=	$D0
+offset_h	=	$D1
+ZX0_src		=	$D2
+ZX0_src_h	=	$D3
+ZX0_dst		=	$D4
+ZX0_dst_h	=	$D5
+bitr		=	$D6
+pntr		=	$D7
+pntr_h		=	$D8
+READ_WRITE_OFFSET=	$D9
+LOCATION_LOAD_DELAY=	$DA
 
 
 ; tt music player
@@ -121,4 +108,5 @@ tt_ptr                  = $E9   ; temporary
 tt_ptr2                 = $EA
 player_time_max         = $EB
 
+; Reserve $F0+ for the stack?
 

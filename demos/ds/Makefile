@@ -81,15 +81,15 @@ rom_bank5.bin:	$(ROM_TOOL)
 bank0_title/bank0_title.bin:	
 	cd bank0_title && make
 
-bank0_routines.inc:	bank0_title/bank0_title.bin
-	$(CALC_ADDRESS) -a 0x1000 -s do_title bank0_title/bank0_title.lst > bank0_title.inc
+#bank0_routines.inc:	bank0_title/bank0_title.bin
+#	$(CALC_ADDRESS) -a 0x1000 -s do_title bank0_title/bank0_title.lst > bank0_routines.inc
 
 
 bank6_music/bank6_music.bin:	
 	cd bank6_music && make
 
-bank6_routines.inc:	bank6_music/bank6_music.bin
-	$(CALC_ADDRESS) -a 0x1000 -s play_music bank6_music/bank6_music.lst > bank6_routines.inc
+#bank6_routines.inc:	bank6_music/bank6_music.bin
+#	$(CALC_ADDRESS) -a 0x1000 -s play_music bank6_music/bank6_music.lst > bank6_routines.inc
 
 
 ###
@@ -107,15 +107,28 @@ zero_512.bin:
 
 ###
 
+
+
 main.bin:	main.o
 	ld65 -o main.bin main.o -C $(LINKER_SCRIPT)/atari2600_1a00_e7.inc
 
-main.o:	main.s zp.inc \
-	common_routines.s title_screen.s \
-	bank0_routines.inc \
-	bank6_routines.inc
-	ca65 -o main.o main.s -l main.lst
+#	bank0_routines.inc \
+#	bank6_routines.inc
 
+main.o:	main.s zp.inc \
+	common_routines.s title_screen.s zx02_optim.s
+	echo "do_title = 0 " > bank0_routines.inc
+	echo "play_music = 0 " > bank6_routines.inc
+	ca65 -o main.o main.s -l main.lst
+	$(CALC_ADDRESS) -a 0x1A00 -s common_vblank main.lst > common_routines.inc
+	$(CALC_ADDRESS) -a 0x1A00 -s common_overscan main.lst >> common_routines.inc
+	$(CALC_ADDRESS) -a 0x1A00 -s zx02_full_decomp main.lst >> common_routines.inc
+	$(CALC_ADDRESS) -a 0x1A00 -s repeat_wsync main.lst >> common_routines.inc
+	cd bank0_title && make
+	cd bank6_music && make
+	$(CALC_ADDRESS) -a 0x1000 -s do_title bank0_title/bank0_title.lst > bank0_routines.inc
+	$(CALC_ADDRESS) -a 0x1000 -s play_music bank6_music/bank6_music.lst > bank6_routines.inc
+	ca65 -o main.o main.s -l main.lst
 
 ###
 
@@ -123,6 +136,6 @@ main.o:	main.s zp.inc \
 
 clean:	
 	rm -f *~ *.o *.lst ds.rom \
-	bank0_routines.inc bank6_routines.inc
-	cd bank0_tilte && make clean
+	bank0_routines.inc bank6_routines.inc common_routines.inc
+	cd bank0_title && make clean
 	cd bank6_music && make clean
