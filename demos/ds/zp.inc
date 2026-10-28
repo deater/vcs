@@ -1,5 +1,7 @@
 ; zero page addresses
 
+data_bytes	= $80 ; FIXME
+
 DONE_TITLE	= $80
 
 INL		= $8C
