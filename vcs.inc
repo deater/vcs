@@ -23,22 +23,20 @@ RSYNC	=	$03
 ;  D2/D1/D0 = player number/size
 NUSIZ0	=	$04
 NUSIZ1	=	$05
-	NUSIZ_MISSILE_WIDTH_1	= $00
-	NUSIZ_MISSILE_WIDTH_2	= $10
-	NUSIZ_MISSILE_WIDTH_4	= $20
-	NUSIZ_MISSILE_WIDTH_8	= $30
+					; widths where 1 pixel of 160
+	NUSIZ_MISSILE_WIDTH_1	= $00	; one pixel
+	NUSIZ_MISSILE_WIDTH_2	= $10	; two pixels
+	NUSIZ_MISSILE_WIDTH_4	= $20	; four pixels
+	NUSIZ_MISSILE_WIDTH_8	= $30	; eight pixels
 
-	NUSIZ_ONE_COPY		= $00
-	NUSIZ_TWO_COPIES_CLOSE	= $01
-	NUSIZ_TWO_COPIES_MED	= $02
-	NUSIZ_THREE_COPIES_CLOSE= $03
-	NUSIZ_TWO_COPIES_WIDE	= $04
-	NUSIZ_DOUBLE_SIZE	= $05
-	NUSIZ_THREE_COPIES_MED	= $06
-	NUSIZ_QUAD_SIZE		= $07 
-
-
-
+	NUSIZ_ONE_COPY		= $00	; eight pixels total for sprite
+	NUSIZ_TWO_COPIES_CLOSE	= $01	; second is at x+16
+	NUSIZ_TWO_COPIES_MED	= $02	; second is at x+32
+	NUSIZ_THREE_COPIES_CLOSE= $03	; second is at x+16
+	NUSIZ_TWO_COPIES_WIDE	= $04	; second is at x+64
+	NUSIZ_DOUBLE_SIZE	= $05	; sixteen pixels wide
+	NUSIZ_THREE_COPIES_MED	= $06	; second is at x+32
+	NUSIZ_QUAD_SIZE		= $07	; thirty-two pixels wide
 
 COLUP0	=	$06
 COLUP1	=	$07

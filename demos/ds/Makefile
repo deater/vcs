@@ -15,7 +15,7 @@ ds.o:	ds.s main.bin \
 	rom_bank1.bin \
 	rom_bank2.bin \
 	rom_bank3.bin \
-	rom_bank4.bin \
+	bank4_plasma/bank4_plasma.bin \
 	rom_bank5.bin \
 	bank6_music/bank6_music.bin \
 	zero_2k.bin \
@@ -67,8 +67,8 @@ rom_bank2.bin:	$(ROM_TOOL)
 rom_bank3.bin:	$(ROM_TOOL)
 	$(ROM_TOOL) 3 > rom_bank3.bin
 
-rom_bank4.bin:	$(ROM_TOOL)
-	$(ROM_TOOL) 4 > rom_bank4.bin
+#rom_bank4.bin:	$(ROM_TOOL)
+#	$(ROM_TOOL) 4 > rom_bank4.bin
 
 rom_bank5.bin:	$(ROM_TOOL)
 	$(ROM_TOOL) 5 > rom_bank5.bin
@@ -83,6 +83,16 @@ bank0_title/bank0_title.bin:
 
 #bank0_routines.inc:	bank0_title/bank0_title.bin
 #	$(CALC_ADDRESS) -a 0x1000 -s do_title bank0_title/bank0_title.lst > bank0_routines.inc
+
+###
+
+
+bank4_plasma/bank4_plasma.bin:	
+	cd bank4_plasma && make
+
+#bank0_routines.inc:	bank4_plasma/bank4_plasma.bin
+#	$(CALC_ADDRESS) -a 0x1000 -s do_title bank4_plasma/bank4_plasma.lst > bank0_routines.inc
+
 
 
 bank6_music/bank6_music.bin:	
@@ -125,6 +135,8 @@ main.o:	main.s zp.inc \
 	$(CALC_ADDRESS) -a 0x1A00 -s zx02_full_decomp main.lst >> common_routines.inc
 	$(CALC_ADDRESS) -a 0x1A00 -s repeat_wsync main.lst >> common_routines.inc
 	cd bank0_title && make
+	cd bank4_plasma && make
+	$(CALC_ADDRESS) -a 0x1000 -s do_plasma bank4_plasma/bank4_plasma.lst > bank4_routines.inc
 	cd bank6_music && make
 	$(CALC_ADDRESS) -a 0x1000 -s do_title bank0_title/bank0_title.lst > bank0_routines.inc
 	$(CALC_ADDRESS) -a 0x1000 -s play_music bank6_music/bank6_music.lst > bank6_routines.inc
@@ -138,4 +150,5 @@ clean:
 	rm -f *~ *.o *.lst ds.rom \
 	bank0_routines.inc bank6_routines.inc common_routines.inc
 	cd bank0_title && make clean
+	cd bank4_plasma && make clean
 	cd bank6_music && make clean
