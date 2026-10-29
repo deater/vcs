@@ -9,6 +9,7 @@
 .include "zp.inc"
 
 .include "bank0_routines.inc"
+.include "bank4_routines.inc"
 .include "bank6_routines.inc"
 
 	;==============================
@@ -56,8 +57,11 @@ clear_loop:
 	;==============================
 again:
 
-	sta	E7_SET_BANK0
-	jsr	do_title
+;	sta	E7_SET_BANK0
+;	jsr	do_title
+
+	sta	E7_SET_BANK4
+	jsr	do_plasma
 
 	jsr	title_screen	; wastes 2 bytes of stack?
 
