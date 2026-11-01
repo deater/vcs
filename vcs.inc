@@ -80,9 +80,9 @@ AUDV1	=	$1A
 
 GRP0	=	$1B	; graphics for P0
 GRP1	=	$1C	; graphics for P1
-ENAM0	=	$1D	; enable missile 0
-ENAM1	=	$1E	; enable missile 1
-ENABL	=	$1F	; enable ball
+ENAM0	=	$1D	; enable missile 0	; write $02
+ENAM1	=	$1E	; enable missile 1	; write $02
+ENABL	=	$1F	; enable ball		; write $02
 HMP0	=	$20	; p0 position fine tune
 HMP1	=	$21	; p1 position fine tune
 HMM0	=	$22	; missile 0 position fine tune

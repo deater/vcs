@@ -57,14 +57,49 @@ start_plasma:
 	; now in scanline 36
 	;====================
 
+; goal
+
+; 0         1         2         3
+; 0123456789012345678901234567890123456789
+; PPPPKKKK11112222KKKKPPPPKKKK11112222KKKK
+
+
+	lda	#CTRLPF_REF
+;	lda	#CTRLPF_BALL_SIZE8
+	sta	CTRLPF
+
 	lda	#$1e
 	sta	COLUPF
 
-	lda	#$AA
+	lda	#$C0
 	sta	PF0
+	lda	#$ff
 	sta	PF2
-	lda	#$55
 	sta	PF1
+
+	lda	#$0
+	sta	COLUBK
+
+;	lda	#66
+;	sta	COLUP0
+
+;	lda	#98
+;	sta	COLUP1
+
+;	lda	#$ff
+;	sta	GRP0
+;	sta	GRP1
+;	lda	#$2
+;	sta	ENAM0
+;	sta	ENAM1
+;	sta	ENABL
+
+
+
+	lda	#NUSIZ_MISSILE_WIDTH_8
+	sta	NUSIZ0
+	sta	NUSIZ1
+
 
 
         sta     WSYNC
@@ -72,7 +107,10 @@ start_plasma:
 	; now in scanline 37
 	;====================
 
+	ldx	#192
+
 	lda	#0
+	sta	COLUPF
 	sta	VBLANK
 
         sta     WSYNC
@@ -82,7 +120,28 @@ start_plasma:
 	; playfield
 	;======================================
 
-	ldx	#192
+	ldx	#15
+	jsr	repeat_wsync
+
+	sta	WSYNC
+
+	; 20 blocks tall, each 8 lines so 160
+
+looper:
+	jsr	line1
+	jsr	line1
+	jsr	line1
+	jsr	line1
+	jsr	line1
+	jsr	line1
+	jsr	line1
+	jsr	line1
+
+
+	ldx	#152
+	jsr	repeat_wsync
+
+	ldx	#16
 	jsr	repeat_wsync
 
 
@@ -107,4 +166,47 @@ done_plasma:
 
 
 	rts
+
+
+
+; comes in 6 cycles in
+line1:
+; 6
+	lda	$80	; 3
+	lda	$80	; 3
+	nop		; 2
+	nop		; 2
+	lda	$80
+;	nop		; 2
+;	nop		; 2
+
+; 16
+
+	; want to wait until 22.66 cpu clocks?
+							; cpu pixel pf 
+	lda	#$0e					; 2
+	sta	COLUPF					; 3	15  3.75
+	lda	#$1e					; 2
+	sta	COLUPF					; 3	30  7.5
+	lda	#$2e					; 2
+	sta	COLUPF					; 3	45  
+	lda	#$3e					; 2
+	sta	COLUPF					; 3	60
+	lda	#$4e					; 2
+	sta	COLUPF					; 3	75
+	lda	#$5e					; 2
+	sta	COLUPF					; 3	90
+	lda	#$6e
+	sta	COLUPF
+	lda	#$7e
+	sta	COLUPF
+	lda	#$8e
+	sta	COLUPF
+	lda	#$9e
+	sta	a:COLUPF
+; 66
+
+; 70
+	rts
+; 6
 
