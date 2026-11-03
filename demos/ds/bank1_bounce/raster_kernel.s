@@ -2,6 +2,12 @@
 	; draws raster effect
 	;================================================
 
+
+	; effects
+	;	make bigger?
+	;	make 2 or 3 copies
+	;	move behind playfield
+
 PLAYFIELD_MAX = 184
 
 
@@ -326,11 +332,13 @@ raster_playfield:
 	sbc	SPRITE0_Y						; 3
 	cmp	#16 ;BOX_HEIGHT						; 2
 	bcs	no_sprite0						; 2/3
-	ldy	#$FF							; 2
+	tay								; 2
+	lda	sprite_data,Y						; 4
+	tay								; 2
 no_sprite0:
 	sty	GRP0							; 3
 								;==========
-								; 16 worst
+								; 22 worst
 ; 22
 
 	;============================
@@ -413,12 +421,8 @@ done_raster:
 
 
 
-;raster_color:
-;	.byte $00
-;raster_color_red:
-;	.byte $60,$62,$64,$66,$68,$6A,$6C,$6E
-;raster_color_green:
-;	.byte $50,$52,$54,$56,$58,$5A,$5C,$5E
-;raster_color_blue:
-;	.byte $B0,$B2,$B4,$B6,$B8,$BA,$BC,$BE
+sprite_data:
+	.byte $aa,$55,$aa,$55,$aa,$55
+	.byte $aa,$55,$aa,$55,$aa,$55
+	.byte $aa,$55,$aa,$55,$aa,$55
 
