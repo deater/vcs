@@ -12,24 +12,26 @@ PLAYFIELD_MAX = 184
 
 
 ; init rasterbars
-        ldy     #90
-        sty     RASTER_G_Y
-        ldy     #122
-        sty     RASTER_R_Y
-        ldy     #154
-        sty     RASTER_B_Y
-        inc     RASTER_R_YADD
-        inc     RASTER_B_YADD
-        inc     RASTER_G_YADD
+;        ldy     #90
+ ;       sty     RASTER_G_Y
+  ;      ldy     #122
+   ;     sty     RASTER_R_Y
+    ;    ldy     #154
+     ;   sty     RASTER_B_Y
+      ;  inc     RASTER_R_YADD
+       ; inc     RASTER_B_YADD
+        ;inc     RASTER_G_YADD
 
-        ldy     #100
-        sty     SPRITE0_X
-        sty     SPRITE0_Y
-        sty     SPRITE1_X
-        dec     SPRITE0_XADD
-        inc     SPRITE0_YADD
-        inc     SPRITE0_YADD
-        inc     SPRITE1_XADD
+	; init sprites
+
+	ldy	#100
+	sty	SPRITE0_X
+	sty	SPRITE0_Y
+	sty	SPRITE1_X
+	dec	SPRITE0_XADD
+	inc	SPRITE0_YADD
+	inc	SPRITE0_YADD
+	inc	SPRITE1_XADD
 
 
 raster_effect:
@@ -47,12 +49,14 @@ raster_effect:
 	ldx	#28
 	jsr	repeat_wsync
 
+	;==============================
+	; scaline 29 -- ???
+	;==============================
 	sta	WSYNC
 
-
-	;============]========================
-	; scanline 38/39/40: setup X/Y for sprites
-	;====================================
+	;============]============================
+	; scanline 30/31/32: setup X/Y for sprites
+	;=========================================
 
 	jsr	adjust_sprites
 
@@ -60,7 +64,7 @@ raster_effect:
 
 
 	;=========================================
-	; scanline 41: move sprite0
+	; scanline 33: move sprite0
 	;=========================================
 ; 6
 	lda	SPRITE0_XADD						; 3
@@ -121,7 +125,7 @@ done_sprite0_y:
 
 
 	;=========================================
-	; scanline 42: move sprite1
+	; scanline 34: move sprite1
 	;=========================================
 ; 0
 	lda	SPRITE1_XADD						; 3
@@ -152,118 +156,29 @@ done_sprite1_x:
 	sta	HMOVE		; finalize fine adjust
 
 	;================================================
-	; VBLANK scanline 43 -- adjust green and blue rasterbar
+	; VBLANK scanline 35/36 -- init sprites
 	;================================================
-; 3
-	lda	RASTER_G_YADD						; 3
-; 6
-	clc								; 2
-	adc	RASTER_G_Y						; 3
-	sta	RASTER_G_Y						; 3
-	cmp	#PLAYFIELD_MAX						; 2
-	bcs	raster_g_invert_y	; bge				; 2/3
-	cmp	#0							; 2
-	bcs	done_raster_g_y		; bge				; 2/3
-								;============
-								; 16 worst
-raster_g_invert_y:
-; 22
-	lda	RASTER_G_YADD						; 3
-	eor	#$FF							; 2
-	clc								; 2
-	adc	#1							; 2
-	sta	RASTER_G_YADD						; 3
-; 34
 
-done_raster_g_y:
-
-	;=========================
-	; blue rasterbar
-; 34
-	lda	RASTER_B_YADD						; 3
-; 37
-	clc								; 2
-	adc	RASTER_B_Y						; 3
-	sta	RASTER_B_Y						; 3
-	cmp	#PLAYFIELD_MAX						; 2
-	bcs	raster_b_invert_y	; bge				; 2/3
-	cmp	#0							; 2
-	bcs	done_raster_b_y		; bge				; 2/3
-								;============
-								; 16 worst case
-raster_b_invert_y:
-; 53
-	lda	RASTER_B_YADD						; 3
-	eor	#$FF							; 2
-	clc								; 2
-	adc	#1							; 2
-	sta	RASTER_B_YADD						; 3
-; 65
-
-done_raster_b_y:
-	sta	WSYNC
-
-
-
-	;================================================
-	; VBLANK scanline 44 -- adjust red rasterbar
-	;================================================
-; 0
-	lda	RASTER_R_YADD						; 3
-; 3
-	clc								; 2
-	adc	RASTER_R_Y						; 3
-	sta	RASTER_R_Y						; 3
-	cmp	#PLAYFIELD_MAX						; 2
-	bcs	raster_r_invert_y	; bge				; 2/3
-	cmp	#0							; 2
-	bcs	raster_r_done_y		; bge				; 2/3
-								;============
-								; 16
-; 19
-raster_r_invert_y:
-	lda	RASTER_R_YADD						; 3
-	eor	#$FF							; 2
-	clc								; 2
-	adc	#1							; 2
-	sta	RASTER_R_YADD						; 3
-; 31
-raster_r_done_y:
-
-	; other init
-
-; 31
-
+	; various init
 
 	lda	#$56		; medium purple				; 2
+	sta	COLUP0		; set sprite0 color			; 3
+	sta	COLUP1		; set sprite1 color			; 3
 
-	sta	COLUP0							; 3
-; 38
-
-
-;	lda	#$AE		; teal					; 2
-	lda	#$BE		; teal					; 2
-
-
-	sta	COLUP1							; 3
-
-
-; 43
 	lda	#$00							; 2
-        sta	COLUBK							; 3
+	sta	COLUBK							; 3
 	sta	VDELP0							; 3
 	sta	VDELP1		; turn off delay			; 3
-; 54
+
 	lda	#NUSIZ_ONE_COPY						; 2
 	sta	NUSIZ0							; 3
-; 59
-	lda	#NUSIZ_ONE_COPY						; 2
-	sta	NUSIZ1							; 3
-; 64
+	sta	NUSIZ1		; configure sprite size			; 3
+
+	sta	WSYNC
 	sta	WSYNC
 
 	;=================================
-	; VBLANK scanline 45
+	; VBLANK scanline 37
 	;=================================
 ; 0
 	lda	#0							; 2
@@ -273,28 +188,19 @@ raster_r_done_y:
 	lda	#0							; 2
 	sta	COLUPF			; fg, black			; 3
 	sta	GRP0			; sprite 1			; 3
+	sta	GRP1			; sprite 2			; 3
+
 ; 13
 
-	lda	#$F0							; 2
+	lda	#$F0			; set playfield			; 2
 	sta	PF0			;				; 3
 	lda	#$FF							; 2
 	sta	PF1			;				; 3
 	sta	PF2							; 3
-	sta	GRP1			; sprite 2			; 3
 
 ; 29
 	lda	#CTRLPF_REF						; 2
 	sta	CTRLPF							; 3
-
-	; adjust size of box
-;	ldy	#16
-;	lda	IS_NOTE
-;	beq	box_no_drum
-;	ldy	#20
-;	dec	IS_NOTE
-;box_no_drum:
-;	sty	BOX_HEIGHT
-
 
 ; 34
 	ldy	#0							; 2
@@ -319,7 +225,7 @@ raster_playfield:
 
 ; 3
 	; color is already in A
-	sta	COLUPF							; 3
+;	sta	COLUPF							; 3
 
 
 ; 6
@@ -330,13 +236,14 @@ raster_playfield:
 	ldy	#$0							; 2
 	txa								; 2
 	sbc	SPRITE0_Y						; 3
-	cmp	#16 ;BOX_HEIGHT						; 2
+	cmp	#17 ;BOX_HEIGHT						; 2
 	bcs	no_sprite0						; 2/3
 	tay								; 2
 	lda	sprite_data,Y						; 4
 	tay								; 2
 no_sprite0:
 	sty	GRP0							; 3
+	sty	GRP1							; 3
 								;==========
 								; 22 worst
 ; 22
@@ -347,31 +254,31 @@ no_sprite0:
 ; 22
 	; raster red
 
-	txa								; 2
-	sec								; 2
-	sbc	RASTER_R_Y						; 3
-	cmp	#8							; 2
-	bcs	no_raster_red						; 2/3
+;	txa								; 2
+;	sec								; 2
+;	sbc	RASTER_R_Y						; 3
+;	cmp	#8							; 2
+;	bcs	no_raster_red						; 2/3
 ; 33
-	asl								; 2
-	adc	#$C0		; green?				; 2
-	bne	done_raster_color			; bra		; 3
+;	asl								; 2
+;	adc	#$C0		; green?				; 2
+;	bne	done_raster_color			; bra		; 3
 ; 40
 
 no_raster_red:
 ; 34
 	; raster green
 
-	txa								; 2
-	sec								; 2
-	sbc	RASTER_G_Y						; 3
-	cmp	#8							; 2
-	bcs	no_raster_green						; 2/3
+;	txa								; 2
+;	sec								; 2
+;	sbc	RASTER_G_Y						; 3
+;	cmp	#8							; 2
+;	bcs	no_raster_green						; 2/3
 ; 45
-	asl								; 2
-	adc	#$40		; red?	($30 might be closer)		; 2
+;	asl								; 2
+;	adc	#$40		; red?	($30 might be closer)		; 2
 
-	bne	done_raster_color			; bra		; 3
+;	bne	done_raster_color			; bra		; 3
 ; 52
 
 no_raster_green:
@@ -379,21 +286,21 @@ no_raster_green:
 
 	; raster blue
 
-	txa								; 2
-	sec								; 2
-	sbc	RASTER_B_Y						; 3
-	cmp	#8							; 2
-	bcs	no_raster_blue						; 2/3
+;	txa								; 2
+;	sec								; 2
+;	sbc	RASTER_B_Y						; 3
+;	cmp	#8							; 2
+;	bcs	no_raster_blue						; 2/3
 ; 57
-	asl								; 2
-	adc	#$80		; blue					; 2
+;	asl								; 2
+;	adc	#$80		; blue					; 2
 
-	bne	done_raster_color			; bra		; 3
+;	bne	done_raster_color			; bra		; 3
 ; 64
 
 no_raster_blue:
 ; 64
-	lda	#$0							; 2
+;	lda	#$0							; 2
 done_raster_color:
 ; R=40, G=52, B=58 none=66
 
@@ -422,7 +329,21 @@ done_raster:
 
 
 sprite_data:
-	.byte $aa,$55,$aa,$55,$aa,$55
-	.byte $aa,$55,$aa,$55,$aa,$55
-	.byte $aa,$55,$aa,$55,$aa,$55
+	.byte	$06	; .... .**.
+	.byte	$1E	; ...* ***.
+	.byte	$3A	; ..** *.*.
+	.byte	$62	; .**. ..*.
+	.byte	$3A	; ..** *.*.
+	.byte	$CC	; **.. **..
+	.byte	$E7	; ***. .***
+	.byte	$BB	; *.** *.**
+	.byte	$8C	; *... **..
+	.byte	$B3	; *.** ..**
+	.byte	$E6	; ***. .**.
+	.byte	$CE	; **.. ***.
+	.byte 	$3A	; ..** *.*.
+	.byte	$62	; .**. ..*.
+	.byte	$3A	; ..** *.*.
+	.byte	$0E	; .... ***.
+	.byte	$02	; .... ..*.
 
