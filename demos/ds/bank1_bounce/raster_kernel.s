@@ -4,6 +4,28 @@
 
 PLAYFIELD_MAX = 184
 
+
+; init rasterbars
+        ldy     #90
+        sty     RASTER_G_Y
+        ldy     #122
+        sty     RASTER_R_Y
+        ldy     #154
+        sty     RASTER_B_Y
+        inc     RASTER_R_YADD
+        inc     RASTER_B_YADD
+        inc     RASTER_G_YADD
+
+        ldy     #100
+        sty     SPRITE0_X
+        sty     SPRITE0_Y
+        sty     SPRITE1_X
+        dec     SPRITE0_XADD
+        inc     SPRITE0_YADD
+        inc     SPRITE0_YADD
+        inc     SPRITE1_XADD
+
+
 raster_effect:
 
 	;====================================
@@ -16,7 +38,7 @@ raster_effect:
 	; 37 lines of VBLANK
 	;====================================
 
-	ldx	#36
+	ldx	#28
 	jsr	repeat_wsync
 
 	sta	WSYNC
@@ -384,7 +406,7 @@ done_raster_color:
 done_raster:
 
 	ldx	#30
-	jsr	repeat_wsync
+	jsr	common_overscan
 
 	jmp	raster_effect
 
