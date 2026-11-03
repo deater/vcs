@@ -138,6 +138,7 @@ main.o:	main.s zp.inc \
 	common_routines.s title_screen.s zx02_optim.s
 	echo "do_title = 0 " > bank0_routines.inc
 	echo "do_bounce = 0 " > bank1_routines.inc
+	echo "do_plasma = 0 " > bank4_routines.inc
 	echo "play_music = 0 " > bank6_routines.inc
 	ca65 -o main.o main.s -l main.lst
 	$(CALC_ADDRESS) -a 0x1A00 -s common_vblank main.lst > common_routines.inc
