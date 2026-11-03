@@ -137,8 +137,88 @@ looper:
 	jsr	line1
 	jsr	line1
 
+	jsr	line2
+	jsr	line2
+	jsr	line2
+	jsr	line2
+	jsr	line2
+	jsr	line2
+	jsr	line2
+	jsr	line2
 
-	ldx	#152
+	jsr	line3
+	jsr	line3
+	jsr	line3
+	jsr	line3
+	jsr	line3
+	jsr	line3
+	jsr	line3
+	jsr	line3
+
+	jsr	line4
+	jsr	line4
+	jsr	line4
+	jsr	line4
+	jsr	line4
+	jsr	line4
+	jsr	line4
+	jsr	line4
+
+	jsr	line5
+	jsr	line5
+	jsr	line5
+	jsr	line5
+	jsr	line5
+	jsr	line5
+	jsr	line5
+	jsr	line5
+
+	jsr	line6
+	jsr	line6
+	jsr	line6
+	jsr	line6
+	jsr	line6
+	jsr	line6
+	jsr	line6
+	jsr	line6
+
+	jsr	line7
+	jsr	line7
+	jsr	line7
+	jsr	line7
+	jsr	line7
+	jsr	line7
+	jsr	line7
+	jsr	line7
+
+	jsr	line8
+	jsr	line8
+	jsr	line8
+	jsr	line8
+	jsr	line8
+	jsr	line8
+	jsr	line8
+	jsr	line8
+
+	jsr	line9
+	jsr	line9
+	jsr	line9
+	jsr	line9
+	jsr	line9
+	jsr	line9
+	jsr	line9
+	jsr	line9
+
+	jsr	line10
+	jsr	line10
+	jsr	line10
+	jsr	line10
+	jsr	line10
+	jsr	line10
+	jsr	line10
+	jsr	line10
+
+	ldx	#80
 	jsr	repeat_wsync
 
 	ldx	#16
@@ -174,13 +254,12 @@ line1:
 ; 6
 	lda	$80	; 3
 	lda	$80	; 3
+	lda	$80	; 3
 	nop		; 2
 	nop		; 2
-	lda	$80
-;	nop		; 2
-;	nop		; 2
 
-; 16
+
+; 19
 
 	; want to wait until 22.66 cpu clocks?
 							; cpu pixel pf 
@@ -204,9 +283,364 @@ line1:
 	sta	COLUPF
 	lda	#$9e
 	sta	a:COLUPF
-; 66
 
 ; 70
 	rts
 ; 6
+
+
+; comes in 6 cycles in
+line2:
+; 6
+	lda	$80	; 3
+	lda	$80	; 3
+	lda	$80	; 3
+	nop		; 2
+	nop		; 2
+
+
+; 19
+
+	; want to wait until 22.66 cpu clocks?
+							; cpu pixel pf 
+	lda	#$1e					; 2
+	sta	COLUPF					; 3	15  3.75
+	lda	#$2e					; 2
+	sta	COLUPF					; 3	30  7.5
+	lda	#$3e					; 2
+	sta	COLUPF					; 3	45  
+	lda	#$4e					; 2
+	sta	COLUPF					; 3	60
+	lda	#$5e					; 2
+	sta	COLUPF					; 3	75
+	lda	#$6e					; 2
+	sta	COLUPF					; 3	90
+	lda	#$7e
+	sta	COLUPF
+	lda	#$8e
+	sta	COLUPF
+	lda	#$9e
+	sta	COLUPF
+	lda	#$ae
+	sta	a:COLUPF
+
+; 70
+	rts
+; 6
+
+
+; comes in 6 cycles in
+line3:
+; 6
+	lda	$80	; 3
+	lda	$80	; 3
+	lda	$80	; 3
+	nop		; 2
+	nop		; 2
+
+
+; 19
+
+	; want to wait until 22.66 cpu clocks?
+							; cpu pixel pf 
+	lda	#$2e					; 2
+	sta	COLUPF					; 3	15  3.75
+	lda	#$3e					; 2
+	sta	COLUPF					; 3	30  7.5
+	lda	#$4e					; 2
+	sta	COLUPF					; 3	45  
+	lda	#$5e					; 2
+	sta	COLUPF					; 3	60
+	lda	#$6e					; 2
+	sta	COLUPF					; 3	75
+	lda	#$7e					; 2
+	sta	COLUPF					; 3	90
+	lda	#$8e
+	sta	COLUPF
+	lda	#$9e
+	sta	COLUPF
+	lda	#$ae
+	sta	COLUPF
+	lda	#$be
+	sta	a:COLUPF
+
+; 70
+	rts
+; 6
+
+; comes in 6 cycles in
+line4:
+; 6
+	lda	$80	; 3
+	lda	$80	; 3
+	lda	$80	; 3
+	nop		; 2
+	nop		; 2
+
+
+; 19
+
+	; want to wait until 22.66 cpu clocks?
+							; cpu pixel pf 
+	lda	#$3e					; 2
+	sta	COLUPF					; 3	15  3.75
+	lda	#$4e					; 2
+	sta	COLUPF					; 3	30  7.5
+	lda	#$5e					; 2
+	sta	COLUPF					; 3	45  
+	lda	#$6e					; 2
+	sta	COLUPF					; 3	60
+	lda	#$7e					; 2
+	sta	COLUPF					; 3	75
+	lda	#$8e					; 2
+	sta	COLUPF					; 3	90
+	lda	#$9e
+	sta	COLUPF
+	lda	#$ae
+	sta	COLUPF
+	lda	#$be
+	sta	COLUPF
+	lda	#$ce
+	sta	a:COLUPF
+
+; 70
+	rts
+; 6
+
+; comes in 6 cycles in
+line5:
+; 6
+	lda	$80	; 3
+	lda	$80	; 3
+	lda	$80	; 3
+	nop		; 2
+	nop		; 2
+
+
+; 19
+
+	; want to wait until 22.66 cpu clocks?
+							; cpu pixel pf 
+	lda	#$4e					; 2
+	sta	COLUPF					; 3	15  3.75
+	lda	#$5e					; 2
+	sta	COLUPF					; 3	30  7.5
+	lda	#$6e					; 2
+	sta	COLUPF					; 3	45  
+	lda	#$7e					; 2
+	sta	COLUPF					; 3	60
+	lda	#$8e					; 2
+	sta	COLUPF					; 3	75
+	lda	#$9e					; 2
+	sta	COLUPF					; 3	90
+	lda	#$ae
+	sta	COLUPF
+	lda	#$be
+	sta	COLUPF
+	lda	#$ce
+	sta	COLUPF
+	lda	#$de
+	sta	a:COLUPF
+
+; 70
+	rts
+; 6
+
+; comes in 6 cycles in
+line6:
+; 6
+	lda	$80	; 3
+	lda	$80	; 3
+	lda	$80	; 3
+	nop		; 2
+	nop		; 2
+
+
+; 19
+
+	; want to wait until 22.66 cpu clocks?
+							; cpu pixel pf 
+	lda	#$5e					; 2
+	sta	COLUPF					; 3	15  3.75
+	lda	#$6e					; 2
+	sta	COLUPF					; 3	30  7.5
+	lda	#$7e					; 2
+	sta	COLUPF					; 3	45  
+	lda	#$8e					; 2
+	sta	COLUPF					; 3	60
+	lda	#$9e					; 2
+	sta	COLUPF					; 3	75
+	lda	#$ae					; 2
+	sta	COLUPF					; 3	90
+	lda	#$be
+	sta	COLUPF
+	lda	#$ce
+	sta	COLUPF
+	lda	#$de
+	sta	COLUPF
+	lda	#$ee
+	sta	a:COLUPF
+
+; 70
+	rts
+; 6
+
+; comes in 6 cycles in
+line7:
+; 6
+	lda	$80	; 3
+	lda	$80	; 3
+	lda	$80	; 3
+	nop		; 2
+	nop		; 2
+
+
+; 19
+
+	; want to wait until 22.66 cpu clocks?
+							; cpu pixel pf 
+	lda	#$6e					; 2
+	sta	COLUPF					; 3	15  3.75
+	lda	#$7e					; 2
+	sta	COLUPF					; 3	30  7.5
+	lda	#$8e					; 2
+	sta	COLUPF					; 3	45  
+	lda	#$9e					; 2
+	sta	COLUPF					; 3	60
+	lda	#$ae					; 2
+	sta	COLUPF					; 3	75
+	lda	#$be					; 2
+	sta	COLUPF					; 3	90
+	lda	#$ce
+	sta	COLUPF
+	lda	#$de
+	sta	COLUPF
+	lda	#$ee
+	sta	COLUPF
+	lda	#$fe
+	sta	a:COLUPF
+
+; 70
+	rts
+; 6
+
+; comes in 6 cycles in
+line8:
+; 6
+	lda	$80	; 3
+	lda	$80	; 3
+	lda	$80	; 3
+	nop		; 2
+	nop		; 2
+
+
+; 19
+
+	; want to wait until 22.66 cpu clocks?
+							; cpu pixel pf 
+	lda	#$7e					; 2
+	sta	COLUPF					; 3	15  3.75
+	lda	#$8e					; 2
+	sta	COLUPF					; 3	30  7.5
+	lda	#$9e					; 2
+	sta	COLUPF					; 3	45  
+	lda	#$ae					; 2
+	sta	COLUPF					; 3	60
+	lda	#$be					; 2
+	sta	COLUPF					; 3	75
+	lda	#$ce					; 2
+	sta	COLUPF					; 3	90
+	lda	#$de
+	sta	COLUPF
+	lda	#$ee
+	sta	COLUPF
+	lda	#$0e
+	sta	COLUPF
+	lda	#$1e
+	sta	a:COLUPF
+
+; 70
+	rts
+; 6
+
+; comes in 6 cycles in
+line9:
+; 6
+	lda	$80	; 3
+	lda	$80	; 3
+	lda	$80	; 3
+	nop		; 2
+	nop		; 2
+
+
+; 19
+
+	; want to wait until 22.66 cpu clocks?
+							; cpu pixel pf 
+	lda	#$8e					; 2
+	sta	COLUPF					; 3	15  3.75
+	lda	#$9e					; 2
+	sta	COLUPF					; 3	30  7.5
+	lda	#$ae					; 2
+	sta	COLUPF					; 3	45  
+	lda	#$be					; 2
+	sta	COLUPF					; 3	60
+	lda	#$ce					; 2
+	sta	COLUPF					; 3	75
+	lda	#$de					; 2
+	sta	COLUPF					; 3	90
+	lda	#$ee
+	sta	COLUPF
+	lda	#$fe
+	sta	COLUPF
+	lda	#$0e
+	sta	COLUPF
+	lda	#$1e
+	sta	a:COLUPF
+
+; 70
+	rts
+; 6
+
+; comes in 6 cycles in
+line10:
+; 6
+	lda	$80	; 3
+	lda	$80	; 3
+	lda	$80	; 3
+	nop		; 2
+	nop		; 2
+
+
+; 19
+
+	; want to wait until 22.66 cpu clocks?
+							; cpu pixel pf 
+	lda	#$1e					; 2
+	sta	COLUPF					; 3	15  3.75
+	lda	#$2e					; 2
+	sta	COLUPF					; 3	30  7.5
+	lda	#$3e					; 2
+	sta	COLUPF					; 3	45  
+	lda	#$4e					; 2
+	sta	COLUPF					; 3	60
+	lda	#$5e					; 2
+	sta	COLUPF					; 3	75
+	lda	#$6e					; 2
+	sta	COLUPF					; 3	90
+	lda	#$7e
+	sta	COLUPF
+	lda	#$8e
+	sta	COLUPF
+	lda	#$9e
+	sta	COLUPF
+	lda	#$ae
+	sta	a:COLUPF
+
+; 70
+	rts
+; 6
+
+
+
 

@@ -14,7 +14,7 @@
 
 
 .incbin	"bank0_title/bank0_title.bin"	; 2k
-.incbin	"rom_bank1.bin"			; 2k
+.incbin	"bank1_bounce/bank1_bounce.bin"	; 2k
 .incbin	"rom_bank2.bin"			; 2k
 .incbin	"rom_bank3.bin"			; 2k
 .incbin	"bank4_plasma/bank4_plasma.bin"	; 2k

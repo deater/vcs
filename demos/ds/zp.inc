@@ -29,6 +29,26 @@ BANK_1K_DATA_5	= $9D
 BANK_1K_DATA_6	= $9E
 TEMPY		= $9F
 
+;WHICH_EFFECT            = $90
+SPRITE0_YADD            = $A1
+RASTER_R_Y              = $A2
+RASTER_R_YADD           = $A3
+RASTER_B_Y              = $A4
+RASTER_B_YADD           = $A5
+RASTER_G_Y              = $A6
+RASTER_G_YADD           = $A7
+SPRITE0_X               = $A8
+SPRITE0_Y               = $A9
+SPRITE0_X_COARSE        = $AA
+SPRITE0_XADD            = $AB
+SPRITE1_X               = $AC
+SPRITE1_Y               = $AD
+SPRITE1_X_COARSE        = $AE
+SPRITE1_XADD            = $AF
+
+
+
+
 WRITE_VALUE_DATA_0	= $A0
 WRITE_VALUE_DATA_1	= $A1
 WRITE_VALUE_DATA_2	= $A2
