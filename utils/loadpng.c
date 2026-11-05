@@ -103,7 +103,12 @@ int loadpng(char *filename, unsigned char **image_ptr, int *xsize, int *ysize,
 	height = png_get_image_height(png_ptr, info_ptr);
 
 	/* get the xadd */
-	if (width==80) {
+	if (width==40) {
+		*xsize=40;
+		xadd=1;
+		yadd=1;
+	}
+	else if (width==80) {
 		*xsize=40;
 		xadd=2;
 		yadd=1;

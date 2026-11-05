@@ -13,7 +13,7 @@ ds.e7:	ds.o
 ds.o:	ds.s main.bin \
 	bank0_title/bank0_title.bin \
 	bank1_bounce/bank1_bounce.bin \
-	rom_bank2.bin \
+	bank2_desktop/bank2_desktop.bin \
 	rom_bank3.bin \
 	bank4_plasma/bank4_plasma.bin \
 	rom_bank5.bin \
@@ -61,8 +61,8 @@ ds.zip: ds.e7
 #rom_bank1.bin:	$(ROM_TOOL)
 #	$(ROM_TOOL) 1 > rom_bank1.bin
 
-rom_bank2.bin:	$(ROM_TOOL)
-	$(ROM_TOOL) 2 > rom_bank2.bin
+#rom_bank2.bin:	$(ROM_TOOL)
+#	$(ROM_TOOL) 2 > rom_bank2.bin
 
 rom_bank3.bin:	$(ROM_TOOL)
 	$(ROM_TOOL) 3 > rom_bank3.bin
@@ -81,20 +81,17 @@ rom_bank5.bin:	$(ROM_TOOL)
 bank0_title/bank0_title.bin:	
 	cd bank0_title && make
 
-#bank0_routines.inc:	bank0_title/bank0_title.bin
-#	$(CALC_ADDRESS) -a 0x1000 -s do_title bank0_title/bank0_title.lst > bank0_routines.inc
-
 ###
 
 bank1_bounce/bank1_bounce.bin:	
 	cd bank1_bounce && make
 
-#bank1_routines.inc:	bank1_bounce/bank1_bounce.bin
-#	$(CALC_ADDRESS) -a 0x1000 -s do_title bank1_bounce/bank1_bounce.lst > bank1_routines.inc
-
-
 ###
 
+bank2_desktop/bank2_desktop.bin:	
+	cd bank2_desktop && make
+
+###
 
 bank4_plasma/bank4_plasma.bin:	
 	cd bank4_plasma && make
@@ -138,6 +135,7 @@ main.o:	main.s zp.inc \
 	common_routines.s title_screen.s zx02_optim.s
 	echo "do_title = 0 " > bank0_routines.inc
 	echo "do_bounce = 0 " > bank1_routines.inc
+	echo "do_desktop = 0 " > bank2_routines.inc
 	echo "do_plasma = 0 " > bank4_routines.inc
 	echo "play_music = 0 " > bank6_routines.inc
 	ca65 -o main.o main.s -l main.lst
@@ -148,6 +146,8 @@ main.o:	main.s zp.inc \
 	cd bank0_title && make
 	cd bank1_bounce && make
 	$(CALC_ADDRESS) -a 0x1000 -s do_bounce bank1_bounce/bank1_bounce.lst > bank1_routines.inc
+	cd bank2_desktop && make
+	$(CALC_ADDRESS) -a 0x1000 -s do_desktop bank2_desktop/bank2_desktop.lst > bank2_routines.inc
 	cd bank4_plasma && make
 	$(CALC_ADDRESS) -a 0x1000 -s do_plasma bank4_plasma/bank4_plasma.lst > bank4_routines.inc
 	cd bank6_music && make

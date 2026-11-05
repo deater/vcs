@@ -1,0 +1,185 @@
+; Using background color $00
+irix_colors:
+	.byte $A8,$A8,$A8,$A8,$A8,$A8,$A8,$A8
+	.byte $A8,$A8,$A8,$A8,$A8,$A8,$A8,$A8
+	.byte $A8,$A8,$A8,$A8,$A8,$A8,$A8,$A8
+	.byte $A8,$A8,$A8,$A8,$A8,$A8,$A8,$A8
+	.byte $A8,$A8,$A8,$A8,$A8,$A8,$A8,$A8
+	.byte $A8,$A8,$A8,$A8,$A8,$A8,$A8,$A8
+	.byte $A8,$A8,$A8,$A8,$A8,$A8,$A8,$A8
+	.byte $A8,$A8,$A8,$A8,$A8,$A8,$A8,$A8
+	.byte $A8,$A8,$A8,$A8,$A8,$A8,$A8,$A8
+	.byte $A8,$A8,$A8,$A8,$A8,$A8,$A8,$A8
+	.byte $A8,$A8,$A8,$A8,$A8,$A8,$A8,$A8
+	.byte $A8,$A8,$A8,$A8,$A8,$A8,$A8,$A8
+	.byte $A8,$A8,$A8,$A8,$A8,$A8,$A8,$A8
+	.byte $A8,$A8,$A8,$A8,$A8,$A8,$A8,$A8
+	.byte $A8,$A8,$A8,$A8,$A8,$A8,$A8,$A8
+	.byte $A8,$A8,$A8,$A8,$A8,$A8,$A8,$A8
+	.byte $A8,$A8,$A8,$A8,$A8,$A8,$A8,$A8
+	.byte $A8,$A8,$A8,$A8,$A8,$A8,$A8,$A8
+	.byte $A8,$A8,$A8,$A8,$A8,$A8,$A8,$A8
+	.byte $A8,$A8,$A8,$A8,$A8,$A8,$A8,$A8
+	.byte $A8,$A8,$A8,$A8,$A8,$A8,$A8,$A8
+	.byte $A8,$A8,$A8,$A8,$A8,$A8,$A8,$A8
+	.byte $A8,$A8,$A8,$A8,$A8,$A8,$A8,$A8
+	.byte $A8,$A8,$A8,$A8,$A8,$A8,$A8,$A8
+
+
+irix_playfield0_left:
+	.byte $F0,$F0,$F0,$F0,$F0,$F0,$10,$F0
+	.byte $F0,$F0,$F0,$F0,$F0,$F0,$F0,$F0
+	.byte $F0,$F0,$F0,$F0,$F0,$F0,$F0,$F0
+	.byte $F0,$F0,$F0,$F0,$F0,$F0,$F0,$F0
+	.byte $F0,$F0,$F0,$F0,$F0,$F0,$F0,$F0
+	.byte $30,$F0,$F0,$F0,$F0,$F0,$F0,$F0
+	.byte $F0,$F0,$F0,$F0,$F0,$F0,$F0,$F0
+	.byte $F0,$F0,$F0,$F0,$F0,$F0,$F0,$F0
+	.byte $F0,$F0,$F0,$F0,$F0,$F0,$F0,$F0
+	.byte $F0,$F0,$F0,$F0,$F0,$F0,$F0,$F0
+	.byte $F0,$F0,$F0,$F0,$F0,$F0,$F0,$F0
+	.byte $F0,$F0,$F0,$F0,$F0,$F0,$F0,$F0
+	.byte $F0,$F0,$F0,$F0,$F0,$F0,$F0,$F0
+	.byte $F0,$F0,$F0,$F0,$F0,$F0,$F0,$F0
+	.byte $F0,$F0,$F0,$F0,$F0,$F0,$F0,$F0
+	.byte $F0,$F0,$F0,$F0,$F0,$F0,$F0,$F0
+	.byte $F0,$F0,$F0,$F0,$F0,$F0,$F0,$F0
+	.byte $F0,$F0,$F0,$F0,$F0,$F0,$F0,$F0
+	.byte $F0,$F0,$F0,$F0,$F0,$F0,$F0,$F0
+	.byte $F0,$F0,$F0,$F0,$F0,$F0,$F0,$F0
+	.byte $F0,$F0,$F0,$F0,$F0,$F0,$F0,$F0
+	.byte $F0,$F0,$F0,$F0,$F0,$F0,$F0,$F0
+	.byte $F0,$F0,$F0,$F0,$F0,$F0,$F0,$F0
+	.byte $F0,$F0,$F0,$F0,$F0,$F0,$F0,$F0
+
+irix_playfield1_left:
+	.byte $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+	.byte $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+	.byte $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+	.byte $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+	.byte $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+	.byte $00,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+	.byte $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+	.byte $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+	.byte $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+	.byte $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+	.byte $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+	.byte $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+	.byte $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+	.byte $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+	.byte $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+	.byte $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+	.byte $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+	.byte $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+	.byte $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+	.byte $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+	.byte $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+	.byte $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+	.byte $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+	.byte $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+
+irix_playfield2_left:
+	.byte $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+	.byte $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+	.byte $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+	.byte $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+	.byte $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+	.byte $00,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+	.byte $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+	.byte $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+	.byte $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+	.byte $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+	.byte $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+	.byte $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+	.byte $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+	.byte $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+	.byte $03,$FF,$FF,$FF,$FF,$FF,$03,$03
+	.byte $03,$03,$03,$03,$03,$03,$03,$03
+	.byte $03,$03,$03,$03,$03,$03,$03,$03
+	.byte $03,$03,$03,$03,$03,$03,$03,$03
+	.byte $03,$03,$03,$03,$03,$03,$03,$03
+	.byte $03,$03,$03,$03,$03,$03,$03,$03
+	.byte $03,$03,$03,$03,$03,$03,$03,$03
+	.byte $03,$03,$03,$03,$03,$03,$03,$03
+	.byte $03,$03,$03,$03,$03,$03,$FF,$FF
+	.byte $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+
+irix_playfield0_right:
+	.byte $F0,$F0,$F0,$F0,$F0,$F0,$F0,$F0
+	.byte $F0,$F0,$F0,$F0,$F0,$F0,$F0,$F0
+	.byte $F0,$F0,$F0,$F0,$F0,$F0,$F0,$F0
+	.byte $F0,$F0,$F0,$F0,$F0,$F0,$F0,$F0
+	.byte $F0,$F0,$F0,$F0,$F0,$F0,$F0,$F0
+	.byte $00,$F0,$F0,$F0,$F0,$F0,$F0,$F0
+	.byte $F0,$F0,$F0,$F0,$F0,$F0,$F0,$F0
+	.byte $F0,$F0,$F0,$F0,$F0,$F0,$F0,$F0
+	.byte $F0,$F0,$F0,$F0,$F0,$F0,$F0,$F0
+	.byte $F0,$F0,$F0,$F0,$F0,$F0,$F0,$F0
+	.byte $F0,$F0,$F0,$F0,$F0,$F0,$F0,$F0
+	.byte $F0,$F0,$F0,$F0,$F0,$F0,$F0,$F0
+	.byte $F0,$F0,$F0,$F0,$F0,$F0,$F0,$F0
+	.byte $F0,$F0,$F0,$F0,$F0,$F0,$F0,$F0
+	.byte $00,$F0,$F0,$F0,$F0,$F0,$00,$00
+	.byte $00,$00,$00,$00,$00,$00,$00,$00
+	.byte $00,$00,$00,$00,$00,$00,$00,$00
+	.byte $00,$00,$00,$00,$00,$00,$00,$00
+	.byte $00,$00,$00,$00,$00,$00,$00,$00
+	.byte $00,$00,$00,$00,$00,$00,$00,$00
+	.byte $00,$00,$00,$00,$00,$00,$00,$00
+	.byte $00,$00,$00,$00,$00,$00,$00,$00
+	.byte $00,$00,$00,$00,$00,$00,$F0,$F0
+	.byte $F0,$F0,$F0,$F0,$F0,$F0,$F0,$F0
+
+.align $100
+
+irix_playfield1_right:
+	.byte $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+	.byte $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+	.byte $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+	.byte $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+	.byte $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+	.byte $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+	.byte $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+	.byte $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+	.byte $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+	.byte $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+	.byte $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+	.byte $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+	.byte $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+	.byte $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+	.byte $3F,$FF,$FF,$FF,$FF,$FF,$3F,$3F
+	.byte $3F,$3F,$3F,$3F,$3F,$3F,$3F,$3F
+	.byte $3F,$3F,$3F,$3F,$3F,$3F,$3F,$3F
+	.byte $3F,$3F,$3F,$3F,$3F,$3F,$3F,$3F
+	.byte $3F,$3F,$3F,$3F,$3F,$3F,$3F,$3F
+	.byte $3F,$3F,$3F,$3F,$3F,$3F,$3F,$3F
+	.byte $3F,$3F,$3F,$3F,$3F,$3F,$3F,$3F
+	.byte $3F,$3F,$3F,$3F,$3F,$3F,$3F,$3F
+	.byte $3F,$3F,$3F,$3F,$3F,$3F,$FF,$FF
+	.byte $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+
+irix_playfield2_right:
+	.byte $FF,$FF,$FF,$FF,$FF,$FF,$DF,$FF
+	.byte $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+	.byte $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+	.byte $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+	.byte $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+	.byte $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+	.byte $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+	.byte $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+	.byte $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+	.byte $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+	.byte $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+	.byte $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+	.byte $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+	.byte $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+	.byte $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+	.byte $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+	.byte $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+	.byte $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+	.byte $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+	.byte $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+	.byte $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+	.byte $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+	.byte $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+	.byte $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
