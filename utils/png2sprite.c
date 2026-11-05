@@ -13,12 +13,16 @@
 
 
 static void dump_sprite(FILE *outfile,char *name, int which,
-	int start_line,int ysize, int *sprite) {
+	int start_line,int ysize, int *sprite, int flipped,
+	int row_skip) {
 
 	int row,i;
 
-	fprintf(outfile,"\n%s%d:\n",name,which);
-	for(row=ysize-1;row>=start_line;row--) {
+	fprintf(outfile,"\n%s%d:\n",name==NULL?"sprite":name,which);
+
+	if (flipped) {
+
+	for(row=ysize-1;row>=start_line;row-=row_skip) {
 		fprintf(outfile,"\t.byte $%02X\t; ",sprite[row]);
 
 		for(i=0;i<8;i++) {
@@ -26,6 +30,21 @@ static void dump_sprite(FILE *outfile,char *name, int which,
 		}
 		fprintf(outfile,"\n");
 	}
+
+	}
+	else {
+
+	for(row=start_line;row<ysize;row+=row_skip) {
+		fprintf(outfile,"\t.byte $%02X\t; ",sprite[row]);
+
+		for(i=0;i<8;i++) {
+			fprintf(outfile,"%c",(sprite[row]&(128>>i))?'*':'.');
+		}
+		fprintf(outfile,"\n");
+	}
+
+	}
+
 }
 
 
@@ -36,35 +55,42 @@ static void dump_sprite(FILE *outfile,char *name, int which,
 
 static void print_help(char *name) {
 	fprintf(stderr,"Usage:\t%s [-l lines] [-w width] INFILE OUTFILE\n\n",name);
+	fprintf(stderr,"\t-f       : flip vertically\n");
+	fprintf(stderr,"\t-n name  : name to prepend to label\n");
 	fprintf(stderr,"\t-l line  : end line\n");
 	fprintf(stderr,"\t-s line  : start line\n");
 	fprintf(stderr,"\t-w width : width of pixels\n");
+	fprintf(stderr,"\t-r num   : row skip\n");
 
 	exit(-1);
 }
 
-/* Convert a 320x192 PNG to a 40x192 playfield with one color per line */
+/* Convert a 320x192 PNG to a 48x192 monochrome sprite */
 
 int main(int argc, char **argv) {
 
 	int row=0,max_lines=-1,pixel_width=1,start_line=0;
-	int col=0;
+	int col=0,flipped=0,row_skip=0;
 	int sprite0[192],sprite1[192],sprite2[192];
 	int sprite3[192],sprite4[192],sprite5[192];
 	int c,debug=0;
 
 	char input_filename[BUFSIZ],output_filename[BUFSIZ];
 	unsigned char *image;
+	char *name=NULL;
 	int xsize,ysize;
 	FILE *outfile;
 
 
 	/* Check command line arguments */
-	while ((c = getopt (argc, argv,"248dhl:s:w:v"))!=-1) {
+	while ((c = getopt (argc, argv,"248dfhn:l:s:w:r:v"))!=-1) {
 		switch (c) {
 		case 'd':
 			fprintf(stderr,"DEBUG enabled\n");
 			debug=1;
+			break;
+		case 'f':
+			flipped=1;
 			break;
 		case 'h':
 			print_help(argv[0]);
@@ -72,11 +98,17 @@ int main(int argc, char **argv) {
 		case 'l':
 			max_lines=atoi(optarg);
 			break;
+		case 'n':
+			name=strdup(optarg);
+			break;
 		case 's':
 			start_line=atoi(optarg);
 			break;
 		case 'w':
 			pixel_width=atoi(optarg);
+			break;
+		case 'r':
+			row_skip=atoi(optarg);
 			break;
 		case 'v':
 			print_help(argv[0]);
@@ -130,8 +162,8 @@ int main(int argc, char **argv) {
 	}
 
 
-	fprintf(stderr,"Generating %d lines starting at %d, reversed\n",
-			ysize-start_line,start_line);
+	fprintf(stderr,"Generating %d lines starting at %d, flipped=%d\n",
+			ysize-start_line,start_line,flipped);
 
 	/* ======================================= */
 
@@ -162,12 +194,12 @@ int main(int argc, char **argv) {
 	}
 
 
-	dump_sprite(outfile,"sprite",0,start_line,ysize,sprite0);
-	dump_sprite(outfile,"sprite",1,start_line,ysize,sprite1);
-	dump_sprite(outfile,"sprite",2,start_line,ysize,sprite2);
-	dump_sprite(outfile,"sprite",3,start_line,ysize,sprite3);
-	dump_sprite(outfile,"sprite",4,start_line,ysize,sprite4);
-	dump_sprite(outfile,"sprite",5,start_line,ysize,sprite5);
+	dump_sprite(outfile,name,0,start_line,ysize,sprite0,flipped,row_skip);
+	dump_sprite(outfile,name,1,start_line,ysize,sprite1,flipped,row_skip);
+	dump_sprite(outfile,name,2,start_line,ysize,sprite2,flipped,row_skip);
+	dump_sprite(outfile,name,3,start_line,ysize,sprite3,flipped,row_skip);
+	dump_sprite(outfile,name,4,start_line,ysize,sprite4,flipped,row_skip);
+	dump_sprite(outfile,name,5,start_line,ysize,sprite5,flipped,row_skip);
 
 	fclose(outfile);
 

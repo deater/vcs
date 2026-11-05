@@ -21,12 +21,14 @@ static void print_help(char *name) {
 	fprintf(stderr,"\t-4 : only draw every 4th line\n");
 	fprintf(stderr,"\t-8 : only draw every 8th line\n");
 	fprintf(stderr,"\t-r : reverse top-to-bottom\n");
-	fprintf(stderr,"\t-n : name to prepend to labels\n");
-	fprintf(stderr,"\t-b : color to use for background (default 0)\n");
 	fprintf(stderr,"\t-p : use PAL palette\n");
+	fprintf(stderr,"\t-n name  : name to prepend to labels\n");
+	fprintf(stderr,"\t-b color : color to use for background (default 0)\n");
+	fprintf(stderr,"\t-y size  : vertical size\n");
 	exit(-1);
 }
 
+static int which_line=0;
 
 static void print_byte(FILE *outfile,int value,int which) {
 
@@ -37,7 +39,8 @@ static void print_byte(FILE *outfile,int value,int which) {
 		fprintf(outfile,",$%02X",value);
 	}
 	if (((which)%8)==7) {
-		fprintf(outfile,"\n");
+		fprintf(outfile,"\t; %d\n",which_line);
+		which_line++;
 	}
 }
 
@@ -172,6 +175,7 @@ int main(int argc, char **argv) {
 	for(row=0;row<ysize;row++) background[row]=background_color;
 
 	/* generate background color table */
+	which_line=0;
 	if (generate_bg) {
 		if (name) {
 			fprintf(outfile,"%s_bg_colors:\n",name);
@@ -197,13 +201,14 @@ int main(int argc, char **argv) {
 	/* print foreground color color */
 
 	if (autoalign) {
-		if (current_offset+ysize>255) {
+		if (current_offset+ysize>256) {
 			fprintf(outfile,".align $100\n");
 			current_offset=0;
 		}
 	}
 
 	/* generate color table */
+	which_line=0;
 	if (name) {
 		fprintf(outfile,"%s_colors:\n",name);
 	}
@@ -238,12 +243,13 @@ int main(int argc, char **argv) {
 	current_offset+=ysize;
 
 	if (autoalign) {
-		if (current_offset+ysize>255) {
+		if (current_offset+ysize>256) {
 			fprintf(outfile,".align $100\n");
 			current_offset=0;
 		}
 	}
 
+	which_line=0;
 	if (name) {
 		fprintf(outfile,"\n%s_playfield0_left:\n",name);
 	} else {
@@ -258,12 +264,13 @@ int main(int argc, char **argv) {
 	current_offset+=ysize;
 
 	if (autoalign) {
-		if (current_offset+ysize>255) {
+		if (current_offset+ysize>256) {
 			fprintf(outfile,".align $100\n");
 			current_offset=0;
 		}
 	}
 
+	which_line=0;
 	if (name) {
 		fprintf(outfile,"\n%s_playfield1_left:\n",name);
 	} else {
@@ -278,12 +285,13 @@ int main(int argc, char **argv) {
 	current_offset+=ysize;
 
 	if (autoalign) {
-		if (current_offset+ysize>255) {
+		if (current_offset+ysize>256) {
 			fprintf(outfile,".align $100\n");
 			current_offset=0;
 		}
 	}
 
+	which_line=0;
 	if (name) {
 		fprintf(outfile,"\n%s_playfield2_left:\n",name);
 	} else {
@@ -314,12 +322,13 @@ int main(int argc, char **argv) {
 	current_offset+=ysize;
 
 	if (autoalign) {
-		if (current_offset+ysize>255) {
+		if (current_offset+ysize>256) {
 			fprintf(outfile,".align $100\n");
 			current_offset=0;
 		}
 	}
 
+	which_line=0;
 	if (name) {
 		fprintf(outfile,"\n%s_playfield0_right:\n",name);
 	} else {
@@ -334,12 +343,13 @@ int main(int argc, char **argv) {
 	current_offset+=ysize;
 
 	if (autoalign) {
-		if (current_offset+ysize>255) {
+		if (current_offset+ysize>256) {
 			fprintf(outfile,".align $100\n");
 			current_offset=0;
 		}
 	}
 
+	which_line=0;
 	if (name) {
 		fprintf(outfile,"\n%s_playfield1_right:\n",name);
 	} else {
@@ -354,12 +364,13 @@ int main(int argc, char **argv) {
 	current_offset+=ysize;
 
 	if (autoalign) {
-		if (current_offset+ysize>255) {
+		if (current_offset+ysize>256) {
 			fprintf(outfile,".align $100\n");
 			current_offset=0;
 		}
 	}
 
+	which_line=0;
 	if (name) {
 		fprintf(outfile,"\n%s_playfield2_right:\n",name);
 	} else {

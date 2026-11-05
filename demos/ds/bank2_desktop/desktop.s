@@ -94,6 +94,9 @@ tpad_x:
 	stx	GRP0							; 3
 	stx	GRP1							; 3
 
+;	lda	#CTRLPF_REF
+	sta	CTRLPF
+
 ; 13
 ;	lda	#$1E
 ;	lda	BASE_TITLE_COLOR					; 3
@@ -109,11 +112,11 @@ tpad_x:
 
 	;=============================================
 	;=============================================
-	; draw title
+	; draw desktop
 	;=============================================
+
 	;=============================================
-	; draw 192 lines
-	; need to race beam to draw other half of playfield
+	; draw 112 lines first
 
 irix_loop:
 ; 0
@@ -169,10 +172,196 @@ done_inx:
 	lda	$80
 
 ; 71
-	cpy	#(192)							; 2
+	cpy	#112							; 2
 	bne	irix_loop						; 2/3
 
 ; 76
+
+
+	;===========================================================
+	;===========================================================
+	; draw 38*2 = 76 lines of sprites
+	;===========================================================
+	;===========================================================
+
+	;===========================
+	; scanline 122 -- configure
+	;===========================
+	; configure 48-pixel sprite code
+
+	; make playfield black
+	nop
+	lda	#$00		; black					; 2
+	sta	COLUPF		; playfield color			; 3
+	sta	GRP0		; turn off sprites			; 3
+	sta	GRP1		;					; 3
+	sta	PF0		; turn off playfield so don't collide	; 3
+	sta	PF1		;					; 3
+
+	lda	#CTRLPF_REF
+	sta	CTRLPF
+
+	lda	#$fc
+	sta	PF2		;					; 3
+
+; 22
+	; set color
+
+	lda	#$1E		; bright white				; 2
+	sta	COLUP0		; set sprite color			; 3
+	sta	COLUP1		; set sprite color			; 3
+; 31
+	; set to be 48 adjacent pixels
+
+	lda	#NUSIZ_THREE_COPIES_CLOSE				; 2
+	sta	NUSIZ0							; 3
+	sta	NUSIZ1							; 3
+; 39
+	; turn on delay
+
+	lda	#1							; 2
+	sta	VDELP0							; 3
+	sta	VDELP1							; 3
+; 47
+	; number of lines to draw
+	ldx	#38
+	stx	SPRITE_OFFSET
+	ldx	#76							; 2
+	stx	SPRITE_LENGTH							; 3
+; 52
+	sta	WSYNC							; 3
+
+	;====================================
+	; now scanline 123 -- center sprite
+	;====================================
+	; center the sprite position
+	; needs to be right after a WSYNC
+; 0
+	; to center exactly would want sprite0 at
+	;	CPU cycle 41.3
+	; and sprite1 at
+	;	GPU cycle 44
+
+	ldx	#0		; sprite 0 display nothing		; 2
+	stx	GRP0		;					; 3
+
+	ldx	#6		;					; 2
+; 7
+
+tpad_x:
+	dex			;					; 2
+	bne	tpad_x		;					; 2/3
+	; for X delays (5*X)-1
+	; so in this case, 29
+; 36
+	; beam is at proper place
+	sta	RESP0							; 3
+	; 39 (GPU=??, want ??) +?
+; 39
+	sta	RESP1							; 3
+	; 42 (GPU=??, want ??) +?
+; 42
+
+	lda	#$E0		; opposite what you'd think		; 2
+	sta	HMP0							; 3
+	lda	#$F0							; 2
+	sta	HMP1							; 3
+; 52
+	sta	WSYNC
+; 0
+	sta	HMOVE		; adjust fine tune, must be after WSYNC
+; 3
+
+
+	;===================
+	; now scanline 124
+	;===================
+
+	ldx	SPRITE_OFFSET	; restore sprite offset
+
+	sta	WSYNC
+
+	;===================
+	; now scanline 125
+	;===================
+
+title_spriteloop:
+; 0
+	lda	teapot_sprite0,X		; load sprite data		; 4+
+	sta	GRP0			; 0->[GRP0] [GRP1 (?)]->GRP1	; 3
+; 7
+	lda	teapot_sprite1,X		; load sprite data		; 4+
+	sta	GRP1			; 1->[GRP1], [GRP0 (0)]-->GRP0	; 3
+; 14
+	lda	teapot_sprite2,X		; load sprite data		; 4+
+	sta	GRP0			; 2->[GRP0], [GRP1 (1)]-->GRP1	; 3
+; 21
+
+	lda	teapot_sprite5,X						; 4+
+	sta	TEMP1			; save for later		; 3
+; 28
+	lda	teapot_sprite4,X						; 4+
+	tay				; save in Y			; 2
+; 34
+	lda	teapot_sprite3,X	;					; 4+
+	ldx	TEMP1			; restore saved value		; 3
+; 41
+
+	sta	GRP1			; 3->[GRP1], [GRP0 (2)]-->GRP0	; 3
+	; (need this to be 44 .. 46)
+; 44
+	sty	GRP0			; 4->[GRP0], [GRP1 (3)]-->GRP1	; 3
+	; (need this to be 47 .. 49)
+; 47
+	stx	GRP1			; 5->[GRP1], [GRP0 (4)]-->GRP0	; 3
+	; (need this to be 50 .. 51)
+; 50
+	sty	GRP0			; ?->[GRP0], [GRP1 (5)]-->GRP1 	; 3
+	; (need this to be 52 .. 54)
+; 53
+
+	; need 12 cycles of nops
+;	inc	TEMP1		; nop5					; 5
+;	inc	TEMP1		; nop5					; 5
+	nop								; 2
+
+; 65
+
+	dec	SPRITE_LENGTH						; 5
+;	ldx	SPRITE_LENGTH		; decrement count		; 3
+;
+	lda	SPRITE_LENGTH						; 3
+	lsr								; 2
+	sta	SPRITE_OFFSET						; 3
+	tax								; 2
+	lda	SPRITE_LENGTH		; check for zero
+
+; 73
+	bpl	title_spriteloop					; 2/3
+	; 76  (goal is 76)
+
+
+; 75
+	;=========================
+	; done drawing line
+
+	ldy	#0		; clear out sprite data			; 2
+	sty	GRP1							; 3
+	sty	GRP0							; 3
+	sty	GRP1							; 3
+
+	lda	#$0		; end the black window
+	sta	PF2
+
+	sta	WSYNC
+
+
+	;=============================
+	; draw bottom 4 lines
+
+	ldx	#4
+	jsr	repeat_wsync
+
 
 done_loop:
 
@@ -198,3 +387,4 @@ done_title:
 
 
 .include "irix_pf.inc"
+.include "teapot0.inc"

@@ -4,6 +4,8 @@ data_bytes	= $80 ; FIXME
 
 DONE_TITLE	= $80
 
+SPRITE_OFFSET	= $8A	; desktop
+SPRITE_LENGTH	= $8B	; desktop
 INL		= $8C
 INH		= $8D
 OUTL		= $8E
