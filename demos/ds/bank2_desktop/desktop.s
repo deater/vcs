@@ -93,13 +93,14 @@ tpad_x:
 	stx	VBLANK			; turn on beam			; 3
 	stx	GRP0							; 3
 	stx	GRP1							; 3
+
 ; 13
 ;	lda	#$1E
 ;	lda	BASE_TITLE_COLOR					; 3
 ;	sta	TITLE_COLOR						; 3
 ; 19
 ;	lda	BACKGROUND_COLOR					; 3
-	lda	#$0
+	lda	#$A8
 	sta	COLUBK							; 3
 ; 25
 	sta	WSYNC

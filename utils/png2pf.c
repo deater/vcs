@@ -49,7 +49,7 @@ int main(int argc, char **argv) {
 	int row=0;
 	int col=0;
 	int skip=1;
-	int color=0,value,background_color=0;
+	int color=0,value,background_color=0,autoalign=0,current_offset=0;
 	int playfield_left[192],playfield_right[192],background[192];
 	int c,debug=0;
 	int generate_bg=0;
@@ -64,8 +64,11 @@ int main(int argc, char **argv) {
 
 
 	/* Check command line arguments */
-	while ((c = getopt (argc, argv,"248b:gdhvn:pry:"))!=-1) {
+	while ((c = getopt (argc, argv,"248ab:gdhvn:pry:"))!=-1) {
 		switch (c) {
+		case 'a':
+			autoalign=1;
+			break;
 		case 'n':
 			name=strdup(optarg);
 			break;
@@ -151,6 +154,17 @@ int main(int argc, char **argv) {
 		return -1;
 	}
 
+	/*****************************************/
+	/* start output                          */
+	/*****************************************/
+	current_offset=0;
+
+	/* print background color */
+
+	if (autoalign) {
+		fprintf(outfile,".align $100\n");
+	}
+
 	fprintf(outfile,"; Using background color $%02X\n",background_color);
 
 	if (custom_ysize) ysize=custom_ysize;
@@ -175,8 +189,19 @@ int main(int argc, char **argv) {
 			print_byte(outfile,color,row/skip);
 		}
 		fprintf(outfile,"\n");
+		current_offset+=ysize;
+
 	}
 
+
+	/* print foreground color color */
+
+	if (autoalign) {
+		if (current_offset+ysize>255) {
+			fprintf(outfile,".align $100\n");
+			current_offset=0;
+		}
+	}
 
 	/* generate color table */
 	if (name) {
@@ -209,6 +234,15 @@ int main(int argc, char **argv) {
 		}
 	}
 
+	/* print playfield0_left */
+	current_offset+=ysize;
+
+	if (autoalign) {
+		if (current_offset+ysize>255) {
+			fprintf(outfile,".align $100\n");
+			current_offset=0;
+		}
+	}
 
 	if (name) {
 		fprintf(outfile,"\n%s_playfield0_left:\n",name);
@@ -220,6 +254,16 @@ int main(int argc, char **argv) {
 		print_byte(outfile,value,row/skip);
 	}
 
+	/* print playfield1_left */
+	current_offset+=ysize;
+
+	if (autoalign) {
+		if (current_offset+ysize>255) {
+			fprintf(outfile,".align $100\n");
+			current_offset=0;
+		}
+	}
+
 	if (name) {
 		fprintf(outfile,"\n%s_playfield1_left:\n",name);
 	} else {
@@ -228,6 +272,16 @@ int main(int argc, char **argv) {
 	for(row=0;row<ysize;row+=skip) {
 		value=(playfield_left[row]>>8)&0xff;
 		print_byte(outfile,value,row/skip);
+	}
+
+	/* print playfield2_left */
+	current_offset+=ysize;
+
+	if (autoalign) {
+		if (current_offset+ysize>255) {
+			fprintf(outfile,".align $100\n");
+			current_offset=0;
+		}
 	}
 
 	if (name) {
@@ -255,6 +309,17 @@ int main(int argc, char **argv) {
 //		fprintf(outfile,"row=%d bg=%x %x\n",row,background[row],playfield_right[row]);
 	}
 
+
+	/* print playfield0 right */
+	current_offset+=ysize;
+
+	if (autoalign) {
+		if (current_offset+ysize>255) {
+			fprintf(outfile,".align $100\n");
+			current_offset=0;
+		}
+	}
+
 	if (name) {
 		fprintf(outfile,"\n%s_playfield0_right:\n",name);
 	} else {
@@ -265,7 +330,15 @@ int main(int argc, char **argv) {
 		print_byte(outfile,value,row/skip);
 	}
 
-	fprintf(outfile,"\n.align $100\n");
+	/* print playfield1_right */
+	current_offset+=ysize;
+
+	if (autoalign) {
+		if (current_offset+ysize>255) {
+			fprintf(outfile,".align $100\n");
+			current_offset=0;
+		}
+	}
 
 	if (name) {
 		fprintf(outfile,"\n%s_playfield1_right:\n",name);
@@ -277,6 +350,15 @@ int main(int argc, char **argv) {
 		print_byte(outfile,value,row/skip);
 	}
 
+	/* print playfield2_right */
+	current_offset+=ysize;
+
+	if (autoalign) {
+		if (current_offset+ysize>255) {
+			fprintf(outfile,".align $100\n");
+			current_offset=0;
+		}
+	}
 
 	if (name) {
 		fprintf(outfile,"\n%s_playfield2_right:\n",name);
