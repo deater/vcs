@@ -138,6 +138,7 @@ main.o:	main.s zp.inc \
 	$(CALC_ADDRESS) -a 0x1A00 -s zx02_full_decomp main.lst >> common_routines.inc
 	$(CALC_ADDRESS) -a 0x1A00 -s repeat_wsync main.lst >> common_routines.inc
 	$(CALC_ADDRESS) -a 0x1A00 -s do_play_music main.lst >> common_routines.inc
+	$(CALC_ADDRESS) -a 0x1A00 -s set_pos_x main.lst >> common_routines.inc
 	cd bank0_title && make
 	cd bank1_bounce && make
 	$(CALC_ADDRESS) -a 0x1000 -s do_bounce bank1_bounce/bank1_bounce.lst > bank1_routines.inc

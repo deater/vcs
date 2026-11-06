@@ -1,12 +1,16 @@
 	;================================================
 	; draws bounce effect
 	;================================================
-
-
 	; effects
 	;	make bigger?
 	;	make 2 or 3 copies
 	;	move behind playfield
+
+
+BOUNCE_SPRITE0_LOW = 16
+BOUNCE_SPRITE0_HIGH = 136
+BOUNCE_SPRITE1_LOW = 24
+BOUNCE_SPRITE1_HIGH = 144
 
 PLAYFIELD_MAX = 184
 
@@ -17,11 +21,23 @@ PLAYFIELD_MAX = 184
 	ldy	#100
 	sty	SPRITE0_X
 	sty	SPRITE0_Y
+	sty	SPRITE1_Y
+
+	ldy	#108
 	sty	SPRITE1_X
-	dec	SPRITE0_XADD
-	inc	SPRITE0_YADD
-	inc	SPRITE0_YADD
-	inc	SPRITE1_XADD
+
+
+	lda	#$FF
+	sta	SPRITE0_XADD
+	sta	SPRITE0_YADD
+	sta	SPRITE1_XADD
+
+
+	; reflect sprite 1
+
+	lda	#$8
+	sta	REFP1
+
 
 
 bounce_effect:
@@ -36,11 +52,11 @@ bounce_effect:
 	; 37 lines of VBLANK
 	;====================================
 
-	ldx	#18
+	ldx	#15
 	jsr	repeat_wsync
 
 	;================================
-	; play music -- scanlines 18..28
+	; play music -- scanlines 15..25
 	;================================
 	; takes 11 lines?
 
@@ -49,17 +65,30 @@ bounce_effect:
 
 
 	;==============================
-	; scaline 29 -- ???
+	; scaline 26 -- ???
 	;==============================
 	sta	WSYNC
 
 	;============]============================
-	; scanline 30/31/32: setup X/Y for sprites
+	; scanline 27/28/29: set SPRITE0_X
 	;=========================================
 
-	jsr	adjust_sprites
+	lda	SPRITE0_X
+	ldx	#0		; sprite0
+	jsr	set_pos_x	; takes 3 scanlines
 
 ; 6
+
+	;============]============================
+	; scanline 30/31/32: set SPRITE1_X
+	;=========================================
+
+	lda	SPRITE1_X
+	ldx	#1		; sprite1
+	jsr	set_pos_x
+
+; 6
+
 
 
 	;=========================================
@@ -72,9 +101,9 @@ bounce_effect:
 	clc								; 2
 	adc	SPRITE0_X						; 3
 	sta	SPRITE0_X						; 3
-	cmp	#144							; 2
+	cmp	#BOUNCE_SPRITE0_HIGH					; 2
 	bcs	sprite0_invert_x	; bge				; 2/3
-	cmp	#16							; 2
+	cmp	#BOUNCE_SPRITE0_LOW					; 2
 	bcs	done_sprite0_x		; bge				; 2/3
 								;============
 								; 16 worst
@@ -111,9 +140,6 @@ sprite0_invert_y:
 	sty	SPRITE0_YADD						; 3
 
 	; make so goes behind playfield?
-	; note it's not transparent color, but whether playfield drawn
-	; at all
-	; we'd have to reset PF0/PF1/PF2 in kernel, prob not possible :(
 
 ;	lda	#CTRLPF_PFP
 ;	sta	CTRLPF
@@ -131,9 +157,9 @@ done_sprite0_y:
 	clc								; 2
 	adc	SPRITE1_X						; 3
 	sta	SPRITE1_X						; 3
-	cmp	#144							; 2
+	cmp	#BOUNCE_SPRITE1_HIGH					; 2
 	bcs	sprite1_invert_x	; bge				; 2/3
-	cmp	#16							; 2
+	cmp	#BOUNCE_SPRITE1_LOW					; 2
 	bcs	done_sprite1_x		; bge				; 2/3
 								;============
 								; 18 worst
@@ -165,7 +191,7 @@ done_sprite1_x:
 	sta	COLUP1		; set sprite1 color			; 3
 
 	lda	#$00							; 2
-	sta	COLUBK							; 3
+	sta	COLUBK		; black background			; 3
 	sta	VDELP0							; 3
 	sta	VDELP1		; turn off delay			; 3
 
@@ -195,10 +221,10 @@ done_sprite1_x:
 	sta	PF0			;				; 3
 	lda	#$FF							; 2
 	sta	PF1			;				; 3
-	sta	PF2							; 3
+	sta	PF2			; all on			; 3
 
 ; 29
-	lda	#CTRLPF_REF						; 2
+	lda	#CTRLPF_REF		; reflect			; 2
 	sta	CTRLPF							; 3
 
 ; 34
@@ -247,77 +273,21 @@ no_sprite0:
 								; 22 worst
 ; 22
 
-	;============================
-	; setup raster bars
-	;============================
-; 22
-	; raster red
-
-;	txa								; 2
-;	sec								; 2
-;	sbc	RASTER_R_Y						; 3
-;	cmp	#8							; 2
-;	bcs	no_raster_red						; 2/3
-; 33
-;	asl								; 2
-;	adc	#$C0		; green?				; 2
-;	bne	done_raster_color			; bra		; 3
-; 40
-
-no_raster_red:
-; 34
-	; raster green
-
-;	txa								; 2
-;	sec								; 2
-;	sbc	RASTER_G_Y						; 3
-;	cmp	#8							; 2
-;	bcs	no_raster_green						; 2/3
-; 45
-;	asl								; 2
-;	adc	#$40		; red?	($30 might be closer)		; 2
-
-;	bne	done_raster_color			; bra		; 3
-; 52
-
-no_raster_green:
-; 46
-
-	; raster blue
-
-;	txa								; 2
-;	sec								; 2
-;	sbc	RASTER_B_Y						; 3
-;	cmp	#8							; 2
-;	bcs	no_raster_blue						; 2/3
-; 57
-;	asl								; 2
-;	adc	#$80		; blue					; 2
-
-;	bne	done_raster_color			; bra		; 3
-; 64
-
-no_raster_blue:
-; 64
-;	lda	#$0							; 2
-done_raster_color:
-; R=40, G=52, B=58 none=66
-
-; 66 worst case
-
 	inx								; 2
 	cpx	#191							; 2
 
-; 70
+
 	sta	WSYNC							; 3
-; 73/0
-; NOTE: this is worst case
-;	max overlapping bars is 2 so always 4 less than this? (check)
+; 0
 
 	bne	raster_playfield					; 2/3
 
 
 done_raster:
+
+	;=============================================
+	; overscan (30 scanlines)
+	;=============================================
 
 	ldx	#30
 	jsr	common_overscan

@@ -19,5 +19,4 @@ do_bounce:
 
 	rts
 
-.include "adjust_sprites.s"
-.include "fine_adjust.inc"
+

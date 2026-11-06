@@ -61,11 +61,11 @@ clear_loop:
 	;==============================
 again:
 
-	sta	E7_SET_BANK0
-	jsr	do_title
+;	sta	E7_SET_BANK0
+;	jsr	do_title
 
-;	sta	E7_SET_BANK1
-;	jsr	do_bounce
+	sta	E7_SET_BANK1
+	jsr	do_bounce
 
 ;	sta	E7_SET_BANK2
 ;	jsr	do_desktop
@@ -107,6 +107,7 @@ do_play_music:
 
 
 .align $100
+	.include "position.s"
 	.include "title_screen.s"
 
 .if 0
