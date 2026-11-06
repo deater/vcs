@@ -1,4 +1,4 @@
-; title screen
+; Bouncing Cube scene
 
 .include "../../../vcs.inc"
 
@@ -15,7 +15,7 @@
 do_bounce:
 
 
-.include "raster_kernel.s"
+.include "bounce_kernel.s"
 
 	rts
 

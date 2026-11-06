@@ -1,5 +1,5 @@
 	;================================================
-	; draws raster effect
+	; draws bounce effect
 	;================================================
 
 
@@ -11,17 +11,7 @@
 PLAYFIELD_MAX = 184
 
 
-; init rasterbars
-;        ldy     #90
- ;       sty     RASTER_G_Y
-  ;      ldy     #122
-   ;     sty     RASTER_R_Y
-    ;    ldy     #154
-     ;   sty     RASTER_B_Y
-      ;  inc     RASTER_R_YADD
-       ; inc     RASTER_B_YADD
-        ;inc     RASTER_G_YADD
-
+	; init data
 	; init sprites
 
 	ldy	#100
@@ -34,7 +24,7 @@ PLAYFIELD_MAX = 184
 	inc	SPRITE1_XADD
 
 
-raster_effect:
+bounce_effect:
 
 	;====================================
 	; start VBLANK
@@ -46,8 +36,17 @@ raster_effect:
 	; 37 lines of VBLANK
 	;====================================
 
-	ldx	#28
+	ldx	#18
 	jsr	repeat_wsync
+
+	;================================
+	; play music -- scanlines 18..28
+	;================================
+	; takes 11 lines?
+
+	lda	#1		; our bank
+	jsr	do_play_music
+
 
 	;==============================
 	; scaline 29 -- ???
@@ -323,7 +322,7 @@ done_raster:
 	ldx	#30
 	jsr	common_overscan
 
-	jmp	raster_effect
+	jmp	bounce_effect
 
 
 

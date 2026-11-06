@@ -27,8 +27,16 @@ start_title:
 	; 37 lines of vertical blank
 	;=============================
 
-        ldx     #33
+        ldx     #23
 	jsr	repeat_wsync
+
+	;===============================
+	; play music -- scanlines 23-33
+	;===============================
+	; takes 11 lines?
+
+	lda	#0	; our bank
+	jsr	do_play_music
 
 	;====================
 	; now in scanline 34
