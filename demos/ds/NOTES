@@ -3,15 +3,32 @@ Irix Reborn?
 Irix Reloaded?
 Irix 2600!
 
+TODO:
 
-opening, sliding squares?
+title
+-> scroll into place?
+-> color cycling?
+-> switch palettes by flipping 256b bank?
+-> squish into place?
+-> drizzle away?
 
-SGI logo, bouncing sgi cubes
+bounce
++ sliding squares in background?
++ bouncing sgi cubes?  just one (but bigger)
++ change colors?
 
-I know this?
+desktop:
++ fix scanline count
++ load into 256b RAM
++ compress and see how many frames we can get
 
-sgi screen with 3d animation
+knowthis
++ draw the art
++ dinosaur teeth transition?
 
-t-rex?
+plasma:
++ advanced/test
 
 credits
++ water ripple effect?
++ 1980s landscape?
