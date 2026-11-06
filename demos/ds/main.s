@@ -11,7 +11,9 @@
 .include "bank0_routines.inc"
 .include "bank1_routines.inc"
 .include "bank2_routines.inc"
+.include "bank3_routines.inc"
 .include "bank4_routines.inc"
+.include "bank5_routines.inc"
 .include "bank6_routines.inc"
 
 	;==============================

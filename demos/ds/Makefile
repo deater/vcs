@@ -14,7 +14,7 @@ ds.o:	ds.s main.bin \
 	bank0_title/bank0_title.bin \
 	bank1_bounce/bank1_bounce.bin \
 	bank2_desktop/bank2_desktop.bin \
-	rom_bank3.bin \
+	bank3_knowthis/bank3_knowthis.bin \
 	bank4_plasma/bank4_plasma.bin \
 	bank5_credits/bank5_credits.bin \
 	bank6_music/bank6_music.bin \
@@ -64,8 +64,8 @@ ds.zip: ds.e7
 #rom_bank2.bin:	$(ROM_TOOL)
 #	$(ROM_TOOL) 2 > rom_bank2.bin
 
-rom_bank3.bin:	$(ROM_TOOL)
-	$(ROM_TOOL) 3 > rom_bank3.bin
+#rom_bank3.bin:	$(ROM_TOOL)
+#	$(ROM_TOOL) 3 > rom_bank3.bin
 
 #rom_bank4.bin:	$(ROM_TOOL)
 #	$(ROM_TOOL) 4 > rom_bank4.bin
@@ -86,11 +86,11 @@ bank0_title/bank0_title.bin:
 bank1_bounce/bank1_bounce.bin:	
 	cd bank1_bounce && make
 
-###
-
 bank2_desktop/bank2_desktop.bin:	
 	cd bank2_desktop && make
 
+bank3_knowthis/bank3_knowthis.bin:	
+	cd bank3_knowthis && make
 
 bank4_plasma/bank4_plasma.bin:	
 	cd bank4_plasma && make
@@ -129,6 +129,7 @@ main.o:	main.s zp.inc \
 	echo "do_title = 0 " > bank0_routines.inc
 	echo "do_bounce = 0 " > bank1_routines.inc
 	echo "do_desktop = 0 " > bank2_routines.inc
+	echo "do_knowthis = 0 " > bank3_routines.inc
 	echo "do_plasma = 0 " > bank4_routines.inc
 	echo "do_credits = 0 " > bank5_routines.inc
 	echo "play_music = 0 " > bank6_routines.inc
@@ -142,6 +143,8 @@ main.o:	main.s zp.inc \
 	$(CALC_ADDRESS) -a 0x1000 -s do_bounce bank1_bounce/bank1_bounce.lst > bank1_routines.inc
 	cd bank2_desktop && make
 	$(CALC_ADDRESS) -a 0x1000 -s do_desktop bank2_desktop/bank2_desktop.lst > bank2_routines.inc
+	cd bank3_knowthis && make
+	$(CALC_ADDRESS) -a 0x1000 -s do_knowthis bank3_knowthis/bank3_knowthis.lst > bank3_routines.inc
 	cd bank4_plasma && make
 	$(CALC_ADDRESS) -a 0x1000 -s do_plasma bank4_plasma/bank4_plasma.lst > bank4_routines.inc
 	cd bank5_credits && make
@@ -157,9 +160,13 @@ main.o:	main.s zp.inc \
 
 clean:	
 	rm -f *~ *.o *.lst ds.rom \
-	bank0_routines.inc bank6_routines.inc common_routines.inc
+	bank0_routines.inc bank1_routines.inc bank2_routines.inc \
+	bank3_routines.inc bank4_routines.inc bank5_routines.inc \
+	bank6_routines.inc common_routines.inc
 	cd bank0_title && make clean
 	cd bank1_bounce && make clean
+	cd bank2_desktop && make clean
+	cd bank3_knowthis && make clean
 	cd bank4_plasma && make clean
 	cd bank5_credits && make clean
 	cd bank6_music && make clean
