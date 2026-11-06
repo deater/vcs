@@ -16,7 +16,7 @@ ds.o:	ds.s main.bin \
 	bank2_desktop/bank2_desktop.bin \
 	rom_bank3.bin \
 	bank4_plasma/bank4_plasma.bin \
-	rom_bank5.bin \
+	bank5_credits/bank5_credits.bin \
 	bank6_music/bank6_music.bin \
 	zero_2k.bin \
 	zero_512.bin
@@ -70,8 +70,8 @@ rom_bank3.bin:	$(ROM_TOOL)
 #rom_bank4.bin:	$(ROM_TOOL)
 #	$(ROM_TOOL) 4 > rom_bank4.bin
 
-rom_bank5.bin:	$(ROM_TOOL)
-	$(ROM_TOOL) 5 > rom_bank5.bin
+#rom_bank5.bin:	$(ROM_TOOL)
+#	$(ROM_TOOL) 5 > rom_bank5.bin
 
 #rom_bank6.bin:	$(ROM_TOOL)
 #	$(ROM_TOOL) 6 > rom_bank6.bin
@@ -91,21 +91,16 @@ bank1_bounce/bank1_bounce.bin:
 bank2_desktop/bank2_desktop.bin:	
 	cd bank2_desktop && make
 
-###
 
 bank4_plasma/bank4_plasma.bin:	
 	cd bank4_plasma && make
 
-#bank4_routines.inc:	bank4_plasma/bank4_plasma.bin
-#	$(CALC_ADDRESS) -a 0x1000 -s do_title bank4_plasma/bank4_plasma.lst > bank4_routines.inc
-
-
+bank5_credits/bank5_credits.bin:	
+	cd bank5_credits && make
 
 bank6_music/bank6_music.bin:	
 	cd bank6_music && make
 
-#bank6_routines.inc:	bank6_music/bank6_music.bin
-#	$(CALC_ADDRESS) -a 0x1000 -s play_music bank6_music/bank6_music.lst > bank6_routines.inc
 
 
 ###
@@ -128,8 +123,6 @@ zero_512.bin:
 main.bin:	main.o
 	ld65 -o main.bin main.o -C $(LINKER_SCRIPT)/atari2600_1a00_e7.inc
 
-#	bank0_routines.inc \
-#	bank6_routines.inc
 
 main.o:	main.s zp.inc \
 	common_routines.s title_screen.s zx02_optim.s
@@ -137,6 +130,7 @@ main.o:	main.s zp.inc \
 	echo "do_bounce = 0 " > bank1_routines.inc
 	echo "do_desktop = 0 " > bank2_routines.inc
 	echo "do_plasma = 0 " > bank4_routines.inc
+	echo "do_credits = 0 " > bank5_routines.inc
 	echo "play_music = 0 " > bank6_routines.inc
 	ca65 -o main.o main.s -l main.lst
 	$(CALC_ADDRESS) -a 0x1A00 -s common_vblank main.lst > common_routines.inc
@@ -150,6 +144,8 @@ main.o:	main.s zp.inc \
 	$(CALC_ADDRESS) -a 0x1000 -s do_desktop bank2_desktop/bank2_desktop.lst > bank2_routines.inc
 	cd bank4_plasma && make
 	$(CALC_ADDRESS) -a 0x1000 -s do_plasma bank4_plasma/bank4_plasma.lst > bank4_routines.inc
+	cd bank5_credits && make
+	$(CALC_ADDRESS) -a 0x1000 -s do_credits bank5_credits/bank5_credits.lst > bank5_routines.inc
 	cd bank6_music && make
 	$(CALC_ADDRESS) -a 0x1000 -s do_title bank0_title/bank0_title.lst > bank0_routines.inc
 	$(CALC_ADDRESS) -a 0x1000 -s play_music bank6_music/bank6_music.lst > bank6_routines.inc
@@ -165,4 +161,5 @@ clean:
 	cd bank0_title && make clean
 	cd bank1_bounce && make clean
 	cd bank4_plasma && make clean
+	cd bank5_credits && make clean
 	cd bank6_music && make clean

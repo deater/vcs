@@ -10,7 +10,7 @@
 
 
 
-memory_test:
+do_credits:
 
 	; comes in at unknown cycles, w/o last WSYNC
 
