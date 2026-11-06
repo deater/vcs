@@ -18,7 +18,6 @@ ds.o:	ds.s main.bin \
 	bank4_plasma/bank4_plasma.bin \
 	bank5_credits/bank5_credits.bin \
 	bank6_music/bank6_music.bin \
-	zero_2k.bin \
 	zero_512.bin
 	ca65 -o ds.o ds.s
 
@@ -105,13 +104,13 @@ bank6_music/bank6_music.bin:
 
 ###
 
-zero_2k.bin:	
-	dd if=/dev/zero of=zero_2k.bin bs=1k count=2
+#zero_2k.bin:	
+#	dd if=/dev/zero of=zero_2k.bin bs=1k count=2
 
 ###
 
 zero_512.bin:	
-	dd if=/dev/zero of=zero_512.bin bs=256 count=2
+	$(ROM_TOOL) -s 512 -a "VMW-dSr-" > zero_512.bin
 
 ###
 
@@ -159,7 +158,7 @@ main.o:	main.s zp.inc \
 ###
 
 clean:	
-	rm -f *~ *.o *.lst ds.rom \
+	rm -f *~ *.o *.lst ds.e7 zero_512.bin \
 	bank0_routines.inc bank1_routines.inc bank2_routines.inc \
 	bank3_routines.inc bank4_routines.inc bank5_routines.inc \
 	bank6_routines.inc common_routines.inc

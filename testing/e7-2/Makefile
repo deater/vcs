@@ -40,25 +40,25 @@ e7_test2.o:	e7_test2.s main.bin \
 ###
 
 rom_bank0.bin:	$(ROM_TOOL)
-	$(ROM_TOOL) 0 > rom_bank0.bin
+	$(ROM_TOOL) -s 2048 -n 0 > rom_bank0.bin
 
 rom_bank1.bin:	$(ROM_TOOL)
-	$(ROM_TOOL) 1 > rom_bank1.bin
+	$(ROM_TOOL) -s 2048 -n 1 > rom_bank1.bin
 
 rom_bank2.bin:	$(ROM_TOOL)
-	$(ROM_TOOL) 2 > rom_bank2.bin
+	$(ROM_TOOL) -s 2048 -n 2 > rom_bank2.bin
 
 rom_bank3.bin:	$(ROM_TOOL)
-	$(ROM_TOOL) 3 > rom_bank3.bin
+	$(ROM_TOOL) -s 2048 -n 3 > rom_bank3.bin
 
 rom_bank4.bin:	$(ROM_TOOL)
-	$(ROM_TOOL) 4 > rom_bank4.bin
+	$(ROM_TOOL) -s 2048 -n 4 > rom_bank4.bin
 
 rom_bank5.bin:	$(ROM_TOOL)
-	$(ROM_TOOL) 5 > rom_bank5.bin
+	$(ROM_TOOL) -s 2048 -n 5 > rom_bank5.bin
 
 rom_bank6.bin:	$(ROM_TOOL)
-	$(ROM_TOOL) 6 > rom_bank6.bin
+	$(ROM_TOOL) -s 2048 -n 6 > rom_bank6.bin
 
 
 
@@ -71,18 +71,10 @@ zero_2k.bin:
 ###
 
 zero_512.bin:	
-	dd if=/dev/zero of=zero_512.bin bs=256 count=2
+	$(ROM_TOOL) -s 512 -a "VMW-" > zero_512.bin
+#	dd if=/dev/zero of=zero_512.bin bs=256 count=2
 
-###
-
-rom_tool:	rom_tool.o
-	$(CC) $(LFLAGS) -o rom_tool rom_tool.o
-
-rom_tool.o:	rom_tool.c
-	$(CC) $(CFLAGS) -c rom_tool.c
-
-
-###
+###g
 
 main.bin:	main.o
 	ld65 -o main.bin main.o -C $(LINKER_SCRIPT)/atari2600_1a00_e7.inc
