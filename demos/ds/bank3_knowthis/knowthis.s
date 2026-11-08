@@ -1,5 +1,5 @@
 	;==========================
-	; title screen
+	; knowthis screen
 	;==========================
 	; potentially arrive here with an unknown number of cycles/scanlines
 	; ideally VBLANK=2 (beam off)
@@ -27,8 +27,17 @@ start_knowthis:
 	; 37 lines of vertical blank
 	;=============================
 
-        ldx     #33
+        ldx     #23
 	jsr	repeat_wsync
+
+	;================================
+	; play music -- scanlines 23..33
+	;================================
+	; takes 11 lines?
+
+	lda	#3		; our bank
+	jsr	do_play_music
+
 
 	;====================
 	; now in scanline 34
@@ -116,56 +125,56 @@ tpad_x:
 
 title_loop:
 ; 0
-	lda	title_colors,X	;					; 4
+	lda	ikt_colors,X	;					; 4
 	sta	COLUPF		; set playfield color			; 3
 	nop								; 2
 	nop								; 2
 ; 11
-	lda	title_playfield0_left,X		;			; 4
+	lda	ikt_playfield0_left,X		;			; 4
 	sta	PF0				;			; 3
 	nop								; 2
 
 	; must write by CPU 22 [GPU 68]
 ; 20
-	lda	title_playfield1_left,X		;			4+
+	lda	ikt_playfield1_left,X		;			4+
 	sta	PF1				;			3
 	; must write by CPU 28 [GPU 84]
 ; 27
-	lda	title_playfield2_left,X		;			4+
+	lda	ikt_playfield2_left,X		;			4+
 	sta	PF2				;			3
 	; must write by CPU 38 [GPU 116]
 ; 34
 
 	nop					;			2
-	lda	title_playfield0_right,X	;			4+
+	lda	ikt_playfield0_right,X	;			4+
 	sta	PF0				;			3
 	; must write by CPU 49 [GPU 148]
 ; 43
-	lda	title_playfield1_right,X	;			4+
+	lda	ikt_playfield1_right,X	;			4+
 	sta	PF1				;			3
 	; must write by CPU 54 [GPU 164]
 ; 50
 
 	lda	$80				; nop3			3
-	lda	title_playfield2_right,X	;			4+
+	lda	ikt_playfield2_right,X	;			4+
 	sta	PF2				;			3
 	; must write by CPU 65 [GPU 196]
 ; 60
 
         iny                                                             ; 2
-;        tya                                                             ; 2
-;        and     #$3                                                     ; 2
-;        beq     yes_inx                                                 ; 2/3
-;        .byte   $A5     ; begin of LDA ZP                               ; 3
+	tya                                                             ; 2
+	and     #$1                                                     ; 2
+	beq     yes_inx                                                 ; 2/3
+	.byte   $A5     ; begin of LDA ZP                               ; 3
 yes_inx:
         inx             ; $E8 should be harmless to load                ; 2
 done_inx:
                                                                 ;===========
                                                                 ; 11/11
 
-	nop
-	nop
-	lda	$80
+;	nop
+;	nop
+;	lda	$80
 
 ; 71
 	cpy	#(192)							; 2
