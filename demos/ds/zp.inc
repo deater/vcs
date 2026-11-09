@@ -4,6 +4,8 @@ data_bytes	= $80 ; FIXME
 
 DONE_TITLE	= $80
 
+FRAMEL		= $86
+FRAMEH		= $87
 POS_TEMP	= $88	; position
 PAGE_SAVE	= $89	; all
 SPRITE_OFFSET	= $8A	; desktop

@@ -172,10 +172,6 @@ done_inx:
                                                                 ;===========
                                                                 ; 11/11
 
-;	nop
-;	nop
-;	lda	$80
-
 ; 71
 	cpy	#(192)							; 2
 	bne	title_loop						; 2/3

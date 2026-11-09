@@ -108,6 +108,7 @@ do_play_music:
 
 .align $100
 	.include "position.s"
+	.include "inc_frame.s"
 	.include "title_screen.s"
 
 .if 0
