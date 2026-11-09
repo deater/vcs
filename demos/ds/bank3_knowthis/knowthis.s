@@ -202,3 +202,4 @@ done_title:
 
 
 .include "knowthis_pf.inc"
+.include "ikt_face.inc"
