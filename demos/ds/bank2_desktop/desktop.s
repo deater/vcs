@@ -11,30 +11,40 @@ start_desktop:
 	;=================
 	; start VBLANK
 	;=================
-	; want to come in 1 scanline down
-	; as this finishes old then does 3 for VSYNC
+	; this code takes 4 scanlines, it does a WSYNC soon after
+	;       to ensure 3 scanlines total
+	; this means it's really stealing one of the previous frame's lines
 
 	jsr	common_vblank
 
 ; 9
 
-
-
+	;=============================
+	;=============================
 	;=============================
 	; 37 lines of vertical blank
 	;=============================
+	;=============================
+	;=============================
 
-        ldx     #23
+
+	;=============================
+	; scanlines 0..21 (unused)
+	;=============================
+
+        ldx     #22
 	jsr	repeat_wsync
+; 8
+
 
 	;================================
-	; play music -- scanlines 24..34
+	; play music -- scanlines 22..33
 	;================================
-	; takes 11 lines?
+	; takes 11 lines, doesn't WSYNC
 
 	lda	#2		; our bank
 	jsr	do_play_music
-
+	sta	WSYNC
 
 	;====================
 	; now in scanline 34
@@ -44,13 +54,17 @@ start_desktop:
 
         sta     WSYNC
 
-.if 0
+
 	;===================
 	; now scanline 35
 	;===================
 	; center the sprite position
 	; needs to be right after a WSYNC
 ; 0
+
+
+	sta	WSYNC
+.if 0
 	; to center exactly would want sprite0 at
 	;	CPU cycle 41.3
 	; and sprite1 at
@@ -82,12 +96,12 @@ tpad_x:
 	sta	HMP1							; 3
 ; 52
 
-.endif
-
 	sta	WSYNC
 ; 0
 ;	sta	HMOVE		; adjust fine tune, must be after WSYNC
 ; 3
+.endif
+
 
 	;=======================
 	; scanline 36
@@ -99,12 +113,12 @@ tpad_x:
 ; 0
 	ldy	#0							; 2
 	ldx	#0							; 2
-	stx	VBLANK			; turn on beam			; 3
 	stx	GRP0							; 3
 	stx	GRP1							; 3
 
 ;	lda	#CTRLPF_REF
-	sta	CTRLPF
+	
+	stx	CTRLPF		; unreflect playfield
 
 ; 13
 ;	lda	#$1E
@@ -114,7 +128,12 @@ tpad_x:
 ;	lda	BACKGROUND_COLOR					; 3
 	lda	#$A8
 	sta	COLUBK							; 3
-; 25
+
+	ldx	#0							; 2
+	stx	REFP1			; don't reflect sprite1		; 3
+
+	stx	VBLANK			; turn on beam			; 3
+
 	sta	WSYNC
 
 

@@ -103,6 +103,7 @@ tpad_x:
 	stx	VBLANK			; turn on beam			; 3
 	stx	GRP0							; 3
 	stx	GRP1							; 3
+	stx	CTRLPF			; reset playfield
 ; 13
 ;	lda	#$1E
 ;	lda	BASE_TITLE_COLOR					; 3

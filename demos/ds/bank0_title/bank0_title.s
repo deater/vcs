@@ -130,6 +130,8 @@ tpad_x:
 	ldx	#0							; 2
 	stx	GRP0							; 3
 	stx	GRP1							; 3
+	stx	CTRLPF			; reset playfield		; 3
+
 ; 13
 ;	lda	#$1E
 ;	lda	BASE_TITLE_COLOR					; 3
