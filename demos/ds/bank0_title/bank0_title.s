@@ -15,6 +15,7 @@
 
 do_title:
 
+; ? / 24
 start_title:
 
 	;=================
@@ -216,27 +217,33 @@ done_loop:
 ; 75
 
 	;==========================
+	;==========================
+	;==========================
 	; overscan for 30 scanlines
+	;==========================
+	;==========================
 	;==========================
 
 	ldx	#29
-	jsr	common_overscan
+	jsr	common_overscan						; 10
 
 ; 10
-	lda	FRAMEL
-	cmp	#TITLE_TIME_L
-	bne	not_done_title
-	lda	FRAMEH
-	cmp	#TITLE_TIME_H
-	beq	done_title
+	lda	FRAMEL							; 3
+	cmp	#TITLE_TIME_L						; 2
+	bne	not_done_title						; 2/3
+; 17
+	lda	FRAMEH							; 3
+	cmp	#TITLE_TIME_H						; 2
+	beq	done_title						; 2/3
 
+; 21
 not_done_title:
+
 	jmp	start_title						; 3
-; 18
-
 done_title:
-; 16
-
+; 25
 	rts
+
+; 31
 
 .include "desire_pf.inc"

@@ -4,6 +4,7 @@ data_bytes	= $80 ; FIXME
 
 DONE_TITLE	= $80
 
+FIRST_TIME	= $85
 FRAMEL		= $86
 FRAMEH		= $87
 POS_TEMP	= $88	; position

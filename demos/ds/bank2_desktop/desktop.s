@@ -4,6 +4,8 @@
 	; potentially arrive here with an unknown number of cycles/scanlines
 	; ideally VBLANK=2 (beam off)
 
+; 31 (exit) + 3 (bank set) + 6 (jsr) = 40
+
 start_desktop:
 
 	;=================

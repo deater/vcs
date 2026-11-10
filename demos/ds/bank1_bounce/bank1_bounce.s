@@ -17,6 +17,6 @@ do_bounce:
 
 .include "bounce_kernel.s"
 
-	rts
+
 
 

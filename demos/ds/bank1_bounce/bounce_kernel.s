@@ -15,54 +15,78 @@ BOUNCE_SPRITE1_HIGH = 144
 PLAYFIELD_MAX = 184
 
 
-	; init data
-	; init sprites
+; arrive
+; 	31 + 3 (bankset) + 6 (jsr) = 40
 
-	ldy	#100
-	sty	SPRITE0_X
-	sty	SPRITE0_Y
-	sty	SPRITE1_Y
+do_bounce_effect:
+	; in theory arrives a scanline early so time to init here?
 
-	ldy	#108
-	sty	SPRITE1_X
+	inc	FIRST_TIME
 
 
-	lda	#$FF
-	sta	SPRITE0_XADD
-	sta	SPRITE0_YADD
-	sta	SPRITE1_XADD
-
-
-	; reflect sprite 1
-
-	lda	#$8
-	sta	REFP1
-
-
+; 24/64
 
 bounce_effect:
 
 	;====================================
 	; start VBLANK
 	;====================================
+	; this code takes 4 scanlines, it does a WSYNC soon after
+	;       to ensure 3 scanlines total
+	; this means it's really stealing one of the previous frame's lines
 
 	jsr	common_vblank
 
+; 9
+	;====================================
+	;====================================
 	;====================================
 	; 37 lines of VBLANK
 	;====================================
+	;====================================
+	;====================================
 
-	ldx	#15
+	;=============================
+	; scanlines 0..13 (unused)
+	;=============================
+
+	ldx	#14
 	jsr	repeat_wsync
-
+; 8
 	;================================
-	; play music -- scanlines 15..25
+	; play music -- scanlines 14..24
 	;================================
-	; takes 11 lines?
+	; takes 11 lines, doesn't WSYNC at end?
 
 	lda	#1		; our bank
 	jsr	do_play_music
+	sta	WSYNC
 
+
+	;================================
+	; init if necessary -- scanlines 25
+	;================================
+; 0
+	lda	FIRST_TIME						; 3
+	beq	done_first_time						; 2/3
+; 5
+	dec	FIRST_TIME	; reset to 0				; 5
+; 10
+	ldy	#100							; 2
+	sty	SPRITE0_X						; 3
+	sty	SPRITE0_Y						; 3
+	sty	SPRITE1_Y						; 3
+; 21
+	ldy	#108							; 2
+	sty	SPRITE1_X						; 3
+; 26
+	lda	#$FF							; 2
+	sta	SPRITE0_XADD						; 3
+	sta	SPRITE0_YADD						; 3
+	sta	SPRITE1_XADD						; 3
+; 37
+done_first_time:
+	sta	WSYNC
 
 	;==============================
 	; scaline 26 -- incremement frame
@@ -200,6 +224,11 @@ done_sprite1_x:
 	sta	NUSIZ0							; 3
 	sta	NUSIZ1		; configure sprite size			; 3
 
+	; reflect sprite 1
+
+	lda	#$8							; 2
+	sta	REFP1							; 3
+
 	sta	WSYNC
 	sta	WSYNC
 
@@ -207,9 +236,6 @@ done_sprite1_x:
 	; VBLANK scanline 37
 	;=================================
 ; 0
-	lda	#0							; 2
-	sta	VBLANK                  ; turn on beam			; 3
-; 5
 
 	lda	#0							; 2
 	sta	COLUPF			; fg, black			; 3
@@ -234,6 +260,7 @@ done_sprite1_x:
 	txa			; needed so top line is black		; 2
 ; 40
 
+	stx	VBLANK                  ; turn on beam			; 3
 
 	sta	WSYNC							; 3
 ; 67
@@ -286,27 +313,31 @@ no_sprite0:
 
 done_raster:
 
+; 2
 	;=============================================
 	; overscan (30 scanlines)
 	;=============================================
 
 	ldx	#29
-	jsr	common_overscan
+	jsr	common_overscan						; 10
 
+; 10
+	lda	FRAMEL							; 3
+	cmp	#BOUNCE_TIME_L						; 2
+	bne	not_done_bounce						; 2/3
+; 17
+	lda	FRAMEH							; 3
+	cmp	#BOUNCE_TIME_H						; 2
+	beq	done_bounce						; 2/3
 
-	lda	FRAMEL
-	cmp	#BOUNCE_TIME_L
-	bne	not_done_bounce
-	lda	FRAMEH
-	cmp	#BOUNCE_TIME_H
-	beq	done_bounce
-
+; 18 / 24
 not_done_bounce:
 	jmp	bounce_effect
 
+; 25
 done_bounce:
 	rts
-
+; 31
 
 
 
