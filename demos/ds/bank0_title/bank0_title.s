@@ -12,46 +12,44 @@
 	;=======================
         ; title screen
         ;=======================
-	; potentially arrive here with an unknown number of cycles/scanlines
-	; ideally VBLANK=2 (beam off)
 
 do_title:
-
-
-
-; should be zero from initial code
-
-;	lda	#$0
-;	sta	DONE_TITLE
 
 start_title:
 
 	;=================
 	; start VBLANK
 	;=================
-	; want to come in 1 scanline down
-	; as this finishes old then does 3 for VSYNC
+	; this code takes 4 scanlines, it does a WSYNC soon after
+	;	to ensure 3 scanlines total
+	; this means it's really stealing one of the previous frame's lines
 
 	jsr	common_vblank
-
 ; 9
 
-
-
+	;=============================
 	;=============================
 	; 37 lines of vertical blank
 	;=============================
+	;=============================
 
-        ldx     #23
+
+	;=============================
+	; scanlines 0..21 (unused)
+	;=============================
+        ldx     #22
 	jsr	repeat_wsync
 
+; 8
 	;===============================
-	; play music -- scanlines 23-33
+	; scanlines 22-33 -- play music
 	;===============================
-	; takes 11 lines?
+	; takes 11 lines, doesn't WSYNC at end
 
-	lda	#0	; our bank
+	lda	#0		; our bank
 	jsr	do_play_music
+	sta	WSYNC
+
 
 	;====================
 	; now in scanline 34
@@ -61,12 +59,19 @@ start_title:
 	jsr	inc_frame
         sta     WSYNC
 
-.if 0
+
 	;===================
 	; now scanline 35
 	;===================
+	; does nothing?
+
+	sta	WSYNC
+
+.if 0
+
 	; center the sprite position
 	; needs to be right after a WSYNC
+
 ; 0
 	; to center exactly would want sprite0 at
 	;	CPU cycle 41.3
@@ -99,24 +104,29 @@ tpad_x:
 	sta	HMP1							; 3
 ; 52
 
-.endif
+
 
 	sta	WSYNC
 ; 0
 ;	sta	HMOVE		; adjust fine tune, must be after WSYNC
 ; 3
 
+.endif
+
+
 	;=======================
 	; scanline 36
+	;=======================
+	; does nothing
 
 	sta	WSYNC
 
 	;=======================
 	; scanline 37 -- config
+	;=======================
 ; 0
 	ldy	#0							; 2
 	ldx	#0							; 2
-	stx	VBLANK			; turn on beam			; 3
 	stx	GRP0							; 3
 	stx	GRP1							; 3
 ; 13
@@ -127,6 +137,8 @@ tpad_x:
 ;	lda	BACKGROUND_COLOR					; 3
 	lda	#$0
 	sta	COLUBK							; 3
+	sta	VBLANK			; turn on beam			; 3
+
 ; 25
 	sta	WSYNC
 
