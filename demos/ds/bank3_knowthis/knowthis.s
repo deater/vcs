@@ -122,8 +122,10 @@ tpad_x:
 	;=============================================
 	; draw 192 lines
 	; need to race beam to draw other half of playfield
+	; split across 2
 
 title_loop:
+
 ; 0
 	lda	ikt_colors,X	;					; 4
 	sta	COLUPF		; set playfield color			; 3
@@ -161,22 +163,62 @@ title_loop:
 	; must write by CPU 65 [GPU 196]
 ; 60
 
-        iny                                                             ; 2
-	tya                                                             ; 2
-	and     #$1                                                     ; 2
-	beq     yes_inx                                                 ; 2/3
-	.byte   $A5     ; begin of LDA ZP                               ; 3
-yes_inx:
-        inx             ; $E8 should be harmless to load                ; 2
-done_inx:
-                                                                ;===========
-                                                                ; 11/11
 
-; 71
-	cpy	#(192)							; 2
+	sta	WSYNC
+
+; 76
+
+	; line 2
+
+
+; 0
+	lda	ikt_colors,X	;					; 4
+	sta	COLUPF		; set playfield color			; 3
+	nop								; 2
+	nop								; 2
+; 11
+	lda	ikt_playfield0_left,X		;			; 4
+	sta	PF0				;			; 3
+	nop								; 2
+
+	; must write by CPU 22 [GPU 68]
+; 20
+	lda	ikt_playfield1_left,X		;			4+
+	sta	PF1				;			3
+	; must write by CPU 28 [GPU 84]
+; 27
+	lda	ikt_playfield2_left,X		;			4+
+	sta	PF2				;			3
+	; must write by CPU 38 [GPU 116]
+; 34
+
+	nop					;			2
+	lda	ikt_playfield0_right,X	;			4+
+	sta	PF0				;			3
+	; must write by CPU 49 [GPU 148]
+; 43
+	lda	ikt_playfield1_right,X	;			4+
+	sta	PF1				;			3
+	; must write by CPU 54 [GPU 164]
+; 50
+
+	lda	$80				; nop3			3
+	lda	ikt_playfield2_right,X	;			4+
+	sta	PF2				;			3
+	; must write by CPU 65 [GPU 196]
+; 60
+	lda	$80	; nop3
+	lda	$80	; nop3
+	lda	$80	; nop3
+
+
+; 69
+        inx								; 2
+	cpx	#(96)							; 2
 	bne	title_loop						; 2/3
 
 ; 76
+
 
 done_loop:
 
