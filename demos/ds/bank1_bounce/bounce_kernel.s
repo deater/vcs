@@ -65,8 +65,9 @@ bounce_effect:
 
 
 	;==============================
-	; scaline 26 -- ???
+	; scaline 26 -- incremement frame
 	;==============================
+	jsr	inc_frame		; 30
 	sta	WSYNC
 
 	;============]============================
@@ -289,10 +290,28 @@ done_raster:
 	; overscan (30 scanlines)
 	;=============================================
 
-	ldx	#30
+	ldx	#29
 	jsr	common_overscan
 
+
+	lda	FRAMEL
+	cmp	#BOUNCE_TIME_L
+	bne	not_done_bounce
+	lda	FRAMEH
+	cmp	#BOUNCE_TIME_H
+	beq	done_bounce
+
+not_done_bounce:
 	jmp	bounce_effect
+
+done_bounce:
+	rts
+
+
+
+
+
+
 
 
 

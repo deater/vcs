@@ -61,23 +61,23 @@ clear_loop:
 	;==============================
 again:
 
-;	sta	E7_SET_BANK0
-;	jsr	do_title
+	sta	E7_SET_BANK0
+	jsr	do_title
 
-;	sta	E7_SET_BANK1
-;	jsr	do_bounce
+	sta	E7_SET_BANK1
+	jsr	do_bounce
 
-;	sta	E7_SET_BANK2
-;	jsr	do_desktop
+	sta	E7_SET_BANK2
+	jsr	do_desktop
 
 	sta	E7_SET_BANK3
 	jsr	do_knowthis
 
-;	sta	E7_SET_BANK4
-;	jsr	do_plasma
+	sta	E7_SET_BANK4
+	jsr	do_plasma
 
-;	sta	E7_SET_BANK5
-;	jsr	do_credits
+	sta	E7_SET_BANK5
+	jsr	do_credits
 
 	jsr	title_screen	; wastes 2 bytes of stack?
 

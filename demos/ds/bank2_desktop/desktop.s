@@ -1,15 +1,10 @@
 	;==========================
-	; title screen
+	; desktop intro
 	;==========================
 	; potentially arrive here with an unknown number of cycles/scanlines
 	; ideally VBLANK=2 (beam off)
 
-; should be zero from initial code
-
-;	lda	#$0
-;	sta	DONE_TITLE
-
-start_title:
+start_desktop:
 
 	;=================
 	; start VBLANK
@@ -374,16 +369,19 @@ done_loop:
 	ldx	#29
 	jsr	common_overscan
 
-; 10
-	lda	DONE_TITLE						; 3
-	bne	done_title						; 2/3
-; 15
-	jmp	start_title						; 3
-; 18
+	lda	FRAMEL
+	cmp	#TITLE_TIME_L
+	bne	not_done_desktop
+	lda	FRAMEH
+	cmp	#TITLE_TIME_H
+	beq	done_desktop
 
-done_title:
-; 16
+not_done_desktop:
+        jmp     start_desktop						; 3
 
+done_desktop:
+
+	rts
 
 
 .include "irix_pf.inc"

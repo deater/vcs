@@ -7,7 +7,7 @@
 .include "../zp.inc"
 
 .include "../common_routines.inc"
-
+.include "../timing.inc"
 
 	;=======================
         ; bounce screen
