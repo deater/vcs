@@ -22,12 +22,24 @@ start_desktop:
 	; 37 lines of vertical blank
 	;=============================
 
-        ldx     #33
+        ldx     #23
 	jsr	repeat_wsync
+
+	;================================
+	; play music -- scanlines 24..34
+	;================================
+	; takes 11 lines?
+
+	lda	#2		; our bank
+	jsr	do_play_music
+
 
 	;====================
 	; now in scanline 34
 	;====================
+
+	jsr	inc_frame
+
         sta     WSYNC
 
 .if 0
@@ -370,10 +382,10 @@ done_loop:
 	jsr	common_overscan
 
 	lda	FRAMEL
-	cmp	#TITLE_TIME_L
+	cmp	#DESKTOP_TIME_L
 	bne	not_done_desktop
 	lda	FRAMEH
-	cmp	#TITLE_TIME_H
+	cmp	#DESKTOP_TIME_H
 	beq	done_desktop
 
 not_done_desktop:

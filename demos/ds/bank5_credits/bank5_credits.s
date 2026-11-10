@@ -7,7 +7,7 @@
 .include "../zp.inc"
 
 .include "../common_routines.inc"
-
+.include "../timing.inc"
 
 
 do_credits:
@@ -15,7 +15,7 @@ do_credits:
 	; comes in at unknown cycles, w/o last WSYNC
 
 
-start_test_frame:
+start_credits:
 
 	;=============================
 	; Start Vertical Blank
@@ -31,8 +31,22 @@ start_test_frame:
 	; 37 lines of vertical blank
 	;=============================
 
-	ldx	#36
+	ldx	#25
 	jsr	repeat_wsync
+
+	;================================
+	; play music -- scanlines 26..36
+	;================================
+        ; takes 11 lines?
+
+	lda	#5		; our bank
+	jsr	do_play_music
+
+	;=============================
+	; scanline 36
+	;=============================
+	jsr	inc_frame
+	sta	WSYNC
 
 	;=======================
 	; scanline 37 -- ???
@@ -208,17 +222,26 @@ start_test_frame:
 	;==========================
 	;==========================
 
-	ldx	#1
+	ldx	#29
 	jsr	common_overscan
 
-	; delay 30 rows
 
-	ldx	#30
-	jsr	repeat_wsync
+	lda	FRAMEL
+	cmp	#CREDITS_TIME_L
+	bne	not_done_credits
+	lda	FRAMEH
+	cmp	#CREDITS_TIME_H
+	beq	done_credits
 
-	jmp	start_test_frame
+not_done_credits:
 
+	jmp	start_credits
 
+done_credits:
+
+	rts
+
+;============================================
 
 	.include "print_word.s"
 	.include "print_byte.s"

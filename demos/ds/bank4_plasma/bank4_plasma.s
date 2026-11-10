@@ -7,7 +7,7 @@
 .include "../zp.inc"
 
 .include "../common_routines.inc"
-
+.include "../timing.inc"
 
 	;=======================
         ; plasma
@@ -42,13 +42,23 @@ start_plasma:
 	; 37 lines of vertical blank
 	;=============================
 
-        ldx     #33
+        ldx     #23
 	jsr	repeat_wsync
+
+	;================================
+	; play music -- scanlines 24..35
+	;================================
+	; takes 11 lines?
+
+	lda	#4		; our bank
+	jsr	do_play_music
 
 	;====================
 	; now in scanline 34
 	;====================
+	jsr	inc_frame
         sta     WSYNC
+
 	;====================
 	; now in scanline 35
 	;====================
@@ -232,11 +242,14 @@ looper:
 	ldx	#29
 	jsr	common_overscan
 
-; 10
-	lda	DONE_TITLE						; 3
-	bne	done_plasma						; 2/3
-; 15
+	lda	FRAMEL
+	cmp	#PLASMA_TIME_L
+	bne	not_done_plasma
+	lda	FRAMEH
+	cmp	#PLASMA_TIME_H
+	beq	done_plasma
 
+not_done_plasma:
 	jmp	start_plasma						; 3
 ; 18
 
@@ -246,6 +259,12 @@ done_plasma:
 
 
 	rts
+
+;================================================================
+;================================================================
+;================================================================
+;================================================================
+;================================================================
 
 
 

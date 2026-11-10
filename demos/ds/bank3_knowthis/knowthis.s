@@ -42,6 +42,7 @@ start_knowthis:
 	;====================
 	; now in scanline 34
 	;====================
+	jsr	inc_frame
         sta     WSYNC
 
 .if 0
@@ -231,16 +232,19 @@ done_loop:
 	ldx	#29
 	jsr	common_overscan
 
-; 10
-	lda	DONE_TITLE						; 3
-	bne	done_title						; 2/3
-; 15
+	lda	FRAMEL
+	cmp	#KNOWTHIS_TIME_L
+	bne	not_done_knowthis
+	lda     FRAMEH
+	cmp     #KNOWTHIS_TIME_H
+	beq     done_knowthis
+not_done_knowthis:
 	jmp	start_knowthis						; 3
 ; 18
 
-done_title:
+done_knowthis:
 ; 16
-
+	rts
 
 
 .include "knowthis_pf.inc"

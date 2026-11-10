@@ -17,5 +17,4 @@ do_desktop:
 
 .include "desktop.s"
 
-	rts
 

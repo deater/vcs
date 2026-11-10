@@ -79,7 +79,9 @@ again:
 	sta	E7_SET_BANK5
 	jsr	do_credits
 
-	jsr	title_screen	; wastes 2 bytes of stack?
+	jmp	again
+
+;	jsr	title_screen	; wastes 2 bytes of stack?
 
 
 	;===========================
