@@ -248,4 +248,6 @@ done_title:
 
 ; 31
 
+.include "checkers.s"
+
 .include "desire_pf.inc"

@@ -1,39 +1,29 @@
-; Draw a title screen
+; Draw a checker pattern
 
 ; playfield only, skip every 4 lines
 
-title_screen:
-
-start_frame:
+do_checkers:
 
 	;=============================
 	; Start Vertical Blank
 
-	lda	#2
-	sta	VBLANK
-
 	jsr	common_vblank
 
-	; now 9 cycles in
+; 0
 
+	;=============================
 	;=============================
 	; 37 lines of vertical blank
 	;=============================
+	;=============================
 
-	ldx	#23
+	ldx	#35
 	jsr	repeat_wsync
 
-	;=========================
-	; play music
-	;=========================
-	; takes 11 lines?
-
-	sta	E7_SET_BANK6	;
-	jsr	play_music
-
 	;=======================
-	; scanline 36 -- ???
+	; scanline 36 -- increment frame
 
+	jsr	inc_frame
 	sta	WSYNC
 
 	;=======================
@@ -179,18 +169,22 @@ done_loop:
 	ldx	#29
 	jsr	common_overscan
 
+; 10
+	lda     FRAMEL							; 3
+	cmp     #CHECKERS_TIME_L					; 2
+	bne	not_done_checkers					; 2/3
+; 17
+	lda	FRAMEH							; 3
+	cmp	#CHECKERS_TIME_H					; 2
+	beq	done_checkers						; 2/3
 
-	;==========================
-	; overscan 29
-	;==========================
-	sta	WSYNC
+; 18 / 24
+not_done_checkers:
+	jmp     do_checkers
 
-	;================================
-	; once again
-
-	jmp	start_frame
-
-done_title_screen:
+; 25
+done_checkers:
+        rts
+; 31
 
 
-;	sta	WSYNC

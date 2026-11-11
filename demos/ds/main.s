@@ -62,6 +62,7 @@ clear_loop:
 again:
 
 	sta	E7_SET_BANK0
+	jsr	do_checkers
 	jsr	do_title
 
 	sta	E7_SET_BANK1
@@ -111,7 +112,6 @@ do_play_music:
 .align $100
 	.include "position.s"
 	.include "inc_frame.s"
-	.include "title_screen.s"
 
 .if 0
 	.include "memory_test.s"

@@ -124,8 +124,9 @@ main.bin:	main.o
 
 
 main.o:	main.s zp.inc \
-	common_routines.s title_screen.s zx02_optim.s inc_frame.s
+	common_routines.s zx02_optim.s inc_frame.s
 	echo "do_title = 0 " > bank0_routines.inc
+	echo "do_checkers = 0 " >> bank0_routines.inc
 	echo "do_bounce = 0 " > bank1_routines.inc
 	echo "do_desktop = 0 " > bank2_routines.inc
 	echo "do_knowthis = 0 " > bank3_routines.inc
@@ -141,6 +142,8 @@ main.o:	main.s zp.inc \
 	$(CALC_ADDRESS) -a 0x1A00 -s set_pos_x main.lst >> common_routines.inc
 	$(CALC_ADDRESS) -a 0x1A00 -s inc_frame main.lst >> common_routines.inc
 	cd bank0_title && make
+	$(CALC_ADDRESS) -a 0x1000 -s do_title bank0_title/bank0_title.lst > bank0_routines.inc
+	$(CALC_ADDRESS) -a 0x1000 -s do_checkers bank0_title/bank0_title.lst >> bank0_routines.inc
 	cd bank1_bounce && make
 	$(CALC_ADDRESS) -a 0x1000 -s do_bounce bank1_bounce/bank1_bounce.lst > bank1_routines.inc
 	cd bank2_desktop && make
@@ -152,7 +155,6 @@ main.o:	main.s zp.inc \
 	cd bank5_credits && make
 	$(CALC_ADDRESS) -a 0x1000 -s do_credits bank5_credits/bank5_credits.lst > bank5_routines.inc
 	cd bank6_music && make
-	$(CALC_ADDRESS) -a 0x1000 -s do_title bank0_title/bank0_title.lst > bank0_routines.inc
 	$(CALC_ADDRESS) -a 0x1000 -s play_music bank6_music/bank6_music.lst > bank6_routines.inc
 	ca65 -o main.o main.s -l main.lst
 
