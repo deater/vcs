@@ -6,6 +6,42 @@
 
 ; 31 (exit) + 3 (bank set) + 6 (jsr) = 40
 
+
+	ldx	#0
+krg_loop:
+	lda	teapot_high,X
+	sta	$1800,X			; 256 byte write destination
+	inx
+	bne	krg_loop
+
+
+;	lda	#<$1900			; 256 byte source destination
+;	sta	ZX0_src
+;	lda	#>$1900
+;	sta	ZX0_src+1
+
+	lda	#2			; we're bank2
+	sta	PAGE_SAVE
+
+	lda     #$4
+        sta     READ_WRITE_OFFSET
+
+        lda     #<E7_256B_READ_ADDR
+        sta     ZX0_src
+        lda     #>E7_256B_READ_ADDR
+        sta     ZX0_src_h
+
+        lda     #>E7_BANK_BASE
+        jsr     zx02_full_decomp
+
+
+	; now need to copy from 1k RAM to 256-byte RAM
+
+	ldx	#0
+	ldy	#0
+	lda	#2			; bank to return to
+	jsr	bank7_to_256_copy
+
 start_desktop:
 
 	;=================
@@ -51,6 +87,16 @@ start_desktop:
 	;====================
 
 	jsr	inc_frame
+
+	; switch which teapot shown
+	lda	FRAMEL
+	lsr
+	lsr
+	lsr
+	lsr
+	and	#$3
+	tax
+	sta	E7_SET_256_BANK0,X
 
         sta     WSYNC
 
@@ -159,6 +205,9 @@ done_inx:
 
 ; 76
 
+	jmp	oof
+.align $100
+oof:
 
 	;===========================================================
 	;===========================================================
@@ -270,23 +319,23 @@ tpad_x:
 
 title_spriteloop:
 ; 0
-	lda	teapot_sprite0,X		; load sprite data		; 4+
+	lda	$1900,X			; load sprite0 data		; 4+
 	sta	GRP0			; 0->[GRP0] [GRP1 (?)]->GRP1	; 3
 ; 7
-	lda	teapot_sprite1,X		; load sprite data		; 4+
+	lda	$1924,X			; load sprite1 data		; 4+
 	sta	GRP1			; 1->[GRP1], [GRP0 (0)]-->GRP0	; 3
 ; 14
-	lda	teapot_sprite2,X		; load sprite data		; 4+
+	lda	$1948,X			; load sprite2 data		; 4+
 	sta	GRP0			; 2->[GRP0], [GRP1 (1)]-->GRP1	; 3
 ; 21
 
-	lda	teapot_sprite5,X						; 4+
+	lda	$19B4,X			; sprite5			; 4+
 	sta	TEMP1			; save for later		; 3
 ; 28
-	lda	teapot_sprite4,X						; 4+
+	lda	$1990,X			; sprite4			; 4+
 	tay				; save in Y			; 2
 ; 34
-	lda	teapot_sprite3,X	;					; 4+
+	lda	$196c,X			; sprite3			; 4+
 	ldx	TEMP1			; restore saved value		; 3
 ; 41
 
@@ -381,4 +430,7 @@ done_desktop:
 
 
 .include "irix_pf.inc"
-.include "teapot0.inc"
+;.include "teapot0.inc"
+
+teapot_high:
+.incbin "teapot_high.zx02"

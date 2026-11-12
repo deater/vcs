@@ -1,3 +1,9 @@
+; notes for E7
+;  if decmpressing to BANK7 RAM, need to set READ_WRITE_OFFSET to #$4
+;	which will properly offset read/write distance
+
+
+
 ; De-compressor for ZX02 files
 ; ----------------------------
 ;
@@ -51,7 +57,10 @@
 ; Note in the final pass we finish 3 scanlines short of 262 scanlines
 ;	(so other code in caller can run) so you might have to wait 3 yourself
 
+
 zx02_full_decomp:
+
+	sta	E7_SET_BANK7_RAM
 
 
 ;=== Start VMW =================================
@@ -269,6 +278,9 @@ check_timer:
 early_out:
 	ldx	#26			; do the overscan
 	jsr	common_overscan
+
+	ldx	PAGE_SAVE
+	sta	E7_SET_BANK0,X		; return to proper bank
 
 	rts
 
