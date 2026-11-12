@@ -62,45 +62,7 @@ start_desktop:
 	; needs to be right after a WSYNC
 ; 0
 
-
 	sta	WSYNC
-.if 0
-	; to center exactly would want sprite0 at
-	;	CPU cycle 41.3
-	; and sprite1 at
-	;	GPU cycle 44
-
-	ldx	#0		; sprite 0 display nothing		; 2
-	stx	GRP0		;					; 3
-
-	ldx	#6		;					; 2
-; 7
-
-tpad_x:
-	dex			;					; 2
-	bne	tpad_x		;					; 2/3
-	; for X delays (5*X)-1
-	; so in this case, 29
-; 36
-	; beam is at proper place
-	sta	RESP0							; 3
-	; 39 (GPU=??, want ??) +?
-; 39
-	sta	RESP1							; 3
-	; 42 (GPU=??, want ??) +?
-; 42
-
-	lda	#$F0		; opposite what you'd think		; 2
-	sta	HMP0							; 3
-	lda	#$00							; 2
-	sta	HMP1							; 3
-; 52
-
-	sta	WSYNC
-; 0
-;	sta	HMOVE		; adjust fine tune, must be after WSYNC
-; 3
-.endif
 
 
 	;=======================
@@ -111,29 +73,21 @@ tpad_x:
 	;=======================
 	; scanline 37 -- config
 ; 0
-	ldy	#0							; 2
 	ldx	#0							; 2
-	stx	GRP0							; 3
-	stx	GRP1							; 3
-
-;	lda	#CTRLPF_REF
-	
-	stx	CTRLPF		; unreflect playfield
-
-; 13
-;	lda	#$1E
-;	lda	BASE_TITLE_COLOR					; 3
-;	sta	TITLE_COLOR						; 3
-; 19
-;	lda	BACKGROUND_COLOR					; 3
 	lda	#$A8
 	sta	COLUBK							; 3
 
-	ldx	#0							; 2
-	stx	REFP1			; don't reflect sprite1		; 3
-
+	; try to do this early enough to avoid on-screen arifact
 	stx	VBLANK			; turn on beam			; 3
 
+	stx	GRP0							; 3
+	stx	GRP1							; 3
+	stx	CTRLPF		; unreflect playfield			; 3
+	stx	REFP1		; don't reflect sprite1			; 3
+
+	ldy	#0							; 2
+
+; ??
 	sta	WSYNC
 
 
@@ -213,7 +167,7 @@ done_inx:
 	;===========================================================
 
 	;===========================
-	; scanline 122 -- configure
+	; scanline 112 -- configure
 	;===========================
 	; configure 48-pixel sprite code
 
@@ -252,15 +206,15 @@ done_inx:
 	sta	VDELP1							; 3
 ; 47
 	; number of lines to draw
-	ldx	#38
+	ldx	#36
 	stx	SPRITE_OFFSET
-	ldx	#76							; 2
+	ldx	#72							; 2
 	stx	SPRITE_LENGTH							; 3
 ; 52
 	sta	WSYNC							; 3
 
 	;====================================
-	; now scanline 123 -- center sprite
+	; now scanline 113 -- center sprite
 	;====================================
 	; center the sprite position
 	; needs to be right after a WSYNC
@@ -302,7 +256,7 @@ tpad_x:
 
 
 	;===================
-	; now scanline 124
+	; now scanline 114
 	;===================
 
 	ldx	SPRITE_OFFSET	; restore sprite offset
@@ -310,8 +264,9 @@ tpad_x:
 	sta	WSYNC
 
 	;===================
-	; now scanline 125
+	; now scanline 115
 	;===================
+	; 76 scalines of frameloop
 
 title_spriteloop:
 ; 0
@@ -370,6 +325,12 @@ title_spriteloop:
 
 
 ; 75
+
+
+	;===========================
+	; scanline 115+76 = 191
+	;===========================
+
 	;=========================
 	; done drawing line
 
@@ -387,9 +348,11 @@ title_spriteloop:
 	;=============================
 	; draw bottom 4 lines
 
-	ldx	#4
+	ldx	#3
 	jsr	repeat_wsync
 
+	lda	#0		 ; avoid uneven line at bottom
+	sta	COLUBK
 
 done_loop:
 
