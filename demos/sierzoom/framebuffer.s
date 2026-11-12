@@ -27,29 +27,17 @@ start_framebuffer:
 	;=============================
 	;=============================
 
+	jsr	do_sierzoom
 
 	;=============================
 	; scanlines 0..21 (unused)
 	;=============================
 
-        ldx     #34
-	jsr	repeat_wsync
+;        ldx     #34
+;	jsr	repeat_wsync
 ; 8
 
 
-	;===================
-	; now scanline 35
-	;===================
-	; center the sprite position
-	; needs to be right after a WSYNC
-; 0
-
-	sta	WSYNC
-
-	;=======================
-	; scanline 36
-
-	sta	WSYNC
 
 	;=======================
 	; scanline 37 -- config
@@ -59,13 +47,10 @@ start_framebuffer:
 	stx	GRP0							; 3
 	stx	GRP1							; 3
 	stx	CTRLPF		; unreflect playfield
-	sta	COLUBK		; background color			; 3
+	stx	COLUBK		; background color			; 3
 
 	lda	#$0e
 	sta	COLUPF
-
-	ldx	#0							; 2
-	stx	REFP1			; don't reflect sprite1		; 3
 
 	stx	VBLANK			; turn on beam			; 3
 
@@ -128,7 +113,7 @@ start_framebuffer:
 	sta	VDELP1							; 3
 ; 47
 	; number of lines to draw
-	ldx	#128							; 2
+	ldx	#48							; 2
 	stx	SPRITE_LENGTH							; 3
 ; 52
 	sta	WSYNC							; 3
@@ -253,10 +238,6 @@ title_spriteloop:
 	sta	WSYNC
 
 
-	; if 128, take 23*6= 138 lines to scroll all
-	; if 64, take 12*6=72 lines to scroll all
-
-
 	;=============================
 	; draw bottom 31 lines
 
@@ -266,47 +247,38 @@ title_spriteloop:
 
 
 	jsr	do_sierzoom
-
-	; 2+(14*128)-1 = 1793 (23 lines)
-
-.if  0
-	ldx	#0						; 2
-scroll_loop:
-	lda	$1401,X						; 4
-	sta	$1000,X						; 5
-	inx							; 2
-	bpl	scroll_loop					; 2/3
-.endif
-
-
-
-
-
-
-done_loop:
-
-; 75
-
-FRAMEBUFFER_TIME_L=$00
-FRAMEBUFFER_TIME_H=$80
-
+	jsr	do_sierzoom
 
 	;==========================
 	; overscan for 30 scanlines
 	;==========================
 
-	ldx	#29
+	ldx	#1
 	jsr	common_overscan
 
-	lda	FRAMEL
-	cmp	#FRAMEBUFFER_TIME_L
-	bne	not_done_framebuffer
-	lda	FRAMEH
-	cmp	#FRAMEBUFFER_TIME_H
-	beq	done_framebuffer
+	jsr	do_sierzoom
+
+
+
+
+
+
+
+
+
+; 75
+
+
+
+;	lda	FRAMEL
+;	cmp	#FRAMEBUFFER_TIME_L
+;	bne	not_done_framebuffer
+;	lda	FRAMEH
+;	cmp	#FRAMEBUFFER_TIME_H
+;	beq	done_framebuffer
 
 not_done_framebuffer:
-        jmp     start_framebuffer						; 3
+        jmp     start_framebuffer					; 3
 
 done_framebuffer:
 

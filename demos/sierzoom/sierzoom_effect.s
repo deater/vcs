@@ -13,7 +13,7 @@ FRAME3	=	$9B
 FRAME4	=	$9C
 FRAME5	=	$9D
 
-	; roughly 53 cycles per iteration?
+	; roughly 53 cycles per 48x48 frame iteration?
 
 	;================================
 	; Clear screen and setup graphics
@@ -25,6 +25,7 @@ do_sierzoom:
 ;	sta	T_H		; don't need to init these
 
 sier_outer:
+
 
 	ldx	YY
 	cpx	#48
@@ -39,7 +40,7 @@ sier_outer:
 	;	clc
 	lda	T_L
 
-	adc	#1				; next frame
+	adc	#4				; next frame
 	sta	T_L
 	bcc	no_carry
 	inc	T_H
@@ -118,14 +119,25 @@ do_plot:
 
 	; PLOT
 
+
+	; alternate, only set
+	tya			; 2
+	lsr			; 2
+	lsr			; 2
+	tay			; 2
+
+	lda	lookup,X	; 4
+	ora	FRAMES0,Y	; 4
+	sta	FRAMES0,Y	; 4
+
 	; rotate into place
 
-	rol	FRAME5
-	rol	FRAME4
-	rol	FRAME3
-	rol	FRAME2
-	rol	FRAME1
-	rol	FRAME0
+	rol	FRAME5		; 5
+	rol	FRAME4		; 5
+	rol	FRAME3		; 5
+	rol	FRAME2		; 5
+	rol	FRAME1		; 5
+	rol	FRAME0		; 5
 
 	iny		; XX
 	cpy	#48
@@ -149,19 +161,6 @@ do_plot:
 	inx		; YY
 
 	stx	YY
-
-;	cpx	#1
-;	bne	sier_yloop
-
-	; inc T
-	;	clc
-;	lda	T_L
-
-;	adc	#1				; next frame
-;	sta	T_L
-;	bcc	no_carry
-;	inc	T_H
-;no_carry:
 
 	rts
 
