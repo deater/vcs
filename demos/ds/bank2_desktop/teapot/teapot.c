@@ -3,6 +3,9 @@
 #include <GL/gl.h>
 #include <GL/glut.h>
 
+#include <unistd.h>
+#include <stdio.h>
+
 static double rot = 0;
 
 static void display(void) {
@@ -23,7 +26,11 @@ static void display(void) {
 
 /* rotate on idle */
 static void onIdle(void) {
-	rot += 0.01;
+//	ror+=0.01;
+	rot += 45;		// 40 is 9, 45 roughly 8
+//	sleep(1);
+	char string[100];
+	fgets(string,100,stdin);
 	glutPostRedisplay();
 }
 
