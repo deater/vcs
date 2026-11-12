@@ -37,8 +37,6 @@ krg_loop:
 
 	; now need to copy from 1k RAM to 256-byte RAM
 
-	ldx	#0
-	ldy	#0
 	lda	#2			; bank to return to
 	jsr	bank7_to_256_copy
 
