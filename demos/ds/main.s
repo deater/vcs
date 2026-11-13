@@ -112,7 +112,7 @@ do_play_music:
 	sta	E7_SET_BANK0,X
 	rts
 
-
+.include "bank7_to_256_copy.s"
 
 .align $100
 	.include "position.s"

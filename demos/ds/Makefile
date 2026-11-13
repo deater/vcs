@@ -141,6 +141,7 @@ main.o:	main.s zp.inc framebuffer.s \
 	$(CALC_ADDRESS) -a 0x1A00 -s do_play_music main.lst >> common_routines.inc
 	$(CALC_ADDRESS) -a 0x1A00 -s set_pos_x main.lst >> common_routines.inc
 	$(CALC_ADDRESS) -a 0x1A00 -s inc_frame main.lst >> common_routines.inc
+	$(CALC_ADDRESS) -a 0x1A00 -s bank7_to_256_copy main.lst >> common_routines.inc
 	cd bank0_title && make
 	$(CALC_ADDRESS) -a 0x1000 -s do_title bank0_title/bank0_title.lst > bank0_routines.inc
 	$(CALC_ADDRESS) -a 0x1000 -s do_checkers bank0_title/bank0_title.lst >> bank0_routines.inc
