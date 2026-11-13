@@ -123,7 +123,7 @@ main.bin:	main.o
 	ld65 -o main.bin main.o -C $(LINKER_SCRIPT)/atari2600_1a00_e7.inc
 
 
-main.o:	main.s zp.inc \
+main.o:	main.s zp.inc framebuffer.s \
 	common_routines.s zx02_optim.s inc_frame.s
 	echo "do_title = 0 " > bank0_routines.inc
 	echo "do_checkers = 0 " >> bank0_routines.inc

@@ -77,7 +77,7 @@ start_framebuffer:
 	stx	GRP0							; 3
 	stx	GRP1							; 3
 	stx	CTRLPF		; unreflect playfield
-	sta	COLUBK		; background color			; 3
+	stx	COLUBK		; background color			; 3
 
 	lda	#$0e
 	sta	COLUPF
@@ -93,8 +93,8 @@ start_framebuffer:
 	;=============================================
 	; wait 30 lines
 	;=============================================
-	ldx	#29
-	jsr	repeat_wsync
+;	ldx	#29
+;	jsr	repeat_wsync
 
 
 	;=============================================
@@ -146,7 +146,7 @@ start_framebuffer:
 	sta	VDELP1							; 3
 ; 47
 	; number of lines to draw
-	ldx	#128							; 2
+	ldx	#42							; 2
 	stx	SPRITE_LENGTH							; 3
 ; 52
 	sta	WSYNC							; 3
@@ -165,7 +165,7 @@ start_framebuffer:
 	ldx	#0		; sprite 0 display nothing		; 2
 	stx	GRP0		;					; 3
 
-	ldx	#6		;					; 2
+	ldx	#6h		;					; 2
 ; 7
 
 tpad_x:
@@ -207,23 +207,23 @@ tpad_x:
 
 title_spriteloop:
 ; 0
-	lda	$1400,X			; load sprite0 data		; 4+
+	lda	$1900,X			; load sprite0 data		; 4+
 	sta	GRP0			; 0->[GRP0] [GRP1 (?)]->GRP1	; 3
 ; 7
-	lda	$1480,X			; load sprite1 data		; 4+
+	lda	$192A,X			; load sprite1 data		; 4+
 	sta	GRP1			; 1->[GRP1], [GRP0 (0)]-->GRP0	; 3
 ; 14
-	lda	$1500,X			; load sprite2 data		; 4+
+	lda	$1954,X			; load sprite2 data		; 4+
 	sta	GRP0			; 2->[GRP0], [GRP1 (1)]-->GRP1	; 3
 ; 21
 
-	lda	$1680,X			; sprite5			; 4+
+	lda	$19D2,X			; sprite5			; 4+
 	sta	TEMP1			; save for later		; 3
 ; 28
-	lda	$1600,X			; sprite4			; 4+
+	lda	$19A8,X			; sprite4			; 4+
 	tay				; save in Y			; 2
 ; 34
-	lda	$1580,X			; sprite3			; 4+
+	lda	$197E,X			; sprite3			; 4+
 	ldx	TEMP1			; restore saved value		; 3
 ; 41
 
@@ -278,8 +278,7 @@ title_spriteloop:
 	;=============================
 	; draw bottom 31 lines
 
-	ldx	#31
-;	ldx	#8
+	ldx	#150
 	jsr	repeat_wsync
 
 

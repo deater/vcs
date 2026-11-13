@@ -19,7 +19,7 @@
 	;==============================
 	;==============================
 
-e7_test:
+ds_demo:
 	sei		; disable interrupts
 	cld		; clear decimal bit
 
@@ -60,6 +60,11 @@ clear_loop:
 	; Run Scenes
 	;==============================
 again:
+
+	sta	E7_SET_BANK5
+	jsr	do_credits
+
+	jsr	do_framebuffer
 
 	sta	E7_SET_BANK0
 	jsr	do_checkers
@@ -113,23 +118,7 @@ do_play_music:
 	.include "position.s"
 	.include "inc_frame.s"
 
-.if 0
-	.include "memory_test.s"
-	.include "print_word.s"
-	.include "print_byte.s"
-	.include "print_string.s"
-	.include "update_byte.s"
-	.include "center_string.s"
-	.include "joypad_routines.s"
-
-	;==========================
-	; graphics
-	;==========================
-;.align $100
-	.include "strings.inc"
-	.include "number_font.inc"
-
-.endif
+	.include "framebuffer.s"
 
 
 ; e7 signature for MAME */
@@ -140,6 +129,6 @@ do_play_music:
 	.byte $00
 
 .segment "IRQ_VECTORS"
-	.word e7_test	; NMI
-	.word e7_test	; RESET
+	.word ds_demo	; NMI
+	.word ds_demo	; RESET
 	.byte $E7,$00	; IRQ

@@ -10,7 +10,36 @@
 .include "../timing.inc"
 
 
+; 256/6 = 42 = $2A
+
+; 00, 2A, 54, 7E, A8, D2
+
 do_credits:
+	ldx	#0
+lloop:
+	lda	font_zeros,X
+	sta	$1800,X
+	lda	font_ones,X
+	sta	$182A,X
+	lda	font_twos,X
+	sta	$1854,X
+	lda	font_threes,X
+	sta	$187E,X
+	lda	font_fours,X
+	sta	$18A8,X
+	lda	font_fives,X
+	sta	$18D2,X
+
+
+	inx
+	cpx	#7
+	bne	lloop
+
+
+	rts
+
+
+do_credits2:
 
 	; comes in at unknown cycles, w/o last WSYNC
 

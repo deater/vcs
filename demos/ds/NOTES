@@ -1,3 +1,4 @@
+
 Irix Redux?
 Irix Reborn?
 Irix Reloaded?
@@ -39,3 +40,17 @@ credits
 more effects:
 + scrolling DNA?
 + from another world?
+
+
+
+
+
+Scrolling:
+	Copying slow.  If just 48x64, take roughly 72 scanlines to scroll up?
+
+	Rarely need to scroll at 60fps
+	
+
+	putpixel routine
+
+	
