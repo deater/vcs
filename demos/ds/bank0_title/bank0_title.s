@@ -64,55 +64,15 @@ start_title:
 	;===================
 	; now scanline 35
 	;===================
-	; does nothing?
+	; more init
 
-	sta	WSYNC
-
-.if 0
-
-	; center the sprite position
-	; needs to be right after a WSYNC
-
-; 0
-	; to center exactly would want sprite0 at
-	;	CPU cycle 41.3
-	; and sprite1 at
-	;	GPU cycle 44
-
-	ldx	#0		; sprite 0 display nothing		; 2
-	stx	GRP0		;					; 3
-
-	ldx	#6		;					; 2
-; 7
-
-tpad_x:
-	dex			;					; 2
-	bne	tpad_x		;					; 2/3
-	; for X delays (5*X)-1
-	; so in this case, 29
-; 36
-	; beam is at proper place
-	sta	RESP0							; 3
-	; 39 (GPU=??, want ??) +?
-; 39
-	sta	RESP1							; 3
-	; 42 (GPU=??, want ??) +?
-; 42
-
-	lda	#$F0		; opposite what you'd think		; 2
-	sta	HMP0							; 3
-	lda	#$00							; 2
-	sta	HMP1							; 3
-; 52
-
+	lda	#0
+	sta	PF0
+	sta	PF1
+	sta	PF2
 
 
 	sta	WSYNC
-; 0
-;	sta	HMOVE		; adjust fine tune, must be after WSYNC
-; 3
-
-.endif
 
 
 	;=======================
@@ -149,46 +109,69 @@ tpad_x:
 
 	;=============================================
 	;=============================================
-	; draw title
+	;=============================================
+	; draw logo
+	;=============================================
 	;=============================================
 	;=============================================
 	; draw 192 lines
 	; need to race beam to draw other half of playfield
 
+
+
+	;=============================================
+	; draw 74 lines of nothing
+	;=============================================
+	ldx	#74
+	jsr	repeat_wsync
+
+; 8
+	; clean WSYNC for alignment
+
+	sta	WSYNC
+
+	;=============================================
+	; draw 41 lines of logo
+	;=============================================
+
+
+
 title_loop:
 ; 0
-	lda	title_colors,X	;					; 4
-	sta	COLUPF		; set playfield color			; 3
+	lda	#$2E
+;	lda	desire1_colors,X	;				; 4
+	sta	COLUPF			; set playfield color		; 3
 	nop								; 2
 	nop								; 2
+	nop
 ; 11
-	lda	title_playfield0_left,X		;			; 4
+	lda	desire1_playfield0_left,X	;			; 4
 	sta	PF0				;			; 3
 	nop								; 2
 
 	; must write by CPU 22 [GPU 68]
 ; 20
-	lda	title_playfield1_left,X		;			4+
+	lda	desire1_playfield1_left,X	;			4+
 	sta	PF1				;			3
 	; must write by CPU 28 [GPU 84]
 ; 27
-	lda	title_playfield2_left,X		;			4+
+	lda	desire1_playfield2_left,X		;			4+
 	sta	PF2				;			3
 	; must write by CPU 38 [GPU 116]
 ; 34
 
 	nop					;			2
-	lda	title_playfield0_right,X	;			4+
+	lda	desire1_playfield0_right,X	;			4+
 	sta	PF0				;			3
 	; must write by CPU 49 [GPU 148]
 ; 43
-	lda	title_playfield1_right,X	;			4+
+	lda	desire1_playfield1_right,X	;			4+
 	sta	PF1				;			3
 	; must write by CPU 54 [GPU 164]
 ; 50
 
 	lda	$80				; nop3			3
-	lda	title_playfield2_right,X	;			4+
+	lda	desire1_playfield2_right,X	;			4+
 	sta	PF2				;			3
 	; must write by CPU 65 [GPU 196]
 ; 60
@@ -209,7 +192,7 @@ done_inx:
 	lda	$80
 
 ; 71
-	cpy	#(192)							; 2
+	cpy	#41							; 2
 	bne	title_loop						; 2/3
 
 ; 76
@@ -217,6 +200,25 @@ done_inx:
 done_loop:
 
 ; 75
+
+	;===================
+	; scanline 75+41
+	;===================
+	; clear playfield
+
+	lda	#0
+	sta	PF0
+	sta	PF1
+	sta	PF2
+	sta	WSYNC
+
+
+	;=============================================
+	; draw 75 lines of nothing
+	;=============================================
+	ldx	#75
+	jsr	repeat_wsync
+
 
 	;==========================
 	;==========================

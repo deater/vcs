@@ -61,10 +61,10 @@ clear_loop:
 	;==============================
 again:
 
-	sta	E7_SET_BANK5
-	jsr	do_credits
+;	sta	E7_SET_BANK5
+;	jsr	do_credits
 
-	jsr	do_framebuffer
+;	jsr	do_framebuffer
 
 	sta	E7_SET_BANK0
 	jsr	do_checkers
