@@ -58,6 +58,7 @@ int main(int argc, char **argv) {
 	int generate_bg=0;
 	int is_pal=0,custom_ysize=0;
 	int reverse=0,out_index;
+	int force_background=0;
 
 	char input_filename[BUFSIZ],output_filename[BUFSIZ];
 	char *name=NULL;
@@ -76,6 +77,7 @@ int main(int argc, char **argv) {
 			name=strdup(optarg);
 			break;
 		case 'b':
+			force_background=1;
 			background_color=strtod(optarg,NULL);
 			break;
 		case 'y':
@@ -176,7 +178,7 @@ int main(int argc, char **argv) {
 
 	/* generate background color table */
 	which_line=0;
-	if (generate_bg) {
+	if ((generate_bg) && (!force_background)) {
 		if (name) {
 			fprintf(outfile,"%s_bg_colors:\n",name);
 		}
