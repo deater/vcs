@@ -123,10 +123,21 @@ start_title:
 	; draw 74 lines of nothing
 	;=============================================
 	ldx	#74
-	jsr	repeat_wsync
+gradient_loop:
+	txa
+	adc	FRAMEL
+	lsr
+	lsr
+	sta	COLUBK
+	dex
+	sta	WSYNC
+	bne	gradient_loop
 
 ; 8
 	; clean WSYNC for alignment
+
+	lda	#0
+	sta	COLUBK
 
 	sta	WSYNC
 
@@ -216,8 +227,24 @@ done_loop:
 	;=============================================
 	; draw 75 lines of nothing
 	;=============================================
-	ldx	#75
-	jsr	repeat_wsync
+;	ldx	#75
+;	jsr	repeat_wsync
+
+	;=============================================
+	; draw 75 lines of nothing
+	;=============================================
+	ldx	#0
+gradient_loop2:
+	txa
+	adc	FRAMEL
+	lsr
+	lsr
+	sta	COLUBK
+	inx
+	sta	WSYNC
+	cpx	#75
+	bne	gradient_loop2
+
 
 
 	;==========================
