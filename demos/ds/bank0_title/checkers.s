@@ -24,6 +24,12 @@ do_checkers:
 	; scanline 36 -- increment frame
 
 	jsr	inc_frame
+
+	lda	#0
+	sta	GRP0
+	sta	GRP1
+
+
 	sta	WSYNC
 
 	;=======================

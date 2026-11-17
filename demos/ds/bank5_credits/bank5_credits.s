@@ -12,162 +12,14 @@
 
 
 do_credits:
-	;=======================================================
-	;=======================================================
-	; setup frame 1
-	;=======================================================
-	;=======================================================
-setup_credits_1:
-	;=============================
-	jsr	common_vblank
-; 9
-	;================================
-	; play music -- scanlines 0..10
-	;================================
-        ; takes 11 lines?
 
-	lda	#5		; our bank
-	jsr	do_play_music
-	sta	WSYNC
+; init frame1
 
-	;============================ now 11
-	sta	E7_SET_256_BANK1
-	sta	WSYNC			; reserve room to clear stuff
+.include "frame1_init.s"
 
-	;============================ now 12
+; init frame2
 
-	jsr	clear_to_black	; 34 scanlines
-
-	;============================ now 46
-
-	lda	#<logo_string
-	sta	INL
-	lda	#>logo_string
-	sta	INH
-	lda	#0
-	jsr	print_string
-
-	;============================ now 71
-
-	lda	#<hammerfist_string
-	sta	INL
-	lda	#>hammerfist_string
-	sta	INH
-	lda	#10
-	jsr	print_string
-
-	;============================ now 96
-
-;	lda	#<music_string
-;	sta	INL
-;	lda	#>music_string
-;	sta	INH
-;	lda	#22
-;	jsr	print_string
-
-	;============================ now 121
-
-;	lda	#<miker_string
-;	sta	INL
-;	lda	#>miker_string
-;	sta	INH
-;	lda	#32
-;	jsr	print_string
-
-	;============================ now 146
-
-	ldx	#42+37+50+2
-	jsr	repeat_wsync
-
-	;=========================== now 192
-
-	ldx	#29
-	jsr	common_overscan
-
-	; debug
-;	jmp	setup_credits_1
-
-
-
-	; comes in at unknown cycles, w/o last WSYNC
-
-
-setup_credits_2:
-	;=============================
-	jsr	common_vblank
-; 9
-	;================================
-	; play music -- scanlines 0..10
-	;================================
-        ; takes 11 lines?
-
-	lda	#5		; our bank
-	jsr	do_play_music
-	sta	WSYNC
-
-	;============================ now 11
-
-	sta	E7_SET_256_BANK0
-	sta	WSYNC			; reserve room to clear stuff
-
-	;============================ now 12
-
-	jsr	clear_to_black	; 34 scanlines
-
-	;============================ now 46
-
-	lda	#<code_string
-	sta	INL
-	lda	#>code_string
-	sta	INH
-	lda	#0
-	jsr	print_string
-
-	;============================ now 71
-
-	lda	#<deater_string
-	sta	INL
-	lda	#>deater_string
-	sta	INH
-	lda	#10
-	jsr	print_string
-
-	;============================ now 96
-
-	lda	#<music_string
-	sta	INL
-	lda	#>music_string
-	sta	INH
-	lda	#22
-	jsr	print_string
-
-	;============================ now 121
-
-	lda	#<miker_string
-	sta	INL
-	lda	#>miker_string
-	sta	INH
-	lda	#32
-	jsr	print_string
-
-	;============================ now 146
-
-	ldx	#42+37
-	jsr	repeat_wsync
-
-	;=========================== now 192
-
-	ldx	#29
-	jsr	common_overscan
-
-	; debug
-;	jmp	setup_credits_1
-
-
-
-	; comes in at unknown cycles, w/o last WSYNC
-
-
+.include "frame2_init.s"
 
 start_credits:
 
@@ -411,17 +263,128 @@ title_spriteloop:
 
 	sta	WSYNC
 
-
+	;===============================================================
+	;===============================================================
+	;===============================================================
 	; scanilne 46
+
+	ldx	#10
+	jsr	repeat_wsync
+
+
+	;===========================
+	; scanline 0 -- configure
+	;===========================
+	; configure 48-pixel sprite code
+
+	; make playfield black
+	lda	#$00		; black					; 2
+	sta	SPRITE_OFFSET
+; 39
+	; turn on delay
+
+	lda	#1							; 2
+	sta	VDELP0							; 3
+	sta	VDELP1							; 3
+; 47
+	; number of lines to draw
+	ldx	#42							; 2
+	stx	SPRITE_LENGTH							; 3
+; 52
+	sta	WSYNC							; 3
+
+
+
+	;===================
+	; now scanline 2
+	;===================
+
+	ldx	#42
+	stx	SPRITE_LENGTH
+	ldx	SPRITE_OFFSET	; restore sprite offset
+
+	sta	WSYNC
+
+	;==========================
+	; now scanline 3+(0..41)
+	;==========================
+
+mirror_spriteloop:
+
+; 0
+	lda	$1900,X			; load sprite0 data		; 4+
+	sta	GRP0			; 0->[GRP0] [GRP1 (?)]->GRP1	; 3
+; 7
+	lda	$192A,X			; load sprite1 data		; 4+
+	sta	GRP1			; 1->[GRP1], [GRP0 (0)]-->GRP0	; 3
+; 14
+	lda	$1954,X			; load sprite2 data		; 4+
+	sta	GRP0			; 2->[GRP0], [GRP1 (1)]-->GRP1	; 3
+; 21
+
+	lda	$19D2,X			; sprite5			; 4+
+	sta	TEMP1			; save for later		; 3
+; 28
+	lda	$19A8,X			; sprite4			; 4+
+	tay				; save in Y			; 2
+; 34
+	lda	$197E,X			; sprite3			; 4+
+	ldx	TEMP1			; restore saved value		; 3
+; 41
+
+	sta	GRP1			; 3->[GRP1], [GRP0 (2)]-->GRP0	; 3
+	; (need this to be 44 .. 46)
+; 44
+	sty	GRP0			; 4->[GRP0], [GRP1 (3)]-->GRP1	; 3
+	; (need this to be 47 .. 49)
+; 47
+	stx	GRP1			; 5->[GRP1], [GRP0 (4)]-->GRP0	; 3
+	; (need this to be 50 .. 51)
+; 50
+	sty	GRP0			; ?->[GRP0], [GRP1 (5)]-->GRP1 	; 3
+	; (need this to be 52 .. 54)
+; 53
+
+	; need 9 cycles of nops
+	lda	$80
+	lda	$80
+	lda	$80
+
+
+; 62
+	inc	SPRITE_OFFSET						; 5
+	ldx	SPRITE_OFFSET						; 3
+	cpx	SPRITE_LENGTH						; 3
+; 73
+	bne	mirror_spriteloop					; 2/3
+	; 76  (goal is 76)
+
+
+; 75
+	;=========================
+	; done drawing line
+	; 3+(42)
+
+	ldy	#0		; clear out sprite data			; 2
+	sty	GRP1							; 3
+	sty	GRP0							; 3
+	sty	GRP1							; 3
+
+	lda	#$0		; end the black window
+	sta	PF2
+
+	sta	WSYNC
 
 
 
 	;=============================
 	; draw bottom lines
 
-	ldx	#146
+	ldx	#146-50-42-3-10-10
 	jsr	repeat_wsync
 
+
+.include "parallax_kernel.s"
 
 
 done_loop:
