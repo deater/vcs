@@ -15,6 +15,8 @@
 
 do_title:
 
+.include "frame1_init.s"
+
 ; ? / 24
 start_title:
 
@@ -139,6 +141,8 @@ gradient_loop:
 	lda	#0
 	sta	COLUBK
 
+	lda	$1900,X			;	preload			; 
+
 	sta	WSYNC
 
 	;=============================================
@@ -149,58 +153,49 @@ gradient_loop:
 
 title_loop:
 ; 0
-	lda	#$2E
-;	lda	desire1_colors,X	;				; 4
+	nop								; 2
 	sta	COLUPF			; set playfield color		; 3
-	nop								; 2
-	nop								; 2
-	nop
-; 11
+	lda	$1900+42,X						; 4
+	sta	COLUBK			; set background color		; 3
+
+; 12
 	lda	desire1_playfield0_left,X	;			; 4
 	sta	PF0				;			; 3
-	nop								; 2
 
 	; must write by CPU 22 [GPU 68]
-; 20
+; 19
 	lda	desire1_playfield1_left,X	;			4+
 	sta	PF1				;			3
 	; must write by CPU 28 [GPU 84]
-; 27
-	lda	desire1_playfield2_left,X		;			4+
+; 26
+	lda	desire1_playfield2_left,X	;			4+
 	sta	PF2				;			3
 	; must write by CPU 38 [GPU 116]
-; 34
-
-	nop					;			2
+; 33
 	lda	desire1_playfield0_right,X	;			4+
 	sta	PF0				;			3
 	; must write by CPU 49 [GPU 148]
-; 43
+; 40
 	lda	desire1_playfield1_right,X	;			4+
 	sta	PF1				;			3
 	; must write by CPU 54 [GPU 164]
-; 50
-
+; 47
+	nop					;			2
 	lda	$80				; nop3			3
+
+; 52
 	lda	desire1_playfield2_right,X	;			4+
 	sta	PF2				;			3
 	; must write by CPU 65 [GPU 196]
-; 60
+; 59
 
-        iny                                                             ; 2
-;        tya                                                             ; 2
-;        and     #$3                                                     ; 2
-;        beq     yes_inx                                                 ; 2/3
-;        .byte   $A5     ; begin of LDA ZP                               ; 3
-yes_inx:
-        inx             ; $E8 should be harmless to load                ; 2
-done_inx:
-                                                                ;===========
-                                                                ; 11/11
+	iny								; 2
+	inx								; 2
+	lda	$1900,X			;	preload			; 4
 
-	nop
-	nop
-	lda	$80
+; 67
+	nop								; 2
+	nop								; 2
 
 ; 71
 	cpy	#41							; 2
@@ -280,3 +275,31 @@ done_title:
 .include "checkers.s"
 
 .include "desire_pf.inc"
+
+.include "colors1.inc"
+.include "colors2.inc"
+.include "colors3.inc"
+
+
+	;==========================
+	; copy to 256 84
+	;==========================
+	; src is in INL,INH
+	; X is which 256 page
+
+	; 7-1+6++84*17 = 1440/76= 18.94
+	;	plus overhead really 20
+
+copy_to_256_84:
+	sta	E7_SET_256_BANK0,X					; 5
+	ldy	#0							; 2
+copy_256_84_loop:
+	lda	(INL),Y							; 5
+	sta	$1800,Y							; 5
+	iny								; 2
+	cpy	#84							; 2
+	bne	copy_256_84_loop					; 2/3
+
+	sta	WSYNC
+
+	rts

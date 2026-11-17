@@ -61,14 +61,9 @@ clear_loop:
 	;==============================
 again:
 
-;	sta	E7_SET_BANK5
-;	jsr	do_credits
-
-;	jsr	do_framebuffer
-
 	sta	E7_SET_BANK0
 	jsr	do_checkers
-;	jsr	do_title
+	jsr	do_title
 
 ;	sta	E7_SET_BANK1
 ;	jsr	do_bounce

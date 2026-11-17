@@ -9,7 +9,7 @@ bank0_title.bin:	bank0_title.o
 	ld65 -o bank0_title.bin bank0_title.o -C $(LINKER_SCRIPT)/atari2600_1000.inc
 
 bank0_title.o:	bank0_title.s ../zp.inc \
-	checkers.s desire_pf.inc
+	checkers.s desire_pf.inc frame1_init.s
 	ca65 -o bank0_title.o bank0_title.s -l bank0_title.lst
 
 ###
