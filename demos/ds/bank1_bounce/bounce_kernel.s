@@ -72,19 +72,46 @@ bounce_effect:
 ; 5
 	dec	FIRST_TIME	; reset to 0				; 5
 ; 10
-	ldy	#100							; 2
+
+	; setup big in the middle
+
+	; big is 16 across*4 = 64
+	; 160-64 = 96/2 = 48
+
+	ldy	#48							; 2
 	sty	SPRITE0_X						; 3
 	sty	SPRITE0_Y						; 3
 	sty	SPRITE1_Y						; 3
-; 21
-	ldy	#108							; 2
+	ldy	#80							; 2
 	sty	SPRITE1_X						; 3
-; 26
-	lda	#$FF							; 2
+	lda	#$00							; 2
 	sta	SPRITE0_XADD						; 3
 	sta	SPRITE0_YADD						; 3
 	sta	SPRITE1_XADD						; 3
+	lda	#(17*4)
+	sta	SPRITE_HEIGHT
+
+;	lda	#CTRLPF_PFP			; behind			; 2
+	lda	#0
+	sta	CTRLPF							; 3
+
+
+
+;	ldy	#100							; 2
+;	sty	SPRITE0_X						; 3
+;	sty	SPRITE0_Y						; 3
+;	sty	SPRITE1_Y						; 3
+; 21
+;	ldy	#108							; 2
+;	sty	SPRITE1_X						; 3
+; 26
+;	lda	#$FF							; 2
+;	sta	SPRITE0_XADD						; 3
+;	sta	SPRITE0_YADD						; 3
+;	sta	SPRITE1_XADD						; 3
 ; 37
+;	lda	#17
+;	sta	SPRITE_HEIGHT
 done_first_time:
 	sta	WSYNC
 
@@ -92,6 +119,35 @@ done_first_time:
 	; scaline 26 -- incremement frame
 	;==============================
 	jsr	inc_frame		; 30
+
+
+;	NUSIZ_ONE_COPY          = $00   ; eight pixels total for sprite
+ ;       NUSIZ_TWO_COPIES_CLOSE  = $01   ; second is at x+16
+  ;      NUSIZ_TWO_COPIES_MED    = $02   ; second is at x+32
+   ;     NUSIZ_THREE_COPIES_CLOSE= $03   ; second is at x+16
+    ;    NUSIZ_TWO_COPIES_WIDE   = $04   ; second is at x+64
+     ;   NUSIZ_DOUBLE_SIZE       = $05   ; sixteen pixels wide
+      ;  NUSIZ_THREE_COPIES_MED  = $06   ; second is at x+32
+       ; NUSIZ_QUAD_SIZE         = $07   ; thirty-two pixels wide
+
+
+
+;	lda	#NUSIZ_TWO_COPIES_CLOSE		; OK
+;	lda	#NUSIZ_TWO_COPIES_MED		; BETTER
+;	lda	#NUSIZ_THREE_COPIES_CLOSE	; OK
+;	lda	#NUSIZ_TWO_COPIES_WIDE		; too far away
+;	lda	#NUSIZ_DOUBLE_SIZE		; would need to adjust height
+;	lda	#NUSIZ_THREE_COPIES_MED		; unexciting
+	lda	#NUSIZ_QUAD_SIZE		; unexciting
+
+
+
+
+
+	sta	NUSIZ0
+	sta	NUSIZ1
+
+
 	sta	WSYNC
 
 	;============]============================
@@ -220,9 +276,9 @@ done_sprite1_x:
 	sta	VDELP0							; 3
 	sta	VDELP1		; turn off delay			; 3
 
-	lda	#NUSIZ_ONE_COPY						; 2
-	sta	NUSIZ0							; 3
-	sta	NUSIZ1		; configure sprite size			; 3
+;	lda	#NUSIZ_ONE_COPY						; 2
+;	sta	NUSIZ0							; 3
+;	sta	NUSIZ1		; configure sprite size			; 3
 
 	; reflect sprite 1
 
@@ -238,21 +294,31 @@ done_sprite1_x:
 ; 0
 
 	lda	#0							; 2
-	sta	COLUPF			; fg, black			; 3
 	sta	GRP0			; sprite 1			; 3
 	sta	GRP1			; sprite 2			; 3
 
 ; 13
 
-	lda	#$F0			; set playfield			; 2
-	sta	PF0			;				; 3
-	lda	#$FF							; 2
-	sta	PF1			;				; 3
-	sta	PF2			; all on			; 3
+	; stripes
+
+        lda     #$55
+        ldy     #$aa
+        sta     PF0
+        sta     PF2
+        sty     PF1
+
+
+	lda	#$4
+	sta	COLUPF			; fg, black			; 3
+
+
+;	lda	#$F0			; set playfield			; 2
+;	sta	PF0			;				; 3
+;	lda	#$FF							; 2
+;	sta	PF1			;				; 3
+;	sta	PF2			; all on			; 3
 
 ; 29
-	lda	#CTRLPF_REF		; reflect			; 2
-	sta	CTRLPF							; 3
 
 ; 34
 	ldy	#0							; 2
@@ -273,6 +339,8 @@ done_sprite1_x:
 	;=========================
 	; 192 scanlines
 
+	; X is zero here
+
 raster_playfield:
 	; comes in at 3 cycles
 
@@ -286,20 +354,36 @@ raster_playfield:
 	; set sprite size
 	;============================
 
-	ldy	#$0							; 2
-	txa								; 2
-	sbc	SPRITE0_Y						; 3
-	cmp	#17 ;BOX_HEIGHT						; 2
+	ldy	#$0			; sprite pointer		; 2
+	txa				; X is row			; 2
+	sbc	SPRITE0_Y		; subtract y-position		; 3
+	cmp	SPRITE_HEIGHT						; 3
 	bcs	no_sprite0						; 2/3
-	tay								; 2
+	lsr
+	lsr
+	tay				; otherwise result is offset	; 2
 	lda	sprite_data,Y						; 4
 	tay								; 2
 no_sprite0:
 	sty	GRP0							; 3
 	sty	GRP1							; 3
 								;==========
-								; 22 worst
-; 22
+								; 23 worst
+; 23
+
+	txa
+	and	#$04
+	bne	odd_checks
+even_checks:
+	lda	#4
+	ldy	#$0
+	beq	done_checks
+odd_checks:
+	lda	#$0
+	ldy	#$4
+done_checks:
+	sta	COLUPF
+	STY	COLUBK
 
 	inx								; 2
 	cpx	#191							; 2

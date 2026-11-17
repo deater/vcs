@@ -50,7 +50,8 @@ SPRITE0_X_COARSE        = $AA
 SPRITE0_XADD            = $AB
 SPRITE1_X               = $AC
 SPRITE1_Y               = $AD
-SPRITE1_X_COARSE        = $AE
+;SPRITE1_X_COARSE        = $AE
+SPRITE_HEIGHT		= $AE
 SPRITE1_XADD            = $AF
 
 FONTL			= $B0
