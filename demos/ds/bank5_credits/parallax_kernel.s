@@ -185,7 +185,7 @@ alternate_pf0:
 	inx								; 2
 
 
-	cpx	#60-13							; 1
+	cpx	#80-13							; 1
 
 ; 67
 	sta	WSYNC							; 3

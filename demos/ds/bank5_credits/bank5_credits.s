@@ -266,9 +266,12 @@ title_spriteloop:
 	;===============================================================
 	;===============================================================
 	;===============================================================
-	; scanilne 46
+	; scanline 46
 
-	ldx	#10
+
+	; 20 padding between
+
+	ldx	#20
 	jsr	repeat_wsync
 
 
@@ -277,8 +280,19 @@ title_spriteloop:
 	;===========================
 	; configure 48-pixel sprite code
 
+	lda	#$06			; reflection is darker
+	sta	COLUP0
+	sta	COLUP1
+
 	; make playfield black
-	lda	#$00		; black					; 2
+
+	lda	FRAMEL
+	lsr
+	lsr
+	lsr
+	and	#1
+	clc
+	adc	#40							; 2
 	sta	SPRITE_OFFSET
 ; 39
 	; turn on delay
@@ -287,10 +301,6 @@ title_spriteloop:
 	sta	VDELP0							; 3
 	sta	VDELP1							; 3
 ; 47
-	; number of lines to draw
-	ldx	#42							; 2
-	stx	SPRITE_LENGTH							; 3
-; 52
 	sta	WSYNC							; 3
 
 
@@ -299,8 +309,7 @@ title_spriteloop:
 	; now scanline 2
 	;===================
 
-	ldx	#42
-	stx	SPRITE_LENGTH
+
 	ldx	SPRITE_OFFSET	; restore sprite offset
 
 	sta	WSYNC
@@ -346,17 +355,24 @@ mirror_spriteloop:
 ; 53
 
 	; need 9 cycles of nops
-	lda	$80
-	lda	$80
-	lda	$80
+;	lda	$80
+;	lda	$80
+;	lda	$80
 
+	nop
+	nop
+	lda	$80
+;	lda	$80
+;	nop
 
 ; 62
-	inc	SPRITE_OFFSET						; 5
+	dec	SPRITE_OFFSET						; 5
+	dec	SPRITE_OFFSET						; 5
 	ldx	SPRITE_OFFSET						; 3
-	cpx	SPRITE_LENGTH						; 3
+
+;	cpx	SPRITE_LENGTH						; 3
 ; 73
-	bne	mirror_spriteloop					; 2/3
+	bpl	mirror_spriteloop					; 2/3
 	; 76  (goal is 76)
 
 
@@ -380,7 +396,12 @@ mirror_spriteloop:
 	;=============================
 	; draw bottom lines
 
-	ldx	#146-50-42-3-10-10
+	; 42+3=credits
+	; 20  = padding
+	; 21+3= reflection
+	; 70=parallax
+
+	ldx	#(192-45-20-25-80)
 	jsr	repeat_wsync
 
 
