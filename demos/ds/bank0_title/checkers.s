@@ -32,8 +32,6 @@ do_checkers:
 	lda	#178	; playfield color (dark green)
 	sta	COLUPF
 
-
-
 	ldy	#0
 	sty	VBLANK
 	sty	CTRLPF		; turn off mirroring

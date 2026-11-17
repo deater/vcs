@@ -10,66 +10,163 @@
 .include "../timing.inc"
 
 
-; font 4x8, 6 columns
-;	128 rows
-
-
-;	2A= 42 lines / 8 = 5
-
 
 do_credits:
+	;=======================================================
+	;=======================================================
+	; setup frame 1
+	;=======================================================
+	;=======================================================
+setup_credits_1:
+	;=============================
+	jsr	common_vblank
+; 9
+	;================================
+	; play music -- scanlines 0..10
+	;================================
+        ; takes 11 lines?
 
-	; clear to black
+	lda	#5		; our bank
+	jsr	do_play_music
+	sta	WSYNC
 
+	;============================ now 11
+	sta	E7_SET_256_BANK1
+	sta	WSYNC			; reserve room to clear stuff
+
+	;============================ now 12
+
+	jsr	clear_to_black	; 34 scanlines
+
+	;============================ now 46
+
+	lda	#<logo_string
+	sta	INL
+	lda	#>logo_string
+	sta	INH
 	lda	#0
-	tax
-clear_loop:
-	sta	$1800,X
-	dex
-	bne	clear_loop
+	jsr	print_string
 
-	; setup
+	;============================ now 71
+
+	lda	#<hammerfist_string
+	sta	INL
+	lda	#>hammerfist_string
+	sta	INH
+	lda	#10
+	jsr	print_string
+
+	;============================ now 96
+
+;	lda	#<music_string
+;	sta	INL
+;	lda	#>music_string
+;	sta	INH
+;	lda	#22
+;	jsr	print_string
+
+	;============================ now 121
+
+;	lda	#<miker_string
+;	sta	INL
+;	lda	#>miker_string
+;	sta	INH
+;	lda	#32
+;	jsr	print_string
+
+	;============================ now 146
+
+	ldx	#42+37+50+2
+	jsr	repeat_wsync
+
+	;=========================== now 192
+
+	ldx	#29
+	jsr	common_overscan
+
+	; debug
+;	jmp	setup_credits_1
+
+
+
+	; comes in at unknown cycles, w/o last WSYNC
+
+
+setup_credits_2:
+	;=============================
+	jsr	common_vblank
+; 9
+	;================================
+	; play music -- scanlines 0..10
+	;================================
+        ; takes 11 lines?
+
+	lda	#5		; our bank
+	jsr	do_play_music
+	sta	WSYNC
+
+	;============================ now 11
+
+	sta	E7_SET_256_BANK0
+	sta	WSYNC			; reserve room to clear stuff
+
+	;============================ now 12
+
+	jsr	clear_to_black	; 34 scanlines
+
+	;============================ now 46
 
 	lda	#<code_string
 	sta	INL
 	lda	#>code_string
 	sta	INH
-
 	lda	#0
-
 	jsr	print_string
+
+	;============================ now 71
 
 	lda	#<deater_string
 	sta	INL
 	lda	#>deater_string
 	sta	INH
-
 	lda	#10
-
 	jsr	print_string
+
+	;============================ now 96
 
 	lda	#<music_string
 	sta	INL
 	lda	#>music_string
 	sta	INH
-
 	lda	#22
-
 	jsr	print_string
+
+	;============================ now 121
 
 	lda	#<miker_string
 	sta	INL
 	lda	#>miker_string
 	sta	INH
-
 	lda	#32
-
 	jsr	print_string
 
+	;============================ now 146
+
+	ldx	#42+37
+	jsr	repeat_wsync
+
+	;=========================== now 192
+
+	ldx	#29
+	jsr	common_overscan
+
+	; debug
+;	jmp	setup_credits_1
 
 
 
 	; comes in at unknown cycles, w/o last WSYNC
+
 
 
 start_credits:
@@ -108,6 +205,11 @@ start_credits:
 	; needs to be right after a WSYNC
 ; 0
 	jsr	inc_frame
+
+	lda	FRAMEH			; pick which credits
+	and	#$1
+	tax
+	sta	E7_SET_256_BANK0,X
 
 	sta	WSYNC
 
@@ -424,6 +526,7 @@ font_inner_loop:
 	cpx	#6							; 2
 	bmi	font_outer_loop						; 2/3
 ; 17
+	sta	WSYNC
 	rts
 
 
@@ -447,6 +550,30 @@ miker_string:
 	.byte FONT_SPACE,FONT_SPACE,FONT_SPACE,FONT_SPACE,FONT_SPACE,FONT_SPACE
 	.byte FONT_MLEFT,FONT_MRIGHT,FONT_I,FONT_K,FONT_E,FONT_R
 
+logo_string:
+	.byte FONT_L,FONT_O,FONT_G,FONT_O,FONT_SPACE,FONT_B
+	.byte FONT_Y,FONT_COLON,FONT_SPACE,FONT_SPACE,FONT_SPACE,FONT_SPACE
+
+hammerfist_string:
+	.byte FONT_H,FONT_A,FONT_MLEFT,FONT_MRIGHT,FONT_MLEFT,FONT_MRIGHT
+	.byte FONT_E,FONT_R,FONT_F,FONT_I,FONT_S,FONT_T
+
+
+
+	;=============================
+	; clear to black
+	;=============================
+
+	; 4+(256*10)-1 + 6 = 2563 / 76 = 34 scanlines
+clear_to_black:
+	lda	#0							; 2
+	tax								; 2
+clear_loop:
+	sta	$1800,X							; 5
+	dex								; 2
+	bne	clear_loop						; 2/3
+
+	rts
 
 	.include "simple_font.inc"
 
