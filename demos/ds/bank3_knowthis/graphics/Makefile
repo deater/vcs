@@ -4,7 +4,13 @@ PNG2PF = ../../../../utils/png2pf
 PNG2SPRITE = ../../../../utils/png2sprite
 PNG2OVERLAY = ../../../../utils/png2overlay
 
-all:	ikt_pf.inc ikt_face.inc
+all:	ikt_pf.inc ikt_face.inc ikt_message.inc
+
+
+###
+
+ikt_message.inc:	ikt_message.png
+	$(PNG2SPRITE) -f -n ikt_message -s 0 -l 18 -w 2 -r 2 ikt_message.png ikt_message.inc
 
 
 ###
@@ -18,5 +24,5 @@ ikt_face.inc:	ikt_face.png
 ###
 
 clean:	
-	rm -f *~ *.o *.lst ikt_pf.inc
+	rm -f *~ *.o *.lst ikt_pf.inc ikt_message.inc
 
