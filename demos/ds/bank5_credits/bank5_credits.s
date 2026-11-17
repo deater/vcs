@@ -48,6 +48,26 @@ clear_loop:
 
 	jsr	print_string
 
+	lda	#<music_string
+	sta	INL
+	lda	#>music_string
+	sta	INH
+
+	lda	#22
+
+	jsr	print_string
+
+	lda	#<miker_string
+	sta	INL
+	lda	#>miker_string
+	sta	INH
+
+	lda	#32
+
+	jsr	print_string
+
+
+
 
 	; comes in at unknown cycles, w/o last WSYNC
 
@@ -87,6 +107,7 @@ start_credits:
 	; center the sprite position
 	; needs to be right after a WSYNC
 ; 0
+	jsr	inc_frame
 
 	sta	WSYNC
 
@@ -338,72 +359,71 @@ done_credits:
 	; string is in INL,INH
 	; line  is in A
 
+	; cycles = (20-1)+6*((38-1)+8*31)+17)
+	;	  19+6*(54+248)
+	;	=1831
+	;	1831/76=25 scanlines
+
 print_string:
 
-	sta	OUTL
+	sta	OUTL							; 3
 
-;	lda	#<$1800
-;	sta	OUTL
-	lda	#>$1800
-	sta	OUTH
+	lda	#>E7_256B_WRITE_ADDR					; 2
+	sta	OUTH							; 3
 
-	lda	#>simple_font
-	sta	FONT2H
-	sta	FONTH
+	lda	#>simple_font						; 2
+	sta	FONT2H							; 3
+	sta	FONTH							; 3
 
-	lda	#0		; 6*2 chars wide
-	sta	TEMP1
+	ldx	#0		; 6*2 chars wide			; 2
+	ldy	#0							; 2
+; 20
 
 font_outer_loop:
 
-	lda	TEMP1
-	asl
-	tay
-	lda	(INL),Y
-
-	asl
-	asl
-	asl
-	sta	FONTL
-
-	iny
-	lda	(INL),Y
-
-	asl
-	asl
-	asl
-	sta	FONT2L
-
-
-
-
-	ldy	#0
-	ldx	#0
+	txa			; load column offset			; 2
+	asl								; 2
+	tay								; 2
+	lda	(INL),Y							; 5
+; 11
+	asl								; 2
+	asl								; 2
+	asl								; 2
+	sta	FONTL							; 3
+; 20
+	iny								; 2
+	lda	(INL),Y							; 5
+; 27
+	asl								; 2
+	asl								; 2
+	asl								; 2
+	sta	FONT2L							; 3
+; 36
+	ldy	#0							; 2
+; 38
 font_inner_loop:
-	lda	(FONTL),Y
-;	lda	font_es,X
-	and	#$f0
-	sta	TEMP
-	lda	(FONT2L),Y
-	and	#$0f
-	ora	TEMP
+	lda	(FONTL),Y						; 5
+	and	#$f0							; 2
+	sta	TEMP							; 3
+	lda	(FONT2L),Y						; 5
+	and	#$0f							; 2
+	ora	TEMP							; 3
+; 20
+	sta	(OUTL),Y						; 6
+	iny								; 2
+	cpy	#8							; 2
+	bne	font_inner_loop						; 2/3
+; 31
 
-	sta	(OUTL),Y
-	iny
-	inx
-	cpx	#8
-	bne	font_inner_loop
-
-	clc
-	lda	OUTL
-	adc	#(42)
-	sta	OUTL
-
-	inc	TEMP1
-	lda	TEMP1
-	cmp	#6
-	bne	font_outer_loop
-
+	clc								; 2
+	lda	OUTL							; 3
+	adc	#(42)							; 2
+	sta	OUTL							; 3
+; 10
+	inx								; 2
+	cpx	#6							; 2
+	bmi	font_outer_loop						; 2/3
+; 17
 	rts
 
 
@@ -412,12 +432,20 @@ font_inner_loop:
 	;==========================
 
 code_string:
-	.byte FONT_C,FONT_O,FONT_D,FONT_E,FONT_SPACE,FONT_B
-	.byte FONT_Y,FONT_COLON,FONT_SPACE,FONT_SPACE,FONT_SPACE,FONT_SPACE
+	.byte FONT_CLEFT,FONT_CRIGHT,FONT_O,FONT_D,FONT_E,FONT_SPACE
+	.byte FONT_B,FONT_Y,FONT_COLON,FONT_SPACE,FONT_SPACE,FONT_SPACE
 
 deater_string:
-	.byte FONT_SPACE, FONT_SPACE, FONT_SPACE, FONT_SPACE, FONT_SPACE, FONT_SPACE
-	.byte FONT_D, FONT_E, FONT_A, FONT_T, FONT_E, FONT_R
+	.byte FONT_SPACE, FONT_SPACE, FONT_SPACE, FONT_SPACE, FONT_SPACE, FONT_DLEFT
+	.byte FONT_DRIGHT, FONT_E, FONT_A, FONT_T, FONT_E, FONT_R
+
+music_string:
+	.byte FONT_MLEFT,FONT_MRIGHT,FONT_U,FONT_S,FONT_I,FONT_C
+	.byte FONT_SPACE,FONT_B,FONT_Y,FONT_COLON,FONT_SPACE,FONT_SPACE
+
+miker_string:
+	.byte FONT_SPACE,FONT_SPACE,FONT_SPACE,FONT_SPACE,FONT_SPACE,FONT_SPACE
+	.byte FONT_MLEFT,FONT_MRIGHT,FONT_I,FONT_K,FONT_E,FONT_R
 
 
 	.include "simple_font.inc"

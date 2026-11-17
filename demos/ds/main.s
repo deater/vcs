@@ -66,8 +66,8 @@ again:
 
 ;	jsr	do_framebuffer
 
-;	sta	E7_SET_BANK0
-;	jsr	do_checkers
+	sta	E7_SET_BANK0
+	jsr	do_checkers
 ;	jsr	do_title
 
 ;	sta	E7_SET_BANK1

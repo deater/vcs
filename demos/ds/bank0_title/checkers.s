@@ -36,6 +36,7 @@ do_checkers:
 
 	ldy	#0
 	sty	VBLANK
+	sty	CTRLPF		; turn off mirroring
 
 	ldx	#192		; lines
 	sta	WSYNC
