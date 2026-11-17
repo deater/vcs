@@ -63,7 +63,7 @@ again:
 
 	sta	E7_SET_BANK0
 	jsr	do_checkers
-	jsr	do_title
+;	jsr	do_title
 
 ;	sta	E7_SET_BANK1
 ;	jsr	do_bounce
@@ -81,9 +81,6 @@ again:
 	jsr	do_credits
 
 	jmp	again
-
-;	jsr	title_screen	; wastes 2 bytes of stack?
-
 
 	;===========================
 	; common routines
@@ -108,6 +105,7 @@ do_play_music:
 	rts
 
 .include "bank7_to_256_copy.s"
+.include "rom_to_256_copy.s"
 
 .align $100
 	.include "position.s"

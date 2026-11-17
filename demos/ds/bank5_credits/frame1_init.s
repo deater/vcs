@@ -44,25 +44,32 @@ setup_credits_1:
 
 	;============================ now 96
 
-;	lda	#<music_string
-;	sta	INL
-;	lda	#>music_string
-;	sta	INH
-;	lda	#22
-;	jsr	print_string
+	lda	#<steffest_string
+	sta	INL
+	lda	#>steffest_string
+	sta	INH
+	lda	#20
+	jsr	print_string
 
 	;============================ now 121
 
-;	lda	#<miker_string
-;	sta	INL
-;	lda	#>miker_string
-;	sta	INH
-;	lda	#32
-;	jsr	print_string
+	lda	#<dsr_bolt0
+	sta	INL
+	lda	#>dsr_bolt0
+	sta	INH
+	ldx	#2
+	jsr	rom_to_256_copy
 
-	;============================ now 146
+	;============================ now 171
 
-	ldx	#42+37+50+2
+
+	; 4 from VSYNC
+	; 11 from MUSIC
+	; 34 for clear
+	; 25*3 for strings
+	; 50 for rom cpy
+
+	ldx	#(41+192)-(171)-8
 	jsr	repeat_wsync
 
 	;=========================== now 192
@@ -72,6 +79,3 @@ setup_credits_1:
 
 	; debug
 ;	jmp	setup_credits_1
-
-
-

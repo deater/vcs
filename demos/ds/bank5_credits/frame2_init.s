@@ -59,9 +59,18 @@ setup_credits_2:
 	lda	#32
 	jsr	print_string
 
-	;============================ now 146
+	;=========================== now 146
 
-	ldx	#42+37
+	lda	#<random_data
+	sta	INL
+	lda	#>random_data
+	sta	INH
+	ldx	#3
+	jsr	rom_to_256_copy
+
+	;============================ now 196
+
+	ldx	#24
 	jsr	repeat_wsync
 
 	;=========================== now 192
@@ -70,5 +79,5 @@ setup_credits_2:
 	jsr	common_overscan
 
 	; debug
-;	jmp	setup_credits_1
+;	jmp	setup_credits_2
 

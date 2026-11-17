@@ -59,7 +59,7 @@ start_credits:
 	jsr	inc_frame
 
 	lda	FRAMEH			; pick which credits
-	and	#$1
+	and	#$3
 	tax
 	sta	E7_SET_256_BANK0,X
 
@@ -535,12 +535,16 @@ miker_string:
 	.byte FONT_MLEFT,FONT_MRIGHT,FONT_I,FONT_K,FONT_E,FONT_R
 
 logo_string:
-	.byte FONT_L,FONT_O,FONT_G,FONT_O,FONT_SPACE,FONT_B
-	.byte FONT_Y,FONT_COLON,FONT_SPACE,FONT_SPACE,FONT_SPACE,FONT_SPACE
+	.byte FONT_L,FONT_O,FONT_G,FONT_O,FONT_S,FONT_SPACE
+	.byte FONT_B,FONT_Y,FONT_COLON,FONT_SPACE,FONT_SPACE,FONT_SPACE
 
 hammerfist_string:
 	.byte FONT_H,FONT_A,FONT_MLEFT,FONT_MRIGHT,FONT_MLEFT,FONT_MRIGHT
 	.byte FONT_E,FONT_R,FONT_F,FONT_I,FONT_S,FONT_T
+
+steffest_string:
+	.byte FONT_SPACE,FONT_SPACE,FONT_SPACE,FONT_SPACE,FONT_S,FONT_T
+	.byte FONT_E,FONT_F,FONT_F,FONT_E,FONT_S,FONT_T
 
 
 
@@ -560,5 +564,6 @@ clear_loop:
 	rts
 
 	.include "simple_font.inc"
-
-
+	.include "dsr_bolt.inc"
+random_data:
+	.incbin "random.bin"
