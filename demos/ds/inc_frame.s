@@ -1,5 +1,5 @@
 	; increment frame count
-	; total is 30 cycles if you include the jsr
+	; total is 48 cycles if you include the jsr
 inc_frame:
 
 	lda	FRAMEL							; 3
@@ -9,7 +9,17 @@ inc_frame:
 	lda	#0							; 2
 	adc	FRAMEH							; 3
 	sta	FRAMEH							; 3
+; 18
+
+	lda	EFFECTL							; 3
+	clc								; 2
+	adc	#1							; 2
+	sta	EFFECTL							; 3
+	lda	#0							; 2
+	adc	EFFECTH							; 3
+	sta	EFFECTH							; 3
+; 36
 
 	rts								; 6
 								;===========
-								;	24
+								;	42

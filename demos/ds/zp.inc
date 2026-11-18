@@ -36,23 +36,17 @@ BANK_1K_DATA_5	= $9D
 BANK_1K_DATA_6	= $9E
 TEMPY		= $9F
 
-;WHICH_EFFECT            = $90
-SPRITE0_YADD            = $A1
-RASTER_R_Y              = $A2
-RASTER_R_YADD           = $A3
-RASTER_B_Y              = $A4
-RASTER_B_YADD           = $A5
-RASTER_G_Y              = $A6
-RASTER_G_YADD           = $A7
-SPRITE0_X               = $A8
-SPRITE0_Y               = $A9
-SPRITE0_X_COARSE        = $AA
-SPRITE0_XADD            = $AB
-SPRITE1_X               = $AC
-SPRITE1_Y               = $AD
-;SPRITE1_X_COARSE        = $AE
-SPRITE_HEIGHT		= $AE
-SPRITE1_XADD            = $AF
+SPRITE0_YADD            = $A0
+SPRITE0_X               = $A1
+SPRITE0_Y               = $A2
+SPRITE0_XADD            = $A3
+SPRITE1_X               = $A4
+SPRITE1_Y               = $A5
+SPRITE_HEIGHT		= $A6
+SPRITE1_XADD            = $A7
+EFFECTL			= $A8
+EFFECTH			= $A9
+WHICH_EFFECT		= $AA
 
 FONTL			= $B0
 FONTH			= $B1
@@ -71,23 +65,6 @@ ZIGZAG4			= $BC
 ZIGZAG5			= $BD
 ZIGZAG6			= $BE
 ZIGZAG7			= $BF
-
-
-READ_1K_L_DATA_0	= $C0
-READ_1K_L_DATA_1	= $C1
-READ_1K_L_DATA_2	= $C2
-READ_1K_L_DATA_3	= $C3
-READ_1K_L_DATA_4	= $C4
-READ_1K_L_DATA_5	= $C5
-READ_1K_L_DATA_6	= $C6
-
-READ_1K_H_DATA_0	= $C8
-READ_1K_H_DATA_1	= $C9
-READ_1K_H_DATA_2	= $CA
-READ_1K_H_DATA_3	= $CB
-READ_1K_H_DATA_4	= $CC
-READ_1K_H_DATA_5	= $CD
-READ_1K_H_DATA_6	= $CE
 
 
 ; for the zx02 decompression

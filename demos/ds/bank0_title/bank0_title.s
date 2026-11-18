@@ -59,12 +59,30 @@ start_title:
 	;====================
 	; increment frame
 
-	jsr	inc_frame
+	jsr	inc_frame	; 48 cycles
         sta     WSYNC
 
 
+	;=======================
+	; scanline 35
+	;=======================
+	; first time
+
+	lda	FIRST_TIME
+	beq	skip_first_time
+first_time_init:
+	dec	FIRST_TIME
+
+	lda	#0
+	sta	EFFECTL
+	sta	EFFECTH
+	sta	WHICH_EFFECT
+
+skip_first_time:
+	sta	WSYNC
+
 	;===================
-	; now scanline 35
+	; now scanline 36
 	;===================
 	; more init
 
@@ -73,14 +91,11 @@ start_title:
 	sta	PF1
 	sta	PF2
 
+	lda	EFFECTH
+	sta	WHICH_EFFECT
 
-	sta	WSYNC
-
-
-	;=======================
-	; scanline 36
-	;=======================
-	; does nothing
+	tax
+	sta	E7_SET_256_BANK0,X
 
 	sta	WSYNC
 
@@ -125,15 +140,20 @@ start_title:
 	; draw 74 lines of nothing
 	;=============================================
 	ldx	#74
-gradient_loop:
+top_gradient_loop:
+	lda	WHICH_EFFECT
+	cmp	#3
+	bcc	skip_top_gradient
+
 	txa
 	adc	FRAMEL
 	lsr
 	lsr
 	sta	COLUBK
+skip_top_gradient:
 	dex
 	sta	WSYNC
-	bne	gradient_loop
+	bne	top_gradient_loop
 
 ; 8
 	; clean WSYNC for alignment
@@ -220,25 +240,29 @@ done_loop:
 
 
 	;=============================================
-	; draw 75 lines of nothing
+	; draw 75 lines of gradient
 	;=============================================
-;	ldx	#75
-;	jsr	repeat_wsync
 
-	;=============================================
-	; draw 75 lines of nothing
-	;=============================================
+	lda	#0
+	sta	COLUBK
+	sta	WSYNC
+
 	ldx	#0
-gradient_loop2:
+bottom_gradient_loop:
+	lda	WHICH_EFFECT
+	cmp	#3
+	bcc	skip_bottom_gradient
+
 	txa
 	adc	FRAMEL
 	lsr
 	lsr
 	sta	COLUBK
+skip_bottom_gradient:
 	inx
 	sta	WSYNC
-	cpx	#75
-	bne	gradient_loop2
+	cpx	#74
+	bne	bottom_gradient_loop
 
 
 

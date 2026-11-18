@@ -21,12 +21,11 @@ setup_title_1:
 	ldx	#37-11-4
 	jsr	common_overscan
 
-
 	;============================ now 0
 
-	lda	#<desire1_colors_fg
+	lda	#<desire3_colors_fg
 	sta	INL
-	lda	#>desire1_colors_fg
+	lda	#>desire3_colors_fg
 	sta	INH
 	ldx	#0
 	jsr	copy_to_256_84
@@ -42,16 +41,28 @@ setup_title_1:
 
 	;============================ now 40
 
-	lda	#<desire3_colors_fg
+	lda	#<desire1_colors_fg
 	sta	INL
-	lda	#>desire3_colors_fg
+	lda	#>desire1_colors_fg
 	sta	INH
 	ldx	#2
 	jsr	copy_to_256_84
 
 	;============================ now 60
 
-	ldx	#192-60
+	lda	#<desire1_colors_fg
+	sta	INL
+	lda	#>desire1_colors_fg
+	sta	INH
+	ldx	#3
+	jsr	copy_to_256_84
+
+	;============================ now 80
+
+	; not sure why extra 2
+
+	inc	FIRST_TIME
+	ldx	#192-80-2
 	jsr	repeat_wsync
 
 	;=========================== now 192
