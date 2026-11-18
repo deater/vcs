@@ -9,7 +9,7 @@ bank2_desktop.bin:	bank2_desktop.o
 	ld65 -o bank2_desktop.bin bank2_desktop.o -C $(LINKER_SCRIPT)/atari2600_1000.inc
 
 bank2_desktop.o:	bank2_desktop.s ../zp.inc ../timing.inc \
-	desktop.s irix_pf.inc teapot0.inc
+	irix_pf.inc teapot0.inc frame1_init.s
 	ca65 -o bank2_desktop.o bank2_desktop.s -l bank2_desktop.lst
 
 ###
