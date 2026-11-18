@@ -13,6 +13,30 @@ title
 -> squish into place?
 -> drizzle away?
 
+; worst case:
+;	2+(84*36) = 3024/76= 40 lines
+
+-> 84 bytes, how to fade?
+	ldx	#0					; 2
+looper:
+	lda	$1900,X					; 4
+	; decrement nibble to 0 and stop
+	tay						; 2
+	and	#$F0					; 2
+	sta	TEMP					; 3
+	tya						; 2
+	and	#$0F					; 2
+	beq	done					; 2/3
+	sec						; 2
+	sbc	#1					; 2
+	ora	TEMP					; 3
+	sta	$1800,X					; 5
+done:
+	inx						; 2
+	cpx	#84					; 2
+	bne	looper					; 2/3
+
+
 bounce
 + sliding squares in background?
 + bouncing sgi cubes?  just one (but bigger)

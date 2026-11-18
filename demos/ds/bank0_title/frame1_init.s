@@ -19,7 +19,7 @@ setup_title_1:
 	;=========================== now 11
 
 	ldx	#37-11-4
-	jsr	common_overscan
+	jsr	repeat_wsync
 
 	;============================ now 0
 

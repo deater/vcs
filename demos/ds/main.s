@@ -63,7 +63,7 @@ again:
 
 	sta	E7_SET_BANK0
 	jsr	do_checkers
-	jsr	do_title
+;	jsr	do_title
 
 	sta	E7_SET_BANK1
 	jsr	do_bounce
