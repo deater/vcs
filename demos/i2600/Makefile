@@ -2,15 +2,15 @@ LINKER_SCRIPT = ../../linker_script
 CALC_ADDRESS = ../../utils/calc_address
 ROM_TOOL = ../../utils/rom_tool
 
-all:	ds.e7
+all:	i2600.e7
 
 ###
 
 
-ds.e7:	ds.o
-	ld65 -o ds.e7 ds.o -C $(LINKER_SCRIPT)/atari2600_e7.inc
+i2600.e7:	i2600.o
+	ld65 -o i2600.e7 i2600.o -C $(LINKER_SCRIPT)/atari2600_e7.inc
 
-ds.o:	ds.s main.bin \
+i2600.o:	i2600.s main.bin \
 	bank0_title/bank0_title.bin \
 	bank1_bounce/bank1_bounce.bin \
 	bank2_desktop/bank2_desktop.bin \
@@ -19,32 +19,32 @@ ds.o:	ds.s main.bin \
 	bank5_credits/bank5_credits.bin \
 	bank6_loop/bank6_music.bin \
 	zero_512.bin
-	ca65 -o ds.o ds.s
+	ca65 -o i2600.o i2600.s
 
 
 #####
 
-roms:	ds_rom1.bin ds_rom2.bin
+roms:	i2600_rom1.bin i2600_rom2.bin
 
-ds_rom1.bin:      ds.e7
-	dd if=ds.e7 of=ds_rom1.bin bs=1k count=8 skip=8
+i2600_rom1.bin:      i2600.e7
+	dd if=i2600.e7 of=i2600_rom1.bin bs=1k count=8 skip=8
 
-ds_rom2.bin:	ds.e7
-	dd if=ds.e7 of=ds_rom2.bin bs=1k count=8
+i2600_rom2.bin:	i2600.e7
+	dd if=i2600.e7 of=i2600_rom2.bin bs=1k count=8
 
 ###
 
-submit:	ds.zip
+submit:	i2600.zip
 
-ds.zip: ds.e7
-	mkdir -p demosplash2026_ds
-	mkdir -p demosplash2026_ds/src
-	cp ds.e7 ./demosplash2026_ds
-	cp file_id.diz ./demosplash2026_ds
-	cp ds_thumb.png ./demosplash2026_ds
-	cp *.s ./demosplash2026_ds/src
-	cp *.inc ./demosplash2026_ds/src
-	zip -r ds.zip demosplash2026_ds
+i2600.zip: i2600.e7
+	mkdir -p demosplash2026_i2600
+	mkdir -p demosplash2026_i2600/src
+	cp i2600.e7 ./demosplash2026_i2600
+	cp file_id.diz ./demosplash2026_i2600
+	cp i2600_thumb.png ./demosplash2026_i2600
+	cp *.s ./demosplash2026_i2600/src
+	cp *.inc ./demosplash2026_i2600/src
+	zip -r i2600.zip demosplash2026_i2600
 
 
 
@@ -166,7 +166,7 @@ main.o:	main.s zp.inc framebuffer.s \
 ###
 
 clean:	
-	rm -f *~ *.o *.lst ds.e7 zero_512.bin \
+	rm -f *~ *.o *.lst i2600.e7 zero_512.bin \
 	bank0_routines.inc bank1_routines.inc bank2_routines.inc \
 	bank3_routines.inc bank4_routines.inc bank5_routines.inc \
 	bank6_routines.inc common_routines.inc
