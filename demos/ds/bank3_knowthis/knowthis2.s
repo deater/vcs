@@ -326,20 +326,20 @@ knowthis2_loop:
 
 ; 0
 	ldy	ikt_colors,X	;					; 4
-;	nop								; 2
 	lda	#168		; blue					; 2
 	sta	COLUPF		; set playfield color			; 3
-	nop								; 2
 	nop								; 2
 ; 13
 	lda	ikt_playfield0_left,X		;			; 4
 	sta	PF0				;			; 3
-
 	; must write by CPU 22 [GPU 68]
+
 ; 20
 	lda	ikt_playfield1_left,X		;			4+
 	sta	PF1				;			3
 	; must write by CPU 28 [GPU 84]
+	nop								; 2
+
 ; 27
 	lda	ikt_playfield2_left,X		;			4+
 	sta	PF2				;			3
