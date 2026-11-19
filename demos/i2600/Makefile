@@ -24,6 +24,10 @@ i2600.o:	i2600.s main.bin \
 
 #####
 
+# for the EEPROM
+# minipro -y -p "AT28C64B" -w i2600_rom1.bin
+#
+
 roms:	i2600_rom1.bin i2600_rom2.bin
 
 i2600_rom1.bin:      i2600.e7
