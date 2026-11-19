@@ -49,7 +49,9 @@ EFFECTH			= $A9
 WHICH_EFFECT		= $AA
 BOUNCE_SPRITE0_HIGH	= $AB
 BOUNCE_SPRITE1_HIGH	= $AC
-
+rand_a			= $AD
+rand_b			= $AE
+rand_c			= $AF
 
 FONTL			= $B0
 FONTH			= $B1

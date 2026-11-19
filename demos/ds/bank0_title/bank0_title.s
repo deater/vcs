@@ -67,18 +67,19 @@ start_title:
 	; scanline 35
 	;=======================
 	; first time
+; 0
+	lda	WHICH_EFFECT						; 3
+	cmp	#3							; 2
+	bne	skip_drazzle						; 2/3
+; 7
+	jsr	random8							; 54
+; 61
+	tax								; 2
+	lda	#0		; clear random color slot in logo	; 2
+	sta	E7_256B_WRITE_ADDR,X					; 5
+; 70
 
-	lda	FIRST_TIME
-	beq	skip_first_time
-first_time_init:
-	dec	FIRST_TIME
-
-	lda	#0
-	sta	EFFECTL
-	sta	EFFECTH
-	sta	WHICH_EFFECT
-
-skip_first_time:
+skip_drazzle:
 	sta	WSYNC
 
 	;===================

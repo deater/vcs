@@ -61,7 +61,13 @@ setup_title_1:
 
 	; not sure why extra 2
 
-	inc	FIRST_TIME
+	ldx	#0
+	stx	EFFECTL
+	stx	EFFECTH
+	stx	WHICH_EFFECT
+	inx				; 1
+	stx	rand_c			; init PRNG
+
 	ldx	#192-80-2
 	jsr	repeat_wsync
 

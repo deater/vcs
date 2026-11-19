@@ -16,6 +16,10 @@ do_desktop:
 
 .include "frame1_init.s"
 
+.include "frame2_init.s"
+
+.include "frame3_init.s"
+
 start_desktop:
 
 	;=================

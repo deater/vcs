@@ -36,31 +36,9 @@ setup_desktop_1:
 
 	;============================ now 51
 
+	; why 2?
 
-	lda	#2			; we're bank2
-	sta	PAGE_SAVE
-
-	lda     #$4
-        sta     READ_WRITE_OFFSET
-
-        lda     #<E7_256B_READ_ADDR
-        sta     ZX0_src
-        lda     #>E7_256B_READ_ADDR
-        sta     ZX0_src_h
-
-        lda     #>E7_BANK_BASE
-        jsr     zx02_full_decomp
-
-
-	; now need to copy from 1k RAM to 256-byte RAM
-
-	lda	#2			; bank to return to
-	jsr	bank7_to_256_copy
-
-
-	;===============================
-
-	ldx	#191-51
+	ldx	#191-51-2
 	jsr	repeat_wsync
 
 
@@ -81,7 +59,7 @@ setup_desktop_1:
 	jsr	common_overscan
 
 	; debug
-	jmp	setup_desktop_1
+;	jmp	setup_desktop_1
 
 
 

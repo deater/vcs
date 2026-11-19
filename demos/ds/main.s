@@ -65,13 +65,13 @@ again:
 
 	sta	E7_SET_BANK0
 	jsr	do_checkers
-	jsr	do_title
+;	jsr	do_title
 
 ;	sta	E7_SET_BANK1
 ;	jsr	do_bounce
 
-;	sta	E7_SET_BANK2
-;	jsr	do_desktop
+	sta	E7_SET_BANK2
+	jsr	do_desktop
 
 ;	sta	E7_SET_BANK3
 ;	jsr	do_knowthis
@@ -112,8 +112,9 @@ do_play_music:
 .align $100
 	.include "position.s"
 	.include "inc_frame.s"
+	.include "random8.s"
 
-	.include "framebuffer.s"
+;	.include "framebuffer.s"
 
 
 ; e7 signature for MAME */
