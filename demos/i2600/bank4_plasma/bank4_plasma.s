@@ -9,21 +9,25 @@
 .include "../common_routines.inc"
 .include "../timing.inc"
 
+
+line1 = $1900
+line2 = $1932
+line3 = $1964
+line4 = $1996
+line5 = $19C8
+
 	;=======================
         ; plasma
         ;=======================
 do_plasma:
 
+.include "frame1_init.s"
+
 	;==========================
-	; title screen
+	; plasma screen
 	;==========================
-	; potentially arrive here with an unknown number of cycles/scanlines
 	; ideally VBLANK=2 (beam off)
-
-; should be zero from initial code
-
-;	lda	#$0
-;	sta	DONE_TITLE
+	; takes 4 scanlines total
 
 start_plasma:
 
@@ -62,6 +66,19 @@ start_plasma:
 	;====================
 	; now in scanline 35
 	;====================
+	; set up sierpinski
+
+
+	lda	FRAMEL
+	lsr
+	lsr
+	lsr
+
+	sta	YY
+
+	lda	FRAMEH
+	sta	EXTRACOL
+
         sta     WSYNC
 	;====================
 	; now in scanline 36
@@ -74,14 +91,16 @@ start_plasma:
 ; PPPPKKKK11112222KKKKPPPPKKKK11112222KKKK
 
 
-	lda	#CTRLPF_REF
+	; setup playfield
+
+	lda	#CTRLPF_REF			; reflecting playfield
 ;	lda	#CTRLPF_BALL_SIZE8
 	sta	CTRLPF
 
-	lda	#$1e
+	lda	#$1e				; clolor yellow?
 	sta	COLUPF
 
-	lda	#$C0
+	lda	#$C0				; to fit above
 	sta	PF0
 	lda	#$ff
 	sta	PF2
@@ -90,29 +109,14 @@ start_plasma:
 	lda	#$0
 	sta	COLUBK
 
-;	lda	#66
-;	sta	COLUP0
-
-;	lda	#98
-;	sta	COLUP1
-
-;	lda	#$ff
-;	sta	GRP0
-;	sta	GRP1
-;	lda	#$2
-;	sta	ENAM0
-;	sta	ENAM1
-;	sta	ENABL
-
-
+	; set up missiles?
 
 	lda	#NUSIZ_MISSILE_WIDTH_8
 	sta	NUSIZ0
 	sta	NUSIZ1
 
-
-
         sta     WSYNC
+
 	;====================
 	; now in scanline 37
 	;====================
@@ -133,12 +137,14 @@ start_plasma:
 	ldx	#15
 	jsr	repeat_wsync
 
+
 	sta	WSYNC
 
 	; 20 blocks tall, each 8 lines so 160
 
-looper:
-	jsr	line1
+plasma_loop:
+	sta	E7_SET_256_BANK0					; 4
+	jsr	line1+2		; skip 4 cycles
 	jsr	line1
 	jsr	line1
 	jsr	line1
@@ -183,64 +189,130 @@ looper:
 	jsr	line5
 	jsr	line5
 
-	jsr	line6
-	jsr	line6
-	jsr	line6
-	jsr	line6
-	jsr	line6
-	jsr	line6
-	jsr	line6
-	jsr	line6
+	sta	E7_SET_256_BANK1					; 4
 
-	jsr	line7
-	jsr	line7
-	jsr	line7
-	jsr	line7
-	jsr	line7
-	jsr	line7
-	jsr	line7
-	jsr	line7
+	jsr	line1+2		; skip 4 cycles
+	jsr	line1
+	jsr	line1
+	jsr	line1
+	jsr	line1
+	jsr	line1
+	jsr	line1
+	jsr	line1
 
-	jsr	line8
-	jsr	line8
-	jsr	line8
-	jsr	line8
-	jsr	line8
-	jsr	line8
-	jsr	line8
-	jsr	line8
+	jsr	line2
+	jsr	line2
+	jsr	line2
+	jsr	line2
+	jsr	line2
+	jsr	line2
+	jsr	line2
+	jsr	line2
 
-	jsr	line9
-	jsr	line9
-	jsr	line9
-	jsr	line9
-	jsr	line9
-	jsr	line9
-	jsr	line9
-	jsr	line9
+	jsr	line3
+	jsr	line3
+	jsr	line3
+	jsr	line3
+	jsr	line3
+	jsr	line3
+	jsr	line3
+	jsr	line3
 
-	jsr	line10
-	jsr	line10
-	jsr	line10
-	jsr	line10
-	jsr	line10
-	jsr	line10
-	jsr	line10
-	jsr	line10
+	jsr	line4
+	jsr	line4
+	jsr	line4
+	jsr	line4
+	jsr	line4
+	jsr	line4
+	jsr	line4
+	jsr	line4
 
-	ldx	#80
+	jsr	line5
+	jsr	line5
+	jsr	line5
+	jsr	line5
+	jsr	line5
+	jsr	line5
+	jsr	line5
+	jsr	line5
+
+	sta	E7_SET_256_BANK2					; 4
+
+	jsr	line1+2		; skip 4 cycles
+	jsr	line1
+	jsr	line1
+	jsr	line1
+	jsr	line1
+	jsr	line1
+	jsr	line1
+	jsr	line1
+
+	jsr	line2
+	jsr	line2
+	jsr	line2
+	jsr	line2
+	jsr	line2
+	jsr	line2
+	jsr	line2
+	jsr	line2
+
+	jsr	line3
+	jsr	line3
+	jsr	line3
+	jsr	line3
+	jsr	line3
+	jsr	line3
+	jsr	line3
+	jsr	line3
+
+	jsr	line4
+	jsr	line4
+	jsr	line4
+	jsr	line4
+	jsr	line4
+	jsr	line4
+	jsr	line4
+	jsr	line4
+
+	jsr	line5
+	jsr	line5
+	jsr	line5
+	jsr	line5
+	jsr	line5
+	jsr	line5
+	jsr	line5
+	jsr	line5
+
+	lda	#0
+	sta	COLUPF
+	sta	WSYNC
+
+	ldx	#6
 	jsr	repeat_wsync
 
-	ldx	#16
-	jsr	repeat_wsync
+	ldx	#0
+	jsr	sierpinski_third
+
+	ldx	#1
+	jsr	sierpinski_third
 
 
 	;==========================
 	; overscan for 30 scanlines
 	;==========================
 
-	ldx	#29
+	ldx	#5
 	jsr	common_overscan
+
+	;========================
+	;
+	;========================
+	;
+
+	ldx	#2
+	jsr	sierpinski_third
+
+	sta	WSYNC
 
 	lda	FRAMEL
 	cmp	#PLASMA_TIME_L
@@ -267,204 +339,7 @@ done_plasma:
 ;================================================================
 
 
-
-; comes in 6 cycles in
-line1:
-; 6
-	lda	$80	; 3
-	lda	$80	; 3
-	lda	$80	; 3
-	nop		; 2
-	nop		; 2
-
-
-; 19
-
-	; want to wait until 22.66 cpu clocks?
-							; cpu pixel pf 
-	lda	#$0e					; 2
-	sta	COLUPF					; 3	15  3.75
-	lda	#$1e					; 2
-	sta	COLUPF					; 3	30  7.5
-	lda	#$2e					; 2
-	sta	COLUPF					; 3	45  
-	lda	#$3e					; 2
-	sta	COLUPF					; 3	60
-	lda	#$4e					; 2
-	sta	COLUPF					; 3	75
-	lda	#$5e					; 2
-	sta	COLUPF					; 3	90
-	lda	#$6e
-	sta	COLUPF
-	lda	#$7e
-	sta	COLUPF
-	lda	#$8e
-	sta	COLUPF
-	lda	#$9e
-	sta	a:COLUPF
-
-; 70
-	rts
-; 6
-
-
-; comes in 6 cycles in
-line2:
-; 6
-	lda	$80	; 3
-	lda	$80	; 3
-	lda	$80	; 3
-	nop		; 2
-	nop		; 2
-
-
-; 19
-
-	; want to wait until 22.66 cpu clocks?
-							; cpu pixel pf 
-	lda	#$1e					; 2
-	sta	COLUPF					; 3	15  3.75
-	lda	#$2e					; 2
-	sta	COLUPF					; 3	30  7.5
-	lda	#$3e					; 2
-	sta	COLUPF					; 3	45  
-	lda	#$4e					; 2
-	sta	COLUPF					; 3	60
-	lda	#$5e					; 2
-	sta	COLUPF					; 3	75
-	lda	#$6e					; 2
-	sta	COLUPF					; 3	90
-	lda	#$7e
-	sta	COLUPF
-	lda	#$8e
-	sta	COLUPF
-	lda	#$9e
-	sta	COLUPF
-	lda	#$ae
-	sta	a:COLUPF
-
-; 70
-	rts
-; 6
-
-
-; comes in 6 cycles in
-line3:
-; 6
-	lda	$80	; 3
-	lda	$80	; 3
-	lda	$80	; 3
-	nop		; 2
-	nop		; 2
-
-
-; 19
-
-	; want to wait until 22.66 cpu clocks?
-							; cpu pixel pf 
-	lda	#$2e					; 2
-	sta	COLUPF					; 3	15  3.75
-	lda	#$3e					; 2
-	sta	COLUPF					; 3	30  7.5
-	lda	#$4e					; 2
-	sta	COLUPF					; 3	45  
-	lda	#$5e					; 2
-	sta	COLUPF					; 3	60
-	lda	#$6e					; 2
-	sta	COLUPF					; 3	75
-	lda	#$7e					; 2
-	sta	COLUPF					; 3	90
-	lda	#$8e
-	sta	COLUPF
-	lda	#$9e
-	sta	COLUPF
-	lda	#$ae
-	sta	COLUPF
-	lda	#$be
-	sta	a:COLUPF
-
-; 70
-	rts
-; 6
-
-; comes in 6 cycles in
-line4:
-; 6
-	lda	$80	; 3
-	lda	$80	; 3
-	lda	$80	; 3
-	nop		; 2
-	nop		; 2
-
-
-; 19
-
-	; want to wait until 22.66 cpu clocks?
-							; cpu pixel pf 
-	lda	#$3e					; 2
-	sta	COLUPF					; 3	15  3.75
-	lda	#$4e					; 2
-	sta	COLUPF					; 3	30  7.5
-	lda	#$5e					; 2
-	sta	COLUPF					; 3	45  
-	lda	#$6e					; 2
-	sta	COLUPF					; 3	60
-	lda	#$7e					; 2
-	sta	COLUPF					; 3	75
-	lda	#$8e					; 2
-	sta	COLUPF					; 3	90
-	lda	#$9e
-	sta	COLUPF
-	lda	#$ae
-	sta	COLUPF
-	lda	#$be
-	sta	COLUPF
-	lda	#$ce
-	sta	a:COLUPF
-
-; 70
-	rts
-; 6
-
-; comes in 6 cycles in
-line5:
-; 6
-	lda	$80	; 3
-	lda	$80	; 3
-	lda	$80	; 3
-	nop		; 2
-	nop		; 2
-
-
-; 19
-
-	; want to wait until 22.66 cpu clocks?
-							; cpu pixel pf 
-	lda	#$4e					; 2
-	sta	COLUPF					; 3	15  3.75
-	lda	#$5e					; 2
-	sta	COLUPF					; 3	30  7.5
-	lda	#$6e					; 2
-	sta	COLUPF					; 3	45  
-	lda	#$7e					; 2
-	sta	COLUPF					; 3	60
-	lda	#$8e					; 2
-	sta	COLUPF					; 3	75
-	lda	#$9e					; 2
-	sta	COLUPF					; 3	90
-	lda	#$ae
-	sta	COLUPF
-	lda	#$be
-	sta	COLUPF
-	lda	#$ce
-	sta	COLUPF
-	lda	#$de
-	sta	a:COLUPF
-
-; 70
-	rts
-; 6
-
+.if 0
 ; comes in 6 cycles in
 line6:
 ; 6
@@ -659,7 +534,66 @@ line10:
 ; 70
 	rts
 ; 6
+.endif
+
+.align $100
+draw_routine1:
+.incbin "draw_routine.bin"
 
 
+	;=====================
+	; sierpinksi third
+	;=====================
+	; roughly 27 scanlines?
+	;==========================
+	; YY set previously
+	; X is which bank
+
+sierpinski_third:
+
+	sta	E7_SET_256_BANK0,X
+
+	lda	#<$1800
+	sta	OUTL
+	lda	#>$1800
+	sta	OUTH
 
 
+	ldy	#9
+
+	ldx	#5
+sier_row_loop:
+
+	lda	#10
+	sta	XX
+
+sier_col_loop:
+
+	lda	XX
+	and	YY
+	clc
+	adc	EXTRACOL
+	sta	(OUTL),Y
+
+	iny
+	iny
+	iny
+	iny
+
+;	inc	XX
+;	lda	XX
+	dec	XX
+;	cmp	#10
+	bne	sier_col_loop
+
+	ldy	#9
+	lda	OUTL
+	clc
+	adc	#50
+	sta	OUTL
+
+	inc	YY
+	dex
+	bne	sier_row_loop
+
+	rts
