@@ -3,8 +3,10 @@ CALC_ADDRESS = ../../../utils/calc_address
 PNG2PF = ../../../../utils/png2pf
 PNG2SPRITE = ../../../../utils/png2sprite
 ZX02 = ~/research/6502_compression/zx02.git/build/zx02
+PNG2OVERLAY = ../../../../utils/png2overlay
 
-all:	irix_pf.inc \
+
+all:	irix_pf.inc irix_highlights.inc \
 	teapot0.inc teapot1.inc teapot2.inc teapot3.inc \
 	teapot4.inc teapot5.inc teapot6.inc teapot7.inc \
 	teapot_big.zx02 teapot_low.zx02 teapot_high.zx02 \
@@ -97,8 +99,11 @@ teapot7.inc:	teapot7.png
 irix_pf.inc:	irix_2600_pf.png
 	$(PNG2PF) -a -y 128 -b 0xa8 -n irix irix_2600_pf.png irix_pf.inc
 
+irix_highlights.inc:	irix_highlights.png
+	$(PNG2OVERLAY) -o -n irix_highlights irix_highlights.png irix_highlights.inc
+
 ###
 
 clean:	
-	rm -f *~ *.o *.lst irix_pf.inc teapot0.inc
+	rm -f *~ *.o *.lst irix_pf.inc irix_highlights.inc teapot0.inc
 

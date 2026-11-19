@@ -43,16 +43,16 @@ start_desktop:
 
 
 	;=============================
-	; scanlines 0..21 (unused)
+	; scanlines 0..19 (unused)
 	;=============================
 
-        ldx     #22
+        ldx     #19
 	jsr	repeat_wsync
 ; 8
 
 
 	;================================
-	; play music -- scanlines 22..33
+	; play music -- scanlines 20..30
 	;================================
 	; takes 11 lines, doesn't WSYNC
 
@@ -61,7 +61,7 @@ start_desktop:
 	sta	WSYNC
 
 	;====================
-	; now in scanline 34
+	; now in scanline 31
 	;====================
 
 	jsr	inc_frame
@@ -79,13 +79,24 @@ start_desktop:
         sta     WSYNC
 
 
+	;=======================
+	; scanline 33/34/35/36
+
+	lda	#4
+	ldx	#0
+	jsr	set_pos_x
+
+	sta	WSYNC
+	sta	HMOVE
+
+
 	;===================
-	; now scanline 35
+	; now scanline 32
 	;===================
 	; change effect
 ; 0
 	; switch effects as needed
-
+.if 0
 	ldx	WHICH_EFFECT						; 3
 	lda	next_effect_l,X						; 4
 	cmp	EFFECTL							; 3
@@ -97,17 +108,13 @@ start_desktop:
 ; 32
 	inc	WHICH_EFFECT						; 5
 ; 37
-
+.endif
 same_effect:
 
 
 	sta	WSYNC
 
 
-	;=======================
-	; scanline 36
-
-	sta	WSYNC
 
 	;=======================
 	; scanline 37 -- config
@@ -124,7 +131,12 @@ same_effect:
 	stx	CTRLPF		; unreflect playfield			; 3
 	stx	REFP1		; don't reflect sprite1			; 3
 
-	ldy	#0							; 2
+	; turn off sprite delay
+	stx	VDELP0							; 3
+	stx	VDELP1							; 3
+
+	lda	#NUSIZ_QUAD_SIZE					; 2
+	sta	NUSIZ0							; 3
 
 ; ??
 	sta	WSYNC
@@ -143,8 +155,9 @@ irix_loop:
 ; 0
 	lda	irix_colors,X	;					; 4
 	sta	COLUPF		; set playfield color			; 3
-	nop								; 2
-	nop								; 2
+
+	ldy	irix_highlights_overlay_sprite,X			; 4
+
 ; 11
 	lda	irix_playfield0_left,X		;			; 4
 	sta	PF0				;			; 3
@@ -162,38 +175,30 @@ irix_loop:
 ; 34
 
 	nop					;			2
-	lda	irix_playfield0_right,X	;			4+
+	lda	irix_playfield0_right,X		;			4+
 	sta	PF0				;			3
 	; must write by CPU 49 [GPU 148]
 ; 43
-	lda	irix_playfield1_right,X	;			4+
+	lda	irix_playfield1_right,X		;			4+
 	sta	PF1				;			3
 	; must write by CPU 54 [GPU 164]
 ; 50
 
-	lda	$80				; nop3			3
-	lda	irix_playfield2_right,X	;			4+
+	sty	GRP0				; overlay sprite	3
+;	lda	$80				; nop3			3
+	lda	irix_playfield2_right,X		;			4+
 	sta	PF2				;			3
 	; must write by CPU 65 [GPU 196]
 ; 60
 
-        iny                                                             ; 2
-;        tya                                                             ; 2
-;        and     #$3                                                     ; 2
-;        beq     yes_inx                                                 ; 2/3
-;        .byte   $A5     ; begin of LDA ZP                               ; 3
-yes_inx:
-        inx             ; $E8 should be harmless to load                ; 2
-done_inx:
-                                                                ;===========
-                                                                ; 11/11
+        inx								; 2
+	nop								; 2 
+; 64
 
-	nop
-	nop
-	lda	$80
-
+	lda	irix_highlights_overlay_colors,X			; 4
+	sta	COLUP0							; 3
 ; 71
-	cpy	#112							; 2
+	cpx	#112							; 2
 	bne	irix_loop						; 2/3
 
 ; 76
@@ -423,6 +428,8 @@ done_desktop:
 
 
 .include "irix_pf.inc"
+.include "irix_highlights.inc"
+
 ;.include "teapot0.inc"
 
 teapot_high:
@@ -439,5 +446,4 @@ next_effect_l:
 next_effect_h:
 	.byte   $00,$00,$01,$02,$04,$ff
 
-new_bank:
-	.byte   $00,$01,$02,$03,$03,$03
+
