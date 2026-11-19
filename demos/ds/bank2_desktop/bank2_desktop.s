@@ -1,4 +1,4 @@
-; title screen
+; desktop screen
 
 .include "../../../vcs.inc"
 

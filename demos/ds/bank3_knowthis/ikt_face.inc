@@ -13,6 +13,7 @@ ikt_face_overlay_colors:
 	.byte $04,$A0,$7E,$7E,$7C,$06,$7C,$06
 	.byte $7C,$04,$7C,$7C,$7C,$7C,$7C,$7C
 
+.align $100
 
 ikt_face_overlay_sprite:
 	.byte $00,$00,$00,$00,$01,$03,$07,$0F

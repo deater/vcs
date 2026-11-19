@@ -10,7 +10,7 @@ all:	ikt_pf.inc ikt_face.inc ikt_message.inc
 ###
 
 ikt_message.inc:	ikt_message.png
-	$(PNG2SPRITE) -f -n ikt_message -s 0 -l 18 -w 2 -r 2 ikt_message.png ikt_message.inc
+	$(PNG2SPRITE) -f -n ikt_message -s 0 -l 16 -w 2 -r 1 ikt_message.png ikt_message.inc
 
 
 ###

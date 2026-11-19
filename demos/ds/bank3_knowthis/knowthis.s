@@ -116,12 +116,13 @@ start_knowthis:
 	; need to race beam to draw other half of playfield
 	; split across 2
 
-title_loop:
+knowthis_loop:
 
 ; 0
-	lda	ikt_colors,X	;					; 4
+	ldy	ikt_colors,X	;					; 4
+;	nop								; 2
+	lda	#168		; blue					; 2
 	sta	COLUPF		; set playfield color			; 3
-	nop								; 2
 	nop								; 2
 	nop								; 2
 ; 13
@@ -139,18 +140,22 @@ title_loop:
 	; must write by CPU 38 [GPU 116]
 ; 34
 
+
 	nop					;			2
-	lda	ikt_playfield0_right,X	;			4+
+
+	lda	ikt_playfield0_right,X		;			4+
 	sta	PF0				;			3
 	; must write by CPU 49 [GPU 148]
 ; 43
-	lda	ikt_playfield1_right,X	;			4+
+	lda	ikt_playfield1_right,X		;			4+
 	sta	PF1				;			3
 	; must write by CPU 54 [GPU 164]
 ; 50
 
-	lda	$80				; nop3			3
-	lda	ikt_playfield2_right,X	;			4+
+	sty	COLUPF
+
+;	lda	$80				; nop3			3
+	lda	ikt_playfield2_right,X		;			4+
 	sta	PF2				;			3
 	; must write by CPU 65 [GPU 196]
 ; 60
@@ -159,11 +164,7 @@ title_loop:
 	sta	COLUP0							; 3
 ; 67
 	ldy	ikt_face_overlay_sprite,X				; 4
-
-
-
-
-
+; 71
 
 	sta	WSYNC
 
@@ -176,11 +177,8 @@ title_loop:
 	lda	ikt_colors,X	;					; 4
 	sta	COLUPF		; set playfield color			; 3
 	sty	GRP0							; 3
+	lda	$80		; nop3					; 3
 
-	lda	$80		; nop3
-;	nop								; 2
-;	nop								; 2
-;	nop								; 2
 ; 13
 	lda	ikt_playfield0_left,X		;			; 4
 	sta	PF0				;			; 3
@@ -198,35 +196,34 @@ title_loop:
 ; 34
 
 	nop					;			2
-	lda	ikt_playfield0_right,X	;			4+
+	lda	ikt_playfield0_right,X		;			4+
 	sta	PF0				;			3
 	; must write by CPU 49 [GPU 148]
 ; 43
-	lda	ikt_playfield1_right,X	;			4+
+	lda	ikt_playfield1_right,X		;			4+
 	sta	PF1				;			3
 	; must write by CPU 54 [GPU 164]
 ; 50
 
 	lda	$80				; nop3			3
-	lda	ikt_playfield2_right,X	;			4+
+	lda	ikt_playfield2_right,X		;			4+
 	sta	PF2				;			3
 	; must write by CPU 65 [GPU 196]
 ; 60
-;	lda	$80	; nop3
-;	lda	$80	; nop3
-;	lda	$80	; nop3
+	lda	$80	; nop3
+	lda	$80	; nop3
+	lda	$80	; nop3
 
-	nop
-	nop
-
-	lda	#168			; 2
-	sta	COLUPF			; 3
+;	nop
+;	nop
+;	lda	#168			; 2
+;	sta	COLUPF			; 3
 
 
 ; 69
         inx								; 2
 	cpx	#(96)							; 2
-	bne	title_loop						; 2/3
+	bne	knowthis_loop						; 2/3
 
 ; 76
 
@@ -242,24 +239,26 @@ done_loop:
 	ldx	#29
 	jsr	common_overscan
 
-	lda	FRAMEL
-	cmp	#KNOWTHIS_TIME_L
+	lda	EFFECTL
+	cmp	#0
 	bne	not_done_knowthis
-	lda     FRAMEH
-	cmp     #KNOWTHIS_TIME_H
+	lda	EFFECTH
+	cmp     #2
 	beq     done_knowthis
+
+
+;	lda	FRAMEL
+;	cmp	#KNOWTHIS_TIME_L
+;	bne	not_done_knowthis
+;	lda     FRAMEH
+;	cmp     #KNOWTHIS_TIME_H
+;	beq     done_knowthis
 not_done_knowthis:
 	jmp	start_knowthis						; 3
 ; 18
 
 done_knowthis:
 ; 16
-	rts
 
 
-.include "knowthis_pf.inc"
-.include "ikt_face.inc"
 
-bg_range:
-;	.byte 0,0,112,0,0,224,0,0
-	.byte 0,0,0,0,0,0,0,0

@@ -19,6 +19,14 @@ do_knowthis:
 
 
 .include "knowthis.s"
+.include "knowthis2.s"
 
 	rts
 
+.include "knowthis_pf.inc"
+.include "ikt_face.inc"
+.include "ikt_message.inc"
+
+bg_range:
+;       .byte 0,0,112,0,0,224,0,0
+        .byte 0,0,0,0,0,0,0,0
