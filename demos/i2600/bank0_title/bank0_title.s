@@ -9,6 +9,7 @@
 .include "../common_routines.inc"
 .include "../timing.inc"
 
+
 	;=======================
         ; title screen
         ;=======================
@@ -66,17 +67,17 @@ start_title:
 	;=======================
 	; scanline 35
 	;=======================
-	; first time
+	; make logo go away?
 ; 0
 	lda	WHICH_EFFECT						; 3
-	cmp	#3							; 2
+	cmp	#4							; 2
 	bne	skip_drazzle						; 2/3
 ; 7
-	jsr	random8							; 54
+;	jsr	random8							; 54
 ; 61
-	tax								; 2
-	lda	#0		; clear random color slot in logo	; 2
-	sta	E7_256B_WRITE_ADDR,X					; 5
+;	tax								; 2
+;	lda	#0		; clear random color slot in logo	; 2
+;	sta	E7_256B_WRITE_ADDR,X					; 5
 ; 70
 
 skip_drazzle:
@@ -86,18 +87,35 @@ skip_drazzle:
 	; now scanline 36
 	;===================
 	; more init
+; 0
+	; clear out playfield
+	lda	#0							; 2
+	sta	PF0							; 3
+	sta	PF1							; 3
+	sta	PF2							; 3
+; 11
 
-	lda	#0
-	sta	PF0
-	sta	PF1
-	sta	PF2
+	; switch effects as needed
 
-	lda	EFFECTH
-	sta	WHICH_EFFECT
+	ldx	WHICH_EFFECT						; 3
+	lda	next_effect_l,X						; 4
+	cmp	EFFECTL							; 3
+	bne	same_effect						; 2/3
+; 23
+	lda	next_effect_h,X						; 4
+	cmp	EFFECTH							; 3
+	bne	same_effect						; 2/3
+; 32
+	inc	WHICH_EFFECT						; 5
+; 37
 
-	tax
-	sta	E7_SET_256_BANK0,X
+same_effect:
 
+	ldx	WHICH_EFFECT						; 3
+	lda	new_bank,X						; 4
+	tax								; 2
+	sta	E7_SET_256_BANK0,X					; 5
+; 51
 	sta	WSYNC
 
 	;=======================
@@ -121,6 +139,11 @@ skip_drazzle:
 	sta	VBLANK			; turn on beam			; 3
 
 ; 25
+
+	jmp	align_hack
+.align $100
+
+align_hack:
 	sta	WSYNC
 
 
@@ -328,3 +351,24 @@ copy_256_84_loop:
 	sta	WSYNC
 
 	rts
+
+
+
+
+; EFFECTS!
+;  0 -- logo colors 1			0:00 - 0:60
+;  1 -- logo colors 2			0:80 - 1:00
+;  2 -- logo colors yellow		1:00 - 1:70
+;  3 -- animated background?		1:80 - 2:80 (switch)
+;  4 -- logo goes away?			2:00 - 4:00
+
+
+next_effect_l:
+	.byte	$50,$98,$40,$00,$00,$00
+next_effect_h:
+	.byte	$00,$00,$01,$02,$04,$ff
+
+new_bank:
+	.byte	$00,$01,$02,$03,$03,$03
+
+
