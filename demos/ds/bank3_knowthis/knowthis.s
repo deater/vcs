@@ -1,94 +1,73 @@
 	;==========================
 	; knowthis screen
 	;==========================
-	; potentially arrive here with an unknown number of cycles/scanlines
 	; ideally VBLANK=2 (beam off)
 
-; should be zero from initial code
-
-;	lda	#$0
-;	sta	DONE_TITLE
 
 start_knowthis:
 
 	;=================
 	; start VBLANK
 	;=================
-	; want to come in 1 scanline down
-	; as this finishes old then does 3 for VSYNC
+	; this takes 4 scalines
 
 	jsr	common_vblank
 
 ; 9
 
-
-
+	;=============================
+	;=============================
 	;=============================
 	; 37 lines of vertical blank
 	;=============================
+	;=============================
+	;=============================
 
-        ldx     #23
+
+	;================================
+	; scanlines 0..20 unused
+	;================================
+
+        ldx     #19
 	jsr	repeat_wsync
 
 	;================================
-	; play music -- scanlines 23..33
+	; play music -- scanlines 21..31
 	;================================
 	; takes 11 lines?
 
 	lda	#3		; our bank
 	jsr	do_play_music
-
+	sta	WSYNC
 
 	;====================
-	; now in scanline 34
+	; now in scanline 32
 	;====================
-	jsr	inc_frame
+	jsr	inc_frame		; 48
+
+	lda	#$aa
+	sta	GRP0			; sprite 0
+
+;	lda	#$1e
+;	sta	COLUP0
+
+	lda	#NUSIZ_DOUBLE_SIZE
+	sta	NUSIZ0
+
         sta     WSYNC
 
-.if 0
-	;===================
-	; now scanline 35
-	;===================
-	; center the sprite position
-	; needs to be right after a WSYNC
-; 0
-	; to center exactly would want sprite0 at
-	;	CPU cycle 41.3
-	; and sprite1 at
-	;	GPU cycle 44
 
-	ldx	#0		; sprite 0 display nothing		; 2
-	stx	GRP0		;					; 3
+	;=======================
+	; now scanline 33/34/35
+	;=======================
 
-	ldx	#6		;					; 2
-; 7
-
-tpad_x:
-	dex			;					; 2
-	bne	tpad_x		;					; 2/3
-	; for X delays (5*X)-1
-	; so in this case, 29
-; 36
-	; beam is at proper place
-	sta	RESP0							; 3
-	; 39 (GPU=??, want ??) +?
-; 39
-	sta	RESP1							; 3
-	; 42 (GPU=??, want ??) +?
-; 42
-
-	lda	#$F0		; opposite what you'd think		; 2
-	sta	HMP0							; 3
-	lda	#$00							; 2
-	sta	HMP1							; 3
-; 52
-
-.endif
+	lda	#119
+	ldx	#0			; sprite 0
+	jsr	set_pos_x
 
 	sta	WSYNC
-; 0
-;	sta	HMOVE		; adjust fine tune, must be after WSYNC
-; 3
+	sta	HMOVE
+
 
 	;=======================
 	; scanline 36
@@ -101,19 +80,30 @@ tpad_x:
 	ldy	#0							; 2
 	ldx	#0							; 2
 	stx	VBLANK			; turn on beam			; 3
+	stx	PF0
+	stx	PF1
+	stx	PF2
+
 	stx	GRP0							; 3
 	stx	GRP1							; 3
 	stx	CTRLPF			; reset playfield
-; 13
-;	lda	#$1E
-;	lda	BASE_TITLE_COLOR					; 3
-;	sta	TITLE_COLOR						; 3
-; 19
-;	lda	BACKGROUND_COLOR					; 3
-	lda	#$0
+
+
+	lda	FRAMEL
+	lsr
+	lsr
+	lsr
+	lsr
+	and	#$7
+	tax
+	lda	bg_range,X
 	sta	COLUBK							; 3
-; 25
+
+	ldx	#0
+
 	sta	WSYNC
+
+
 
 
 
@@ -133,10 +123,10 @@ title_loop:
 	sta	COLUPF		; set playfield color			; 3
 	nop								; 2
 	nop								; 2
-; 11
+	nop								; 2
+; 13
 	lda	ikt_playfield0_left,X		;			; 4
 	sta	PF0				;			; 3
-	nop								; 2
 
 	; must write by CPU 22 [GPU 68]
 ; 20
@@ -164,6 +154,15 @@ title_loop:
 	sta	PF2				;			3
 	; must write by CPU 65 [GPU 196]
 ; 60
+
+	lda	ikt_face_overlay_colors,X				; 4
+	sta	COLUP0							; 3
+; 67
+	ldy	ikt_face_overlay_sprite,X				; 4
+
+
+
+
 
 
 	sta	WSYNC
@@ -176,12 +175,16 @@ title_loop:
 ; 0
 	lda	ikt_colors,X	;					; 4
 	sta	COLUPF		; set playfield color			; 3
-	nop								; 2
-	nop								; 2
-; 11
+	sty	GRP0							; 3
+
+	lda	$80		; nop3
+;	nop								; 2
+;	nop								; 2
+;	nop								; 2
+; 13
 	lda	ikt_playfield0_left,X		;			; 4
 	sta	PF0				;			; 3
-	nop								; 2
+
 
 	; must write by CPU 22 [GPU 68]
 ; 20
@@ -209,9 +212,15 @@ title_loop:
 	sta	PF2				;			3
 	; must write by CPU 65 [GPU 196]
 ; 60
-	lda	$80	; nop3
-	lda	$80	; nop3
-	lda	$80	; nop3
+;	lda	$80	; nop3
+;	lda	$80	; nop3
+;	lda	$80	; nop3
+
+	nop
+	nop
+
+	lda	#168			; 2
+	sta	COLUPF			; 3
 
 
 ; 69
@@ -250,3 +259,7 @@ done_knowthis:
 
 .include "knowthis_pf.inc"
 .include "ikt_face.inc"
+
+bg_range:
+;	.byte 0,0,112,0,0,224,0,0
+	.byte 0,0,0,0,0,0,0,0

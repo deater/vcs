@@ -9,7 +9,7 @@ bank3_knowthis.bin:	bank3_knowthis.o
 	ld65 -o bank3_knowthis.bin bank3_knowthis.o -C $(LINKER_SCRIPT)/atari2600_1000.inc
 
 bank3_knowthis.o:	bank3_knowthis.s ../zp.inc ../timing.inc \
-	knowthis.s knowthis_pf.inc
+	knowthis.s knowthis_pf.inc frame1_init.s
 	ca65 -o bank3_knowthis.o bank3_knowthis.s -l bank3_knowthis.lst
 
 ###

@@ -15,6 +15,8 @@
         ;=======================
 do_knowthis:
 
+.include "frame1_init.s"
+
 
 .include "knowthis.s"
 
