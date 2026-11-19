@@ -51,14 +51,15 @@ rand_a			= $AD
 rand_b			= $AE
 rand_c			= $AF
 
-FONTL			= $B0
-FONTH			= $B1
-FONT2L			= $B2
-FONT2H			= $B3
+
+FONTL			= $B0	; credits
+FONTH			= $B1	; credits
+FONT2L			= $B2	; credits
+FONT2H			= $B3	; credits
 TEMP1			= $B4
-IS_DRUM			= $B5
-TEMP2			= $B6
-WHICH_ROW		= $B7
+IS_DRUM			= $B5	; credits
+TEMP2			= $B6	; credits
+CURRENT_FADE		= $B7	; title
 
 ZIGZAG0			= $B8
 ZIGZAG1			= $B9

@@ -39,14 +39,14 @@ start_title:
 
 
 	;=============================
-	; scanlines 0..21 (unused)
+	; scanlines 0..20 (unused)
 	;=============================
-        ldx     #22
+        ldx     #21
 	jsr	repeat_wsync
 
 ; 8
 	;===============================
-	; scanlines 22-33 -- play music
+	; scanlines 21-32 -- play music
 	;===============================
 	; takes 11 lines, doesn't WSYNC at end
 
@@ -56,7 +56,7 @@ start_title:
 
 
 	;====================
-	; now in scanline 34
+	; now in scanline 33
 	;====================
 	; increment frame
 
@@ -65,14 +65,17 @@ start_title:
 
 
 	;=======================
-	; scanline 35
+	; scanline 34
 	;=======================
 	; make logo go away?
 ; 0
 	lda	WHICH_EFFECT						; 3
-	cmp	#4							; 2
-	bne	skip_drazzle						; 2/3
+	cmp	#2							; 2
+	bcs	skip_fade						; 2/3
 ; 7
+
+	jsr	fade_it
+
 ;	jsr	random8							; 54
 ; 61
 ;	tax								; 2
@@ -80,8 +83,24 @@ start_title:
 ;	sta	E7_256B_WRITE_ADDR,X					; 5
 ; 70
 
-skip_drazzle:
+skip_fade:
 	sta	WSYNC
+
+	;=======================
+	; scanline 35
+	;=======================
+	; make logo go away 2?
+; 0
+	lda	WHICH_EFFECT						; 3
+	cmp	#2							; 2
+	bcs	skip_fade2						; 2/3
+; 7
+
+	jsr	fade_it
+
+skip_fade2:
+	sta	WSYNC
+
 
 	;===================
 	; now scanline 36
@@ -108,6 +127,8 @@ skip_drazzle:
 ; 32
 	inc	WHICH_EFFECT						; 5
 ; 37
+	lda	#0		; reset fade (needed?)
+	sta	CURRENT_FADE
 
 same_effect:
 
@@ -115,7 +136,7 @@ same_effect:
 	lda	new_bank,X						; 4
 	tax								; 2
 	sta	E7_SET_256_BANK0,X					; 5
-; 51
+; 58
 	sta	WSYNC
 
 	;=======================
@@ -371,4 +392,49 @@ next_effect_h:
 new_bank:
 	.byte	$00,$01,$02,$03,$03,$03
 
+
+
+	;======================================
+	; Fade fg/background
+	;======================================
+	; maybe fade one line at a time?
+
+fade_it:
+
+	ldx	CURRENT_FADE				; 3
+fade_loop:
+; 0
+	lda	$1900,X					; 4
+; 4
+	; decrement nibble to 0 and stop
+	tay						; 2
+	and	#$F0					; 2
+	sta	TEMP					; 3
+	tya						; 2
+	and	#$0F					; 2
+; 15
+	beq	done_fade				; 2/3
+; 17
+	sec						; 2
+	sbc	#1					; 2
+	ora	TEMP					; 3
+	sta	$1800,X					; 5
+; 29
+done_fade:
+
+	inc	CURRENT_FADE				; 5
+	lda	CURRENT_FADE				; 3
+	cmp	#84					; 2
+; 39
+	bne	no_reset_fade				; 2/3
+
+	lda	#0					; 2
+	sta	CURRENT_FADE				; 3
+; 46
+no_reset_fade:
+
+;	inx						; 2
+;	cpx	#84					; 2
+;	bne	fade_loop				; 2/3
+	rts
 

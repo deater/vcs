@@ -82,9 +82,24 @@ start_desktop:
 	;===================
 	; now scanline 35
 	;===================
-	; center the sprite position
-	; needs to be right after a WSYNC
+	; change effect
 ; 0
+	; switch effects as needed
+
+	ldx	WHICH_EFFECT						; 3
+	lda	next_effect_l,X						; 4
+	cmp	EFFECTL							; 3
+	bne	same_effect						; 2/3
+; 23
+	lda	next_effect_h,X						; 4
+	cmp	EFFECTH							; 3
+	bne	same_effect						; 2/3
+; 32
+	inc	WHICH_EFFECT						; 5
+; 37
+
+same_effect:
+
 
 	sta	WSYNC
 
@@ -415,3 +430,14 @@ teapot_high:
 
 
 
+; EFFECTS!
+;  0 -- teapot clockwise		0:00 - 0:60
+;  1 -- teapot widdershins		0:80 - 1:00
+
+next_effect_l:
+	.byte   $50,$98,$40,$00,$00,$00
+next_effect_h:
+	.byte   $00,$00,$01,$02,$04,$ff
+
+new_bank:
+	.byte   $00,$01,$02,$03,$03,$03
