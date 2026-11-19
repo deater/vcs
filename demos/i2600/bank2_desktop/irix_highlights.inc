@@ -2,8 +2,10 @@
 
 ; 112/8 = 14
 
+; intentionall off by one as we draw at end of first line
+
 irix_highlights_overlay_colors:
-	.byte $00,$00,$00,$00,$00,$00,$00,$00	;0
+	.byte $00,$00,$00,$00,$00,$00,$00	;0
 	.byte $08,$02,$02,$02,$02,$08,$02,$02
 	.byte $02,$02,$08,$02,$02,$02,$02,$08
 	.byte $02,$02,$02,$02,$08,$02,$02,$02
@@ -31,7 +33,7 @@ irix_highlights_overlay_colors:
 .align $100
 
 irix_highlights_overlay_sprite:
-	.byte $00,$00,$00,$00,$00,$00,$00,$00	; 0
+	.byte $00,$00,$00,$00,$00,$00,$00	; 0
 	.byte $C0,$C0,$00,$00,$00,$C0,$C0,$00
 	.byte $00,$00,$C0,$C0,$00,$00,$00,$C0
 	.byte $C0,$00,$00,$00,$E0,$E0,$00,$00

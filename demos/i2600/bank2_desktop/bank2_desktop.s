@@ -253,7 +253,7 @@ oof:
 	sta	VDELP1							; 3
 ; 47
 	; number of lines to draw
-	ldx	#36
+	ldx	#35
 	stx	SPRITE_OFFSET
 	ldx	#72							; 2
 	stx	SPRITE_LENGTH							; 3

@@ -70,8 +70,8 @@ again:
 ;	sta	E7_SET_BANK1
 ;	jsr	do_bounce
 
-	sta	E7_SET_BANK2
-	jsr	do_desktop
+;	sta	E7_SET_BANK2
+;	jsr	do_desktop
 
 	sta	E7_SET_BANK3
 	jsr	do_knowthis
