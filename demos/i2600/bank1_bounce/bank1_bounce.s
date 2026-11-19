@@ -73,12 +73,39 @@ bounce_effect:
 	;===================================
 	; setup effect -- scanlines 23
 	;===================================
+	; switch effects as needed
 
-	lda	EFFECTH
-	cmp	#5
-	bcs	skip_update_effect
-	sta	WHICH_EFFECT
-skip_update_effect:
+	ldx	WHICH_EFFECT						; 3
+	lda	next_effect_l,X						; 4
+	cmp	EFFECTL							; 3
+	bne	same_effect						; 2/3
+; 23
+	lda	next_effect_h,X						; 4
+	cmp	EFFECTH							; 3
+	bne	same_effect						; 2/3
+; 32
+	inc	WHICH_EFFECT						; 5
+; 37
+
+	; start moving
+
+	lda	WHICH_EFFECT
+	cmp	#3
+	bne	dont_reset_xadd
+
+	dec	SPRITE0_XADD						; 5
+	dec	SPRITE0_YADD						; 5
+	dec	SPRITE1_XADD						; 5
+dont_reset_xadd:
+
+same_effect:
+
+;	lda	EFFECTH
+;	cmp	#5
+;	bcs	skip_update_effect
+;	sta	WHICH_EFFECT
+;skip_update_effect:
+
 	sta	WSYNC
 
 	;===================================
@@ -87,6 +114,9 @@ skip_update_effect:
 ; 0
 	ldx	WHICH_EFFECT						; 3
 ; 3
+
+	; update start location
+
 	lda	sprite0_x_data,X					; 4
 	bmi	dont_change_location
 	sta	SPRITE0_X						; 3
@@ -98,16 +128,9 @@ skip_update_effect:
 	sta	SPRITE1_Y						; 3
 dont_change_location:
 ;  31
-	lda	WHICH_EFFECT
-	cmp	#3
-	bne	dont_reset_xadd
-	lda	EFFECTL
-	bne	dont_reset_xadd
 
-	dec	SPRITE0_XADD						; 5
-	dec	SPRITE0_YADD						; 5
-	dec	SPRITE1_XADD						; 5
-dont_reset_xadd:
+	; adjust sprite height
+
 	lda	sprite_height_data,X					; 4
 	sta	SPRITE_HEIGHT						; 3
 ; 59
@@ -455,3 +478,18 @@ bounce_jump_h:
 .include "bounce_kernel_4.s"
 .include "bounce_kernel_2.s"
 .include "bounce_kernel_1.s"
+
+
+; EFFECTS!
+;  0 -- large cube	                0:00 - 0:94
+;  1 -- medium cube                     0:44 - 1:52
+;  2 -- small cube                      1:52 - 2:80
+;  3 -- small bounce                    2:80 - 3:c0
+;  4 -- double bounce                   3:c0 - f:ff
+
+
+next_effect_l:
+        .byte   $94,$52,$80,$c0,$00
+next_effect_h:
+        .byte   $00,$01,$02,$03,$ff
+
