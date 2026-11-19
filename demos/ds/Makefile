@@ -17,7 +17,7 @@ ds.o:	ds.s main.bin \
 	bank3_knowthis/bank3_knowthis.bin \
 	bank4_plasma/bank4_plasma.bin \
 	bank5_credits/bank5_credits.bin \
-	bank6_music/bank6_music.bin \
+	bank6_loop/bank6_music.bin \
 	zero_512.bin
 	ca65 -o ds.o ds.s
 
@@ -97,8 +97,8 @@ bank4_plasma/bank4_plasma.bin:
 bank5_credits/bank5_credits.bin:	
 	cd bank5_credits && make
 
-bank6_music/bank6_music.bin:	
-	cd bank6_music && make
+bank6_loop/bank6_music.bin:	
+	cd bank6_loop && make
 
 
 
@@ -156,8 +156,8 @@ main.o:	main.s zp.inc framebuffer.s \
 	$(CALC_ADDRESS) -a 0x1000 -s do_plasma bank4_plasma/bank4_plasma.lst > bank4_routines.inc
 	cd bank5_credits && make
 	$(CALC_ADDRESS) -a 0x1000 -s do_credits bank5_credits/bank5_credits.lst > bank5_routines.inc
-	cd bank6_music && make
-	$(CALC_ADDRESS) -a 0x1000 -s play_music bank6_music/bank6_music.lst > bank6_routines.inc
+	cd bank6_loop && make
+	$(CALC_ADDRESS) -a 0x1000 -s play_music bank6_loop/bank6_music.lst > bank6_routines.inc
 	ca65 -o main.o main.s -l main.lst
 
 ###
@@ -176,3 +176,4 @@ clean:
 	cd bank4_plasma && make clean
 	cd bank5_credits && make clean
 	cd bank6_music && make clean
+	cd bank6_loop && make clean

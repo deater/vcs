@@ -19,6 +19,6 @@
 .incbin	"bank3_knowthis/bank3_knowthis.bin"	; 2k
 .incbin	"bank4_plasma/bank4_plasma.bin"		; 2k
 .incbin	"bank5_credits/bank5_credits.bin"	; 2k
-.incbin	"bank6_music/bank6_music.bin"		; 2k
+.incbin	"bank6_loop/bank6_music.bin"		; 2k
 .incbin	"zero_512.bin"				; 512 bytes
 .incbin	"main.bin"				; 1.5k
