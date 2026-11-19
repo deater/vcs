@@ -489,7 +489,7 @@ bounce_jump_h:
 
 
 next_effect_l:
-        .byte   $94,$52,$80,$c0,$00
+        .byte   $a0,$52,$80,$c0,$00
 next_effect_h:
         .byte   $00,$01,$02,$03,$ff
 
