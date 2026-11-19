@@ -18,14 +18,14 @@ setup_desktop_2:
 
 	;=========================== at line 11
 
-	lda	#18             ; this sets up timer for (18-1)*1024
-	sta	T1024T		; which is 229 scanlines and the decompress
+	lda	#17             ; this sets up timer for (17-1)*1024
+	sta	T1024T		; which is 216 scanlines and the decompress
 				; code will make sure we do the right thing
 				; at 262
 
 
 	lda	#2			; we're bank2
-	sta	PAGE_SAVE
+	sta	ZX02_PAGE_SAVE
 
 	lda     #$4
         sta     READ_WRITE_OFFSET

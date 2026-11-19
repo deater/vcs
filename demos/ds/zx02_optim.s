@@ -202,7 +202,12 @@ force_expire:
 	ldx	INTIM			; repeat until we hit 0
 	bne	force_expire		; if not, loop
 
-	; should be scanline 229 here
+
+	sta	WSYNC
+	sta	WSYNC
+	sta	WSYNC
+
+	; should be scanline ? here
 
 	ldx	#29
 	jsr	common_overscan
@@ -213,8 +218,14 @@ force_expire:
 
 	jsr	common_vblank
 
-	lda	#18				; (18-1)* 1024 = 17408
-	sta	T1024T				; which is roughly 229 scalines lines
+	; 11 cycles
+
+	lda	#7
+	jsr	do_play_music
+	sta	WSYNC
+
+	lda	#17				; (17-1)* 1024 = 16384
+	sta	T1024T				; which is roughly 216 scalines lines
 
 	; restore A and Y
 	pla
@@ -274,12 +285,16 @@ check_timer:
 	ldx	INTIM			; see if 192 scanline counter done
 	bne	check_timer		; if not, loop
 
-	; 3 scanlines less because we copy 16 bytes in load_level
+	sta	WSYNC
+	sta	WSYNC
+	sta	WSYNC
+
+
 early_out:
-	ldx	#26			; do the overscan
+	ldx	#29			; do the overscan
 	jsr	common_overscan
 
-	ldx	PAGE_SAVE
+	ldx	ZX02_PAGE_SAVE
 	sta	E7_SET_BANK0,X		; return to proper bank
 
 	rts
