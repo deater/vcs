@@ -184,7 +184,7 @@ align_hack:
 	;=============================================
 	; draw 74 lines of nothing
 	;=============================================
-	ldx	#74
+	ldx	#73
 top_gradient_loop:
 	lda	WHICH_EFFECT
 	cmp	#3
@@ -206,7 +206,11 @@ skip_top_gradient:
 	lda	#0
 	sta	COLUBK
 
-	lda	$1900,X			;	preload			; 
+	lda	$1900,X			;	preload			; 4
+
+	sta	WSYNC
+
+	; extra line
 
 	sta	WSYNC
 
@@ -288,24 +292,30 @@ done_loop:
 	; draw 75 lines of gradient
 	;=============================================
 
+	; add blank line for padding
+
 	lda	#0
 	sta	COLUBK
 	sta	WSYNC
 
+	;====================
+
 	ldx	#0
 bottom_gradient_loop:
-	lda	WHICH_EFFECT
-	cmp	#3
+	lda	#0
+	ldy	WHICH_EFFECT
+	cpy	#3
 	bcc	skip_bottom_gradient
 
 	txa
 	adc	FRAMEL
 	lsr
 	lsr
-	sta	COLUBK
 skip_bottom_gradient:
 	inx
 	sta	WSYNC
+	sta	COLUBK
+
 	cpx	#74
 	bne	bottom_gradient_loop
 
