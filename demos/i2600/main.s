@@ -49,13 +49,6 @@ clear_loop:
 	; var init
 	;==============================
 
-
-;	lda	#3
-;	sta	BANK_256
-
-;	lda	#4
-;	sta	BANK_1K
-
 	; init code sets to 0
 
 	;==============================

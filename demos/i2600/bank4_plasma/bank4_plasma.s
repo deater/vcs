@@ -97,7 +97,13 @@ same_effect:
 
 	sta	YY
 
+;	lda	FRAMEH
+;	sta	EXTRACOL
+
+	lda	FRAMEL
+	asl
 	lda	FRAMEH
+	rol
 	sta	EXTRACOL
 
         sta     WSYNC
