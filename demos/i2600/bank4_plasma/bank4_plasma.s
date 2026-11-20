@@ -46,11 +46,11 @@ start_plasma:
 	; 37 lines of vertical blank
 	;=============================
 
-        ldx     #23
+        ldx     #22
 	jsr	repeat_wsync
 
 	;================================
-	; play music -- scanlines 24..35
+	; play music -- scanlines 22..32
 	;================================
 	; takes 11 lines?
 
@@ -58,10 +58,31 @@ start_plasma:
 	jsr	do_play_music
 
 	;====================
+	; now in scanline 33
+	;====================
+	; increment frame counters
+
+	jsr	inc_frame	; 48
+        sta     WSYNC
+
+	;====================
 	; now in scanline 34
 	;====================
-	jsr	inc_frame
-        sta     WSYNC
+	; switch effects as needed
+
+	ldx	WHICH_EFFECT                                            ; 3
+	lda	next_effect_l,X                                         ; 4
+	cmp	EFFECTL                                                 ; 3
+	bne	same_effect                                             ; 2/3
+
+	lda	next_effect_h,X                                         ; 4
+	cmp	EFFECTH                                                 ; 3
+	bne	same_effect                                             ; 2/3
+
+	inc	WHICH_EFFECT                                            ; 5
+same_effect:
+	sta	WSYNC
+
 
 	;====================
 	; now in scanline 35
@@ -597,3 +618,16 @@ sier_col_loop:
 	bne	sier_row_loop
 
 	rts
+
+
+
+; EFFECTS!
+;  0 -- raimbow                         0:00 - 0:94
+;  1 -- sierpinski                      0:44 - 1:52
+
+
+next_effect_l:
+	.byte   $a0,$52,$80,$c0,$00
+next_effect_h:
+	.byte   $00,$01,$02,$03,$ff
+
