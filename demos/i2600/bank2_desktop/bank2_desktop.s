@@ -67,6 +67,9 @@ start_desktop:
 	jsr	inc_frame
 
 	; switch which teapot shown
+	lda	WHICH_EFFECT
+	beq	skip_rotate
+
 	lda	FRAMEL
 	lsr
 	lsr
@@ -75,7 +78,7 @@ start_desktop:
 	and	#$3
 	tax
 	sta	E7_SET_256_BANK0,X
-
+skip_rotate:
         sta     WSYNC
 
 
@@ -95,8 +98,17 @@ start_desktop:
 	;===================
 	; change effect
 ; 0
-	; switch effects as needed
+
+	lda	EFFECTL
+	cmp	#$50
+	bne	same_effect
+	lda	EFFECTH
+	cmp	#$1
+	bne	same_effect
+
+	inc	WHICH_EFFECT
 .if 0
+	; switch effects as needed
 	ldx	WHICH_EFFECT						; 3
 	lda	next_effect_l,X						; 4
 	cmp	EFFECTL							; 3
@@ -138,7 +150,13 @@ same_effect:
 	lda	#NUSIZ_QUAD_SIZE					; 2
 	sta	NUSIZ0							; 3
 
-; ??
+	jmp	oof2
+.align $100
+
+oof2:
+
+
+
 	sta	WSYNC
 
 
@@ -204,7 +222,14 @@ irix_loop:
 ; 76
 
 	jmp	oof
-.align $100
+
+
+
+;.include "irix_highlights.inc"
+
+;.align $100
+
+
 oof:
 
 	;===========================================================
@@ -438,12 +463,12 @@ teapot_high:
 
 
 ; EFFECTS!
-;  0 -- teapot clockwise		0:00 - 0:60
-;  1 -- teapot widdershins		0:80 - 1:00
+;  0 -- teapot			0:00 - 1:70
+;  1 -- teapot moving		1:70
 
 next_effect_l:
-	.byte   $50,$98,$40,$00,$00,$00
+	.byte   $50,$00
 next_effect_h:
-	.byte   $00,$00,$01,$02,$04,$ff
+	.byte   $01,$ff
 
 
