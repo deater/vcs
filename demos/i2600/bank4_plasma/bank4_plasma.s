@@ -634,7 +634,7 @@ sier_col_loop:
 
 
 next_effect_l:
-	.byte   $a0,$52,$80,$c0,$00
+	.byte   $00,$00
 next_effect_h:
-	.byte   $00,$01,$02,$03,$ff
+	.byte   $01,$ff
 

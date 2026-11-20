@@ -29,6 +29,9 @@ setup_title_1:
 	stx	EFFECTH
 	stx	WHICH_EFFECT
 
+	stx	VDELP0
+	stx	VDELP1
+
 	ldx	#192
 	jsr	repeat_wsync
 
