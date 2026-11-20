@@ -42,17 +42,10 @@ submit:	i2600.zip
 
 i2600.zip: i2600.e7
 	mkdir -p demosplash2026_i2600
-	mkdir -p demosplash2026_i2600/src
 	cp i2600.e7 ./demosplash2026_i2600
 	cp file_id.diz ./demosplash2026_i2600
-	cp i2600_thumb.png ./demosplash2026_i2600
-	cp *.s ./demosplash2026_i2600/src
-	cp *.inc ./demosplash2026_i2600/src
+	cp i2600_title.png ./demosplash2026_i2600
 	zip -r i2600.zip demosplash2026_i2600
-
-
-
-
 
 ###
 

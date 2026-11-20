@@ -235,6 +235,10 @@ newNote:
 
         ; --- start percussion ---
         ; Get index of envelope
+	pha
+	lda	#2
+	sta	IS_DRUM
+	pla
         tay
         ; -TT_FIRST_PERC because percussion start with TT_FIRST_PERC
         lda tt_PercIndexes-TT_FIRST_PERC,y

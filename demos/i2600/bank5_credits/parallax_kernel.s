@@ -29,6 +29,8 @@ parallax_effect:
 	ldx	#1
 	jsr	set_pos_x
 
+	sta	WSYNC
+
 	;=========================================
 	; scanline 7/8 : setup zigzag
 	;=========================================
@@ -185,7 +187,7 @@ alternate_pf0:
 	inx								; 2
 
 
-	cpx	#80-13							; 1
+	cpx	#80-14							; 1
 
 ; 67
 	sta	WSYNC							; 3
