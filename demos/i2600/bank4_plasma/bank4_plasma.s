@@ -574,6 +574,16 @@ sierpinski_third:
 
 	sta	E7_SET_256_BANK0,X
 
+	lda	WHICH_EFFECT
+	bne	actually_do_it
+
+	; if want rainbow effect, force output to unused BANK3
+
+	sta	E7_SET_256_BANK3
+
+actually_do_it:
+
+
 	lda	#<$1800
 	sta	OUTL
 	lda	#>$1800
@@ -601,10 +611,7 @@ sier_col_loop:
 	iny
 	iny
 
-;	inc	XX
-;	lda	XX
 	dec	XX
-;	cmp	#10
 	bne	sier_col_loop
 
 	ldy	#9
